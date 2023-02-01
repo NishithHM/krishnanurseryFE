@@ -6,9 +6,10 @@ import axios from 'axios'
 function App() {
   const [number, setNumber] = useState(0)  
   const onClick=()=>{
-    axios.get('http://65.0.204.124:8000/api/number').then(res=>{
-        const number = res.data.number
-        setNumber(number)
+    axios.post('http://65.0.204.124:8000/api/create/user', {}).then(res=>{
+        axios.get('http://65.0.204.124:8000/api/get/user').then(val=>{
+            setNumber(JSON.stringify(val.data))
+        })
     })
   }
   return (
