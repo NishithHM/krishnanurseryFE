@@ -6,7 +6,7 @@ import axios from 'axios'
 function App() {
   const [number, setNumber] = useState(0)  
   const onClick=()=>{
-    axios.get('http://localhost:8080/api/number').then(res=>{
+    axios.get('http://65.0.204.124:8000/api/number').then(res=>{
         const number = res.data.number
         setNumber(number)
     })
