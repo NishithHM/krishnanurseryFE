@@ -1,7 +1,16 @@
 import logo from './logo.svg';
+import {useState} from 'react'
 import './App.css';
+import axios from 'axios'
 
 function App() {
+  const [number, setNumber] = useState(0)  
+  const onClick=()=>{
+    axios.get('http://localhost:8080/api/number').then(res=>{
+        const number = res.data.number
+        setNumber(number)
+    })
+  }
   return (
     <div className="App">
       <header className="App-header">
@@ -15,8 +24,11 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn React {number}
         </a>
+        
+      <button style={{height:20, width:230}} onClick={onClick}>generateNumber</button>
+        
       </header>
     </div>
   );
