@@ -1,0 +1,25 @@
+.input{
+    height:20%;
+    width: 10%;
+    margin: 20px;
+}
+
+
+.label{
+    color:#302C2C;
+    font-size: 20px;
+    text-align: left;
+}
+
+.inputbox{
+    border:0;
+    border-bottom: 1px solid #302C2C;
+    width: 100%;
+    font-size: 18px;
+    padding-top: 10px;
+}
+
+.asterick{
+    color:#FF2400;
+    padding: 5px;
+}
