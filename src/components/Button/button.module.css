@@ -1,0 +1,28 @@
+.button{
+    height:100%;
+    width: 100%;
+    border: 1px solid #EDECEB;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.text{
+    font-size: 20px;
+}
+
+.primary{
+    color:white;
+    background-color:#539C64;
+}
+
+.secondary{
+    color:#302C2C;
+    background-color:#EDECEB;
+}
+
+.alert{
+    color:#FFFFFF;
+    background-color:#FF2400;
+}

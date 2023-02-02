@@ -1,9 +1,3 @@
-/* props 
-image
-title
-isDisabled
-*/
-
 import React from "react";
 import styles from "./landingTile.module.css";
 import cx from 'classnames'

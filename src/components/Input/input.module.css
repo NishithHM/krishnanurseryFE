@@ -23,3 +23,11 @@
     color:#FF2400;
     padding: 5px;
 }
+
+.inputerror{
+    border-bottom: 1px solid #FF2400;
+}
+
+.errortext{
+    color:#FF2400
+}
