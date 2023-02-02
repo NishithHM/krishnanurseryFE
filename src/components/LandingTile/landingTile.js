@@ -1,0 +1,5 @@
+/* props 
+image
+title
+isDisabled
+*/
