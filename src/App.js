@@ -1,11 +1,12 @@
 import './App.css';
-import { Alert, Button, Input, LandingTile } from './components';
+import { Alert, Button, Footer, Header, Input, LandingTile } from './components';
 import access from "./assets/images/access.png";
 
 function App() {
 
   return (
     <div className="App">
+       <div style={{ width:1665, margin:"15px"}}><Header/></div>
       <div style={{height:300,width:400, margin:"15px"}}>
         <LandingTile image={access} title="Access Management" isDisabled={false}/>
       </div>
@@ -17,6 +18,9 @@ function App() {
       </div>
       <div style={{height:250, width:600, margin:"15px"}}>
         <Alert/>
+      </div>
+      <div>
+        <Footer/>
       </div>
     </div>
   );

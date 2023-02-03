@@ -1,0 +1,25 @@
+.footer{
+    box-shadow: 4px 4px 8px 1px #d6d5d2;
+    height: 110px;
+    width: 100%;
+}
+.footercontent{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.copyright{
+    color: #808080;
+    font-size: 20px;
+    padding-top: 30px;
+}
+
+.content{
+    padding-top: 30px;
+}
+
+.aboutcontent{
+    color: #808080;
+    font-size: 20px;
+    padding-right: 30px;
+} 
