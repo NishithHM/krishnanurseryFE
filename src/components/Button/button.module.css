@@ -26,3 +26,9 @@
     color:#FFFFFF;
     background-color:#FF2400;
 }
+
+.disabled{
+    color:#302C2C;
+    background-color:#EDECEB;
+    cursor: not-allowed;
+}

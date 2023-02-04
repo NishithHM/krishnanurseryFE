@@ -1,0 +1,30 @@
+.logincard{
+    width: 40%;
+    box-shadow: 3px 1px 7px 1px #d6d5d2;
+    margin:50px auto;
+    padding: 20px 0;
+}
+
+.loginlogo{
+    margin: auto;
+    text-align: center;
+    padding: 10px;
+}
+
+.logotitle{
+    text-align: center;
+    font-size: 30px;
+    color: #302C2C;
+}
+
+.inputlabel{
+   margin: 70px 100px;
+}
+
+.label{
+    padding-top: 30px;
+}
+
+.loginbtn{
+    padding: 70px 15px 0px 0px;
+}
