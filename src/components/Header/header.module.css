@@ -1,0 +1,26 @@
+.header{
+    box-shadow: 4px 4px 8px 1px #d6d5d2;
+    height: 100%;
+    width: 100%;
+}
+
+.headercontent{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.logout{
+    margin: auto 0;
+    padding-right: 10px
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+}
+
+.headertitle{
+    font-size: 35px;
+    color: #539C64;
+}
