@@ -3,7 +3,7 @@ import styles from "./login.module.css";
 import logo from "../../assets/images/logo.png";
 import { Button, Input } from "../../components";
 import _ from "lodash"
-import { useUserLoginMutation } from "../../services/loginapi/login.services";
+import { useUserLoginMutation } from "../../services/login.services";
 import { userActions } from "../../store/slices/user.slice";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -67,7 +67,7 @@ const [userLogin] = useUserLoginMutation()
             }
         })
         dispatch(userActions.addUser(res.data.user))
-        navigate("/dashboard")
+        navigate("/components")
     }
   }
 
