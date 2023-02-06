@@ -19,3 +19,4 @@ endpoints:(builder)=>{
 });
 
 export const {useGetAllProcurementsQuery} = procurementsApi
+ // loclhost --> proxy --> backend
