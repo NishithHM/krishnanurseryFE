@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./login.module.css";
 import logo from "../../assets/images/logo.png";
 import { Button, Input } from "../../components";
@@ -7,6 +7,7 @@ import { useUserLoginMutation } from "../../services/login.services";
 import { userActions } from "../../store/slices/user.slice";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context";
 
 const Login = () => {
 const initialState = {
@@ -19,7 +20,7 @@ const dispatch = useDispatch()
 const navigate = useNavigate()
 const [userLogin] = useUserLoginMutation()
   const[state, setState] = useState(initialState)
-
+ const [context, setContext]  = useContext(AuthContext)
   const inputChangeHanlder = (event, id)=>{
     setState((prev)=>{
         return {
@@ -67,7 +68,8 @@ const [userLogin] = useUserLoginMutation()
             }
         })
         dispatch(userActions.addUser(res.data.user))
-        navigate("/components")
+        setContext(res.data.user)
+        navigate("/authorised/components")
     }
   }
 
