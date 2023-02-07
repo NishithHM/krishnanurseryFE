@@ -6,12 +6,53 @@ import {
   Header,
   Input,
   LandingTile,
+  Table,
   Dropdown,
   Filters,
 } from "../../components";
 import access from "../../assets/images/access.png";
 import { useGetAllProcurementsQuery } from "../../services/procurement.services";
+import { Link } from "react-router-dom";
 const Test = () => {
+  const tableData = [
+    [
+      {
+        id: new Date().toISOString(),
+        value: "Last Procured on",
+        isSortable: true,
+        sortBy: "lastProcuredOn",
+      },
+      {
+        value: "Plant Name",
+        isSortable: true,
+        sortBy: "plantName",
+      },
+    ],
+    [
+      {
+        value: "03 Jan 2022",
+      },
+      {
+        value: "Areca",
+      },
+    ],
+    [
+      {
+        value: "04 Jan 2022",
+      },
+      {
+        value: "Coffee",
+      },
+    ],
+    [
+      {
+        value: "05 Jan 2022",
+      },
+      {
+        value: "tea",
+      },
+    ],
+  ];
   const [isSkip, setSkip] = useState(true);
   const res = useGetAllProcurementsQuery({}, { skip: isSkip });
   console.log(res);
@@ -33,6 +74,8 @@ const Test = () => {
       <div>
         <Header />
       </div>
+      {/* added this link to verify the page as the auth state is not persisted in refresh */}
+      <Link to="/authorised/add-employee">Add Employee page</Link>
       <Filters onChange={onChangeHandler} onSubmit={onSubmitHandler} />
       <div style={{ maxWidth: "500px", padding: "10px 20px" }}>
         <p>fetch from api dropdown</p>
@@ -95,6 +138,9 @@ const Test = () => {
           <Alert />
         </div>
         <div></div>
+      </div>
+      <div>
+        <Table data={tableData} onSortBy={(sort) => console.log(sort)} />
       </div>
       <Footer />
     </>
