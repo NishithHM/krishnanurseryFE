@@ -5,11 +5,11 @@ import { Login, Test, Employee } from "./pages";
 import { Route, Routes } from "react-router-dom";
 import { AuthContext } from "./context";
 import Protected from "./hocs/protected/Protected";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   // dummy data sent to select components
-  const [context, setContext] = useState({});
+  const [context, setContext] = useState(JSON.parse(sessionStorage.getItem('userData')));
   return (
     <div className="App">
       <AuthContext.Provider value={[context, setContext]}>

@@ -67,6 +67,7 @@ const Login = () => {
         };
       });
       dispatch(userActions.addUser(res.data.user));
+      sessionStorage.setItem("userData", JSON.stringify(res.data.user))
       setContext(res.data.user);
       navigate("/authorised/components");
     }

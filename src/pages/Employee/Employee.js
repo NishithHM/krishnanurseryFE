@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Footer, Header, Input, Dropdown } from "../../components";
+import isEmail from 'validator/lib/isEmail';
 import styles from "./employee.module.css";
 import _ from "lodash";
 
@@ -15,9 +16,9 @@ const Employee = () => {
   const [formState, setFormState] = useState(defaultFormValues);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const emailRegexPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
   const passwordRegexPattern =
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+    
   const EMPLOYEE_ROLES = [
     { label: "Admin", value: "ADMIN" },
     { label: "Procurement Associate", value: "PROCUREMENT_ASSOCIATE" },
@@ -74,7 +75,6 @@ const Employee = () => {
 
   return (
     <>
-      <Header />
       <div className={styles.outerWrapper}>
         <h1 className={styles.header}>Add Employee</h1>
 
@@ -97,7 +97,7 @@ const Employee = () => {
             value={formState.email}
             type="email"
             errorMessage="Enter a Valid Email"
-            validation={(email) => emailRegexPattern.test(email)}
+            validation={(email) => isEmail(email)}
             onChange={inputChangeHanlder}
             onError={inputErrorHandler}
           />
@@ -143,7 +143,6 @@ const Employee = () => {
           </div>
         </form>
       </div>
-      <Footer />
     </>
   );
 };
