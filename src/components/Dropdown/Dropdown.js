@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import Creatable from "react-select/creatable";
 import debounce from "lodash/debounce";
 import cx from "classnames";
-
+import isEmpty  from "lodash/isEmpty";
+import get  from "lodash/get";
 import styles from "./dropdown.module.css";
-import { useSearchProductsQuery } from "../../services/procurement.services";
+import axios from "axios";
 const Dropdown = ({
   data,
   url = null,
@@ -19,11 +20,11 @@ const Dropdown = ({
   required = false,
   error = null,
   errorMessage = null,
+  apiDataPath = {},
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState(data || []);
   const [loading, setLoading] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selectedOption) => {
@@ -31,25 +32,22 @@ const Dropdown = ({
     onChange(selectedOption);
   };
 
-  // const { data: searchData, runQuery } = useSearchProductsQuery();
 
-  // const searchProducts = useSearchProductsQuery("tea");
-  // console.log(searchProducts);
+  
 
-  const loadOptions = debounce(async (inputValue, callback) => {
+  const loadOptions = debounce( async (inputValue, callback) => {
     if (!url || inputValue.length < 3) return [];
     setSearchQuery(inputValue);
+
     setLoading(true);
 
-    // const data = await searchData("tea");
-    //   data fetching logic is added here and filter data and send to callback
-    //   here dummy data is sent for testing
-    callback([
-      { value: "tea1", label: "tea 1" },
-      { value: "tea2", label: "tea 2" },
-    ]);
-    setLoading(false);
+   const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`)
+   const optionsVal = res.data.map(opt=> ({label:get(opt, apiDataPath.label), value: get(opt, apiDataPath.value)}))
+   setLoading(false);
+ callback(optionsVal)
   }, 500);
+ 
+
 
   const DropdownStyles = {
     control: (baseStyles, state) => ({

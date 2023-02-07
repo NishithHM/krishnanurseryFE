@@ -11,7 +11,7 @@ import {
   Filters,
 } from "../../components";
 import access from "../../assets/images/access.png";
-import { useGetAllProcurementsQuery } from "../../services/procurement.services";
+import { useGetAllProcurementsQuery , useSearchProductsQuery} from "../../services/procurement.services";
 import { Link } from "react-router-dom";
 const Test = () => {
   const tableData = [
@@ -79,7 +79,7 @@ const Test = () => {
       <Filters onChange={onChangeHandler} onSubmit={onSubmitHandler} />
       <div style={{ maxWidth: "500px", padding: "10px 20px" }}>
         <p>fetch from api dropdown</p>
-        <Dropdown onChange={onChangeHandler} url="dsadf" />
+        <Dropdown onChange={onChangeHandler} url="/api/procurements/getAll" apiFunction={useSearchProductsQuery} apiDataPath={{label:'names.ka.name', value:"_id"}} />
 
         <p>fetch from api dropdown with multiselect</p>
         <Dropdown

@@ -24,8 +24,8 @@ export const procurementsApi = createApi({
         }),
       }),
       searchProducts: builder.query({
-        query: (product) => ({
-          url: `/getAll?search=${product}`,
+        query: ({searchQuery}) => ({
+          url: `/getAll?search=${searchQuery}`,
           method: "GET",
         }),
       }),
