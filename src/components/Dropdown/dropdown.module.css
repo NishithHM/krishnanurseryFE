@@ -1,0 +1,33 @@
+.input {
+  height: 20%;
+  width: 10%;
+  margin: 20px;
+}
+
+.label {
+  color: #302c2c;
+  font-size: 20px;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.inputbox {
+  border: 0;
+  border-bottom: 1px solid #302c2c;
+  width: 100%;
+  font-size: 18px;
+  padding-top: 10px;
+}
+
+.asterick {
+  color: #ff2400;
+  padding: 5px;
+}
+
+.inputerror {
+  border-bottom: 1px solid #ff2400;
+}
+
+.errortext {
+  color: #ff2400;
+}

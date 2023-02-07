@@ -1,4 +1,4 @@
 import Login from "./Login";
 import Test from "./Test";
-
-export {Login, Test}
+import Employee from "./Employee";
+export { Login, Test, Employee };

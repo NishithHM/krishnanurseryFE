@@ -2,7 +2,13 @@
   "name": "krishnanurseryfe",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://3.110.8.129:8000",
+  "options": {
+    "allowedHosts": [
+      "localhost",
+      ".localhost"
+    ],
+    "proxy": "http://3.110.8.129:8000"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.2",
     "@testing-library/jest-dom": "^5.16.5",
@@ -13,7 +19,9 @@
     "dayjs": "^1.11.7",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
+    "react-date-picker": "^9.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.0",
     "react-scripts": "5.0.1",
