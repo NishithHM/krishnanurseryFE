@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
-import { Alert, Button, Footer, Header, Input, LandingTile, Table } from '../../components';
+import { Alert, Button, Footer, Header, Input, LandingTile, Search, Table } from '../../components';
 import access from "../../assets/images/access.png";
 import {useGetAllProcurementsQuery} from '../../services/procurement.services'
 const Test = () => {
+
     const tableData =[
         [{
             id: new Date().toISOString(),
@@ -104,6 +105,9 @@ const Test = () => {
         </div>
         <div>
             <Table data={tableData} onSortBy={(sort)=> console.log(sort)}/>
+        </div>
+        <div>
+            <Search placeholder="Search for a Plant..." />
         </div>
         <Footer />
 

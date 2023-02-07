@@ -1,0 +1,13 @@
+.searchBox{
+    height: 40px;
+    width:300px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #EDECEB;
+    border: 0px;
+    background: url("E:\KrishnaNursery\krishnanurseryFE\src\assets\images\search.png") right no-repeat #EDECEB;
+    margin-left:25px;
+    padding-left: 5px;
+    border: 0 !important;
+}
+
