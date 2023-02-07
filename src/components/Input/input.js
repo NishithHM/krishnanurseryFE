@@ -16,7 +16,6 @@ const Input = (props) => {
   } = props;
   const [error, setError] = useState(false);
   const onInputBlur = () => {
-    console.log(value)
     if (validation && !validation(value)) {
       setError(true);
       onError({id, isError: true});

@@ -1,9 +1,40 @@
 import React, { useState } from 'react'
 import Dropdown from '../../components/Dropdown/Dropdown'
-import { Alert, Button, Footer, Header, Input, LandingTile } from '../../components';
+import { Alert, Button, Footer, Header, Input, LandingTile, Table } from '../../components';
 import access from "../../assets/images/access.png";
 import {useGetAllProcurementsQuery} from '../../services/procurement.services'
 const Test = () => {
+    const tableData =[
+        [{
+            id: new Date().toISOString(),
+            value: "Last Procured on",
+            isSortable: true,
+            sortBy:"lastProcuredOn"
+        },
+        {
+            value: "Plant Name",
+            isSortable: true,
+            sortBy:"plantName"
+        }],
+    [{
+        value: "03 Jan 2022",
+    },
+    {
+        value: "Areca",
+    }],
+    [{
+        value: "04 Jan 2022",
+    },
+    {
+        value: "Coffee",
+    }],
+    [{
+        value: "05 Jan 2022",
+    },
+    {
+        value: "tea",
+    }]
+    ]
     const [isSkip, setSkip] = useState(true)
     const res = useGetAllProcurementsQuery({}, {skip: isSkip})
     console.log(res)
@@ -70,6 +101,9 @@ const Test = () => {
 
             </div>
 
+        </div>
+        <div>
+            <Table data={tableData} onSortBy={(sort)=> console.log(sort)}/>
         </div>
         <Footer />
 
