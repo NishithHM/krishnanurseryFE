@@ -27,6 +27,7 @@ export const procurementsApi = createApi({
         query: ({searchQuery}) => ({
           url: `/getAll?search=${searchQuery}`,
           method: "GET",
+          
         }),
       }),
     };
