@@ -18,10 +18,10 @@ const Input = (props) => {
   const onInputBlur = () => {
     if (validation && !validation(value)) {
       setError(true);
-      onError({id, isError: true});
-    } else if(onError){
-      setError(false)
-      onError({id, isError: false});
+      onError({ id, isError: true });
+    } else if (onError) {
+      setError(false);
+      onError({ id, isError: false });
     }
   };
 

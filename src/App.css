@@ -37,7 +37,22 @@
   }
 }
 
-input:focus{
+input:focus {
   outline: none;
-  border-bottom: 1px solid #302C2C;
+  border-bottom: 1px solid #302c2c;
+}
+
+/* remove arrows for number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.react-date-picker__wrapper {
+  border: none;
 }

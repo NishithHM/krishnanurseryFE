@@ -7,4 +7,18 @@ import Footer from "./Footer";
 import Table from "./Table";
 import Search from "./Search";
 
-export { LandingTile, Input, Button, Alert, Header, Footer, Table, Search };
+import Dropdown from "./Dropdown";
+import Filters from "./Filters";
+
+export {
+  LandingTile,
+  Input,
+  Button,
+  Alert,
+  Header,
+  Footer,
+  Table,
+  Dropdown,
+  Filters,
+  Search
+};
