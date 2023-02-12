@@ -6,13 +6,13 @@ export const userApi = createApi({
   reducerPath: "user",
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/user`,
-    // credentials: "include",
+    credentials: "include",
 
-    ...(include_headers && {
-      headers: {
-        Authorization: sessionStorage.getItem("authToken"),
-      },
-    }),
+    // ...(include_headers && {
+    //   headers: {
+    //     Authorization: sessionStorage.getItem("authToken"),
+    //   },
+    // }),
   }),
   tagTypes: ["User"],
 
