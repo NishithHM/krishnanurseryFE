@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Footer, Header, Input, Dropdown } from "../../components";
-import isEmail from 'validator/lib/isEmail';
+import isEmail from "validator/lib/isEmail";
 import styles from "./employee.module.css";
 import _ from "lodash";
 
@@ -18,7 +18,7 @@ const Employee = () => {
 
   const passwordRegexPattern =
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-    
+
   const EMPLOYEE_ROLES = [
     { label: "Admin", value: "ADMIN" },
     { label: "Procurement Associate", value: "PROCUREMENT_ASSOCIATE" },

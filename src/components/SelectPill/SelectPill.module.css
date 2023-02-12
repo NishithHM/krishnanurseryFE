@@ -1,0 +1,39 @@
+.pillTabsGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+}
+
+.pillTab {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 5px 15px;
+  margin: 5px;
+  cursor: pointer;
+  text-transform: capitalize;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  color: #000;
+  border-color: #000;
+  font-weight: 500;
+  transition: all 0.1s ease-in;
+}
+
+.selected {
+  background-color: #000;
+  color: #ffffff;
+}
+
+.selectedOptions {
+  margin-top: 10px;
+}
+
+.selectedOption {
+  background-color: #ccc;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-right: 5px;
+}

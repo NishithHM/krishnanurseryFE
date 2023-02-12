@@ -67,7 +67,10 @@ const Login = () => {
         };
       });
       dispatch(userActions.addUser(res.data.user));
-      sessionStorage.setItem("userData", JSON.stringify(res.data.user))
+      sessionStorage.setItem("userData", JSON.stringify(res.data.user));
+      // storing auth token in session storage for testing
+      sessionStorage.setItem("authToken", res.data.token);
+
       setContext(res.data.user);
       navigate("/authorised/components");
     }
