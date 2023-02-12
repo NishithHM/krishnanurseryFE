@@ -8,11 +8,11 @@ export const userApi = createApi({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/user`,
     credentials: "include",
 
-    // ...(include_headers && {
-    //   headers: {
-    //     Authorization: sessionStorage.getItem("authToken"),
-    //   },
-    // }),
+    ...(include_headers && {
+      headers: {
+        Authorization: sessionStorage.getItem("authToken"),
+      },
+    }),
   }),
   tagTypes: ["User"],
 
