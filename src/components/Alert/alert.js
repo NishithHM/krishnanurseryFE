@@ -3,7 +3,7 @@ import styles from "./alert.module.css";
 import warning from "../../assets/images/warning.png";
 import Button from "../Button";
 
-const Alert = () => {
+const Alert = ({ handleConfirm, handleCancel }) => {
   return (
     <div className={styles.card}>
       <div className={styles.text}>
@@ -18,10 +18,10 @@ const Alert = () => {
         </div>
         <div className={styles.button}>
           <div className={styles.buttonwidth}>
-            <Button type="alert" title="Delete"/>
+            <Button type="alert" title="Delete" onClick={handleConfirm} />
           </div>
           <div className={styles.buttonwidth}>
-            <Button type="secondary" title="Cancel"/>
+            <Button type="secondary" title="Cancel" onClick={handleCancel} />
           </div>
         </div>
       </div>

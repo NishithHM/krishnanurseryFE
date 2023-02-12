@@ -1,34 +1,61 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context";
-import { Employee, Test } from "../../pages";
+import {
+  AccessManagement,
+  CustomerOnboarding,
+  Dashboard,
+  Employee,
+  Test,
+} from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
-const Protected = ({ }) => {
-    const [context] = useContext(AuthContext);
-    const [isAuthorised, setAuthorised] = useState(false);
-    const navigate = useNavigate();
-    // console.log(context)
-    useEffect(() => {
-        if (!isEmpty(context)) {
-            setAuthorised(true);
-        } else {
-            setAuthorised(false);
-            navigate("/");
-        }
-    }, [context]);
-    if (isAuthorised) {
-        return (
-            <>
-                <Header />
-                <Routes>
-                    <Route path="/components" exact element={<Test />} />
-                    <Route path="/add-employee" exact element={<Employee />} />
-                </Routes>
-                <Footer />
-            </>
-        );
+
+const Protected = ({}) => {
+  const [context] = useContext(AuthContext);
+  const [isAuthorised, setAuthorised] = useState(false);
+  const navigate = useNavigate();
+  // console.log(context)
+  useEffect(() => {
+    if (!isEmpty(context)) {
+      setAuthorised(true);
+    } else {
+      setAuthorised(false);
+      navigate("/");
     }
+  }, [context]);
+  if (isAuthorised) {
+    return (
+      <>
+        <Header />
+        <div
+          style={{
+            minHeight: "70vh",
+            width: "100%",
+            maxWidth: "1400px",
+            margin: "auto",
+          }}
+        >
+          <Routes>
+            <Route path="/components" exact element={<Test />} />
+            <Route path="/dashboard" exact element={<Dashboard />} />
+            <Route path="/add-employee" exact element={<Employee />} />
+            <Route
+              path="/access-management"
+              exact
+              element={<AccessManagement />}
+            />
+            <Route
+              path="/customer-onboarding"
+              exact
+              element={<CustomerOnboarding />}
+            />
+          </Routes>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 };
 
 export default Protected;

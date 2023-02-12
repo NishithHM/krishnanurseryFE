@@ -11,7 +11,10 @@ import {
   Filters,
 } from "../../components";
 import access from "../../assets/images/access.png";
-import { useGetAllProcurementsQuery , useSearchProductsQuery} from "../../services/procurement.services";
+import {
+  useGetAllProcurementsQuery,
+  useSearchProductsQuery,
+} from "../../services/procurement.services";
 import { Link } from "react-router-dom";
 const Test = () => {
   const tableData = [
@@ -71,15 +74,17 @@ const Test = () => {
   };
   return (
     <>
-      <div>
-        <Header />
-      </div>
       {/* added this link to verify the page as the auth state is not persisted in refresh */}
       <Link to="/authorised/add-employee">Add Employee page</Link>
       <Filters onChange={onChangeHandler} onSubmit={onSubmitHandler} />
       <div style={{ maxWidth: "500px", padding: "10px 20px" }}>
         <p>fetch from api dropdown</p>
-        <Dropdown onChange={onChangeHandler} url="/api/procurements/getAll" apiFunction={useSearchProductsQuery} apiDataPath={{label:'names.ka.name', value:"_id"}} />
+        <Dropdown
+          onChange={onChangeHandler}
+          url="/api/procurements/getAll"
+          apiFunction={useSearchProductsQuery}
+          apiDataPath={{ label: "names.ka.name", value: "_id" }}
+        />
 
         <p>fetch from api dropdown with multiselect</p>
         <Dropdown
@@ -142,7 +147,6 @@ const Test = () => {
       <div>
         <Table data={tableData} onSortBy={(sort) => console.log(sort)} />
       </div>
-      <Footer />
     </>
   );
 };

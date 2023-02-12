@@ -10,6 +10,7 @@
     "proxy": "http://3.110.8.129:8000"
   },
   "dependencies": {
+    "@mantine/dates": "^5.10.3",
     "@reduxjs/toolkit": "^1.9.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -22,6 +23,7 @@
     "react-date-picker": "^9.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
+    "react-modal": "^3.16.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.0",
     "react-scripts": "5.0.1",

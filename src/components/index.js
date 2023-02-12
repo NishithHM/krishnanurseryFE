@@ -7,7 +7,7 @@ import Footer from "./Footer";
 import Table from "./Table";
 import Dropdown from "./Dropdown";
 import Filters from "./Filters";
-
+import SelectPill from "./SelectPill";
 export {
   LandingTile,
   Input,
@@ -18,4 +18,5 @@ export {
   Table,
   Dropdown,
   Filters,
+  SelectPill,
 };

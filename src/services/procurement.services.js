@@ -10,8 +10,7 @@ export const procurementsApi = createApi({
 
     ...(include_headers && {
       headers: {
-        Authorization:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZGI2N2UyODQyOTIxYzdiNDk2N2NhZiIsIm5hbWUiOiJhZG1pbjEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzU3NDc2NjUsImV4cCI6MTY3NTgzNDA2NX0.JcWab337hAIKQLArrVXNN7gGoZvl3HuBYqP5ImvnxoM",
+        Authorization: sessionStorage.getItem("authToken"),
       },
     }),
   }),
@@ -24,10 +23,9 @@ export const procurementsApi = createApi({
         }),
       }),
       searchProducts: builder.query({
-        query: ({searchQuery}) => ({
+        query: ({ searchQuery }) => ({
           url: `/getAll?search=${searchQuery}`,
           method: "GET",
-          
         }),
       }),
     };
