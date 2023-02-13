@@ -108,6 +108,7 @@ const Login = () => {
             required
             validation={(number) => number.length > 6}
             title="Password"
+            onError={onError}
           />
         </div>
         <div className={styles.loginbtn}>

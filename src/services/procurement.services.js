@@ -6,7 +6,7 @@ export const procurementsApi = createApi({
   reducerPath: "procurements",
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/procurements`,
-    // credentials: "include",
+    credentials: "include",
 
     ...(include_headers && {
       headers: {
