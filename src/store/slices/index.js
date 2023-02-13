@@ -13,11 +13,7 @@ export const store = configureStore({
     userSlice: userSlice.reducer,
   },
   middleware: (middlewares) =>
-    middlewares().concat(
-      [loginApi.middleware],
-      [procurementsApi.middleware],
-      [userApi.middleware]
-    ),
-});
+    middlewares().concat(loginApi.middleware).concat(procurementsApi.middleware).concat(userApi.middleware)
+  });
 
 setupListeners(store.dispatch);

@@ -81,8 +81,6 @@ const AccessManagement = () => {
 
   const deleteUserHandler = async (uid) => {
     await deleteUserReq(uid);
-    usersData.refetch();
-    usersCountReq.refetch();
     closeDeleteModalHandler();
   };
 

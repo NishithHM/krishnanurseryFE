@@ -14,7 +14,7 @@ export const userApi = createApi({
       },
     }),
   }),
-  tagTypes: ["User"],
+  tagTypes: ["User", "UserCount"],
 
   endpoints: (builder) => {
     return {
@@ -23,16 +23,16 @@ export const userApi = createApi({
           url: "/getAll",
           method: "GET",
           params: { pageNumber: page },
-          providesTags: ["User"],
         }),
+        providesTags:['User']
       }),
       getAllUsersCount: builder.query({
         query: () => ({
           url: "/getAll",
           method: "GET",
           params: { isCount: true },
-          providesTags: ["User"],
         }),
+        providesTags: ['UserCount']
       }),
       searchUser: builder.mutation({
         query: (search = null) => ({
@@ -46,7 +46,7 @@ export const userApi = createApi({
           url: `/delete/${userId}`,
           method: "PUT",
         }),
-        invalidatesTags: ["User"],
+        invalidatesTags: ["User", "UserCount"],
       }),
     };
   },
