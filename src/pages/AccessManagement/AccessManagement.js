@@ -1,17 +1,17 @@
 import dayjs from "dayjs";
-import { size, debounce, isEmpty } from "lodash";
+import debounce from "lodash/debounce";
 import styles from "./AccessManagement.module.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Button, Table } from "../../../../components";
-import Alert from "../../../../components/Alert";
+import { Button, Table } from "../../components";
+import Alert from "../../components/Alert";
 import {
   useDeleteUserMutation,
   useGetAllUsersCountQuery,
   useGetAllUsersQuery,
   useSearchUserMutation,
-} from "../../../../services/user.services";
+} from "../../services/user.services";
 import Modal from "react-modal";
 
 import { ImSearch } from "react-icons/im";

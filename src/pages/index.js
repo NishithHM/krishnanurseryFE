@@ -2,7 +2,7 @@ import Login from "./Login";
 import Test from "./Test";
 import Employee from "./Employee";
 import Dashboard from "./Dashboard";
-import { AccessManagement } from "./Dashboard/pages";
+import { AccessManagement } from "./AccessManagement";
 import CustomerOnboarding from "./CustomerOnboarding";
 
 export {
