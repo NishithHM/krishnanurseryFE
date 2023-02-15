@@ -10,7 +10,6 @@ import salesImg from "../../assets/images/dashboard/sales.png";
 import { Link, Route, Routes } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
-import { AccessManagement } from "./pages";
 
 const Dashboard = () => {
   const userContext = useContext(AuthContext);
@@ -69,7 +68,7 @@ const Dashboard = () => {
       tile_img: salesImg,
       path: "sales",
       allowed: [USER_ROLES.admin],
-      isDisabled: true
+      isDisabled: true,
     },
   ];
 
@@ -83,7 +82,11 @@ const Dashboard = () => {
     <div className={styles.gridContainer}>
       {data.map((e) => (
         <Link to={e.path} key={e.path}>
-          <LandingTile image={e.tile_img} title={e.title} isDisabled={e.isDisabled} />
+          <LandingTile
+            image={e.tile_img}
+            title={e.title}
+            isDisabled={e.isDisabled}
+          />
           {/* <div className={styles.gridItem}>
             <img src={e.tile_img} alt="Image 1" />
             <div className={styles.title}>{e.title}</div>

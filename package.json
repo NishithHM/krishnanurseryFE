@@ -2,7 +2,6 @@
   "name": "krishnanurseryfe",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://3.110.8.129:8000",
   "dependencies": {
     "@mantine/core": "^5.10.3",
     "@mantine/dates": "^5.10.3",

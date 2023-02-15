@@ -50,3 +50,8 @@
   color: #919191;
   cursor: not-allowed;
 }
+.errorMessage {
+  text-align: center;
+  color: red;
+  font-size: 1.5rem;
+}

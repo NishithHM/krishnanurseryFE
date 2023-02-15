@@ -1,6 +1,7 @@
 import React from "react";
 import cx from "classnames";
 import styles from "./button.module.css";
+import { Loader } from "@mantine/core";
 
 const Button = ({
   type = "primary",
@@ -9,6 +10,7 @@ const Button = ({
   disabled,
   buttonType = "button",
   small = false,
+  loading = false,
 }) => {
   return (
     // <div>
@@ -30,9 +32,10 @@ const Button = ({
         [`${styles.secondary}`]: type === "secondary",
         [`${styles.disabled}`]: disabled,
       })}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
       <span className={styles.text}>{title}</span>
+      {loading && <Loader color="green" size={22} />}
     </button>
   );
 };
