@@ -4,6 +4,7 @@ import Employee from "./Employee";
 import Dashboard from "./Dashboard";
 import { AccessManagement } from "./Dashboard/pages";
 import CustomerOnboarding from "./CustomerOnboarding";
+import AddProcurement from "./Procurement";
 
 export {
   Login,
@@ -12,4 +13,5 @@ export {
   Dashboard,
   AccessManagement,
   CustomerOnboarding,
+  AddProcurement
 };

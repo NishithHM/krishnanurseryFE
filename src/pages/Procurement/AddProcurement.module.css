@@ -1,0 +1,40 @@
+.outerWrapper {
+  margin: 10px;
+  max-width: 800px;
+  padding: 10px;
+}
+
+.header {
+  color: #539c64;
+  font-size: 2rem;
+  font-weight: 500;
+  margin-top: 3rem;
+  line-height: 1rem;
+}
+
+.innerWrapper{
+    border: 1px solid #e2e2e2;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .inputWrapper{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .inputdiv{
+    flex: 1;
+    margin: 0px 40px 0px 0px;
+  }
+
+  .secondinputdiv{
+    flex: 1;
+  }
+
+  .formbtn{
+    width: 120px;
+  }

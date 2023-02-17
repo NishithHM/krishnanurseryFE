@@ -1,0 +1,13 @@
+.textareastyle{
+    width: 100%;
+    border-color: #302C2C;
+    margin-top: 5px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.textareatitle{
+    color: #302C2C;
+    font-size: 20px;
+    text-align: left;
+}

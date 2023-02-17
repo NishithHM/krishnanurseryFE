@@ -4,6 +4,8 @@
   "private": true,
   "proxy": "http://3.110.8.129:8000",
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mantine/core": "^5.10.3",
     "@mantine/dates": "^5.10.3",
     "@mantine/hooks": "^5.10.3",

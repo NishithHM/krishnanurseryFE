@@ -76,14 +76,16 @@ const Test = () => {
     <>
       {/* added this link to verify the page as the auth state is not persisted in refresh */}
       <Link to="/authorised/add-employee">Add Employee page</Link>
+      <div>
+      <Link to="/authorised/add-procurement">Add Procurement page</Link>
+      </div>
       <Filters onChange={onChangeHandler} onSubmit={onSubmitHandler} />
       <div style={{ maxWidth: "500px", padding: "10px 20px" }}>
         <p>fetch from api dropdown</p>
         <Dropdown
           onChange={onChangeHandler}
           url="/api/procurements/getAll"
-          apiFunction={useSearchProductsQuery}
-          apiDataPath={{ label: "names.ka.name", value: "_id" }}
+          apiDataPath={{ label: "names.en.name", value: "_id" }}
         />
 
         <p>fetch from api dropdown with multiselect</p>

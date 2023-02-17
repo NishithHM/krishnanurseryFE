@@ -15,7 +15,7 @@ import { AccessManagement } from "./pages";
 const Dashboard = () => {
   const userContext = useContext(AuthContext);
 
-  console.log(userContext);
+
   const USER_ROLES = {
     admin: "ADMIN",
     procurement: "PROCUREMENT",

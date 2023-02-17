@@ -20,9 +20,9 @@ const Dropdown = ({
   required = false,
   error = null,
   errorMessage = null,
-  apiDataPath = {},
+  apiDataPath = {}
 }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
   const [options, setOptions] = useState(data || []);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,7 +32,9 @@ const Dropdown = ({
     onChange(selectedOption);
   };
 
-
+  useEffect(()=>{
+    setSelectedOption(selectedOption);
+  },[selectedOption])
   
 
   const loadOptions = debounce( async (inputValue, callback) => {
@@ -42,7 +44,9 @@ const Dropdown = ({
     setLoading(true);
 
    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`)
+   console.log(res.data, "res")
    const optionsVal = res.data.map(opt=> ({label:get(opt, apiDataPath.label), value: get(opt, apiDataPath.value)}))
+   console.log(optionsVal, 'options')
    setLoading(false);
  callback(optionsVal)
   }, 500);
@@ -73,7 +77,8 @@ const Dropdown = ({
         </div>
         <AsyncSelect
           value={selectedOption}
-          onChange={handleChange}
+          defaultOptions
+          onInputChange={handleChange}
           loadOptions={loadOptions}
           isClearable={isClearable}
           isMulti={isMultiEnabled}

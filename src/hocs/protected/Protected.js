@@ -3,6 +3,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context";
 import {
   AccessManagement,
+  AddProcurement,
   CustomerOnboarding,
   Dashboard,
   Employee,
@@ -11,8 +12,8 @@ import {
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
 
-const Protected = ({}) => {
-  const [context] = useContext(AuthContext);
+const Protected = () => {
+  const [context, setContext] = useContext(AuthContext);
   const [isAuthorised, setAuthorised] = useState(false);
   const navigate = useNavigate();
   // console.log(context)
@@ -50,6 +51,7 @@ const Protected = ({}) => {
               exact
               element={<CustomerOnboarding />}
             />
+            <Route path="add-procurement" exact element={<AddProcurement/>}/>
           </Routes>
         </div>
         <Footer />
