@@ -3,26 +3,32 @@ import { Button, Footer, Header, Input, Dropdown } from "../../components";
 import isEmail from "validator/lib/isEmail";
 import styles from "./employee.module.css";
 import _ from "lodash";
+import { useCreateUserMutation } from "../../services/user.services";
+import { useNavigate } from "react-router-dom";
 
 const Employee = () => {
   const defaultFormValues = {
     name: "",
     email: "",
     password: "",
-    phone: "",
+    phoneNumber: "",
     role: "",
     errorFields: [],
   };
+  const navigate = useNavigate();
   const [formState, setFormState] = useState(defaultFormValues);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [createUser, { isLoading, isError, isSuccess }] =
+    useCreateUserMutation();
 
   const passwordRegexPattern =
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
   const EMPLOYEE_ROLES = [
-    { label: "Admin", value: "ADMIN" },
-    { label: "Procurement Associate", value: "PROCUREMENT_ASSOCIATE" },
-    { label: "Sales", value: "SALES" },
+    { label: "Admin", value: "admin" },
+    { label: "Procurement Associate", value: "procurement" },
+    { label: "Sales", value: "sales" },
+    // TODO - check the bill manager role in backend, its returning error with only the above three roles
     { label: "Bill Manager", value: "BILL_MANAGER" },
   ];
 
@@ -30,7 +36,7 @@ const Employee = () => {
     formState.name !== "" &&
     formState.email !== "" &&
     formState.password !== "" &&
-    formState.phone !== "" &&
+    formState.phoneNumber !== "" &&
     formState.role !== "" &&
     formState.errorFields.length === 0;
 
@@ -67,10 +73,16 @@ const Employee = () => {
     }
   };
 
-  const formSubmitHandler = (event) => {
+  const formSubmitHandler = async (event) => {
     event.preventDefault();
     setFormSubmitted(true);
-    console.log(formState);
+    var reqBody = { ...formState };
+    delete reqBody.errorFields;
+    const response = await createUser(reqBody);
+    if (isError) console.log("Error creating a user");
+    if (isSuccess) console.log("Success Creating the user");
+    navigate("../dashboard/access-management");
+    console.log(response);
   };
 
   return (
@@ -113,12 +125,12 @@ const Employee = () => {
             onError={inputErrorHandler}
           />
           <Input
-            id="phone"
+            id="phoneNumber"
             type="number"
             errorMessage="Invalid Mobile Number"
             required
             validation={(number) => number.length === 10}
-            value={formState.phone}
+            value={formState.phoneNumber}
             onChange={inputChangeHanlder}
             title="Phone Number"
             onError={inputErrorHandler}
@@ -139,6 +151,7 @@ const Employee = () => {
               type="primary"
               title="Save"
               buttonType="submit"
+              loading={isLoading}
             />
           </div>
         </form>

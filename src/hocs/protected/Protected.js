@@ -42,7 +42,7 @@ const Protected = () => {
             <Route path="/dashboard" exact element={<Dashboard />} />
             <Route path="/add-employee" exact element={<Employee />} />
             <Route
-              path="/access-management"
+              path="/dashboard/access-management"
               exact
               element={<AccessManagement />}
             />
