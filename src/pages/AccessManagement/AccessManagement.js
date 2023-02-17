@@ -1,18 +1,17 @@
 import dayjs from "dayjs";
-import { size, debounce, isEmpty } from "lodash";
+import debounce from "lodash/debounce";
 import styles from "./AccessManagement.module.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Button, Table } from "../../../../components";
-import Alert from "../../../../components/Alert";
+import { Button, Modal, Table, Alert, Spinner } from "../../components";
+
 import {
   useDeleteUserMutation,
   useGetAllUsersCountQuery,
   useGetAllUsersQuery,
   useSearchUserMutation,
-} from "../../../../services/user.services";
-import Modal from "react-modal";
+} from "../../services/user.services";
 
 import { ImSearch } from "react-icons/im";
 
@@ -31,15 +30,6 @@ const AccessManagement = () => {
   const usersCountReq = useGetAllUsersCountQuery();
   const [searchUser] = useSearchUserMutation();
   const [deleteUserReq] = useDeleteUserMutation();
-
-  Modal.setAppElement("#modal");
-  const customModalStyles = {
-    content: {
-      backgroundColor: "transparent",
-      border: "none",
-      overflow: "hidden",
-    },
-  };
 
   const openDeleteModalHandler = (uid) => {
     setDeleteUserUid(uid);
@@ -110,6 +100,7 @@ const AccessManagement = () => {
     setData(users);
   }, [usersData, searchInput]);
 
+  console.log(usersData);
   const TABLE_HEADER = [
     {
       // id: new Date().toISOString(),
@@ -181,28 +172,23 @@ const AccessManagement = () => {
         </div>
       </div>
 
-      <Table data={[TABLE_HEADER, ...data]} />
+      {usersData.isLoading ? (
+        <Spinner />
+      ) : (
+        usersData.status === "fulfilled" && (
+          <Table data={[TABLE_HEADER, ...data]} />
+        )
+      )}
 
-      <Modal
-        isOpen={deleteUser}
-        // onRequestClose={closeModal}
-        style={customModalStyles}
-        contentLabel="Delete User"
-      >
-        <div
-          style={{
-            // background: "red",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Alert
-            handleCancel={closeDeleteModalHandler}
-            handleConfirm={() => deleteUserHandler(deleteUserUid)}
-          />
-        </div>
+      {usersData.isError && (
+        <p className={styles.errorMessage}>Unable to load Users Data</p>
+      )}
+
+      <Modal isOpen={deleteUser} contentLabel="Delete User">
+        <Alert
+          handleCancel={closeDeleteModalHandler}
+          handleConfirm={() => deleteUserHandler(deleteUserUid)}
+        />
       </Modal>
     </div>
   );

@@ -6,8 +6,9 @@ export const userApi = createApi({
   reducerPath: "user",
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/user`,
-    credentials: "include",
-
+    ...(!include_headers && {
+      credentials: "include",
+    }),
     ...(include_headers && {
       headers: {
         Authorization: sessionStorage.getItem("authToken"),
@@ -18,13 +19,21 @@ export const userApi = createApi({
 
   endpoints: (builder) => {
     return {
+      createUser: builder.mutation({
+        query: (userData) => ({
+          url: "/create",
+          method: "POST",
+          body: userData,
+        }),
+        invalidatesTags: ["User", "UserCount"],
+      }),
       getAllUsers: builder.query({
         query: (page = 1) => ({
           url: "/getAll",
           method: "GET",
           params: { pageNumber: page },
         }),
-        providesTags:['User']
+        providesTags: ["User"],
       }),
       getAllUsersCount: builder.query({
         query: () => ({
@@ -32,7 +41,7 @@ export const userApi = createApi({
           method: "GET",
           params: { isCount: true },
         }),
-        providesTags: ['UserCount']
+        providesTags: ["UserCount"],
       }),
       searchUser: builder.mutation({
         query: (search = null) => ({
@@ -53,6 +62,7 @@ export const userApi = createApi({
 });
 
 export const {
+  useCreateUserMutation,
   useGetAllUsersQuery,
   useGetAllUsersCountQuery,
   useSearchUserMutation,
