@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./input.module.css";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faEyeSlash, faEye} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import cx from "classnames";
 
 const Input = (props) => {
@@ -17,7 +17,7 @@ const Input = (props) => {
     type,
   } = props;
   const [error, setError] = useState(false);
-  const[show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
   const onInputBlur = () => {
     if (validation && !validation(value)) {
       setError(true);
@@ -27,13 +27,13 @@ const Input = (props) => {
       onError({ id, isError: false });
     }
   };
-  
-  const showPasswordHandler = ()=>{
-    setShow(true)
+
+  const showPasswordHandler = () => {
+    setShow(true);
     setTimeout(() => {
-      setShow(false)
+      setShow(false);
     }, 3000);
-  }
+  };
 
   return (
     <div>
@@ -44,7 +44,6 @@ const Input = (props) => {
         )}
       </div>
       <div className={styles.passwordIcon}>
-          
         <input
           type={!show && type}
           value={value}
@@ -52,9 +51,18 @@ const Input = (props) => {
           onChange={(e) => onChange(e, id)}
           className={cx(styles.inputbox, { [`${styles.inputerror}`]: error })}
         />
-      {type==="password" && !show?<i onClick={showPasswordHandler}>
-          <FontAwesomeIcon icon={faEyeSlash}/></i>:type==="password"&&<i><FontAwesomeIcon icon={faEye}/></i>}
-          </div>
+        {type === "password" && !show ? (
+          <i onClick={showPasswordHandler}>
+            <FontAwesomeIcon style={{color: "#539c64"}} icon={faEyeSlash} />
+          </i>
+        ) : (
+          type === "password" && (
+            <i>
+              <FontAwesomeIcon style={{color: "#539c64"}} icon={faEye} />
+            </i>
+          )
+        )}
+      </div>
       {error && (
         <div className={styles.errortext}>
           <span>{errorMessage}</span>
