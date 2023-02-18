@@ -1,4 +1,3 @@
-import { enableES5 } from "immer";
 import React, { useState } from "react";
 import { Button, Dropdown, Input } from "../../components";
 import TextArea from "../../components/TextArea";
@@ -22,12 +21,12 @@ const AddProcurement = () => {
     });
     console.log(id);
   };
-  console.log(state, "state");
   const onHandleChange = (e) => {
-    console.log(e);
+    console.log(e, 'here');
     const selectedOption = e.value
     setSelectedOption(selectedOption)
   };
+  console.log(selectedOption)
   return (
     <div className={styles.outerWrapper}>
       <h1 className={styles.header}>Add Procurement</h1>

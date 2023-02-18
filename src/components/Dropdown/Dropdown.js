@@ -79,6 +79,7 @@ const Dropdown = ({
           value={selectedOption}
           defaultOptions
           onInputChange={handleChange}
+          onChange={handleChange}
           loadOptions={loadOptions}
           isClearable={isClearable}
           isMulti={isMultiEnabled}
