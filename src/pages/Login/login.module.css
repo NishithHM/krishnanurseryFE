@@ -3,7 +3,7 @@
     box-shadow: 3px 1px 7px 1px #d6d5d2;
     margin:auto auto;
     padding: 20px 0;
-    height: 70%;
+    /* height: 70%; */
 }
 
 .loginlogo{
@@ -19,7 +19,7 @@
 }
 
 .inputlabel{
-   margin: 70px 100px;
+   margin: 70px 100px 100px 100px;
 }
 
 .label{

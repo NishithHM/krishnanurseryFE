@@ -51,9 +51,9 @@ const Input = (props) => {
           onChange={(e) => onChange(e, id)}
           className={cx(styles.inputbox, { [`${styles.inputerror}`]: error })}
         />
-        {type === "password" && !show && (
+        {type === "password"  && (
           <i className={styles.passwordIcon} onClick={showPasswordHandler}>
-            <FontAwesomeIcon style={{color: "#539c64"}} icon={show ? faEye : faEyeSlash} />
+            <FontAwesomeIcon style={{color: "#539c64"}} icon={!show ? faEyeSlash : faEye} />
           </i>
         )}
       </div>
