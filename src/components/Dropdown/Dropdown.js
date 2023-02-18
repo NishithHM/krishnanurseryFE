@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
+import AsyncSelectCreatable from "react-select/async-creatable";
 import Creatable from "react-select/creatable";
 import debounce from "lodash/debounce";
 import cx from "classnames";
@@ -66,7 +67,7 @@ const Dropdown = ({
       display: "none",
     }),
   };
-  if (url) {
+  if (url && !canCreate) {
     return (
       <div>
         <div className={styles.label}>
@@ -76,6 +77,33 @@ const Dropdown = ({
           )}
         </div>
         <AsyncSelect
+          value={selectedOption}
+          defaultOptions
+          onInputChange={handleChange}
+          onChange={handleChange}
+          loadOptions={loadOptions}
+          isClearable={isClearable}
+          isMulti={isMultiEnabled}
+          isLoading={loading}
+          styles={DropdownStyles}
+        />
+        {error && (
+          <div className={styles.errortext}>
+            <span>{errorMessage}</span>
+          </div>
+        )}
+      </div>
+    );
+  }else if (url && canCreate) {
+    return (
+      <div>
+        <div className={styles.label}>
+          <label>{title}</label>
+          {required && (
+            <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
+          )}
+        </div>
+        <AsyncSelectCreatable
           value={selectedOption}
           defaultOptions
           onInputChange={handleChange}

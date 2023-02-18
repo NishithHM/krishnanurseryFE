@@ -37,6 +37,7 @@ const AddProcurement = () => {
           title="Plant Name"
           onChange={onHandleChange}
           value={selectedOption}
+          canCreate
         />
         <Dropdown title="Plant Category" />
         <Dropdown onChange={onHandleChange} title="Vendor Name" />
