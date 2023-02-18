@@ -6,15 +6,18 @@ import {
   CustomerOnboarding,
   Dashboard,
   Employee,
+  GenerateBill,
   Test,
 } from "../../pages";
 import { isEmpty } from "lodash";
-import { Footer, Header } from "../../components";
+import { BackNavigation, Footer, Header } from "../../components";
+import { useLocation } from "react-router-dom";
 
 const Protected = ({}) => {
   const [context] = useContext(AuthContext);
   const [isAuthorised, setAuthorised] = useState(false);
   const navigate = useNavigate();
+  let location = useLocation();
   // console.log(context)
   useEffect(() => {
     if (!isEmpty(context)) {
@@ -28,6 +31,7 @@ const Protected = ({}) => {
     return (
       <>
         <Header />
+        {location.pathname !== "/authorised/dashboard" && <BackNavigation />}
         <div
           style={{
             minHeight: "70vh",
@@ -44,6 +48,11 @@ const Protected = ({}) => {
               path="/dashboard/access-management"
               exact
               element={<AccessManagement />}
+            />
+            <Route
+              path="/dashboard/generate-bill"
+              exact
+              element={<GenerateBill />}
             />
             <Route
               path="/customer-onboarding"

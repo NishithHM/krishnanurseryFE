@@ -4,6 +4,7 @@ import Employee from "./Employee";
 import Dashboard from "./Dashboard";
 import AccessManagement from "./AccessManagement";
 import CustomerOnboarding from "./CustomerOnboarding";
+import GenerateBill from "./GenerateBill";
 
 export {
   Login,
@@ -12,4 +13,5 @@ export {
   Dashboard,
   AccessManagement,
   CustomerOnboarding,
+  GenerateBill,
 };

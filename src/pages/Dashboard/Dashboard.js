@@ -16,9 +16,9 @@ const Dashboard = () => {
 
   console.log(userContext);
   const USER_ROLES = {
-    admin: "ADMIN",
-    procurement: "PROCUREMENT",
-    sales: "SALES",
+    admin: "admin",
+    procurement: "procurement",
+    sales: "sales",
   };
   const DashboardData = [
     {
@@ -60,7 +60,7 @@ const Dashboard = () => {
     {
       title: "Add Bills",
       tile_img: billsImg,
-      path: "add-bills",
+      path: "generate-bill",
       allowed: [USER_ROLES.sales],
     },
     {
@@ -76,8 +76,8 @@ const Dashboard = () => {
     return DashboardData.filter((data) => data.allowed.includes(role));
   };
 
-  // const data = getDashboardData(toUpper(userContext[0].role));
-  const data = getDashboardData(USER_ROLES.admin);
+  const data = getDashboardData(userContext[0].role);
+  // const data = getDashboardData(USER_ROLES.admin);
   return (
     <div className={styles.gridContainer}>
       {data.map((e) => (

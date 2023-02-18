@@ -10,6 +10,7 @@ import Filters from "./Filters";
 import SelectPill from "./SelectPill";
 import Modal from "./Modal";
 import Spinner from "./Spinner";
+import BackNavigation from "./BackNavigation";
 export {
   LandingTile,
   Input,
@@ -23,4 +24,5 @@ export {
   SelectPill,
   Modal,
   Spinner,
+  BackNavigation,
 };

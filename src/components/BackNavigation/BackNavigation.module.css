@@ -1,0 +1,14 @@
+.bar {
+  background: white;
+  padding: 0.1rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 4;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.text {
+  font-size: 1.2rem;
+  font-weight: 500;
+}

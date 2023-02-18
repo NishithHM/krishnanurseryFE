@@ -1,0 +1,9 @@
+.wrapper {
+  margin: 10px;
+}
+.innerWrapper {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

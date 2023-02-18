@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Footer, Header, Input, Dropdown } from "../../components";
 import isEmail from "validator/lib/isEmail";
 import styles from "./employee.module.css";
-import _ from "lodash";
+import uniq from "lodash/uniq";
 import { useCreateUserMutation } from "../../services/user.services";
 import { useNavigate } from "react-router-dom";
 
@@ -62,7 +62,7 @@ const Employee = () => {
     if (isError) {
       setFormState((prev) => ({
         ...prev,
-        errorFields: _.uniq([...prev.errorFields, id]),
+        errorFields: uniq([...prev.errorFields, id]),
       }));
     } else {
       const newErrorFields = formState.errorFields.filter((ele) => id != ele);
@@ -79,6 +79,7 @@ const Employee = () => {
     var reqBody = { ...formState };
     delete reqBody.errorFields;
     const response = await createUser(reqBody);
+    // TODO implement the notofication system and show alert
     if (isError) console.log("Error creating a user");
     if (isSuccess) console.log("Success Creating the user");
     navigate("../dashboard/access-management");
