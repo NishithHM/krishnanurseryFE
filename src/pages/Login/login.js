@@ -77,6 +77,7 @@ const Login = () => {
   };
 
   return (
+    <div className={styles.loginPage}>
     <div className={styles.logincard}>
       <div className={styles.loginlogo}>
         <img src={logo} alt="Logo" />
@@ -125,6 +126,7 @@ const Login = () => {
           <p style={{ color: "red" }}>{state.loginError}</p>
         </div>
       </div>
+    </div>
     </div>
   );
 };

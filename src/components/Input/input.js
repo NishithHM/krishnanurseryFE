@@ -43,7 +43,7 @@ const Input = (props) => {
           <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
         )}
       </div>
-      <div className={styles.passwordIcon}>
+      <div className={styles.inputDiv}>
         <input
           type={!show && type}
           value={value}
@@ -51,16 +51,10 @@ const Input = (props) => {
           onChange={(e) => onChange(e, id)}
           className={cx(styles.inputbox, { [`${styles.inputerror}`]: error })}
         />
-        {type === "password" && !show ? (
-          <i onClick={showPasswordHandler}>
-            <FontAwesomeIcon style={{color: "#539c64"}} icon={faEyeSlash} />
+        {type === "password" && !show && (
+          <i className={styles.passwordIcon} onClick={showPasswordHandler}>
+            <FontAwesomeIcon style={{color: "#539c64"}} icon={show ? faEye : faEyeSlash} />
           </i>
-        ) : (
-          type === "password" && (
-            <i>
-              <FontAwesomeIcon style={{color: "#539c64"}} icon={faEye} />
-            </i>
-          )
         )}
       </div>
       {error && (

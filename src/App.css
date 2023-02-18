@@ -1,10 +1,20 @@
-.App {
-  min-height: 100vh;
-}
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.App{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#root{
+    flex: 1;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 }
 
 @media (prefers-reduced-motion: no-preference) {

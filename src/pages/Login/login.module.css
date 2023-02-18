@@ -1,8 +1,9 @@
 .logincard{
     width: 40%;
     box-shadow: 3px 1px 7px 1px #d6d5d2;
-    margin:50px auto;
+    margin:auto auto;
     padding: 20px 0;
+    height: 70%;
 }
 
 .loginlogo{
@@ -27,4 +28,9 @@
 
 .loginbtn{
     padding: 70px 15px 0px 0px;
+}
+
+.loginPage{
+    display: flex;
+    flex: 1;
 }
