@@ -12,13 +12,13 @@ import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
 
 const Dashboard = () => {
-  const userContext = useContext(AuthContext);
+  const [values] = useContext(AuthContext);
 
-
+  console.log(values)
   const USER_ROLES = {
-    admin: "ADMIN",
-    procurement: "PROCUREMENT",
-    sales: "SALES",
+    admin: "admin",
+    procurement: "procurement",
+    sales: "sales",
   };
   const DashboardData = [
     {
@@ -77,7 +77,7 @@ const Dashboard = () => {
   };
 
   // const data = getDashboardData(toUpper(userContext[0].role));
-  const data = getDashboardData(USER_ROLES.admin);
+  const data = getDashboardData(values.role);
   return (
     <div className={styles.gridContainer}>
       {data.map((e) => (
