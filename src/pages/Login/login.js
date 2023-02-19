@@ -72,7 +72,7 @@ const Login = () => {
       sessionStorage.setItem("authToken", res.data.token);
 
       setContext(res.data.user);
-      navigate("/authorised/components");
+      navigate("/authorised/dashboard");
     }
   };
 
