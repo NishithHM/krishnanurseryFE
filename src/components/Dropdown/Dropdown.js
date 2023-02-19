@@ -10,6 +10,7 @@ import get  from "lodash/get";
 import styles from "./dropdown.module.css";
 import axios from "axios";
 import {StylesConfig} from "react-select"
+const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 const Dropdown = ({
   data,
   url = null,
@@ -47,7 +48,15 @@ const Dropdown = ({
     if (!url || inputValue.length < 3) return [];
     setSearchQuery(inputValue);
     setLoading(true);
-    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`)
+    let config 
+    if(include_headers){
+        config={
+            headers: {
+                Authorization: sessionStorage.getItem("authToken"),
+              }
+        }
+    }
+    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`, config)
     const optionsVal = res.data.map(opt=> ({label:get(opt, apiDataPath.label), value: get(opt, apiDataPath.value), meta:{ ...opt}}))
     setOptions(optionsVal)
     setLoading(false);
