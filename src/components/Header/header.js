@@ -19,7 +19,7 @@ const Header = () => {
       <header className={styles.headercontent}>
         <div className={styles.logo}>
           <div>
-            <img src={logo} alt="Logo"/>
+            <img height={100} src={logo} alt="Logo"/>
             </div>
             <div className={styles.headertitle}>
             <span className={styles.title}>Krishna Nursery</span>
