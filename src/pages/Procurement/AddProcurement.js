@@ -45,6 +45,7 @@ const AddProcurement = () => {
     errorFields: [],
     isNameInKannada: false,
     addProcurementError: [],
+    submitDisabled: false
   };
 
   const navigate = useNavigate();
@@ -122,11 +123,18 @@ const AddProcurement = () => {
         name: ele.label,
       };
     });
+    setState((prev)=>{
+      return{
+        ...prev,
+        submitDisabled: true
+      }
+    })
     if (state.addPlantName?.__isNew__) {
       body.nameInKannada = state.addPlantKannada;
       body.nameInEnglish = state.addPlantName.label;
 
       const res = await createProcurements({ body });
+
       if (res.error) {
         toast.error("Unable to Add...");
         setState((prev) => {
@@ -135,6 +143,7 @@ const AddProcurement = () => {
             addProcurementError: _.isArray(res.error?.data)
               ? res.error?.data
               : [res.error?.data?.error],
+              submitDisabled:false
           };
         });
       } else {
@@ -155,7 +164,7 @@ const AddProcurement = () => {
     } else {
       const id = state.addPlantName?.value;
       const res = await updateProcurements({ body, id });
-      console.log(res, isErrorUpdate, isSuccessUpdate);
+
       if (res.error) {
         toast.error("Unable to Add...");
         setState((prev) => {
@@ -164,6 +173,7 @@ const AddProcurement = () => {
             addProcurementError: _.isArray(res.error?.data)
               ? res.error?.data
               : [res.error?.data?.error],
+            submitDisabled:false
           };
         });
       } else {
@@ -298,7 +308,8 @@ const AddProcurement = () => {
                 isEmpty(state.addVendorName) ||
                 isEmpty(state.totalAmount) ||
                 isEmpty(state.totalQuantity)||
-                state.errorFields.length > 0
+                state.errorFields.length > 0 ||
+                state.submitDisabled
 
               }
               type="primary"
