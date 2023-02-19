@@ -24,3 +24,7 @@
     font-size: 35px;
     color: #539C64;
 }
+
+.logoclick{
+    cursor: pointer;
+}

@@ -9,6 +9,10 @@ import { AuthContext } from "../../context";
 const Header = () => {
   const navigate = useNavigate()
   const [context,setContext] = useContext(AuthContext);
+
+  const onLogoClick = ()=>{
+    navigate("/authorised/dashboard")
+  }
   const onLogoutHandler = ()=>{
     sessionStorage.clear()
     setContext({})
@@ -18,7 +22,7 @@ const Header = () => {
     <div className={styles.header}>
       <header className={styles.headercontent}>
         <div className={styles.logo}>
-          <div>
+          <div className={styles.logoclick} onClick={onLogoClick}>
             <img height={100} src={logo} alt="Logo"/>
             </div>
             <div className={styles.headertitle}>

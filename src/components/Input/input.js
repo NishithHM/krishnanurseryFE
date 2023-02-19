@@ -15,6 +15,7 @@ const Input = (props) => {
     errorMessage,
     onError,
     type,
+    disabled
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
@@ -45,6 +46,7 @@ const Input = (props) => {
       </div>
       <div className={styles.inputDiv}>
         <input
+          disabled={disabled}
           type={!show && type}
           value={value}
           onBlur={onInputBlur}

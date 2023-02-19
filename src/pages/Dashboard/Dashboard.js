@@ -81,16 +81,12 @@ const Dashboard = () => {
   return (
     <div className={styles.gridContainer}>
       {data.map((e) => (
-        <Link to={e.path} key={e.path}>
+        <Link  to={!e.isDisabled && e.path} key={e.path}>
           <LandingTile
             image={e.tile_img}
             title={e.title}
             isDisabled={e.isDisabled}
           />
-          {/* <div className={styles.gridItem}>
-            <img src={e.tile_img} alt="Image 1" />
-            <div className={styles.title}>{e.title}</div>
-          </div> */}
         </Link>
       ))}
     </div>

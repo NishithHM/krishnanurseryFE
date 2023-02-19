@@ -51,7 +51,7 @@ const Protected = () => {
               exact
               element={<CustomerOnboarding />}
             />
-            <Route path="add-procurement" exact element={<AddProcurement/>}/>
+            <Route path="/dashboard/add-procurement" exact element={<AddProcurement/>}/>
           </Routes>
         </div>
         <Footer />

@@ -1,7 +1,8 @@
 .outerWrapper {
   margin: 10px;
-  max-width: 800px;
+  max-width: 60%;
   padding: 10px;
+  flex: 3;
 }
 
 .header {
@@ -37,4 +38,16 @@
 
   .formbtn{
     width: 120px;
+  }
+
+  .addProcurementPage{
+    flex-direction: row;
+    display: flex;
+  }
+
+  .tableWrapper{
+    margin: 10px;
+    max-width: 50%;
+    padding: 10px;
+    flex: 4;
   }

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
-console.log();
+
 export const procurementsApi = createApi({
   reducerPath: "procurements",
   baseQuery: fetchBaseQuery({
@@ -31,9 +31,27 @@ export const procurementsApi = createApi({
           method: "GET",
         }),
       }),
+      updateProcurements: builder.mutation({
+        query: ({ id, body }) => ({
+          url: `/update/${id}`,
+          method: "POST",
+          body,
+        }),
+      }),
+      createProcurements: builder.mutation({
+        query: ({body}) => ({
+          url: "/create",
+          method: "POST",
+          body,
+        }),
+      }),
     };
   },
 });
 
-export const { useGetAllProcurementsQuery, useSearchProductsQuery } =
-  procurementsApi;
+export const {
+  useGetAllProcurementsQuery,
+  useSearchProductsQuery,
+  useUpdateProcurementsMutation,
+  useCreateProcurementsMutation,
+} = procurementsApi;

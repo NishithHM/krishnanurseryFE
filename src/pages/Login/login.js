@@ -6,7 +6,7 @@ import _ from "lodash";
 import { useUserLoginMutation } from "../../services/login.services";
 import { userActions } from "../../store/slices/user.slice";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context";
 
 const Login = () => {

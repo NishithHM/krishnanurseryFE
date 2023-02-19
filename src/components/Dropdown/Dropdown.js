@@ -9,6 +9,7 @@ import isEmpty  from "lodash/isEmpty";
 import get  from "lodash/get";
 import styles from "./dropdown.module.css";
 import axios from "axios";
+import {StylesConfig} from "react-select"
 const Dropdown = ({
   data,
   url = null,
@@ -21,36 +22,37 @@ const Dropdown = ({
   required = false,
   error = null,
   errorMessage = null,
-  apiDataPath = {}
+  apiDataPath = {},
+  id,
+  value,
 }) => {
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState({});
   const [options, setOptions] = useState(data || []);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selectedOption) => {
+    console.log(selectedOption, id)
     setSelectedOption(selectedOption);
-    onChange(selectedOption);
+    onChange(selectedOption, id);
   };
 
   useEffect(()=>{
-    setSelectedOption(selectedOption);
-  },[selectedOption])
+    setSelectedOption(value)
+  },[value])
+
   
 
-  const loadOptions = debounce( async (inputValue, callback) => {
+  const loadOptions = async (inputValue, callback) => {
     if (!url || inputValue.length < 3) return [];
     setSearchQuery(inputValue);
-
     setLoading(true);
-
-   const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`)
-   console.log(res.data, "res")
-   const optionsVal = res.data.map(opt=> ({label:get(opt, apiDataPath.label), value: get(opt, apiDataPath.value)}))
-   console.log(optionsVal, 'options')
-   setLoading(false);
- callback(optionsVal)
-  }, 500);
+    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`)
+    const optionsVal = res.data.map(opt=> ({label:get(opt, apiDataPath.label), value: get(opt, apiDataPath.value), meta:{ ...opt}}))
+    setOptions(optionsVal)
+    setLoading(false);
+    callback(optionsVal)
+  };
  
 
 
@@ -62,6 +64,10 @@ const Dropdown = ({
         error && !state.isFocused ? "1px solid red" : "1px solid gray",
       borderRadius: "0px",
       outline: "none",
+      "&:hover": {
+        border: "1px solid #539c64",
+        boxShadow: "0px 0px 1px #539c64"
+      }
     }),
     indicatorSeparator: (baseStyles, state) => ({
       display: "none",
@@ -77,9 +83,10 @@ const Dropdown = ({
           )}
         </div>
         <AsyncSelect
+          cacheOptions
           value={selectedOption}
-          defaultOptions
-          onInputChange={handleChange}
+          defaultOptions={options}
+          // onInputChange={handleChange}
           onChange={handleChange}
           loadOptions={loadOptions}
           isClearable={isClearable}
@@ -105,8 +112,8 @@ const Dropdown = ({
         </div>
         <AsyncSelectCreatable
           value={selectedOption}
-          defaultOptions
-          onInputChange={handleChange}
+          cacheOptions
+          defaultOptions={options}
           onChange={handleChange}
           loadOptions={loadOptions}
           isClearable={isClearable}
