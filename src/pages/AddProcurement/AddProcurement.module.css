@@ -51,3 +51,10 @@
     padding: 10px;
     flex: 4;
   }
+
+  .historyheader{
+    font-size: 20px;
+    color: #539c64;
+    font-weight: 500;
+    margin-left: 16px;
+  }

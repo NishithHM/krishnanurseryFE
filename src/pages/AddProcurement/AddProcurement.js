@@ -26,7 +26,7 @@ const tableHeader = [
       value: "Vendor Contact",
     },
     {
-      value: "Price Per Plant",
+      value: "Price Per Plant ₹",
     },
   ],
 ];
@@ -226,7 +226,7 @@ const AddProcurement = () => {
               required
               onError={onError}
               validation={(text) => text.length > 0}
-              errorMessage="Please Enter new Plant"
+              errorMessage="Please Enter new Plant in Kannada"
             />
           )}
 
@@ -322,7 +322,7 @@ const AddProcurement = () => {
       <div className={styles.tableWrapper}>
         {tableBody.length > 0 && (
           <>
-            <span>Procurement history</span>
+            <span className={styles.historyheader}>Procurement history</span>
             <Table
               data={[...tableHeader, ...tableBody]}
               onSortBy={(sort) => console.log(sort)}

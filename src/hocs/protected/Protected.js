@@ -7,6 +7,7 @@ import {
   CustomerOnboarding,
   Dashboard,
   Employee,
+  ProcurementList,
   Test,
 } from "../../pages";
 import { isEmpty } from "lodash";
@@ -51,7 +52,16 @@ const Protected = () => {
               exact
               element={<CustomerOnboarding />}
             />
-            <Route path="/dashboard/add-procurement" exact element={<AddProcurement/>}/>
+            <Route
+              path="/dashboard/add-procurement"
+              exact
+              element={<AddProcurement />}
+            />
+            <Route
+              path="/dashboard/procurement-list"
+              exact
+              element={<ProcurementList />}
+            />
           </Routes>
         </div>
         <Footer />

@@ -45,6 +45,17 @@ export const procurementsApi = createApi({
           body,
         }),
       }),
+      getProcurements: builder.query({
+        query: ({search, pageNumber, isCount})=>{
+          const params ={ pageNumber, isCount}
+          if(search){
+            params.search = search
+          }
+          return{
+          url:`/getAll`,
+          params: params
+        }}
+      })
     };
   },
 });
@@ -54,4 +65,5 @@ export const {
   useSearchProductsQuery,
   useUpdateProcurementsMutation,
   useCreateProcurementsMutation,
+  useGetProcurementsQuery
 } = procurementsApi;
