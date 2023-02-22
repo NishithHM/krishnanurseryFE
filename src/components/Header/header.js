@@ -26,7 +26,7 @@ const Header = () => {
             <img height={100} src={logo} alt="Logo"/>
             </div>
             <div className={styles.headertitle}>
-            <span className={styles.title}>Krishna Nursery</span>
+            <span className={styles.title}>Shree Krishna Farm & Nursery</span>
             </div>
         </div>
         <div className={styles.logout}>

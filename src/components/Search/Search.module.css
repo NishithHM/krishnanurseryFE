@@ -1,0 +1,29 @@
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    padding-left: 20px;
+  }
+  .searchContainer {
+    position: relative;
+    margin: 0 10px;
+  }
+  .searchInput {
+    width: 18rem;
+    background: #edeceb;
+    border: none;
+    outline: none;
+    padding: 0.8rem;
+    font-size: 18px;
+    border-radius: 4px;
+  }
+  .searchInput:focus {
+    outline: none;
+    border: none;
+  }
+  .searchIcon {
+    position: absolute;
+    right: 0.5rem;
+    top: 20%;
+    cursor: pointer;
+  }

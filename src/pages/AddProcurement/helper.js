@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import daysj from 'dayjs'
 import dayjs from 'dayjs'
 const rquiredData=[
     "procuredOn",

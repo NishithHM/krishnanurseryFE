@@ -11,6 +11,7 @@ import SelectPill from "./SelectPill";
 import Modal from "./Modal";
 import Spinner from "./Spinner";
 import Toaster from "./Toaster";
+import Search from "./Search";
 export {
   LandingTile,
   Input,
@@ -24,5 +25,6 @@ export {
   SelectPill,
   Modal,
   Spinner,
-  Toaster
+  Toaster,
+  Search
 };
