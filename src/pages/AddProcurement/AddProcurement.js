@@ -114,7 +114,9 @@ const AddProcurement = () => {
     body.description = state.description;
     body.vendorName = state.addVendorName.label;
     body.vendorContact = state.addVendorContact;
-    body.vendorId = state.addVendorName?.value;
+    if(!state.addVendorName?.__isNew__){
+        body.vendorId = state.addVendorName?.value;
+    }
     body.categories = state.addPlantCategory.map((ele) => {
       return {
         _id: ele.value,
@@ -164,6 +166,7 @@ const AddProcurement = () => {
       const res = await updateProcurements({ body, id });
 
       if (res.error) {
+        toast.error("Unable to Add...");
         setState((prev) => {
           return {
             ...prev,
@@ -174,6 +177,7 @@ const AddProcurement = () => {
           };
         });
       } else {
+        toast.success("Procurement Created Successfully!");
         setTimeout(() => {
           navigate("../dashboard");
         }, 3000);
