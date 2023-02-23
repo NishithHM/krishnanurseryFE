@@ -1,0 +1,140 @@
+.header {
+    color: #539c64;
+    font-size: 2rem;
+    font-weight: 500;
+    margin-top: 3rem;
+    line-height: 1rem;
+}
+
+.headerWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.billWrapper {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid #edeceb;
+}
+
+.billGenerator {
+    border-right: 3px solid #edeceb;
+    padding: 0px 10px;
+    width: 60%;
+}
+
+.itemTitleWrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formWrapper {
+    display: flex;
+}
+
+.formWrapper > div {
+    margin: 0px 40px 0px 0px;
+}
+
+.billHistory {
+    width: 40%;
+}
+
+.iconButton {
+    background-color: #539c64;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    border: 0px;
+    color: #ffffff;
+}
+
+.cartTable {
+    width: 100%;
+}
+
+.cartTable th{
+    color: #539c64;
+}
+
+.cartTable td {
+    text-align: center;
+}
+
+.finalSubmission {
+    width: 70%;
+}
+
+.billDetails {
+    margin: 23px 0px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.billFigure {
+    display: flex;
+}
+
+.billFigure > div {
+    color: #539c64;
+    margin: 0px 10px;
+}
+
+.billFigure > span {
+   color: #000000;
+   font-weight: 500;
+}
+
+.submitWrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 0px;
+}
+
+.submitWrapper > button {
+    width: 10%;
+    padding: 7px 20px;
+}
+
+.submitWrapper > button > span {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.checkOutWrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 0px;
+}
+
+.checkOutWrapper > button {
+    width: 14%;
+    padding: 7px 20px;
+}
+
+.checkOutWrapper > button > span {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.cartInput {
+    border: 1px solid #dbd8d4;
+    width: 50%;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.error {
+    background-color: rgb(196, 9, 53);
+    padding: 6px;
+    border-radius: 4px;
+    color: #ffffff;
+}
+
+.success {
+    background-color: rgb(11, 196, 137);
+    padding: 6px;
+    border-radius: 4px;
+    color: #ffffff;
+}

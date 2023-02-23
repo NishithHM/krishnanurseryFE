@@ -6,6 +6,7 @@ import AccessManagement from "./AccessManagement";
 import CustomerOnboarding from "./CustomerOnboarding";
 import AddProcurement from "./AddProcurement";
 import ProcurementList from "./ProcurementList";
+import AddBills from "./AddBills";
 
 export {
   Login,
@@ -15,5 +16,6 @@ export {
   AccessManagement,
   CustomerOnboarding,
   AddProcurement,
-  ProcurementList
+  ProcurementList,
+  AddBills
 };
