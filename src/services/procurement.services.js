@@ -55,6 +55,17 @@ export const procurementsApi = createApi({
           url:`/getAll`,
           params: params
         }}
+      }),
+      getProcurementHistory: builder.query({
+        query: ({id,startDate, endDate, isCount})=>{
+          const params ={id, startDate, endDate}
+          if(isCount){
+            params.isCount = isCount
+          }
+          return{
+          url:`/getAllHistory`,
+          params: params
+        }}
       })
     };
   },
@@ -65,5 +76,6 @@ export const {
   useSearchProductsQuery,
   useUpdateProcurementsMutation,
   useCreateProcurementsMutation,
-  useGetProcurementsQuery
+  useGetProcurementsQuery,
+  useGetProcurementHistoryQuery
 } = procurementsApi;
