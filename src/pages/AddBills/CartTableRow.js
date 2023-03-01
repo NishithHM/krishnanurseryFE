@@ -19,14 +19,16 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
           onChange={(value) => onChangeHandler(value, 'procurementId')}
           value={item.dropDownKey}
           url="/api/procurements/getAll"
+          id="procurements"
           apiDataPath={{ label: "names.en.name", value: "_id" }}
         />
       </td>
       <td>
         <Dropdown
           canCreate={false}
-          value={item.variantLabel}
+          value={{label:item.variantLabel, value:item.variantId}}
           data={item.variants}
+          id="variants"
           onChange={(value) => onChangeHandler(value, 'variantId')}
         />
       </td>
