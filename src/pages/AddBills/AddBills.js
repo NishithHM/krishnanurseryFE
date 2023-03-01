@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Table, Button } from '../../components';
+import { Input, Table, Button, Toaster } from '../../components';
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { BillDetails, CartTableHeader, CartTableRow } from './CartTableRow';
 import _ from "lodash";
 import { useLazyGetCustomerByPhoneQuery } from '../../services/customer.service';
-import { useCheckoutCartMutation, useSubmitCartMutation, useUpdateCartMutation } from '../../services/bills.service';
+import { useCheckoutCartMutation, useSubmitCartMutation, useUpdateCartMutation, useLazyGetCustomerCartQuery } from '../../services/bills.service';
+import { DatePicker } from "@mantine/dates";
+import { toast } from "react-toastify";
 
 export default function AddBills() {
 
@@ -19,13 +21,18 @@ export default function AddBills() {
     variantLabel: "",
     mrp: 0,
     price: 0,
-    quantity: 0,
+    quantity: 1,
     minPrice: 0
   }
 
   const initialState = {
     customerNumber: "",
     customerDetails: {},
+    customerName: "",
+    nameDisabled: true,
+    showDOB: false,
+    dateOfBirth: "",
+    newCustomer: false,
     billingHistory: [[
       { id: new Date().toISOString(), value: "Item" },
       { value: "Purchase Date" },
@@ -42,14 +49,19 @@ export default function AddBills() {
 
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
+
+
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
-  const [checkoutCart] = useCheckoutCartMutation();
+  const [checkoutCart, { isLoading: checkOutLoading }] = useCheckoutCartMutation();
   const [updateCart] = useUpdateCartMutation();
-  const [submitCart] = useSubmitCartMutation();
+  const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
+  const [getCustomerCart] = useLazyGetCustomerCartQuery();
 
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank])
   }
+
+  console.log(`checkout loading ==>`, checkOutLoading)
 
   const handleRemoveItem = (index) => {
     setTableRowData((prev) => (
@@ -63,6 +75,15 @@ export default function AddBills() {
       return {
         ...prev,
         [id]: event.target.value,
+      };
+    });
+  };
+
+  const dateChangeHandler = (event) => {
+    setState((prev) => {
+      return {
+        ...prev,
+        dateOfBirth: event.value,
       };
     });
   };
@@ -90,6 +111,7 @@ export default function AddBills() {
         ...prev,
         errorFields: customerDetails.error
       }))
+      return;
     }
 
     if (customerDetails.data) {
@@ -106,10 +128,58 @@ export default function AddBills() {
         })
       });
 
+      const customerCart = await getCustomerCart(customerDetails.data._id);
+
+      console.log(`cusomer cart response ==>`, customerCart);
+
+
+      if (customerCart.data) {
+        let cartRows = [];
+        customerCart.data.items.forEach((item) => {
+          cartRows.push({
+            id: new Date().toISOString(),
+            procurementId: item.procurementId,
+            procurementLabel: item.procurementName.en.name,
+            variants: [{ label: item.variant.en.name, value: item.variant.variantId, maxPrice: item.mrp, minPrice: item.mrp }],
+            variantId: item.variant.variantId,
+            variantLabel: item.variant.en.name,
+            mrp: item.mrp,
+            price: item.rate,
+            quantity: item.quantity,
+            minPrice: item.mrp
+          })
+        })
+
+        setTableRowData(cartRows)
+
+        setState((prev) => ({
+          ...prev,
+          cartResponse: customerCart.data,
+          customerDetails: customerDetails.data,
+          billingHistory: [...billingData],
+          nameDisabled: true,
+          showDOB: false,
+          newCustomer: false
+        }))
+        return;
+      }
+
       setState((prev) => ({
         ...prev,
         customerDetails: customerDetails.data,
-        billingHistory: [...billingData]
+        billingHistory: [...billingData],
+        nameDisabled: true,
+        showDOB: false,
+        newCustomer: false
+      }))
+    } else {
+      setState((prev) => ({
+        ...prev,
+        customerDetails: {},
+        billingHistory: [state.billingHistory[0]],
+        nameDisabled: false,
+        showDOB: true,
+        newCustomer: true
       }))
     }
   }
@@ -128,9 +198,11 @@ export default function AddBills() {
     if (name === 'procurementId') {
       tableRowClone.procurementId = value.value;
       tableRowClone.procurementLabel = value.label;
+      let tempVariant = []
       value.meta.variants.forEach((el) => {
-        tableRowClone.variants.push({ label: el.names.en.name, value: el._id, maxPrice: el.maxPrice, minPrice: el.minPrice });
+        tempVariant.push({ label: el.names.en.name, value: el._id, maxPrice: el.maxPrice, minPrice: el.minPrice });
       })
+      tableRowClone.variants = tempVariant
     }
 
     if (name === 'variantId') {
@@ -138,6 +210,7 @@ export default function AddBills() {
       tableRowClone.variantLabel = value.label;
       tableRowClone.mrp = value.maxPrice;
       tableRowClone.minPrice = value.minPrice;
+      tableRowClone.price = value.maxPrice;
     }
 
     if (name === 'price') tableRowClone.price = value;
@@ -152,19 +225,48 @@ export default function AddBills() {
   const onBlur = (e, name, index) => {
     let tableDataClone = [...tableRowData];
     let tableRowClone = { ...tableDataClone[index] }
+    const { value } = e.target;
 
-    if (name === 'price' && e.target.value < tableRowClone.minPrice) {
+    if (name === 'price') {
+
+      if (value < tableRowClone.minPrice) {
+        setState((prev) => (
+          { ...prev, priceError: { error: 'Price can not be less then minimum price', isExist: true } }
+        ))
+        tableRowClone.price = tableRowClone.mrp;
+        tableDataClone[index] = tableRowClone;
+        setTableRowData(tableDataClone)
+        return;
+      }
+
+      if (value > tableRowClone.mrp) {
+        setState((prev) => (
+          { ...prev, priceError: { error: 'Price can not be greater then maximum price', isExist: true } }
+        ))
+        tableRowClone.price = tableRowClone.mrp;
+        tableDataClone[index] = tableRowClone;
+        setTableRowData(tableDataClone)
+        return;
+      }
+
       setState((prev) => (
-        { ...prev, priceError: { error: 'Price can not be less then minimum price', isExist: true } }
-      ))
-      tableRowClone.price = 0;
-      tableDataClone[index] = tableRowClone;
-      setTableRowData(tableDataClone)
-    } else {
-      setState((prev) => (
-        { ...prev, priceError: { error: 'Price can not be less then minimum price', isExist: false } }
+        { ...prev, priceError: { error: '', isExist: false } }
       ))
     }
+
+    if (name === 'quantity' && value <= 0) {
+      tableRowClone.quantity = 1;
+      tableDataClone[index] = tableRowClone;
+      setTableRowData(tableDataClone)
+      setState((prev) => (
+        { ...prev, priceError: { error: 'Quantity should be minimum 1', isExist: true } }
+      ))
+      return;
+    }
+
+    setState((prev) => (
+      { ...prev, priceError: { error: '', isExist: false } }
+    ))
   }
 
   const handleCheckout = async () => {
@@ -177,10 +279,10 @@ export default function AddBills() {
     })
 
     const cartPayload = {
-      customerNumber: `${state.customerDetails.phoneNumber}`,
-      customerName: state.customerDetails.name,
-      customerDob: state.customerDetails.dob,
-      customerId: state.customerDetails._id,
+      customerNumber: state.newCustomer ? `${state.customerNumber}` : `${state.customerDetails.phoneNumber}`,
+      customerName: state.newCustomer ? state.customerName : state.customerDetails.name,
+      customerDob: state.newCustomer ? state.dateOfBirth : state.customerDetails.dob,
+      customerId: state.newCustomer ? `` : state.customerDetails._id,
       items
     }
 
@@ -210,14 +312,13 @@ export default function AddBills() {
         priceError: { isExist: false, error: '' },
         checkoutSuccess: { isExist: true, msg: 'Checkout is successful' }
       }))
-
-      setTimeout(() => {
-        setState((prev) => ({
-          ...prev,
-          checkoutSuccess: { isExist: false, msg: '' }
-        }))
-      }, 5000)
+      toast.success("Checkout is successful!");
     }
+  }
+
+  const handleReset = () => {
+    setTableRowData([tableRowBlank])
+    setState(initialState)
   }
 
   const handleSubmit = async () => {
@@ -241,13 +342,8 @@ export default function AddBills() {
         submitError: { isExist: false, error: '' },
         submitSuccess: { isExist: true, msg: 'Billing is successful' }
       }))
-
-      setTimeout(() => {
-        setState((prev) => ({
-          ...prev,
-          submitSuccess: { isExist: false, msg: '' }
-        }))
-      }, 5000)
+      toast.success("Billing is successful!");
+      handleReset()
     }
   }
 
@@ -264,17 +360,18 @@ export default function AddBills() {
     console.log(roundOffLimit, roundOff, correctValue)
 
     if (!correctValue) {
-      setState((prev) => ({ ...prev, submitError: { isExist: true, error: `Round Off value can not be more then 500 or 10% of total value.` } }))
+      setState((prev) => ({ ...prev, submitError: { isExist: true, error: `Round Off value is not correct.` } }))
     } else {
       setState((prev) => ({ ...prev, submitError: { isExist: false, error: `` } }))
     }
 
   }
 
-  const name = state.customerDetails && state.customerDetails.name ? state.customerDetails.name : '';
+  const name = state.customerDetails && state.customerDetails.name ? state.customerDetails.name : state.customerName;
 
   return (
     <div className={styles.addBillsWrapper}>
+      <Toaster />
       <div className={styles.headerWrapper}>
         <h1 className={styles.header}>Generate Bill</h1>
       </div>
@@ -284,25 +381,57 @@ export default function AddBills() {
           <div className={styles.customerDetails}>
             <h3>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <Input
-                value={state.customerNumber}
-                id="customerNumber"
-                type="number"
-                errorMessage="Invalid Customer Number"
-                required
-                validation={(number) => number.length === 10}
-                onChange={inputChangeHanlder}
-                onError={onError}
-                title="Customer Number:"
-              />
-              <Input
-                value={name}
-                id="customerName"
-                type="text"
-                title="Customer Name:"
-                onChange={() => { }}
-                disabled={true}
-              />
+              <>
+                <Input
+                  value={state.customerNumber}
+                  id="customerNumber"
+                  type="number"
+                  errorMessage="Invalid Customer Number"
+                  required
+                  validation={(number) => number.length === 10}
+                  onChange={inputChangeHanlder}
+                  onError={onError}
+                  title="Customer Number:"
+                />
+                <Input
+                  value={name}
+                  id="customerName"
+                  type="text"
+                  title="Customer Name:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+              </>
+              <>
+                {state.showDOB &&
+                  <DatePicker
+                    placeholder="dd-mm-yyyy"
+                    label="Date Of Birth"
+                    inputFormat="DD/MM/YYYY"
+                    labelFormat="MMMM - YYYY"
+                    size="sm"
+                    withAsterisk={false}
+                    value={state.dateOfBirth}
+                    onChange={dateChangeHandler}
+                    clearable={false}
+                    styles={{
+                      label: {
+                        fontSize: "18px",
+                        marginBottom: "2px",
+                        fontFamily: "sans-serif",
+                        fontWeight: 500,
+                      },
+                      input: {
+                        border: "none",
+                        borderBottom: "1.5px solid black",
+                        borderRadius: 0,
+                        fontSize: "18px",
+                        fontWeight: 400,
+                      },
+                    }}
+                  />
+                }
+              </>
             </div>
           </div>
           <div className={styles.itemList}>
@@ -330,7 +459,6 @@ export default function AddBills() {
               <div className={styles.checkOutWrapper}>
                 <div>
                   {state.priceError.isExist && <div className={styles.error}>{state.priceError.error}</div>}
-                  {state.checkoutSuccess.isExist && <div className={styles.success}>{state.checkoutSuccess.msg}</div>}
                 </div>
                 <Button
                   type="primary"
@@ -338,6 +466,7 @@ export default function AddBills() {
                   buttonType="submit"
                   onClick={handleCheckout}
                   disabled={false}
+                  loading={checkOutLoading}
                 />
               </div>
             </div>
@@ -345,6 +474,7 @@ export default function AddBills() {
         </div>
         <div className={styles.billHistory}>
           <Table data={state.billingHistory} />
+          {state.billingHistory.length === 1 && <div className={styles.noItemToDisplay}>No Items to display</div>}
         </div>
       </div>
 
@@ -358,7 +488,6 @@ export default function AddBills() {
         <div className={styles.submitWrapper}>
           <div>
             {state.submitError.isExist && <div className={styles.error}>{state.submitError.error}</div>}
-            {state.submitSuccess.isExist && <div className={styles.success}>{state.submitSuccess.msg}</div>}
           </div>
           <Button
             type="primary"
@@ -366,6 +495,7 @@ export default function AddBills() {
             buttonType="submit"
             onClick={handleSubmit}
             disabled={false}
+            loading={submitLoading}
           />
         </div>
       </div>

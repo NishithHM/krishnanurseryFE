@@ -42,6 +42,10 @@ const Dropdown = ({
     setSelectedOption(value)
   },[value])
 
+  useEffect(()=>{
+    setOptions(data)
+  },[JSON.stringify(data)])
+
   
 
   const loadOptions = async (inputValue, callback) => {
