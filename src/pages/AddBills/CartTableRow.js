@@ -12,25 +12,46 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
 
   const total = item.price * item.quantity;
 
+  const selectedProcurement = { label: item.procurementLabel, value: item.procurementId };
+  const selectedVariant = { label: item.variantLabel, value: item.variantId };
+
+
+  console.log("selectedProcurement", selectedProcurement)
+  console.log("selectedVariant", selectedVariant)
+  console.log("item.variants", item.variants)
+
+  const handleSelection = (e) => {
+    const option = e.target.childNodes[e.target.selectedIndex].getAttribute('data-json');
+    onChangeHandler(JSON.parse(option), 'variantId')
+  }
+
   return (
     <tr>
-      <td>
+      <td width={`120px`}>
         <Dropdown
           onChange={(value) => onChangeHandler(value, 'procurementId')}
-          value={item.dropDownKey}
+          value={selectedProcurement}
           url="/api/procurements/getAll"
-          id="procurements"
+          // id="procurements"
           apiDataPath={{ label: "names.en.name", value: "_id" }}
+          id={`procurement_${item.id}`}
         />
       </td>
       <td>
         <Dropdown
           canCreate={false}
-          value={{label:item.variantLabel, value:item.variantId}}
+          value={{ label: item.variantLabel, value: item.variantId }}
           data={item.variants}
-          id="variants"
+          // id="variants"
           onChange={(value) => onChangeHandler(value, 'variantId')}
+          id={`variant_${item.id}`}
         />
+        {/* <select value={item.variantId} onChange={handleSelection} className={styles.selectDropDown}>
+          <option value="" data-json="">Select variant</option>
+          {item.variants && item.variants.map((option) => (
+            <option key={option.value} value={option.value} data-json={JSON.stringify(option)}>{option.label}</option>
+          ))}
+        </select> */}
       </td>
       <td>
         <div>{Number(item.mrp)}</div>
@@ -51,7 +72,9 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
           name="quantity"
           type="number"
           className={styles.cartInput}
-          onChange={(e) => onChangeHandler(e.target.value, 'quantity')} />
+          min="1"
+          onChange={(e) => onChangeHandler(e.target.value, 'quantity')}
+          onBlur={(e) => onBlur(e, 'quantity')} />
       </td>
       <td>
         <div>{isNaN(total) ? '' : total}</div>
@@ -92,7 +115,7 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
     <div className={styles.billDetails}>
       <div className={styles.billFigure}>
         <div>Sub Total</div>
-        <span>&#x20B9;{isNaN(subTotal) ? '' : subTotal}</span>
+        <span>&#x20B9;{cartResponse?.totalPrice}</span>
       </div>
       <div className={styles.billFigure}>
         <div>Discount</div>
@@ -112,7 +135,7 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
       </div>
       <div className={styles.billFigure}>
         <div>Total</div>
-        <span>&#x20B9;{cartResponse?.totalPrice}</span>
+        <span>&#x20B9;{isNaN(subTotal) ? '' : subTotal}</span>
       </div>
     </div>
   )
