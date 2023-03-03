@@ -5,11 +5,11 @@ import AsyncSelectCreatable from "react-select/async-creatable";
 import Creatable from "react-select/creatable";
 import debounce from "lodash/debounce";
 import cx from "classnames";
-import isEmpty  from "lodash/isEmpty";
-import get  from "lodash/get";
+import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
 import styles from "./dropdown.module.css";
 import axios from "axios";
-import {StylesConfig} from "react-select"
+import { StylesConfig } from "react-select"
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 const Dropdown = ({
   data,
@@ -33,40 +33,39 @@ const Dropdown = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selectedOption) => {
-    console.log(selectedOption, id)
     setSelectedOption(selectedOption);
     onChange(selectedOption, id);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setSelectedOption(value)
-  },[value])
+  }, [value])
 
-  useEffect(()=>{
+  useEffect(() => {
     setOptions(data)
-  },[JSON.stringify(data)])
+  }, [JSON.stringify(data)])
 
-  
+
 
   const loadOptions = async (inputValue, callback) => {
     if (!url || inputValue.length < 3) return [];
     setSearchQuery(inputValue);
     setLoading(true);
-    let config 
-    if(include_headers){
-        config={
-            headers: {
-                Authorization: sessionStorage.getItem("authToken"),
-              }
+    let config
+    if (include_headers) {
+      config = {
+        headers: {
+          Authorization: sessionStorage.getItem("authToken"),
         }
+      }
     }
     const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`, config)
-    const optionsVal = res.data.map(opt=> ({label:get(opt, apiDataPath.label), value: get(opt, apiDataPath.value), meta:{ ...opt}}))
+    const optionsVal = res.data.map(opt => ({ label: get(opt, apiDataPath.label), value: get(opt, apiDataPath.value), meta: { ...opt } }))
     setOptions(optionsVal)
     setLoading(false);
     callback(optionsVal)
   };
- 
+
 
 
   const DropdownStyles = {
@@ -114,7 +113,7 @@ const Dropdown = ({
         )}
       </div>
     );
-  }else if (url && canCreate) {
+  } else if (url && canCreate) {
     return (
       <div>
         <div className={styles.label}>

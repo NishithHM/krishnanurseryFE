@@ -1,40 +1,53 @@
-.table{
-    width: 95%;
-    margin: 10px auto;
-    border-collapse:separate; 
-    border-spacing: 0 1em;
+.table {
+  width: 95%;
+  margin: 10px auto;
+  border-collapse: separate;
+  border-spacing: 0 1em;
 }
 
-.tableHeader{
-    color: #539C64;
-    font-weight: 600;
-    border: 0 !important;
-    text-align: center;
+.tableHeader {
+  color: #539c64;
+  font-weight: 600;
+  border: 0 !important;
+  text-align: center;
 }
 
-.cellCommon{
-    display: flex;
-    justify-content: space-around;
+.cellCommon {
+  display: flex;
+  justify-content: space-around;
 }
 
-.tableDataCommon{
-    box-shadow: 4px 4px 8px 1px #d6d5d2;
-    height: 80px;
-    text-align: center;
+.tableDataCommon {
+  box-shadow: 4px 4px 8px 1px #d6d5d2;
+  height: 80px;
+  text-align: center;
 }
 
-
-.tableColorWhite{
-    background-color: #FFFFFF !important;
+.tableColorWhite {
+  background-color: #ffffff !important;
 }
 
-.tableCommon{
-    background-color: #EDECEB;
-    color: #302C2C;
+.tableCommon {
+  background-color: #edeceb;
+  color: #302c2c;
 }
 
-.sort{
-    cursor: pointer;
-    padding-left:5px
+.sort {
+  cursor: pointer;
+  padding-left: 5px;
 }
 
+.scrollTable {
+  max-height: 426px;
+  overflow: auto;
+}
+
+.noItemToDisplay {
+  height: 426px;
+  display: flex;
+  justify-content: center;
+  color: #539c64;
+  font-size: 16px;
+  font-weight: 500;
+  align-items: center;
+}

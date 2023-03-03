@@ -53,6 +53,11 @@
   cursor: pointer;
 }
 
+.iconButton:disabled {
+  background: #b1a8a8;
+  cursor: not-allowed;
+}
+
 .cartTable {
   width: 100%;
 }
@@ -139,17 +144,6 @@
   padding: 6px;
   border-radius: 4px;
   color: #ffffff;
-}
-
-.noItemToDisplay {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  color: #539c64;
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: underline;
-  align-items: center;
 }
 
 .tableScroll {

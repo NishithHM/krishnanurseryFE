@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Dropdown, Input } from "../../components"
+import { Dropdown } from "../../components"
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import styles from "./AddBills.module.css";
 
@@ -15,11 +15,6 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
   const selectedProcurement = { label: item.procurementLabel, value: item.procurementId };
   const selectedVariant = { label: item.variantLabel, value: item.variantId };
 
-
-  console.log("selectedProcurement", selectedProcurement)
-  console.log("selectedVariant", selectedVariant)
-  console.log("item.variants", item)
-  console.log(item.variants)
   return (
     <tr>
       <td width={`120px`}>
@@ -31,15 +26,15 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
           id={`procurement_${item.id}`}
         />
       </td>
-      <td>
+      <td width={`170px`}>
         <Dropdown
           canCreate={false}
-          value={{ label: item.variantLabel, value: item.variantId }}
+          value={selectedVariant}
           data={item.variants}
           onChange={(value) => onChangeHandler(value, 'variantId')}
           id={`variant_${item.id}`}
         />
-        
+
       </td>
       <td>
         <div>{Number(item.mrp)}</div>

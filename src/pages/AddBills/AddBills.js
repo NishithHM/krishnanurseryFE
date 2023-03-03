@@ -9,6 +9,7 @@ import { useLazyGetCustomerByPhoneQuery } from '../../services/customer.service'
 import { useCheckoutCartMutation, useSubmitCartMutation, useUpdateCartMutation, useLazyGetCustomerCartQuery } from '../../services/bills.service';
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
+import ScrollTable from '../../components/Table/ScrollTable';
 
 export default function AddBills() {
 
@@ -25,6 +26,12 @@ export default function AddBills() {
     minPrice: 0
   }
 
+  const billingHistoryHeader = [
+    { value: "Item", width: '25%' },
+    { value: "Purchase Date", width: '50%' },
+    { value: "Quantity", width: '25%' }
+  ]
+
   const initialState = {
     customerNumber: "",
     customerDetails: {},
@@ -33,23 +40,20 @@ export default function AddBills() {
     showDOB: false,
     dateOfBirth: "",
     newCustomer: false,
-    billingHistory: [[
-      { id: new Date().toISOString(), value: "Item" },
-      { value: "Purchase Date" },
-      { value: "Quantity" }
-    ]],
+    billingHistory: [],
     errorFields: [],
     priceError: { isExist: false, error: 'Price can not be less then minimum price' },
     checkoutSuccess: { isExist: false, msg: '' },
     cartResponse: {},
     roundOff: 0,
     submitError: { isExist: false, error: '' },
-    submitSuccess: { isExist: false, msg: '' }
+    submitSuccess: { isExist: false, msg: '' },
+    checkOutDone: false,
+    submitDisable: false
   };
 
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
-
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] = useCheckoutCartMutation();
@@ -61,11 +65,8 @@ export default function AddBills() {
     setTableRowData([...tableRowData, tableRowBlank])
   }
 
-  console.log(`checkout loading ==>`, checkOutLoading)
-
   const handleRemoveItem = (index) => {
     setTableRowData((prev) => (
-      //  ...prev.splice(index-1, 1)]
       prev.filter((v, i) => i !== index)
     ));
   }
@@ -116,7 +117,7 @@ export default function AddBills() {
 
     if (customerDetails.data) {
 
-      let billingData = [state.billingHistory[0]];
+      let billingData = [];
 
       customerDetails.data.billingHistory.forEach(history => {
         history.items.forEach((item) => {
@@ -129,9 +130,6 @@ export default function AddBills() {
       });
 
       const customerCart = await getCustomerCart(customerDetails.data._id);
-
-      console.log(`cusomer cart response ==>`, customerCart);
-
 
       if (customerCart.data) {
         let cartRows = [];
@@ -150,7 +148,11 @@ export default function AddBills() {
           })
         })
 
-        setTableRowData(cartRows)
+        if (cartRows.length === 0) {
+          setTableRowData([tableRowBlank])
+        } else {
+          setTableRowData(cartRows)
+        }
 
         setState((prev) => ({
           ...prev,
@@ -176,7 +178,7 @@ export default function AddBills() {
       setState((prev) => ({
         ...prev,
         customerDetails: {},
-        billingHistory: [state.billingHistory[0]],
+        billingHistory: [],
         nameDisabled: false,
         showDOB: true,
         newCustomer: true
@@ -282,16 +284,14 @@ export default function AddBills() {
       customerNumber: state.newCustomer ? `${state.customerNumber}` : `${state.customerDetails.phoneNumber}`,
       customerName: state.newCustomer ? state.customerName : state.customerDetails.name,
       customerDob: state.newCustomer ? state.dateOfBirth : state.customerDetails.dob,
-      customerId: state.newCustomer ? `` : state.customerDetails._id,
+      ...(!state.newCustomer) && { customerId: state.customerDetails._id },
       items
     }
 
     let checkout = null;
 
-
     if (state.cartResponse._id) {
       const payload = { items: items };
-      console.log(`payload ===>`, payload)
       checkout = await updateCart({ cartId: state.cartResponse._id, updatedCartData: payload })
     } else {
       checkout = await checkoutCart(cartPayload);
@@ -305,12 +305,12 @@ export default function AddBills() {
     }
 
     if (checkout.data) {
-      console.log('checkout success -=->', checkout.data);
       setState((prev) => ({
         ...prev,
         cartResponse: checkout.data,
         priceError: { isExist: false, error: '' },
-        checkoutSuccess: { isExist: true, msg: 'Checkout is successful' }
+        checkoutSuccess: { isExist: true, msg: 'Checkout is successful' },
+        checkOutDone: true
       }))
       toast.success("Checkout is successful!");
     }
@@ -327,7 +327,6 @@ export default function AddBills() {
     }
 
     const confirmCart = await submitCart({ cartId: state.cartResponse._id, cartRoundOff: payload });
-    console.log(confirmCart)
     if (confirmCart.error) {
       setState((prev) => ({
         ...prev,
@@ -357,14 +356,49 @@ export default function AddBills() {
 
     const correctValue = roundOff <= roundOffLimit;
 
-    console.log(roundOffLimit, roundOff, correctValue)
-
     if (!correctValue) {
       setState((prev) => ({ ...prev, submitError: { isExist: true, error: `Round Off value is not correct.` } }))
     } else {
       setState((prev) => ({ ...prev, submitError: { isExist: false, error: `` } }))
     }
 
+  }
+
+  const isRowValid = (row) => {
+    const price = row.price >= row.minPrice && row.price <= row.mrp;
+
+    if (row.procurementId && row.variantId && price && row.quantity >= 1) {
+      return true;
+    }
+    return false;
+  }
+
+  const isTableValid = () => {
+    let output = true;
+
+    for (let i = 0; i < tableRowData.length; i++) {
+      if (!isRowValid(tableRowData[i])) {
+        output = false;
+        break;
+      }
+    }
+
+    return output;
+  }
+
+  const shouldCheckoutDisable = () => {
+    if (state.errorFields.length > 0 || !isTableValid() || tableRowData.length === 0) {
+      return true
+    }
+
+    return false;
+  }
+
+  const shouldSubmitDisable = () => {
+    if (state.checkOutDone) {
+      return shouldCheckoutDisable()
+    }
+    return true;
   }
 
   const name = state.customerDetails && state.customerDetails.name ? state.customerDetails.name : state.customerName;
@@ -437,7 +471,7 @@ export default function AddBills() {
           <div className={styles.itemList}>
             <div className={styles.itemTitleWrap}>
               <h3>Items List</h3>
-              <button className={styles.iconButton} onClick={handleAddItem}>
+              <button className={styles.iconButton} disabled={!isTableValid()} onClick={handleAddItem}>
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </div>
@@ -465,7 +499,7 @@ export default function AddBills() {
                   title="Checkout"
                   buttonType="submit"
                   onClick={handleCheckout}
-                  disabled={false}
+                  disabled={shouldCheckoutDisable()}
                   loading={checkOutLoading}
                 />
               </div>
@@ -473,8 +507,7 @@ export default function AddBills() {
           </div>
         </div>
         <div className={styles.billHistory}>
-          <Table data={state.billingHistory} />
-          {state.billingHistory.length === 1 && <div className={styles.noItemToDisplay}>No Items to display</div>}
+          <ScrollTable thead={billingHistoryHeader} tbody={state.billingHistory} />
         </div>
       </div>
 
@@ -494,7 +527,7 @@ export default function AddBills() {
             title="Submit"
             buttonType="submit"
             onClick={handleSubmit}
-            disabled={false}
+            disabled={shouldSubmitDisable()}
             loading={submitLoading}
           />
         </div>
