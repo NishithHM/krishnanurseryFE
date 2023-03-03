@@ -56,9 +56,9 @@ export const procurementsApi = createApi({
           params: params
         }}
       }),
-      getProcurementHistory: builder.query({
-        query: ({id,startDate, endDate, isCount})=>{
-          const params ={id, startDate, endDate}
+      getProcurementHistory: builder.mutation({
+        query: ({id,startDate, endDate, isCount, pageNumber})=>{
+          const params ={id, startDate, endDate, pageNumber}
           if(isCount){
             params.isCount = isCount
           }
@@ -77,5 +77,5 @@ export const {
   useUpdateProcurementsMutation,
   useCreateProcurementsMutation,
   useGetProcurementsQuery,
-  useGetProcurementHistoryQuery
+  useGetProcurementHistoryMutation
 } = procurementsApi;
