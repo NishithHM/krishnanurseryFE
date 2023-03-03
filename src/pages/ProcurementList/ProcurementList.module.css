@@ -61,3 +61,19 @@
 .innerContainer{
     flex:3
 }
+
+.paginationContainerFilter {
+  font-weight: 500;
+  letter-spacing: 1;
+  text-align: end;
+  /* padding: 1rem; */
+}
+
+.paginationInnerFilter{
+  display: flex;
+  flex: 2;
+  justify-content: end;
+  margin-top: 5px;
+  align-items: center;
+  top:300px
+}
