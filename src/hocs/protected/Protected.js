@@ -34,7 +34,7 @@ const Protected = () => {
           style={{
             minHeight: "70vh",
             width: "100%",
-            maxWidth: "1400px",
+            // maxWidth: "1400px",
             margin: "auto",
           }}
         >
