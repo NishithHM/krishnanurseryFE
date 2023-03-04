@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Filters, Search, Spinner, Table } from "../../components";
+import { Filters, Search, Spinner, Table, BackButton } from "../../components";
 import { useGetProcurementsQuery } from "../../services/procurement.services";
 import { useGetProcurementHistoryMutation } from "../../services/procurement.services";
 import { getProcurementListTableBody, getTableBody } from "./helper";
@@ -156,6 +156,9 @@ const ProcurementList = () => {
   return (
     <div className={styles.container}>
       <div className={styles.innerContainer}>
+      <div>
+        <BackButton navigateTo={"/authorised/dashboard"}/>
+      </div>
         <div>
           <Search
             value={searchInput}

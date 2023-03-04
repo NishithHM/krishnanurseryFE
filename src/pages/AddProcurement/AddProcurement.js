@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Dropdown, Input, Table, Toaster } from "../../components";
+import { Button, Dropdown, Input, Table, Toaster, BackButton } from "../../components";
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
 import { useUpdateProcurementsMutation } from "../../services/procurement.services";
@@ -45,7 +45,7 @@ const AddProcurement = () => {
     errorFields: [],
     isNameInKannada: false,
     addProcurementError: [],
-    submitDisabled: false
+    submitDisabled: false,
   };
 
   const navigate = useNavigate();
@@ -114,8 +114,8 @@ const AddProcurement = () => {
     body.description = state.description;
     body.vendorName = state.addVendorName.label;
     body.vendorContact = state.addVendorContact;
-    if(!state.addVendorName?.__isNew__){
-        body.vendorId = state.addVendorName?.value;
+    if (!state.addVendorName?.__isNew__) {
+      body.vendorId = state.addVendorName?.value;
     }
     body.categories = state.addPlantCategory.map((ele) => {
       return {
@@ -123,12 +123,12 @@ const AddProcurement = () => {
         name: ele.label,
       };
     });
-    setState((prev)=>{
-      return{
+    setState((prev) => {
+      return {
         ...prev,
-        submitDisabled: true
-      }
-    })
+        submitDisabled: true,
+      };
+    });
     if (state.addPlantName?.__isNew__) {
       body.nameInKannada = state.addPlantKannada;
       body.nameInEnglish = state.addPlantName.label;
@@ -143,7 +143,7 @@ const AddProcurement = () => {
             addProcurementError: _.isArray(res.error?.data)
               ? res.error?.data
               : [res.error?.data?.error],
-              submitDisabled:false
+            submitDisabled: false,
           };
         });
       } else {
@@ -173,7 +173,7 @@ const AddProcurement = () => {
             addProcurementError: _.isArray(res.error?.data)
               ? res.error?.data
               : [res.error?.data?.error],
-            submitDisabled:false
+            submitDisabled: false,
           };
         });
       } else {
@@ -208,6 +208,9 @@ const AddProcurement = () => {
     <div className={styles.addProcurementPage}>
       <Toaster />
       <div className={styles.outerWrapper}>
+        <div>
+          <BackButton navigateTo={"/authorised/dashboard"}/>
+        </div>
         <h1 className={styles.header}>Add Procurement</h1>
         <div className={styles.innerWrapper}>
           <Dropdown
@@ -307,10 +310,9 @@ const AddProcurement = () => {
                 isEmpty(state.addPlantName) ||
                 isEmpty(state.addVendorName) ||
                 isEmpty(state.totalAmount) ||
-                isEmpty(state.totalQuantity)||
+                isEmpty(state.totalQuantity) ||
                 state.errorFields.length > 0 ||
                 state.submitDisabled
-
               }
               type="primary"
               title="Save"
