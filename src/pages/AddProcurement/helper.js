@@ -6,16 +6,18 @@ const rquiredData=[
     "vendorName",
     "vendorContact",
     "totalPrice",
-    "createdOn"
 ]
 export const getTableBody=(data)=>{
-            if(_.isEmpty(data )){
+        if(data?.__isNew__){
+            return []
+        }else{
+            if(_.isEmpty(data?.meta?.procurementHistory )){
                 return []
             }else{
-                const history = data
+                const history = data?.meta?.procurementHistory
                 const result = history?.map(ele=>{
                     const data = rquiredData.map(data=>{
-                        if(data === 'procuredOn' || data ==='createdOn'){
+                        if(data === 'procuredOn'){
                             return { value: dayjs(ele[data]).format('DD/MM/YYYY')}
                         }else if(data === 'totalPrice'){
                             return {value: (ele[data]/ele.quantity).toFixed(2) }
@@ -27,4 +29,5 @@ export const getTableBody=(data)=>{
                 })
                 return result
             }
+        }
 }

@@ -43,3 +43,30 @@ export const getProcurementListTableBody = (data, onDetailClick) => {
     return history;
   }
 };
+
+
+const requiredDataHistory=[
+    "procuredOn",
+    "quantity",
+    "vendorName",
+    "vendorContact",
+    "totalPrice",
+]
+
+export const getTableBody=(data)=>{
+               
+                const result = data?.map(ele=>{
+                    const data = requiredDataHistory.map(data=>{
+                        if(data === 'procuredOn'){
+                            return { value: dayjs(ele[data] || ele?.createdAt).format('DD/MM/YYYY')}
+                        }else if(data === 'totalPrice'){
+                            return {value: (ele[data]/ele.quantity).toFixed(2) }
+                        }else{
+                            return { value :ele[data] }
+                        }
+                    })
+                    return data
+                })
+                return result
+            }
+

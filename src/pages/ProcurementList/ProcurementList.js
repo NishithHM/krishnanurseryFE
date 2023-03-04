@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { Filters, Search, Spinner, Table } from "../../components";
 import { useGetProcurementsQuery } from "../../services/procurement.services";
-import {useGetProcurementHistoryMutation} from "../../services/procurement.services"
-import { getProcurementListTableBody } from "./helper";
+import { useGetProcurementHistoryMutation } from "../../services/procurement.services";
+import { getProcurementListTableBody, getTableBody } from "./helper";
 import styles from "./ProcurementList.module.css";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import _ from "lodash";
 import debounce from "lodash/debounce";
-import { Link } from "react-router-dom";
-import { getTableBody } from "../AddProcurement/helper";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 
 const tableHeader = [
   [
@@ -49,27 +47,27 @@ const tableHeaderHistory = [
     },
     {
       value: "Price Per Plant ₹",
-    }
+    },
   ],
 ];
 
 const ProcurementList = () => {
   const [page, setPage] = useState(1);
   const [pageFilter, setPageFilter] = useState(1);
-  const [procurementListHistory, setProcurementListHistory] = useState([])
+  const [procurementListHistory, setProcurementListHistory] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchInputDeb, setSearchInputDeb] = useState("");
-  const[startDate, setStartDate] = useState(null)
-  const[endDate, setEndDate] = useState(null)
-  const[id, setId] = useState(null)
-  const[historyCount, setHistoryCount] = useState(0)
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [id, setId] = useState(null);
+  const [historyCount, setHistoryCount] = useState(0);
 
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
     search: searchInputDeb,
   });
 
-const[getProcurementHistory] = useGetProcurementHistoryMutation()
+  const [getProcurementHistory] = useGetProcurementHistoryMutation();
 
   const getProcurementCount = useGetProcurementsQuery({ isCount: true });
 
@@ -88,11 +86,13 @@ const[getProcurementHistory] = useGetProcurementHistoryMutation()
     console.log("clicked", id);
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
     const history = procurementData?.procurementHistory;
-    
-    const body = getTableBody(history)
-    setProcurementListHistory(body)
-    setHistoryCount(body.length)
-    setId(id)
+
+    const body = getTableBody(history);
+    setProcurementListHistory(body);
+    setHistoryCount(body.length);
+    setId(id);
+    setStartDate("");
+    setEndDate("");
   };
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
@@ -106,49 +106,53 @@ const[getProcurementHistory] = useGetProcurementHistoryMutation()
     setPage(page + 1);
   };
 
-  const onIncrementPageFilter = ()=>{
-    setPageFilter(pageFilter + 1)
-  }
+  const onHistoryPageChange = async (isAdd) => {
+    const page = isAdd ? pageFilter + 1 : pageFilter -1;
+
+    setPageFilter(page);
+    const res = await getProcurementHistory({
+      startDate: dayjs(startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(endDate).format("YYYY-MM-DD"),
+      id: id,
+      pageNumber: page,
+    });
+
+    if (res) {
+      const body = await getTableBody(res.data);
+      setProcurementListHistory(body);
+    }
+  };
   const onDecrementPage = () => {
     setPage(page - 1);
   };
 
-  const onDecrementPageFilter = () => {
-    setPageFilter(pageFilter - 1)
+  const onChangeHandler = (e) => {
+    setStartDate(e.start_date);
+    setEndDate(e.end_date);
   };
-  
-  const onChangeHandler = (e)=>{
-   setStartDate(e.start_date)
-   setEndDate(e.end_date)
-  }
 
-  const onSubmitHandler = async(e)=>{
+  const onSubmitHandler = async (e) => {
     console.log("clicked", id);
-    // const procurementData = getProcurementHistory.find((ele) => ele._id === id);
     const res = await getProcurementHistory({
-      startDate:dayjs(startDate).format("YYYY-MM-DD"),
-      endDate:dayjs(endDate).format("YYYY-MM-DD"),
-      id:id,
-      pageNumber: pageFilter
-    })
+      startDate: dayjs(startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(endDate).format("YYYY-MM-DD"),
+      id: id,
+      pageNumber: 1,
+    });
     const resCount = await getProcurementHistory({
-      startDate:dayjs(startDate).format("YYYY-MM-DD"),
-      endDate:dayjs(endDate).format("YYYY-MM-DD"),
-      id:id,
-      isCount:true
-    })
-    setHistoryCount(resCount.data[0].count)
-    console.log(resCount)
-    // console.log(res.data)
+      startDate: dayjs(startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(endDate).format("YYYY-MM-DD"),
+      id: id,
+      isCount: true,
+    });
+    setHistoryCount(resCount.data[0]?.count);
 
-    if(res){
-      const body =await getTableBody(res.data)
-      console.log(body)
-      setProcurementListHistory(body)
-    } else{
-      <p>{res.error}</p>
+    if (res) {
+      const body = await getTableBody(res.data);
+      setProcurementListHistory(body);
     }
-  }
+   
+  };
   return (
     <div className={styles.container}>
       <div className={styles.innerContainer}>
@@ -168,7 +172,7 @@ const[getProcurementHistory] = useGetProcurementHistoryMutation()
             >
               <FaChevronLeft size={16} />
             </button>
-            <span>{`${page === 1 ? "1" : page - 1 + 1}-${
+            <span>{`${page === 1 ? "1" : (page-1)*10 + 1}-${
               page * 10 > count ? count : page * 10
             } of ${count}`}</span>
             <button
@@ -188,36 +192,60 @@ const[getProcurementHistory] = useGetProcurementHistoryMutation()
         </div>
       </div>
       <div>
-     {procurementListHistory.length!==0 && <div className={styles.paginationContainerFilter}>
-          <div className={styles.paginationInnerFilter}>
-            <button
-              disabled={page === 1}
-              className={styles.btnControls}
-              onClick={onDecrementPageFilter}
-            >
-              <FaChevronLeft size={16} />
-            </button>
-            <span>{`${pageFilter === 1 ? "1" : pageFilter - 1 + 1}-${
-              pageFilter * 9 > historyCount ? historyCount : pageFilter * 9
-            } of ${historyCount}`}</span>
-            <button
-              disabled={(pageFilter * 9 > historyCount ? historyCount : pageFilter * 9) >= historyCount}
-              className={styles.btnControls}
-              onClick={onIncrementPageFilter}
-            >
-              <FaChevronRight size={16} />
-            </button>
+        {procurementListHistory?.length !== 0 && (
+          <div className={styles.paginationContainerFilter}>
+            <div className={styles.paginationInnerFilter}>
+              <button
+                disabled={page === 1}
+                className={styles.btnControls}
+                onClick={()=>onHistoryPageChange(false)}
+              >
+                <FaChevronLeft size={16} />
+              </button>
+              <span>{`${pageFilter === 1 ? "1" :( pageFilter-1)* 10 + 1}-${
+                pageFilter * 10 > historyCount ? historyCount : pageFilter * 10
+              } of ${historyCount}`}</span>
+              <button
+                disabled={
+                  (pageFilter * 10 > historyCount
+                    ? historyCount
+                    : pageFilter * 10) >= historyCount
+                }
+                className={styles.btnControls}
+                onClick={()=>onHistoryPageChange(true)}
+              >
+                <FaChevronRight size={16} />
+              </button>
+            </div>
           </div>
-          </div>}
+        )}
         <div>
-        {procurementListHistory.length!==0 && <div className={styles.tableProcurementListData}>
-          <Filters onChange={onChangeHandler} onSubmit={onSubmitHandler}/>
-          {/* <Table data={[...tableHeaderHistory, ...procurementListFilter]} /> */}
-        </div>}
-    {procurementListHistory.length!==0 && <div className={styles.tableProcurementListData}>
-        <Table data={[...tableHeaderHistory, ...procurementListHistory]} />
-      </div>}
-      </div>
+          {id && (
+            <div className={styles.tableProcurementListData}>
+              <Filters
+                startDateInput={startDate}
+                endDateInput={endDate}
+                onChange={onChangeHandler}
+                onSubmit={onSubmitHandler}
+              />
+              {/* <Table data={[...tableHeaderHistory, ...procurementListFilter]} /> */}
+            </div>
+          )}
+          {procurementListHistory?.length !== 0 ? (
+            <div className={styles.tableProcurementListData}>
+              <Table
+                data={[...tableHeaderHistory, ...procurementListHistory]}
+              />
+            </div>
+          ) : (
+            id && (
+              <div className={styles.noDataDisplayText}>
+                {" "}
+                <span>There's nothing to display!</span>{" "}
+              </div>
+            )
+          )}
+        </div>
       </div>
     </div>
   );
