@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import _ from "lodash";
+import styles from "./ProcurementList.module.css"
 const requiredData = [
   "lastProcuredOn",
   "plantName",
@@ -69,4 +70,14 @@ export const getTableBody=(data)=>{
                 })
                 return result
             }
+export const variantHeaders =['Variants Name (English)', 'Variants Name (Kannada)','Max Price', 'Min Price']
+
+export const rowInitState = [{id:"variantNameInEnglish", type:"text", value:''},{id:"variantNameInKannada", type:"text", value:''}, {id:"maxPrice",type:"number", value:''}, {id:'minPrice',type:"number", value:''}]
+
+
+export const InputCell =({id, onInputChange, value, type})=>{
+  return (
+    <input className={styles.tableInput} id={id} onChange={(e)=> onInputChange(e.target.value)} value={value} type={type}/>
+  )
+}
 

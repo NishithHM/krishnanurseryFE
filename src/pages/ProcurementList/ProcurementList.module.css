@@ -51,14 +51,14 @@
   flex: 2;
 }
 
-.container{
-    display: flex;
-    margin: 10px;
-    padding: 10px;
+.container {
+  display: flex;
+  margin: 10px;
+  padding: 10px;
 }
 
-.innerContainer{
-    flex:3
+.innerContainer {
+  flex: 3;
 }
 
 .paginationContainerFilter {
@@ -68,17 +68,75 @@
   /* padding: 1rem; */
 }
 
-.paginationInnerFilter{
+.paginationInnerFilter {
   display: flex;
   flex: 2;
   justify-content: end;
   margin-top: 5px;
   align-items: center;
-  top:300px
+  top: 300px;
 }
 
-.noDataDisplayText{
+.noDataDisplayText {
   color: #539c64;
-    text-align: center;
-    font-size: 20px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.tableVariants {
+  width: 100%;
+  color: #539c64;
+  font-weight: 300;
+}
+
+.addButton {
+  border: 1px solid white;
+  float: right;
+  width: 30px;
+  height: 30px;
+  border-radius: 16px;
+  text-align: center;
+  background-color: #539c64;
+}
+
+.addButton{
+  cursor: pointer;
+}
+
+.plusIcon {
+  font-weight: 500;
+  color: white;
+  font-weight: 500;
+  color: white;
+  margin: 3px 0 0 0;
+}
+
+.submitBtn{
+  padding: 32px 0 0 0;
+}
+
+.quantityWrapper{
+  display: flex;
+  justify-content: space-between;
+  margin: 40px 0 0 0;
+}
+
+.submitWrapper{
+  display: flex;
+  justify-content: end;
+}
+
+.submitQuantity{
+  height: 40px;
+}
+
+.tableInput{
+  height:30px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #EDECEB;
+}
+
+.tableInput:focus{
+  border: 1px solid #EDECEB;
 }

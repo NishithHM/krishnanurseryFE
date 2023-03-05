@@ -30,7 +30,7 @@ const Dashboard = () => {
     {
       title: "Procurement",
       tile_img: produrementImg,
-      path: "procurement",
+      path: "procurement-list",
       allowed: [USER_ROLES.admin],
     },
     {
