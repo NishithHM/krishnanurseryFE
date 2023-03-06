@@ -81,6 +81,8 @@ const ProcurementList = () => {
   const [historyCount, setHistoryCount] = useState(0);
   const [variantRows, setVariantRows] = useState([rowInitState]);
   const [quantity, setQuantity] = useState("");
+  const[loaders, setLoaders] = useState(false)
+  const[quanityLoaders, setQuantityLoaders] = useState(false)
 
   const [values] = useContext(AuthContext);
   const role = values.role
@@ -211,6 +213,7 @@ const ProcurementList = () => {
   };
 
   const onVariantSubmitHandler = async () => {
+    setLoaders(true)
     const variants = variantRows.map((ele) => {
       return ele.reduce((acc, val) => {
         const obj = { [val.id]: val.value };
@@ -222,6 +225,7 @@ const ProcurementList = () => {
       body: { variants },
     });
     getProcurements.refetch();
+    setLoaders(false)
   };
 
   const onQuantityChangeHandler = (e) => {
@@ -229,12 +233,14 @@ const ProcurementList = () => {
   };
 
   const onQuantitySubmitHandler = async () => {
+    setQuantityLoaders(true)
     const obj = { minimumQuantity: quantity };
     const res = await addMinimumQuantity({
       id: id,
       body: obj,
     });
     getProcurements.refetch();
+    setQuantityLoaders(false)
   };
 
   const disabledVariantsSubmit = useMemo(()=>{
@@ -388,6 +394,7 @@ const ProcurementList = () => {
                     title="Submit Variants"
                     onClick={onVariantSubmitHandler}
                     disabled={disabledVariantsSubmit}
+                    loading={loaders}
                   />
                 </div>
               </div>
@@ -407,6 +414,7 @@ const ProcurementList = () => {
                     title="Submit Quantity"
                     onClick={onQuantitySubmitHandler}
                     disabled={!quantity}
+                    loading={quanityLoaders}
                   />
                 </div>
               </div>
