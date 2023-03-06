@@ -6,6 +6,7 @@ import {
   BackButton,
   Button,
   Input,
+  Toaster,
 } from "../../components";
 import {
   useGetProcurementsQuery,
@@ -26,6 +27,7 @@ import _, { cloneDeep } from "lodash";
 import debounce from "lodash/debounce";
 import dayjs from "dayjs";
 import { AuthContext } from "../../context";
+import { toast } from "react-toastify";
 
 const tableHeader = [
   [
@@ -225,6 +227,9 @@ const ProcurementList = () => {
       body: { variants },
     });
     getProcurements.refetch();
+    if(res){
+      toast.success("Variants added Successfully!");
+    }
     setLoaders(false)
   };
 
@@ -240,6 +245,9 @@ const ProcurementList = () => {
       body: obj,
     });
     getProcurements.refetch();
+    if(res){
+      toast.success("Quantity added Successfully!");
+    }
     setQuantityLoaders(false)
   };
 
@@ -255,6 +263,7 @@ const ProcurementList = () => {
 
   return (
     <div className={styles.container}>
+       <Toaster />
       <div className={styles.innerContainer}>
         <div>
           <BackButton navigateTo={"/authorised/dashboard"} />

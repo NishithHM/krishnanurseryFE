@@ -4,7 +4,14 @@ import styles from "./AccessManagement.module.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Button, Modal, Table, Alert, Spinner } from "../../components";
+import {
+  Button,
+  Modal,
+  Table,
+  Alert,
+  Spinner,
+  BackButton,
+} from "../../components";
 
 import {
   useDeleteUserMutation,
@@ -128,6 +135,9 @@ const AccessManagement = () => {
 
   return (
     <div>
+      <div>
+          <BackButton navigateTo={"/authorised/dashboard"} />
+        </div>
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>
