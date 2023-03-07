@@ -12,6 +12,7 @@ import Modal from "./Modal";
 import Spinner from "./Spinner";
 import Toaster from "./Toaster";
 import Search from "./Search";
+import BackButton from "./BackButton";
 export {
   LandingTile,
   Input,
@@ -26,5 +27,6 @@ export {
   Modal,
   Spinner,
   Toaster,
-  Search
+  Search,
+  BackButton
 };

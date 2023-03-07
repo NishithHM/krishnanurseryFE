@@ -3,9 +3,15 @@ import DatePicker from "react-date-picker";
 import Button from "../../Button";
 import styles from "./Datefilter.module.css";
 
-const Datefilter = ({ onChange, onSubmit }) => {
+const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [isParentSet, setParentSet] = useState(false);
+  useEffect(() => {
+    setStartDate(startDateInput);
+    setEndDate(endDateInput);
+    setParentSet(true);
+  }, [startDateInput, endDateInput]);
 
   useEffect(() => {
     onChangeHandler();
@@ -16,8 +22,9 @@ const Datefilter = ({ onChange, onSubmit }) => {
       start_date: startDate,
       end_date: endDate,
     };
-
-    onChange(data);
+    if(!isParentSet){
+      onChange(data);
+    }
   };
 
   const onSubmitHandler = () => {
@@ -36,7 +43,7 @@ const Datefilter = ({ onChange, onSubmit }) => {
           <p className={styles.inputTitle}>Start Date</p>
           <DatePicker
             onChange={(e) => {
-              console.log(e);
+              setParentSet(false);
               setStartDate(e);
             }}
             value={startDate}
@@ -54,7 +61,10 @@ const Datefilter = ({ onChange, onSubmit }) => {
         <div>
           <p className={styles.inputTitle}>End Date</p>
           <DatePicker
-            onChange={(e) => setEndDate(e)}
+            onChange={(e) => {
+              setParentSet(false);
+              setEndDate(e);
+            }}
             value={endDate}
             maxDate={new Date()}
             dayPlaceholder="dd"

@@ -17,6 +17,7 @@ export const procurementsApi = createApi({
       },
     }),
   }),
+  tagTypes: ["procurements"],
   endpoints: (builder) => {
     return {
       getAllProcurements: builder.query({
@@ -24,7 +25,9 @@ export const procurementsApi = createApi({
           url: "/getAll",
           method: "GET",
         }),
+        providesTags: ["procurements"],
       }),
+      
       searchProducts: builder.query({
         query: ({ searchQuery }) => ({
           url: `/getAll?search=${searchQuery}`,
@@ -55,6 +58,32 @@ export const procurementsApi = createApi({
           url:`/getAll`,
           params: params
         }}
+      }),
+      getProcurementHistory: builder.mutation({
+        query: ({id,startDate, endDate, isCount, pageNumber})=>{
+          const params ={id, startDate, endDate, pageNumber}
+          if(isCount){
+            params.isCount = isCount
+          }
+          return{
+          url:`/getAllHistory`,
+          params: params
+        }}
+      }),
+      addProcurementVariants: builder.mutation({
+        query:({id,body})=>({
+          url:`/variants/${id}`,
+          method: "POST",
+          body
+        }),
+        invalidatesTags: ["procurements"],
+      }),
+      addMinimumQuantity: builder.mutation({
+        query:({id, body})=>({
+          url:`/minimumQuantity/${id}`,
+          method:"POST",
+          body
+        })
       })
     };
   },
@@ -65,5 +94,8 @@ export const {
   useSearchProductsQuery,
   useUpdateProcurementsMutation,
   useCreateProcurementsMutation,
-  useGetProcurementsQuery
+  useGetProcurementsQuery,
+  useGetProcurementHistoryMutation,
+  useAddProcurementVariantsMutation,
+  useAddMinimumQuantityMutation
 } = procurementsApi;

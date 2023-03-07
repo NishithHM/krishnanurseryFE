@@ -5,7 +5,7 @@ import styles from "./filters.module.css";
 import Datefilter from "./Datefilter";
 import Button from "../Button";
 
-const Filters = ({ onChange, onSubmit }) => {
+const Filters = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dates, setDates] = useState({ start_date: null, end_date: null });
 
@@ -36,6 +36,8 @@ const Filters = ({ onChange, onSubmit }) => {
           <Datefilter
             onChange={onDateChangeHandler}
             onSubmit={onDateSubmitHandler}
+            startDateInput={startDateInput}
+            endDateInput={endDateInput}
           />
         </>
       )}
