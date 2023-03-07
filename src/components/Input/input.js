@@ -15,7 +15,7 @@ const Input = (props) => {
     errorMessage,
     onError,
     type,
-    disabled
+    disabled = false
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
@@ -51,7 +51,8 @@ const Input = (props) => {
           value={value}
           onBlur={onInputBlur}
           onChange={(e) => onChange(e, id)}
-          className={cx(styles.inputbox, { [`${styles.inputerror}`]: error })}
+          className={cx(styles.inputbox, { [`${styles.inputerror}`]: error, [`${styles.inputDisabled}`] : disabled })}
+          disabled={disabled}
         />
         {type === "password"  && (
           <i className={styles.passwordIcon} onClick={showPasswordHandler}>

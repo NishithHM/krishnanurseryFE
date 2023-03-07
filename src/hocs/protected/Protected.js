@@ -9,6 +9,7 @@ import {
   Employee,
   ProcurementList,
   Test,
+  AddBills
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -62,6 +63,7 @@ const Protected = () => {
               exact
               element={<ProcurementList />}
             />
+            <Route path="/dashboard/add-bills" exact element={<AddBills />}/>
           </Routes>
         </div>
         <Footer />

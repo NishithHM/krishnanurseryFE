@@ -42,3 +42,7 @@
 .passwordIcon{
     position: absolute;
 }
+
+.inputDisabled {
+    background: #edeceb;
+}
