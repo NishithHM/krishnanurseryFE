@@ -1,10 +1,11 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithAuth } from "./helper";
 
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 
 export const billsApi = createApi({
   reducerPath: "bills",
-  baseQuery: fetchBaseQuery({
+  baseQuery:(args, api)=> baseQueryWithAuth(args, api, {
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/billing/`,
     ...(!include_headers && {
       credentials: "include",
