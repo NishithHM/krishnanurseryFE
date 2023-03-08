@@ -28,8 +28,7 @@ const Employee = () => {
     { label: "Admin", value: "admin" },
     { label: "Procurement Associate", value: "procurement" },
     { label: "Sales", value: "sales" },
-    // TODO - check the bill manager role in backend, its returning error with only the above three roles
-    { label: "Bill Manager", value: "BILL_MANAGER" },
+    { label: "Pre sales", value: "preSales" },
   ];
 
   const validForm =
