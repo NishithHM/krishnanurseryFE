@@ -49,11 +49,18 @@ export const billsApi = createApi({
       }),
       // bills page endpoints
       getAllPurchases: builder.query({
-        query: ({ page = 1, startDate, endDate }) => ({
-          url: "/history",
-          method: "GET",
-          params: { pageNumber: page, startDate, endDate },
-        }),
+        query: ({ page = 1, startDate, endDate, sortBy, sortType }) => {
+            const params=  { pageNumber: page, startDate, endDate }
+            if(sortBy){
+                params.sortBy = sortBy
+                params.sortType = sortType
+            }
+            return {
+              url: "/history",
+              method: "GET",
+              params: params
+            }
+        },
         invalidatesTags: ["purchaseHistory"],
       }),
       getAllPurchasesCount: builder.query({

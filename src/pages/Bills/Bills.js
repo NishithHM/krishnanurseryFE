@@ -63,11 +63,14 @@ const Bills = () => {
   const [searchInput, setSearchInput] = useState("");
   const [purchaseCount, setPurchaseCount] = useState(0);
 
+  const [sort, setSort] = useState({sortBy:'', sortType:-1})
+
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     page,
     startDate: filterDates.startDate,
     endDate: filterDates.endDate,
+    ...sort
   });
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     startDate: filterDates.startDate,
@@ -141,7 +144,7 @@ const Bills = () => {
   const TABLE_HEADER = [
     {
       value: "Date",
-      isSortable: false,
+      isSortable: true,
     },
 
     {
@@ -154,7 +157,8 @@ const Bills = () => {
     },
     {
       value: "Total Bill",
-      isSortable: false,
+      isSortable: true,
+      sortBy:'totalPrice'
     },
     {
       value: "",
@@ -165,9 +169,19 @@ const Bills = () => {
   const handleFilterChange = (filterDates) => {
     setFilterDates(filterDates);
   };
+
   const handleFilterReset = () => {
     setFilterDates(getRoundedDates());
   };
+
+  const sortData=(sortVal)=>{
+        setSort(prev=>({
+            ...prev,
+            sortBy: sortVal,
+            sortType: prev.sortType===1 ? 1 : -1,
+        }))
+  }
+ 
   return (
     <div>
       <div>
@@ -218,7 +232,7 @@ const Bills = () => {
         <Spinner />
       ) : (
         purchaseData.status === "fulfilled" && (
-          <Table data={[TABLE_HEADER, ...data]} />
+          <Table data={[TABLE_HEADER, ...data]} onSortBy={sortData} />
         )
       )}
 
