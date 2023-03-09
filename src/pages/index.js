@@ -7,7 +7,7 @@ import CustomerOnboarding from "./CustomerOnboarding";
 import AddProcurement from "./AddProcurement";
 import ProcurementList from "./ProcurementList";
 import AddBills from "./AddBills";
-
+import Bills from "./Bills";
 export {
   Login,
   Test,
@@ -17,5 +17,6 @@ export {
   CustomerOnboarding,
   AddProcurement,
   ProcurementList,
-  AddBills
+  AddBills,
+  Bills,
 };

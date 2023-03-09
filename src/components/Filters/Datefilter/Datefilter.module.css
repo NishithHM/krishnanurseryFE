@@ -20,6 +20,8 @@
 .buttonWrapper {
   height: fit-content;
   align-self: flex-end;
+  display: flex;
+  gap: 5px;
 }
 
 @media only screen and (max-width: 600px) {

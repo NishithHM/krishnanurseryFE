@@ -3,39 +3,41 @@ import DatePicker from "react-date-picker";
 import Button from "../../Button";
 import styles from "./Datefilter.module.css";
 
-const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
+const Datefilter = ({ onSubmit, onReset, closeFilters }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [isParentSet, setParentSet] = useState(false);
-  useEffect(() => {
-    setStartDate(startDateInput);
-    setEndDate(endDateInput);
-    setParentSet(true);
-  }, [startDateInput, endDateInput]);
 
-  useEffect(() => {
-    onChangeHandler();
-  }, [startDate, endDate]);
+  const formatDate = (date) => {
+    let today = new Date(date);
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
 
-  const onChangeHandler = () => {
-    const data = {
-      start_date: startDate,
-      end_date: endDate,
-    };
-    if(!isParentSet){
-      onChange(data);
+    if (mm < 10) {
+      mm = `0${mm}`;
     }
-  };
 
+    if (dd < 10) {
+      dd = `0${dd}`;
+    }
+    let formatted = `${yyyy}-${mm}-${dd}`;
+    return formatted;
+  };
   const onSubmitHandler = () => {
     const data = {
-      start_date: startDate,
-      end_date: endDate,
+      startDate: formatDate(startDate),
+      endDate: formatDate(endDate),
     };
 
     onSubmit(data);
   };
 
+  const onResetHandler = () => {
+    onReset();
+    closeFilters();
+    setStartDate(null);
+    setEndDate(null);
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.innerWrapper}>
@@ -43,7 +45,6 @@ const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
           <p className={styles.inputTitle}>Start Date</p>
           <DatePicker
             onChange={(e) => {
-              setParentSet(false);
               setStartDate(e);
             }}
             value={startDate}
@@ -62,7 +63,6 @@ const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
           <p className={styles.inputTitle}>End Date</p>
           <DatePicker
             onChange={(e) => {
-              setParentSet(false);
               setEndDate(e);
             }}
             value={endDate}
@@ -85,6 +85,14 @@ const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
           onClick={onSubmitHandler}
           disabled={!startDate || !endDate}
         />
+        {startDate && endDate && (
+          <Button
+            title="Reset"
+            type="alert"
+            onClick={onResetHandler}
+            disabled={!startDate || !endDate}
+          />
+        )}
       </div>
     </div>
   );
