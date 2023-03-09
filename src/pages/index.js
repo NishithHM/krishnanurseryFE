@@ -7,6 +7,7 @@ import CustomerOnboarding from "./CustomerOnboarding";
 import AddProcurement from "./AddProcurement";
 import ProcurementList from "./ProcurementList";
 import AddBills from "./AddBills";
+import Categories from "./Categories";
 
 export {
   Login,
@@ -17,5 +18,6 @@ export {
   CustomerOnboarding,
   AddProcurement,
   ProcurementList,
-  AddBills
+  AddBills,
+  Categories
 };

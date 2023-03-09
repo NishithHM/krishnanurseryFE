@@ -1,0 +1,21 @@
+.categoriesContainer{
+    display: flex;
+    margin: 10px;
+    padding: 10px;
+}
+
+.innerCategoriesContainer{
+    flex: 3;
+}
+
+.categoryTableWrapper{
+    margin: 10px;
+    width: 100%;
+    padding: 10px;
+    flex: 4;
+}
+
+.addCategoryBtn{
+    width: 12%;
+    float: right;
+}

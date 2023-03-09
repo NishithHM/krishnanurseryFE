@@ -14,11 +14,11 @@ function App() {
   const {lostAuth, user} = useSelector(rState=> rState.userSlice)
   const contextVal = isEmpty(user) ?  JSON.parse(sessionStorage.getItem('userData')) : user
   const [context, setContext] = useState(contextVal);
-//   useEffect(()=>{
-//     if(lostAuth){
-//         setContext({})
-//     }
-//   }, [lostAuth])
+  useEffect(()=>{
+    if(lostAuth){
+        setContext({})
+    }
+  }, [lostAuth])
   console.log(context, user, lostAuth)
   return (
     <div className="App">

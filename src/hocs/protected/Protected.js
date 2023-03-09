@@ -4,6 +4,7 @@ import { AuthContext } from "../../context";
 import {
   AccessManagement,
   AddProcurement,
+  Categories,
   CustomerOnboarding,
   Dashboard,
   Employee,
@@ -64,6 +65,11 @@ const Protected = () => {
               element={<ProcurementList />}
             />
             <Route path="/dashboard/add-bills" exact element={<AddBills />}/>
+             <Route
+              path="/dashboard/categories"
+              exact
+              element={<Categories />}
+            />
           </Routes>
         </div>
         <Footer />
