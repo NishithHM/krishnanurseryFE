@@ -18,7 +18,7 @@ export default function ScrollTable({ thead, tbody }) {
       </div>
       <div className={styles.scrollTable}>
         {tbody.length === 0 ? <div className={styles.noItemToDisplay}>No Items to display</div> :
-          <table className={styles.table}>
+          <table className={styles.table} id="printable-table">
             <tbody>
               {tbody && tbody.map((item, index) => {
                 return (

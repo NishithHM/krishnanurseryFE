@@ -10,6 +10,7 @@ import { useCheckoutCartMutation, useSubmitCartMutation, useUpdateCartMutation, 
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
 import ScrollTable from '../../components/Table/ScrollTable';
+import { InvoicePreview } from './InvoicePreview';
 
 export default function AddBills() {
 
@@ -51,9 +52,10 @@ export default function AddBills() {
     checkOutDone: false,
     submitDisable: false
   };
-
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
+  const [showPreview, setShowPreview] = useState(false);
+  const [invoiceNumber, setInvoiceNumber] = useState();
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] = useCheckoutCartMutation();
@@ -135,7 +137,7 @@ export default function AddBills() {
         let cartRows = [];
         customerCart.data.items.forEach((item) => {
           cartRows.push({
-            id: new Date().toISOString(),
+            id: new Date().toISOString() + Math.random(),
             procurementId: item.procurementId,
             procurementLabel: item.procurementName.en.name,
             variants: [{ label: item.variant.en.name, value: item.variant.variantId, maxPrice: item.mrp, minPrice: item.mrp }],
@@ -144,7 +146,7 @@ export default function AddBills() {
             mrp: item.mrp,
             price: item.rate,
             quantity: item.quantity,
-            minPrice: item.mrp
+            minPrice: item.minPrice
           })
         })
 
@@ -205,6 +207,13 @@ export default function AddBills() {
         tempVariant.push({ label: el.names.en.name, value: el._id, maxPrice: el.maxPrice, minPrice: el.minPrice });
       })
       tableRowClone.variants = tempVariant
+      /**Reset on plant selection */
+      tableRowClone.variantId = "";
+      tableRowClone.variantLabel = "";
+      tableRowClone.mrp = 0;
+      tableRowClone.minPrice = 0;
+      tableRowClone.price = 0;
+      tableRowClone.quantity = 1;
     }
 
     if (name === 'variantId') {
@@ -319,11 +328,13 @@ export default function AddBills() {
   const handleReset = () => {
     setTableRowData([tableRowBlank])
     setState(initialState)
+    setShowPreview(false)
   }
 
   const handleSubmit = async () => {
     const payload = {
-      roundOff: state.roundOff
+      roundOff: state.roundOff,
+      invoiceId: `${invoiceNumber}`
     }
 
     const confirmCart = await submitCart({ cartId: state.cartResponse._id, cartRoundOff: payload });
@@ -364,6 +375,12 @@ export default function AddBills() {
 
   }
 
+  const handleRoundOffValue = (e) => {
+    handleRoundOff(e)
+    setState((prev) => ({ ...prev, roundOff: e.target.value }))
+  }
+
+
   const isRowValid = (row) => {
     const price = row.price >= row.minPrice && row.price <= row.mrp;
 
@@ -395,11 +412,12 @@ export default function AddBills() {
   }
 
   const shouldSubmitDisable = () => {
-    if (state.checkOutDone) {
+    if (state.checkOutDone && !state.submitError.isExist) {
       return shouldCheckoutDisable()
     }
     return true;
   }
+  const today = new Date();
 
   const name = state.customerDetails && state.customerDetails.name ? state.customerDetails.name : state.customerName;
 
@@ -448,6 +466,7 @@ export default function AddBills() {
                     value={state.dateOfBirth}
                     onChange={dateChangeHandler}
                     clearable={false}
+                    maxDate={new Date(today.setDate(today.getDate() - 1))}
                     styles={{
                       label: {
                         fontSize: "18px",
@@ -515,23 +534,42 @@ export default function AddBills() {
         <BillDetails
           roundOff={state.roundOff}
           cartResponse={state.cartResponse}
-          onRoundOff={(e) => setState((prev) => ({ ...prev, roundOff: e.target.value }))}
+          onRoundOff={handleRoundOffValue}
           onBlur={(e) => handleRoundOff(e)}
         />
         <div className={styles.submitWrapper}>
           <div>
             {state.submitError.isExist && <div className={styles.error}>{state.submitError.error}</div>}
           </div>
-          <Button
-            type="primary"
-            title="Submit"
-            buttonType="submit"
-            onClick={handleSubmit}
-            disabled={shouldSubmitDisable()}
-            loading={submitLoading}
-          />
+          <div className={styles.submitBtnWrapper}>
+            <Button
+              type="primary"
+              title="Preview Invoice"
+              buttonType="submit"
+              onClick={() => setShowPreview(!showPreview)}
+              disabled={shouldSubmitDisable()}
+            />
+          </div>
         </div>
       </div>
+      <InvoicePreview
+        showPreview={showPreview}
+        onClose={() => setShowPreview(!showPreview)}
+        clientDetails={state.customerDetails}
+        cartData={tableRowData}
+        cartResponse={state.cartResponse}
+        invoiceNumber={invoiceNumber}
+        setInvoiceNumber={(num) => setInvoiceNumber(num)}
+      >
+        <Button
+          type="primary"
+          title="Submit"
+          buttonType="submit"
+          onClick={handleSubmit}
+          disabled={shouldSubmitDisable()}
+          loading={submitLoading}
+        />
+      </InvoicePreview>
     </div>
   )
 }
