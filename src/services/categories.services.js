@@ -9,10 +9,13 @@ export const categoriesApi = createApi({
     endpoints: (builder)=>{
         return {
             getAllCategories: builder.query({
-                query:({search})=>{
-                    const params = {}
+                query:({search,pageNumber,isCount})=>{
+                    const params = {pageNumber,isCount}
                     if(search){
                         params.search = search
+                    } 
+                    if(isCount){
+                        params.isCount = isCount
                     }
                     return{
                         url:`/getAll`,
@@ -29,9 +32,18 @@ export const categoriesApi = createApi({
                     }
                 },
                 invalidatesTags: ["categories"]
+            }),
+            createCategories: builder.mutation({
+                query:({body})=>({
+                    url:"/create",
+                    method:"POST",
+                    body
+                }),
+                invalidatesTags: ["categories"]
             })
+
         }
     }
 })
 
-export const {useGetAllCategoriesQuery, useDeleteCategoriesMutation} = categoriesApi
+export const {useGetAllCategoriesQuery, useDeleteCategoriesMutation, useCreateCategoriesMutation} = categoriesApi

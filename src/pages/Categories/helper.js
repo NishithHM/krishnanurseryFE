@@ -13,6 +13,8 @@ const requiredData = [
     )
   }
 
+  export const initialCategory = {id:"categoryName", value:""}
+
   export const getCategoriesTableBody = (data, onDeleteClick)=>{
     if(_.isEmpty(data)){
         return []

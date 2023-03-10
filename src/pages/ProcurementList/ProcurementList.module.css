@@ -140,3 +140,10 @@
 .tableInput:focus{
   border: 1px solid #EDECEB;
 }
+
+.procurementListHeader{
+  text-align: center;
+  font-size: 25px;
+  font-weight: 500;
+  color: #539c64;
+}

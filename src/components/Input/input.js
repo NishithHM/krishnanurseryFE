@@ -52,7 +52,6 @@ const Input = (props) => {
           onBlur={onInputBlur}
           onChange={(e) => onChange(e, id)}
           className={cx(styles.inputbox, { [`${styles.inputerror}`]: error, [`${styles.inputDisabled}`] : disabled })}
-          disabled={disabled}
         />
         {type === "password"  && (
           <i className={styles.passwordIcon} onClick={showPasswordHandler}>
