@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Input, Table, Button, Toaster } from '../../components';
+import React, { useState, useEffect, useRef } from 'react'
+import { Input, Button, Toaster } from '../../components';
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +10,8 @@ import { useCheckoutCartMutation, useSubmitCartMutation, useUpdateCartMutation, 
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
 import ScrollTable from '../../components/Table/ScrollTable';
-import { InvoicePreview } from './InvoicePreview';
+import { InvoicePreview, InvoiceSection } from './InvoicePreview';
+import { useReactToPrint } from 'react-to-print';
 
 export default function AddBills() {
 
@@ -56,6 +57,10 @@ export default function AddBills() {
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
   const [invoiceNumber, setInvoiceNumber] = useState();
+  const printRef = useRef();
+  // const invoiceRef = useRef();
+  const printEnabled = true;
+
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] = useCheckoutCartMutation();
@@ -65,12 +70,20 @@ export default function AddBills() {
 
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank])
+    setState((prev) => ({
+      ...prev,
+      checkOutDone: false
+    }))
   }
 
   const handleRemoveItem = (index) => {
     setTableRowData((prev) => (
       prev.filter((v, i) => i !== index)
     ));
+    setState((prev) => ({
+      ...prev,
+      checkOutDone: false
+    }))
   }
 
   const inputChangeHanlder = (event, id) => {
@@ -199,6 +212,11 @@ export default function AddBills() {
     let tableDataClone = [...tableRowData];
     let tableRowClone = { ...tableDataClone[index] }
 
+    setState((prev) => ({
+      ...prev,
+      checkOutDone: false
+    }))
+
     if (name === 'procurementId') {
       tableRowClone.procurementId = value.value;
       tableRowClone.procurementLabel = value.label;
@@ -232,11 +250,14 @@ export default function AddBills() {
     setTableRowData(tableDataClone)
   }
 
-
   const onBlur = (e, name, index) => {
     let tableDataClone = [...tableRowData];
     let tableRowClone = { ...tableDataClone[index] }
     const { value } = e.target;
+    setState((prev) => ({
+      ...prev,
+      checkOutDone: false
+    }))
 
     if (name === 'price') {
 
@@ -417,6 +438,11 @@ export default function AddBills() {
     }
     return true;
   }
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   const today = new Date();
 
   const name = state.customerDetails && state.customerDetails.name ? state.customerDetails.name : state.customerName;
@@ -552,6 +578,17 @@ export default function AddBills() {
           </div>
         </div>
       </div>
+      <div style={{ display: 'none' }}>
+        <div ref={printRef}>
+          <InvoiceSection
+            clientDetails={state.customerDetails}
+            cartData={tableRowData}
+            cartResponse={state.cartResponse}
+            invoiceNumber={invoiceNumber}
+            printEnabled={printEnabled}
+          />
+        </div>
+      </div>
       <InvoicePreview
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}
@@ -560,6 +597,7 @@ export default function AddBills() {
         cartResponse={state.cartResponse}
         invoiceNumber={invoiceNumber}
         setInvoiceNumber={(num) => setInvoiceNumber(num)}
+        handlePrintClick={handlePrint}
       >
         <Button
           type="primary"

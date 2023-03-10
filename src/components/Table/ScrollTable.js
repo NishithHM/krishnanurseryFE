@@ -2,7 +2,7 @@ import React from 'react'
 import styles from "./table.module.css";
 import cx from "classnames";
 
-export default function ScrollTable({ thead, tbody }) {
+export default function ScrollTable({ thead, tbody, scroll = true }) {
   return (
     <>
       <div>
@@ -16,9 +16,9 @@ export default function ScrollTable({ thead, tbody }) {
           </thead>
         </table>
       </div>
-      <div className={styles.scrollTable}>
+      <div className={cx(styles.scrollTable, styles.scrollTableWrapper)} style={{ maxHeight: scroll ? '426px' : 'auto', overflow: scroll ? 'auto' : 'visible' }}>
         {tbody.length === 0 ? <div className={styles.noItemToDisplay}>No Items to display</div> :
-          <table className={styles.table} id="printable-table">
+          <table className={cx(styles.table, styles.printableTable)}>
             <tbody>
               {tbody && tbody.map((item, index) => {
                 return (
