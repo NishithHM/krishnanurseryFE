@@ -147,3 +147,21 @@
   font-weight: 500;
   color: #539c64;
 }
+
+.delIcon{
+  background-color: #539c64;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  border: 0px;
+  color: #ffffff;
+  cursor: pointer;
+  float:right
+}
+
+.errorText{
+  color: #FF2400;
+  display: flex;
+  font-size: 15px;
+  padding-top: 10px;
+}
