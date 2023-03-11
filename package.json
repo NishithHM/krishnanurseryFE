@@ -2,6 +2,7 @@
   "name": "krishnanurseryfe",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://3.110.8.129:800",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
