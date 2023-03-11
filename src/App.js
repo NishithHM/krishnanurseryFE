@@ -1,7 +1,7 @@
 import Dropdown from "./components/Dropdown/Dropdown";
 import "./App.css";
 
-import { Login} from "./pages";
+import { Login } from "./pages";
 import { Route, Routes } from "react-router-dom";
 import { AuthContext } from "./context";
 import Protected from "./hocs/protected/Protected";
@@ -11,15 +11,15 @@ import { isEmpty } from "lodash";
 
 function App() {
   // dummy data sent to select components
-  const {lostAuth, user} = useSelector(rState=> rState.userSlice)
-  const contextVal = isEmpty(user) ?  JSON.parse(sessionStorage.getItem('userData')) : user
+  const { lostAuth, user } = useSelector(rState => rState.userSlice)
+  const contextVal = isEmpty(user) ? JSON.parse(sessionStorage.getItem('userData')) : user
   const [context, setContext] = useState(contextVal);
   useEffect(()=>{
     if(lostAuth){
         setContext({})
     }
   }, [lostAuth])
-  console.log(context, user, lostAuth)
+
   return (
     <div className="App">
       <AuthContext.Provider value={[context, setContext]}>

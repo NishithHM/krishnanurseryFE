@@ -32,7 +32,7 @@
 .formWrapper {
   display: flex;
   justify-content: flex-start;
-  align-items: flex-end;
+  /* align-items: flex-end; */
 }
 
 .formWrapper > div {
@@ -100,12 +100,27 @@
   margin: 40px 0px;
 }
 
-.submitWrapper > button {
+/* .submitWrapper > button {
   width: 15%;
   padding: 7px 20px;
 }
 
 .submitWrapper > button > span {
+  font-weight: 600;
+  font-size: 16px;
+} */
+
+.submitBtnWrapper {
+  display: flex;
+}
+
+.submitBtnWrapper > button {
+  margin: 0px 10px;
+  width: auto;
+  padding: 7px 20px;
+}
+
+.submitBtnWrapper > button > span {
   font-weight: 600;
   font-size: 16px;
 }
@@ -154,4 +169,125 @@
 .selectDropDown {
   padding: 4px;
   border-radius: 4px;
+}
+
+.modalContent {
+  min-width: 856px;
+}
+
+.clientDetailsWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.headerModal {
+  color: #539c64;
+  font-size: 2rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  line-height: 1rem;
+}
+
+.headerWrapperModal {
+  display: flex;
+  justify-content: center;
+}
+
+.companyDetails {
+  line-height: 24px;
+}
+
+.addressDetails {
+  padding: 10px 0px 16px 0px;
+}
+
+.billedTo {
+  padding: 26px 0px 16px 0px;
+}
+
+.lableValueDetails {
+  display: flex;
+}
+
+.lableValueDetails .label {
+  font-weight: 500;
+}
+
+.lableValueDetails .value {
+  margin: 0px 10px;
+}
+
+.dicountDetails {
+  display: flex;
+}
+
+.dicountDetails .lableValueDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.lableValueDetails .discountLabel {
+}
+
+.lableValueDetails .discountValue {
+  font-weight: 500;
+  margin: 0px 10px;
+}
+
+.invoiceSummary .lableValueDetails {
+  line-height: 24px;
+}
+
+.clientDetails {
+  line-height: 24px;
+}
+
+.invoiceSummary {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thankYouNote {
+  display: flex;
+  justify-content: center;
+  line-height: 24px;
+  color: #ff2400;
+}
+
+.modalAction {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modalAction button {
+  width: 15%;
+  margin: 0px 10px;
+  padding: 7px 20px;
+}
+
+.modalAction > button > span {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.printButton {
+  position: absolute;
+  right: 0;
+}
+
+.printButton button {
+  width: auto;
+  margin: 0px 10px;
+  padding: 7px 20px;
+}
+
+.printButton > button > span {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+@media print {
+  .modalContent {
+    padding: 10px;
+  }
 }
