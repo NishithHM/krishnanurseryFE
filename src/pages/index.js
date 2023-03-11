@@ -8,6 +8,8 @@ import AddProcurement from "./AddProcurement";
 import ProcurementList from "./ProcurementList";
 import AddBills from "./AddBills";
 import Bills from "./Bills";
+import Categories from "./Categories";
+
 export {
   Login,
   Test,
@@ -18,5 +20,6 @@ export {
   AddProcurement,
   ProcurementList,
   AddBills,
-  Bills,
+  Categories,
+  Bills
 };

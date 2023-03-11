@@ -83,11 +83,11 @@ const ProcurementList = () => {
   const [historyCount, setHistoryCount] = useState(0);
   const [variantRows, setVariantRows] = useState([rowInitState]);
   const [quantity, setQuantity] = useState("");
-  const[loaders, setLoaders] = useState(false)
-  const[quanityLoaders, setQuantityLoaders] = useState(false)
+  const [loaders, setLoaders] = useState(false);
+  const [quanityLoaders, setQuantityLoaders] = useState(false);
 
   const [values] = useContext(AuthContext);
-  const role = values.role
+  const role = values.role;
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
     search: searchInputDeb,
@@ -100,6 +100,7 @@ const ProcurementList = () => {
   const getProcurementCount = useGetProcurementsQuery({ isCount: true });
 
   const count = _.get(getProcurementCount, "data[0].count", 0);
+  console.log(count, "pro");
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
@@ -154,8 +155,6 @@ const ProcurementList = () => {
   const onIncrementPage = () => {
     setPage(page + 1);
   };
-
-
 
   const onHistoryPageChange = async (isAdd) => {
     const page = isAdd ? pageFilter + 1 : pageFilter - 1;
@@ -215,7 +214,7 @@ const ProcurementList = () => {
   };
 
   const onVariantSubmitHandler = async () => {
-    setLoaders(true)
+    setLoaders(true);
     const variants = variantRows.map((ele) => {
       return ele.reduce((acc, val) => {
         const obj = { [val.id]: val.value };
@@ -227,10 +226,10 @@ const ProcurementList = () => {
       body: { variants },
     });
     getProcurements.refetch();
-    if(res){
+    if (res) {
       toast.success("Variants added Successfully!");
     }
-    setLoaders(false)
+    setLoaders(false);
   };
 
   const onQuantityChangeHandler = (e) => {
@@ -238,32 +237,29 @@ const ProcurementList = () => {
   };
 
   const onQuantitySubmitHandler = async () => {
-    setQuantityLoaders(true)
+    setQuantityLoaders(true);
     const obj = { minimumQuantity: quantity };
     const res = await addMinimumQuantity({
       id: id,
       body: obj,
     });
     getProcurements.refetch();
-    if(res){
+    if (res) {
       toast.success("Quantity added Successfully!");
     }
-    setQuantityLoaders(false)
+    setQuantityLoaders(false);
   };
 
-  const disabledVariantsSubmit = useMemo(()=>{
-    const flattenedArray = variantRows.flatMap((ele)=> {
-      return ele
-    })
-     return flattenedArray.some((ele)=> !ele.value)
-  
-  }, [JSON.stringify(variantRows)])
-  
-
+  const disabledVariantsSubmit = useMemo(() => {
+    const flattenedArray = variantRows.flatMap((ele) => {
+      return ele;
+    });
+    return flattenedArray.some((ele) => !ele.value);
+  }, [JSON.stringify(variantRows)]);
 
   return (
     <div className={styles.container}>
-       <Toaster />
+      <Toaster />
       <div className={styles.innerContainer}>
         <div>
           <BackButton navigateTo={"/authorised/dashboard"} />
@@ -303,7 +299,7 @@ const ProcurementList = () => {
           />
         </div>
       </div>
-      {id && 
+      {id && (
         <div className={styles.tableProcurementListData}>
           {procurementListHistory?.length !== 0 && (
             <div className={styles.paginationContainerFilter}>
@@ -336,15 +332,20 @@ const ProcurementList = () => {
           )}
           <div>
             {id && (
-              <div>
-                <Filters
-                  startDateInput={startDate}
-                  endDateInput={endDate}
-                  onChange={onChangeHandler}
-                  onSubmit={onSubmitHandler}
-                />
-                {/* <Table data={[...tableHeaderHistory, ...procurementListFilter]} /> */}
-              </div>
+              <>
+                <div>
+                  <Filters
+                    startDateInput={startDate}
+                    endDateInput={endDate}
+                    onChange={onChangeHandler}
+                    onSubmit={onSubmitHandler}
+                  />
+                  {/* <Table data={[...tableHeaderHistory, ...procurementListFilter]} /> */}
+                </div>
+                <div className={styles.procurementListHeader}>
+                  <span>Procurement History</span>
+                </div>
+              </>
             )}
             {procurementListHistory?.length !== 0 ? (
               <div>
@@ -360,77 +361,80 @@ const ProcurementList = () => {
                 </div>
               )
             )}
-           
-           {role==="admin" &&
-           <>
-              <div>
-                <div
-                  className={styles.addButton}
-                  onClick={() => setVariantRows([...variantRows, rowInitState])}
-                >
-                  <div className={styles.plusIcon}> +</div>
-                </div>
-                <table className={styles.tableVariants}>
-                  <thead>
-                    {variantHeaders.map((ele) => (
-                      <th key={ele}>{ele}</th>
-                    ))}
-                  </thead>
-                  <tbody>
-                    {variantRows.map((row, rIndex) => (
-                      <tr key={rIndex}>
-                        {row.map((cell, cIndex) => (
-                          <td key={cell.id + cIndex}>
-                            <InputCell
-                              {...cell}
-                              rIndex={rIndex}
-                              cIndex={cIndex}
-                              onInputChange={(val) =>
-                                onVariantInputChange({ val, cIndex, rIndex })
-                              }
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className={styles.submitWrapper}>
-                <div className={styles.submitBtn}>
-                  <Button
-                    type="primary"
-                    title="Submit Variants"
-                    onClick={onVariantSubmitHandler}
-                    disabled={disabledVariantsSubmit}
-                    loading={loaders}
-                  />
-                </div>
-              </div>
-              <div className={styles.quantityWrapper}>
+
+            {role === "admin" && (
+              <>
                 <div>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    title="Minimum Quantity"
-                    onChange={onQuantityChangeHandler}
-                    value={quantity}
-                  />
+                  <div
+                    className={styles.addButton}
+                    onClick={() =>
+                      setVariantRows([...variantRows, rowInitState])
+                    }
+                  >
+                    <div className={styles.plusIcon}> +</div>
+                  </div>
+                  <table className={styles.tableVariants}>
+                    <thead>
+                      {variantHeaders.map((ele) => (
+                        <th key={ele}>{ele}</th>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {variantRows.map((row, rIndex) => (
+                        <tr key={rIndex}>
+                          {row.map((cell, cIndex) => (
+                            <td key={cell.id + cIndex}>
+                              <InputCell
+                                {...cell}
+                                rIndex={rIndex}
+                                cIndex={cIndex}
+                                onInputChange={(val) =>
+                                  onVariantInputChange({ val, cIndex, rIndex })
+                                }
+                              />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                <div className={styles.submitQuantity}>
-                  <Button
-                    type="primary"
-                    title="Submit Quantity"
-                    onClick={onQuantitySubmitHandler}
-                    disabled={!quantity}
-                    loading={quanityLoaders}
-                  />
+                <div className={styles.submitWrapper}>
+                  <div className={styles.submitBtn}>
+                    <Button
+                      type="primary"
+                      title="Submit Variants"
+                      onClick={onVariantSubmitHandler}
+                      disabled={disabledVariantsSubmit}
+                      loading={loaders}
+                    />
+                  </div>
                 </div>
-              </div>
-            </>}
+                <div className={styles.quantityWrapper}>
+                  <div>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      title="Minimum Quantity"
+                      onChange={onQuantityChangeHandler}
+                      value={quantity}
+                    />
+                  </div>
+                  <div className={styles.submitQuantity}>
+                    <Button
+                      type="primary"
+                      title="Submit Quantity"
+                      onClick={onQuantitySubmitHandler}
+                      disabled={!quantity}
+                      loading={quanityLoaders}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
-      }
+      )}
     </div>
   );
 };

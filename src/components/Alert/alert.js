@@ -13,8 +13,8 @@ const Alert = ({ handleConfirm, handleCancel }) => {
           </div>
           <span>Are you sure to delete access?</span>
         </div>
-        <div className={styles.subtext}>
-          <span>Warning: This cannot be undone</span>
+        <div clsasName={styles.subtext}>
+          <span><strong>Warning:</strong> This cannot be undone</span>
         </div>
         <div className={styles.button}>
           <div className={styles.buttonwidth}>
