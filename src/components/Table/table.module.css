@@ -51,3 +51,9 @@
   font-weight: 500;
   align-items: center;
 }
+
+@media print {
+  #printable-table {
+    background-color: #ffffff;
+  }
+}
