@@ -10,7 +10,8 @@ import {
   Employee,
   ProcurementList,
   Test,
-  AddBills
+  AddBills,
+  Bills,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -64,6 +65,8 @@ const Protected = () => {
               exact
               element={<ProcurementList />}
             />
+            
+            <Route path="/dashboard/bills" exact element={<Bills />} />
             <Route path="/dashboard/add-bills" exact element={<AddBills />}/>
              <Route
               path="/dashboard/categories"
