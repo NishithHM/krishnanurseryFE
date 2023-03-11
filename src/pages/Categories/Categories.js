@@ -27,6 +27,7 @@ const tableHeader = [
       id: new Date().toISOString(),
       isSortable: true,
       value: "Category Name",
+      sortBy:"categoryName"
     },
     {
       value: "Created On",
@@ -46,10 +47,12 @@ const Categories = () => {
   const [addInputCategoryKannada, setInputCategoryKannada] = useState("")
   const [category, setCategory] = useState(false);
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState({sortBy: "", sortType:-1})
 
   const { data } = useGetAllCategoriesQuery({
     search: search,
     pageNumber: page,
+    ...sort
   });
   const getCategoryCount = useGetAllCategoriesQuery({ isCount: true });
   const count = _.get(getCategoryCount, "data[0].count", 0);
@@ -129,6 +132,19 @@ const Categories = () => {
     }
   }
 
+  const onSortClick = (sortVal)=>{
+      setSort((prev)=>{
+        return{
+          ...prev,
+          sortBy: sortVal,
+          sortType: prev.sortType === 1 ? -1 : 1
+        }
+      })
+
+  }
+  console.log(sort)
+  
+
   return (
     <div className={styles.categoriesContainer}>
       <Toaster/>
@@ -176,7 +192,7 @@ const Categories = () => {
         <div className={styles.categoryTableWrapper}>
           <Table
             data={[...tableHeader, ...tableBody]}
-            onSortBy={(sort) => console.log(sort)}
+            onSortBy={onSortClick}
           />
         </div>
         <Modal isOpen={deleteCategory} contentLabel="Delete User">

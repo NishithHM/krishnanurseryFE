@@ -9,11 +9,17 @@ export const categoriesApi = createApi({
     endpoints: (builder)=>{
         return {
             getAllCategories: builder.query({
-                query:({search,pageNumber,isCount})=>{
+                query:({search,pageNumber,isCount,sortBy,sortType})=>{
                     const params = {pageNumber,isCount}
                     if(search){
                         params.search = search
                     } 
+                    if(sortBy){
+                        params.sortBy = sortBy
+                    }
+                    if(sortType){
+                        params.sortType = sortType
+                    }
                     if(isCount){
                         params.isCount = isCount
                     }
