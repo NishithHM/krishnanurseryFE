@@ -63,14 +63,19 @@ const Bills = () => {
   const [searchInput, setSearchInput] = useState("");
   const [purchaseCount, setPurchaseCount] = useState(0);
 
-  const [sort, setSort] = useState({sortBy:'', sortType:-1})
+  const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "asc" });
+
+  useEffect(() => {
+    console.log(sort);
+  }, [sort]);
 
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     page,
     startDate: filterDates.startDate,
     endDate: filterDates.endDate,
-    ...sort
+    sortBy: sort.sortBy,
+    sortType: sort.sortType === "asc" ? 1 : -1,
   });
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     startDate: filterDates.startDate,
@@ -145,6 +150,7 @@ const Bills = () => {
     {
       value: "Date",
       isSortable: true,
+      sortBy: "updatedAt",
     },
 
     {
@@ -158,7 +164,7 @@ const Bills = () => {
     {
       value: "Total Bill",
       isSortable: true,
-      sortBy:'totalPrice'
+      sortBy: "totalPrice",
     },
     {
       value: "",
@@ -174,14 +180,14 @@ const Bills = () => {
     setFilterDates(getRoundedDates());
   };
 
-  const sortData=(sortVal)=>{
-        setSort(prev=>({
-            ...prev,
-            sortBy: sortVal,
-            sortType: prev.sortType===1 ? 1 : -1,
-        }))
-  }
- 
+  const sortData = (sortVal) => {
+    console.log(sortVal);
+    setSort((prev) => ({
+      sortBy: sortVal,
+      sortType: prev.sortType === "asc" ? "desc" : "asc",
+    }));
+  };
+
   return (
     <div>
       <div>
