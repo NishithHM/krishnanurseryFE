@@ -44,13 +44,14 @@ export const InvoiceSection = (props) => {
     cartData,
     cartResponse,
     invoiceNumber,
-    printEnabled
+    printEnabled,
+    roundOff
   } = props;
 
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
-  const invoiceHeaderWithMRP = [
+  const invoiceHeaderWithRate = [
     { value: "S. No.", width: '10%' },
     { value: "Item Purchased", width: '40%' },
     { value: "MRP", width: '10%' },
@@ -59,10 +60,10 @@ export const InvoiceSection = (props) => {
     { value: "Sub Total", width: '20%' },
   ]
 
-  const invoiceHeaderWithOutMRP = [
+  const invoiceHeaderWithOutRate = [
     { value: "S. No.", width: '10%' },
     { value: "Item Purchased", width: '40%' },
-    { value: "Rate", width: '15%' },
+    { value: "MRP", width: '15%' },
     { value: "Quantity", width: '15%' },
     { value: "Sub Total", width: '20%' },
   ]
@@ -72,29 +73,29 @@ export const InvoiceSection = (props) => {
   useEffect(() => {
 
     let newCartList = [];
-    let showMRPTemp = false;
+    let discounted = false;
 
     for (let index = 0; index < cartData.length; index++) {
       if (cartData[index].mrp !== cartData[index].price) {
-        showMRPTemp = true;
+        discounted = true;
         break;
       }
     }
 
-    if (showMRPTemp) {
-      setInvoiceHeader(invoiceHeaderWithOutMRP)
+    if (discounted) {
+      setInvoiceHeader(invoiceHeaderWithRate)
     } else {
-      setInvoiceHeader(invoiceHeaderWithMRP)
+      setInvoiceHeader(invoiceHeaderWithOutRate)
     }
 
     cartData.forEach((el, index) => {
       let val = []
       val.push({ value: index + 1 })
       val.push({ value: el.procurementLabel })
-      if (!showMRPTemp) {
-        val.push({ value: el.mrp })
+      val.push({ value: el.mrp })
+      if (discounted) {
+        val.push({ value: el.price })
       }
-      val.push({ value: el.price })
       val.push({ value: el.quantity })
       val.push({ value: el.price * el.quantity })
       newCartList.push(val)
@@ -173,12 +174,12 @@ export const InvoiceSection = (props) => {
 
         <div className={styles.dicountDetails}>
           <div className={styles.lableValueDetails}>
-            {cartResponse.discount + cartResponse.roundOff > 0 && <div className={styles.label}>Discount Price: </div>}
+            {cartResponse.discount + roundOff > 0 && <div className={styles.label}>Discount Price: </div>}
             <div className={styles.label}>Total Price: </div>
           </div>
 
           <div className={styles.lableValueDetails}>
-            {cartResponse.discount + cartResponse.roundOff > 0 && <div className={styles.discountValue}><b>&#x20B9;{cartResponse.discount + cartResponse.roundOff}</b></div>}
+            {cartResponse.discount + roundOff > 0 && <div className={styles.discountValue}><b>&#x20B9;{cartResponse.discount + roundOff}</b></div>}
             <div className={styles.discountValue}><b>&#x20B9;{cartResponse.totalPrice}</b></div>
           </div>
         </div>
