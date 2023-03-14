@@ -12,7 +12,8 @@ import { toast } from "react-toastify";
 import ScrollTable from '../../components/Table/ScrollTable';
 import { InvoicePreview, InvoiceSection } from './InvoicePreview';
 import { useReactToPrint } from 'react-to-print';
-
+import { useContext } from 'react';
+import { AuthContext } from '../../context';
 export default function AddBills() {
 
   const tableRowBlank = {
@@ -67,6 +68,7 @@ export default function AddBills() {
   const [updateCart] = useUpdateCartMutation();
   const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
+  const [auth] = useContext(AuthContext)
 
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank])
@@ -609,6 +611,7 @@ export default function AddBills() {
         roundOff={state.roundOff}
         setInvoiceNumber={(num) => setInvoiceNumber(num)}
         handlePrintClick={handlePrint}
+        billedBy={auth.name}
       >
         <Button
           type="primary"

@@ -45,7 +45,8 @@ export const InvoiceSection = (props) => {
     cartResponse,
     invoiceNumber,
     printEnabled,
-    roundOff
+    roundOff,
+    billedBy
   } = props;
 
   const [cartList, setCartList] = useState();
@@ -169,7 +170,7 @@ export const InvoiceSection = (props) => {
       <div className={styles.invoiceSummary}>
         <div className={styles.lableValueDetails}>
           <div className={styles.label}>Billed By:</div>
-          <div className={styles.value}>Uday Kiran</div>
+          <div className={styles.value}>{billedBy}</div>
         </div>
 
         <div className={styles.dicountDetails}>
@@ -179,8 +180,8 @@ export const InvoiceSection = (props) => {
           </div>
 
           <div className={styles.lableValueDetails}>
-            {cartResponse.discount + roundOff > 0 && <div className={styles.discountValue}><b>&#x20B9;{cartResponse.discount + roundOff}</b></div>}
-            <div className={styles.discountValue}><b>&#x20B9;{cartResponse.totalPrice}</b></div>
+            {cartResponse.discount + roundOff > 0 && <div className={styles.discountValue}><b>&#x20B9;{cartResponse.discount + parseInt(roundOff, 10)}</b></div>}
+            <div className={styles.discountValue}><b>&#x20B9;{cartResponse.totalPrice- roundOff}</b></div>
           </div>
         </div>
       </div>
