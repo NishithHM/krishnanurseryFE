@@ -1,22 +1,22 @@
 import React from "react";
 import styles from "./table.module.css";
 import cx from "classnames";
-import sort from "../../assets/images/sort.png"
+import sort from "../../assets/images/sort.png";
 
-const Table = ({ data, onSortBy }) => {
+const Table = ({ data, onSortBy}) => {
 
   return (
     <div>
       <table className={styles.table}>
       <tbody>
-        {data.map((rows, rIndex) => (
+        {data.map((rows, rIndex, id) => (
             <tr
               key={rIndex}
               className={cx(
                 styles.tableCommon,
-                { [`${styles.tableHeader}`]: rIndex === 0 },
+                { [`${styles.tableHeader}`]: rIndex === 0},
                 { [`${styles.tableDataCommon}`]: rIndex !== 0 },
-                { [`${styles.tableColorWhite}`]: rIndex % 2 == 0 }
+                { [`${styles.tableColorWhite}`]: rIndex % 2 == 0}
               )}
             >
               {rows.map((dataVal, dIndex) => (
