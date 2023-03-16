@@ -20,6 +20,7 @@ import {
   useGetAllPurchasesQuery,
   useSearchPurchaseMutation,
 } from "../../services/bills.service";
+import { InvoicePreview } from "../../components/InvoicePreviewModal/InvoicePreview";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -57,20 +58,23 @@ const Bills = () => {
   const [data, setData] = useState([]);
 
   const [filterDates, setFilterDates] = useState(getRoundedDates());
-  const [deleteUser, setDeleteUser] = useState(false);
-  const [deleteUserUid, setDeleteUserUid] = useState(null);
 
   const [searchInput, setSearchInput] = useState("");
   const [purchaseCount, setPurchaseCount] = useState(0);
 
-  const [sort, setSort] = useState({sortBy:'', sortType:-1})
+  const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "asc" });
+
+  // billing modal
+  const [showPreview, setShowPreview] = useState(false);
+  const [invoiceDetail, setInvoiceDetail] = useState(null);
 
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     page,
     startDate: filterDates.startDate,
     endDate: filterDates.endDate,
-    ...sort
+    sortBy: sort.sortBy,
+    sortType: sort.sortType === "asc" ? 1 : -1,
   });
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     startDate: filterDates.startDate,
@@ -87,7 +91,8 @@ const Bills = () => {
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
-              console.log(purchase);
+              setShowPreview(true);
+              setInvoiceDetail(purchase);
             }}
           >
             View Details
@@ -145,6 +150,7 @@ const Bills = () => {
     {
       value: "Date",
       isSortable: true,
+      sortBy: "updatedAt",
     },
 
     {
@@ -158,7 +164,7 @@ const Bills = () => {
     {
       value: "Total Bill",
       isSortable: true,
-      sortBy:'totalPrice'
+      sortBy: "totalPrice",
     },
     {
       value: "",
@@ -174,14 +180,22 @@ const Bills = () => {
     setFilterDates(getRoundedDates());
   };
 
-  const sortData=(sortVal)=>{
-        setSort(prev=>({
-            ...prev,
-            sortBy: sortVal,
-            sortType: prev.sortType===1 ? 1 : -1,
-        }))
-  }
- 
+  const sortData = (sortVal) => {
+    console.log(sortVal);
+    setSort((prev) => ({
+      sortBy: sortVal,
+      sortType: prev.sortType === "asc" ? "desc" : "asc",
+    }));
+  };
+  const formatInvoiceItems = (data) => {
+    return data.map((item) => ({
+      procurementLabel: item.procurementName.en.name,
+      price: item.rate,
+      quantity: item.quantity,
+    }));
+    // return data;
+  };
+
   return (
     <div>
       <div>
@@ -246,6 +260,30 @@ const Bills = () => {
           handleConfirm={() => deleteUserHandler(deleteUserUid)}
         />
       </Modal> */}
+
+      {showPreview && invoiceDetail && (
+        <InvoicePreview
+          showPreview={showPreview}
+          onClose={() => setShowPreview(!showPreview)}
+          clientDetails={{
+            name: invoiceDetail.customerName,
+            phoneNumber: invoiceDetail.customerNumber,
+          }}
+          invoiceDetails={{
+            invoiceDate: invoiceDetail.createdAt,
+            billedBy: invoiceDetail.soldBy.name,
+          }}
+          cartData={formatInvoiceItems(invoiceDetail.items)}
+          cartResponse={{
+            discount: invoiceDetail.discount,
+            roundOff: invoiceDetail.roundOff,
+            totalPrice: invoiceDetail.totalPrice,
+          }}
+          invoiceNumber={"123"}
+          setInvoiceNumber={() => {}}
+          handlePrintClick={null}
+        />
+      )}
     </div>
   );
 };
