@@ -17,7 +17,6 @@ import { toast } from "react-toastify";
 import ScrollTable from '../../components/Table/ScrollTable';
 import { InvoicePreview, InvoiceSection } from './InvoicePreview';
 import { useReactToPrint } from 'react-to-print';
-import { useContext } from 'react';
 import { AuthContext } from '../../context';
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
