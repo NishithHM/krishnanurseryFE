@@ -1,40 +1,47 @@
-import React from 'react'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Dropdown } from "../../components"
+import React, { useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown } from "../../components";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import styles from "./AddBills.module.css";
+import { AuthContext } from "../../context";
 
-export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) => {
-
+export const CartTableRow = ({
+  onInputChange,
+  handleRemoveItem,
+  item,
+  onBlur,
+}) => {
   const onChangeHandler = (value, name) => {
-    onInputChange(value, name)
+    onInputChange(value, name);
   };
 
   const total = item.price * item.quantity;
 
-  const selectedProcurement = { label: item.procurementLabel, value: item.procurementId };
+  const selectedProcurement = {
+    label: item.procurementLabel,
+    value: item.procurementId,
+  };
   const selectedVariant = { label: item.variantLabel, value: item.variantId };
 
   return (
     <tr>
-      <td width={`120px`}>
+      <td>
         <Dropdown
-          onChange={(value) => onChangeHandler(value, 'procurementId')}
+          onChange={(value) => onChangeHandler(value, "procurementId")}
           value={selectedProcurement}
           url="/api/procurements/getAll"
           apiDataPath={{ label: "names.en.name", value: "_id" }}
           id={`procurement_${item.id}`}
         />
       </td>
-      <td width={`170px`}>
+      <td>
         <Dropdown
           canCreate={false}
           value={selectedVariant}
           data={item.variants}
-          onChange={(value) => onChangeHandler(value, 'variantId')}
+          onChange={(value) => onChangeHandler(value, "variantId")}
           id={`variant_${item.id}`}
         />
-
       </td>
       <td>
         <div>{Number(item.mrp)}</div>
@@ -45,8 +52,8 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
           name="price"
           type="number"
           className={styles.cartInput}
-          onChange={(e) => onChangeHandler(e.target.value, 'price')}
-          onBlur={(e) => onBlur(e, 'price')}
+          onChange={(e) => onChangeHandler(e.target.value, "price")}
+          onBlur={(e) => onBlur(e, "price")}
         />
       </td>
       <td>
@@ -56,11 +63,12 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
           type="number"
           className={styles.cartInput}
           min="1"
-          onChange={(e) => onChangeHandler(e.target.value, 'quantity')}
-          onBlur={(e) => onBlur(e, 'quantity')} />
+          onChange={(e) => onChangeHandler(e.target.value, "quantity")}
+          onBlur={(e) => onBlur(e, "quantity")}
+        />
       </td>
       <td>
-        <div>{isNaN(total) ? '' : total}</div>
+        <div>{isNaN(total) ? "" : total}</div>
       </td>
       <td align="center">
         <button className={styles.iconButton} onClick={handleRemoveItem}>
@@ -68,8 +76,8 @@ export const CartTableRow = ({ onInputChange, handleRemoveItem, item, onBlur }) 
         </button>
       </td>
     </tr>
-  )
-}
+  );
+};
 
 export const CartTableHeader = () => {
   return (
@@ -84,10 +92,11 @@ export const CartTableHeader = () => {
         <th>Delete</th>
       </tr>
     </thead>
-  )
-}
+  );
+};
 
 export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
+  const [userCtx, setContext] = useContext(AuthContext);
 
   let subTotal = 0;
   if (cartResponse.totalPrice) {
@@ -104,22 +113,24 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
         <div>Discount</div>
         <span>&#x20B9;{cartResponse?.discount}</span>
       </div>
-      <div className={styles.billFigure}>
-        <div>Round Off</div>
-        <span>&#x20B9;</span>
-        <input
-          value={roundOff}
-          name="roundOff"
-          type="number"
-          className={styles.cartInput}
-          onChange={onRoundOff}
-          onBlur={onBlur}
-        />
-      </div>
+      {userCtx.role === "sales" && (
+        <div className={styles.billFigure}>
+          <div>Round Off</div>
+          <span>&#x20B9;</span>
+          <input
+            value={roundOff}
+            name="roundOff"
+            type="number"
+            className={styles.cartInput}
+            onChange={onRoundOff}
+            onBlur={onBlur}
+          />
+        </div>
+      )}
       <div className={styles.billFigure}>
         <div>Total</div>
-        <span>&#x20B9;{isNaN(subTotal) ? '' : subTotal}</span>
+        <span>&#x20B9;{isNaN(subTotal) ? "" : subTotal}</span>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -38,8 +38,8 @@
 }
 
 .scrollTable {
-  max-height: 426px;
-  overflow: auto;
+  /* max-height: 426px;
+  overflow: auto; */
 }
 
 .noItemToDisplay {
@@ -53,7 +53,15 @@
 }
 
 @media print {
-  #printable-table {
-    background-color: #ffffff;
+  .printableTable {
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .scrollTableWrapper {
+    height: auto !important;
+    overflow: auto !important;
+    page-break-before: auto;
+    -webkit-print-color-adjust: exact;
   }
 }

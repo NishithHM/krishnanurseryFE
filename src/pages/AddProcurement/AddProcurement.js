@@ -132,8 +132,9 @@ const AddProcurement = () => {
     if (state.addPlantName?.__isNew__) {
       body.nameInKannada = state.addPlantKannada;
       body.nameInEnglish = state.addPlantName.label;
-
-      const res = await createProcurements({ body });
+      let formData = new FormData();
+      formData.append('body', JSON.stringify(body))
+      const res = await createProcurements({ body:formData });
 
       if (res.error) {
         toast.error("Unable to Add...");
@@ -163,7 +164,9 @@ const AddProcurement = () => {
       // call create api
     } else {
       const id = state.addPlantName?.value;
-      const res = await updateProcurements({ body, id });
+      let formData = new FormData();
+      formData.append('body', JSON.stringify(body))
+      const res = await updateProcurements({ body: formData, id });
 
       if (res.error) {
         toast.error("Unable to Add...");

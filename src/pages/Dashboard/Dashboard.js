@@ -14,11 +14,12 @@ import { AuthContext } from "../../context/AuthContext/authContext";
 const Dashboard = () => {
   const [values] = useContext(AuthContext);
 
-  console.log(values)
+  // console.log(values);
   const USER_ROLES = {
     admin: "admin",
     procurement: "procurement",
     sales: "sales",
+    preSales: "preSales",
   };
   const DashboardData = [
     {
@@ -61,7 +62,7 @@ const Dashboard = () => {
       title: "Add Bills",
       tile_img: billsImg,
       path: "add-bills",
-      allowed: [USER_ROLES.sales],
+      allowed: [USER_ROLES.sales, USER_ROLES.preSales],
     },
     {
       title: "Sales",
@@ -81,7 +82,7 @@ const Dashboard = () => {
   return (
     <div className={styles.gridContainer}>
       {data.map((e) => (
-        <Link  to={!e.isDisabled && e.path} key={e.path}>
+        <Link to={!e.isDisabled && e.path} key={e.path}>
           <LandingTile
             image={e.tile_img}
             title={e.title}
