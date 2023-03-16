@@ -14,11 +14,11 @@ import {
 } from "../../services/bills.service";
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
-import ScrollTable from "../../components/Table/ScrollTable";
-import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
-import { useReactToPrint } from "react-to-print";
-import { AuthContext } from "../../context";
-
+import ScrollTable from '../../components/Table/ScrollTable';
+import { InvoicePreview, InvoiceSection } from './InvoicePreview';
+import { useReactToPrint } from 'react-to-print';
+import { useContext } from 'react';
+import { AuthContext } from '../../context';
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
 
@@ -77,6 +77,7 @@ export default function AddBills() {
   const [updateCart] = useUpdateCartMutation();
   const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
+  const [auth] = useContext(AuthContext)
 
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank]);
@@ -197,10 +198,12 @@ export default function AddBills() {
           nameDisabled: true,
           showDOB: false,
           newCustomer: false,
-        }));
+          checkOutDone: false,
+          roundOff: 0
+        }))
         return;
       }
-
+      setTableRowData([tableRowBlank])
       setState((prev) => ({
         ...prev,
         customerDetails: customerDetails.data,
@@ -208,8 +211,12 @@ export default function AddBills() {
         nameDisabled: true,
         showDOB: false,
         newCustomer: false,
-      }));
+        roundOff: 0,
+        checkOutDone: false,
+        cartResponse: {}
+      }))
     } else {
+      setTableRowData([tableRowBlank])
       setState((prev) => ({
         ...prev,
         customerDetails: {},
@@ -217,7 +224,10 @@ export default function AddBills() {
         nameDisabled: false,
         showDOB: true,
         newCustomer: true,
-      }));
+        roundOff: 0,
+        checkOutDone: false,
+        cartResponse: {}
+      }))
     }
   };
 
@@ -694,6 +704,7 @@ export default function AddBills() {
             cartResponse={state.cartResponse}
             invoiceNumber={invoiceNumber}
             printEnabled={printEnabled}
+            roundOff={state.roundOff}
           />
         </div>
       </div>
@@ -705,8 +716,10 @@ export default function AddBills() {
         cartData={tableRowData}
         cartResponse={state.cartResponse}
         invoiceNumber={invoiceNumber}
+        roundOff={state.roundOff}
         setInvoiceNumber={(num) => setInvoiceNumber(num)}
         handlePrintClick={handlePrint}
+        billedBy={auth.name}
       >
         <Button
           type="primary"
