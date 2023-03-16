@@ -28,21 +28,28 @@ import debounce from "lodash/debounce";
 import dayjs from "dayjs";
 import { AuthContext } from "../../context";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ScrollTable from "../../components/Table/ScrollTable";
 
 const tableHeader = [
   [
     {
       id: new Date().toISOString(),
       value: " Last Procured On",
+      isSortable: true,
+      sortBy: "lastProcuredOn"
     },
     {
       value: "Plant Name",
+      isSortable: true,
+      sortBy: "plantName",
     },
     {
       value: "Total Quantity",
     },
     {
-      value: "Remaining Quantity ₹",
+      value: "Remaining Quantity",
     },
     {
       value: "",
@@ -50,25 +57,33 @@ const tableHeader = [
   ],
 ];
 
-const tableHeaderHistory = [
-  [
-    {
-      id: new Date().toISOString(),
-      value: "Procured On",
-    },
-    {
-      value: "Total Quantity",
-    },
-    {
-      value: "Vendor Name",
-    },
-    {
-      value: "Vendor Contact",
-    },
-    {
-      value: "Price Per Plant ₹",
-    },
-  ],
+// const tableHeaderHistory = [
+//   [
+//     {
+//       id: new Date().toISOString(),
+//       value: "Procured On"
+//     },
+//     {
+//       value: "Total Quantity"
+//     },
+//     {
+//       value: "Vendor Name"
+//     },
+//     {
+//       value: "Vendor Contact"
+//     },
+//     {
+//       value: "Price Per Plant ₹",
+//     }
+//   ],
+// ];
+
+const billingHistoryHeader = [
+  { value: "Procured On", width: "20%" },
+  { value: "Total Quantity", width: "20%" },
+  { value: "Vendor Name", width: "20%" },
+  { value: "Vendor Contact", width: "20%" },
+  { value: "Price Per Plant ₹", width: "20%" },
 ];
 
 const ProcurementList = () => {
@@ -85,12 +100,15 @@ const ProcurementList = () => {
   const [quantity, setQuantity] = useState("");
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
+  const [sort, setSort] = useState({ sortBy: "", sortType: -1 });
+  const [error, setError] = useState(false);
 
   const [values] = useContext(AuthContext);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
     search: searchInputDeb,
+    ...sort,
   });
 
   const [getProcurementHistory] = useGetProcurementHistoryMutation();
@@ -130,7 +148,7 @@ const ProcurementList = () => {
           type: "text",
         });
         row.push({ value: ele.maxPrice, id: "maxPrice", type: "number" });
-        row.push({ value: ele.minPrice, id: "maxPrice", type: "number" });
+        row.push({ value: ele.minPrice, id: "minPrice", type: "number" });
         return row;
       });
       setVariantRows(mappedVariants);
@@ -196,9 +214,14 @@ const ProcurementList = () => {
     });
     setHistoryCount(resCount.data[0]?.count);
 
-    if (res) {
+    if (res.data) {
       const body = await getTableBody(res.data);
       setProcurementListHistory(body);
+      setError("");
+    }
+    if (res.error) {
+      toast.error("Unable to Add...");
+      setError(res?.error?.data.error);
     }
   };
 
@@ -221,6 +244,8 @@ const ProcurementList = () => {
         return { ...acc, ...obj };
       }, {});
     });
+    console.log(variants, "here");
+    console.log(variantRows, "here");
     const res = await addProcurementVariants({
       id: id,
       body: { variants },
@@ -257,6 +282,20 @@ const ProcurementList = () => {
     return flattenedArray.some((ele) => !ele.value);
   }, [JSON.stringify(variantRows)]);
 
+  const onSortClickHandler = (val) => {
+    setSort((prev) => {
+      return {
+        ...prev,
+        sortBy: val,
+        sortType: prev.sortType === 1 ? -1 : 1,
+      };
+    });
+  };
+
+  const onDeleteHandler = (index) => {
+    setVariantRows((prev) => prev.filter((val, i) => i !== index));
+  };
+  console.log(variantRows);
   return (
     <div className={styles.container}>
       <Toaster />
@@ -295,7 +334,7 @@ const ProcurementList = () => {
         <div className={styles.tablewrapper}>
           <Table
             data={[...tableHeader, ...tableBody]}
-            onSortBy={(sort) => console.log(sort)}
+            onSortBy={onSortClickHandler}
           />
         </div>
       </div>
@@ -349,8 +388,9 @@ const ProcurementList = () => {
             )}
             {procurementListHistory?.length !== 0 ? (
               <div>
-                <Table
-                  data={[...tableHeaderHistory, ...procurementListHistory]}
+                <ScrollTable
+                  thead={billingHistoryHeader}
+                  tbody={procurementListHistory}
                 />
               </div>
             ) : (
@@ -381,20 +421,35 @@ const ProcurementList = () => {
                     </thead>
                     <tbody>
                       {variantRows.map((row, rIndex) => (
-                        <tr key={rIndex}>
-                          {row.map((cell, cIndex) => (
-                            <td key={cell.id + cIndex}>
-                              <InputCell
-                                {...cell}
-                                rIndex={rIndex}
-                                cIndex={cIndex}
-                                onInputChange={(val) =>
-                                  onVariantInputChange({ val, cIndex, rIndex })
-                                }
-                              />
-                            </td>
-                          ))}
-                        </tr>
+                        <>
+                          <tr key={rIndex}>
+                            {row.map((cell, cIndex) => (
+                              <>
+                                <td key={cell.id + cIndex}>
+                                  <InputCell
+                                    {...cell}
+                                    rIndex={rIndex}
+                                    cIndex={cIndex}
+                                    onInputChange={(val) =>
+                                      onVariantInputChange({
+                                        val,
+                                        cIndex,
+                                        rIndex,
+                                      })
+                                    }
+                                  />
+                                </td>
+                              </>
+                            ))}
+
+                            <button
+                              className={styles.delIcon}
+                              onClick={() => onDeleteHandler(rIndex)}
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </tr>
+                        </>
                       ))}
                     </tbody>
                   </table>
@@ -410,6 +465,7 @@ const ProcurementList = () => {
                     />
                   </div>
                 </div>
+                <span className={styles.errorText}>{error}</span>
                 <div className={styles.quantityWrapper}>
                   <div>
                     <Input

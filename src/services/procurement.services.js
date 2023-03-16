@@ -50,10 +50,16 @@ export const procurementsApi = createApi({
         }),
       }),
       getProcurements: builder.query({
-        query: ({search, pageNumber, isCount})=>{
+        query: ({search, pageNumber, isCount, sortBy, sortType})=>{
           const params ={ pageNumber, isCount}
           if(search){
             params.search = search
+          }
+          if(sortBy){
+            params.sortBy = sortBy
+          }
+          if(sortType){
+            params.sortType = sortType
           }
           return{
           url:`/getAll`,
