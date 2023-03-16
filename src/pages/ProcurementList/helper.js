@@ -60,12 +60,12 @@ export const getTableBody = (data) => {
     const data = requiredDataHistory.map((data) => {
       if (data === "procuredOn") {
         return {
-          value: dayjs(ele[data] || ele?.createdAt).format("DD/MM/YYYY"),
+          value: dayjs(ele[data] || ele?.createdAt).format("DD/MM/YYYY")
         };
       } else if (data === "totalPrice") {
         return { value: (ele[data] / ele.quantity).toFixed(2) };
       } else {
-        return { value: ele[data] };
+        return { value: ele[data]};
       }
     });
     return data;
@@ -73,8 +73,8 @@ export const getTableBody = (data) => {
   return result;
 };
 export const variantHeaders = [
-  "Variants Name (English)",
-  "Variants Name (Kannada)",
+  "Variant's Name (English)",
+  "Variant's Name (Kannada)",
   "Max Price",
   "Min Price",
 ];

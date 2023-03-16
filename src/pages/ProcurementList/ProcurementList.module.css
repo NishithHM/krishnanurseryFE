@@ -165,3 +165,7 @@
   font-size: 15px;
   padding-top: 10px;
 }
+
+.borderTable{
+  border: 1px solid #539c64;
+}

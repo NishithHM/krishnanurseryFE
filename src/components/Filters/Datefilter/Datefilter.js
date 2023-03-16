@@ -3,7 +3,7 @@ import DatePicker from "react-date-picker";
 import Button from "../../Button";
 import styles from "./Datefilter.module.css";
 
-const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
+const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput, onReset}) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [isParentSet, setParentSet] = useState(false);
@@ -35,6 +35,14 @@ const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
 
     onSubmit(data);
   };
+
+  const onResetHandler = ()=>{
+    const data = {
+      start_date: startDate,
+      end_date: endDate,
+    };
+    onReset(data)
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -80,11 +88,13 @@ const Datefilter = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
       </div>
 
       <div className={styles.buttonWrapper}>
+        <div className={styles.btnSubWrapper}>
         <Button
           title="Submit"
           onClick={onSubmitHandler}
           disabled={!startDate || !endDate}
         />
+        </div>
       </div>
     </div>
   );

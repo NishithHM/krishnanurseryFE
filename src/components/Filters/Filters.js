@@ -3,7 +3,6 @@ import { FaFilter, FaChevronDown } from "react-icons/fa";
 
 import styles from "./filters.module.css";
 import Datefilter from "./Datefilter";
-import Button from "../Button";
 
 const Filters = ({ onChange, onSubmit, startDateInput, endDateInput }) => {
   const [isOpen, setIsOpen] = useState(false);

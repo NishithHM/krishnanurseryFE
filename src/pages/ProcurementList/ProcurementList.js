@@ -30,12 +30,15 @@ import { AuthContext } from "../../context";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ScrollTable from "../../components/Table/ScrollTable";
 
 const tableHeader = [
   [
     {
       id: new Date().toISOString(),
       value: " Last Procured On",
+      isSortable: true,
+      sortBy: "lastProcuredOn"
     },
     {
       value: "Plant Name",
@@ -54,25 +57,33 @@ const tableHeader = [
   ],
 ];
 
-const tableHeaderHistory = [
-  [
-    {
-      id: new Date().toISOString(),
-      value: "Procured On",
-    },
-    {
-      value: "Total Quantity",
-    },
-    {
-      value: "Vendor Name",
-    },
-    {
-      value: "Vendor Contact",
-    },
-    {
-      value: "Price Per Plant ₹",
-    },
-  ],
+// const tableHeaderHistory = [
+//   [
+//     {
+//       id: new Date().toISOString(),
+//       value: "Procured On"
+//     },
+//     {
+//       value: "Total Quantity"
+//     },
+//     {
+//       value: "Vendor Name"
+//     },
+//     {
+//       value: "Vendor Contact"
+//     },
+//     {
+//       value: "Price Per Plant ₹",
+//     }
+//   ],
+// ];
+
+const billingHistoryHeader = [
+  { value: "Procured On", width: "20%" },
+  { value: "Total Quantity", width: "20%" },
+  { value: "Vendor Name", width: "20%" },
+  { value: "Vendor Contact", width: "20%" },
+  { value: "Price Per Plant ₹", width: "20%" },
 ];
 
 const ProcurementList = () => {
@@ -90,7 +101,7 @@ const ProcurementList = () => {
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [sort, setSort] = useState({ sortBy: "", sortType: -1 });
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -206,12 +217,12 @@ const ProcurementList = () => {
     if (res.data) {
       const body = await getTableBody(res.data);
       setProcurementListHistory(body);
-      setError("")
+      setError("");
     }
-    if(res.error){
+    if (res.error) {
       toast.error("Unable to Add...");
-      setError(res?.error?.data.error)
-    } 
+      setError(res?.error?.data.error);
+    }
   };
 
   const onVariantInputChange = ({ val, cIndex, rIndex }) => {
@@ -233,8 +244,8 @@ const ProcurementList = () => {
         return { ...acc, ...obj };
       }, {});
     });
-    console.log(variants, "here")
-    console.log(variantRows, "here")
+    console.log(variants, "here");
+    console.log(variantRows, "here");
     const res = await addProcurementVariants({
       id: id,
       body: { variants },
@@ -377,8 +388,9 @@ const ProcurementList = () => {
             )}
             {procurementListHistory?.length !== 0 ? (
               <div>
-                <Table
-                  data={[...tableHeaderHistory, ...procurementListHistory]}
+                <ScrollTable
+                  thead={billingHistoryHeader}
+                  tbody={procurementListHistory}
                 />
               </div>
             ) : (

@@ -2,7 +2,7 @@ import React from 'react'
 import styles from "./table.module.css";
 import cx from "classnames";
 
-export default function ScrollTable({ thead, tbody }) {
+export default function ScrollTable({ thead, tbody}) {
   return (
     <>
       <div>
