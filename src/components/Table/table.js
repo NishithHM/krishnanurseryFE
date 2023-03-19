@@ -1,15 +1,27 @@
 import React from "react";
 import styles from "./table.module.css";
 import cx from "classnames";
-import sort from "../../assets/images/sort.png"
+import sort from "../../assets/images/sort.png";
 
 const Table = ({ data, onSortBy }) => {
+  if (data.length === 1) {
+    return (
+      <span
+        style={{
+          textAlign: "center",
+          fontSize: "1.5rem",
+        }}
+      >
+        <p>No Data</p>
+      </span>
+    );
+  }
 
   return (
     <div>
       <table className={styles.table}>
-      <tbody>
-        {data.map((rows, rIndex) => (
+        <tbody>
+          {data.map((rows, rIndex) => (
             <tr
               key={rIndex}
               className={cx(
@@ -20,14 +32,24 @@ const Table = ({ data, onSortBy }) => {
               )}
             >
               {rows.map((dataVal, dIndex) => (
-                <td className={cx({ [`${styles.tableHeader}`]: rIndex === 0 },)} key={dIndex}>
-                {dataVal.value}
-                {dataVal.isSortable && <img onClick={()=> onSortBy(dataVal.sortBy)} className={styles.sort} src={sort} alt="sort"/> }
+                <td
+                  className={cx({ [`${styles.tableHeader}`]: rIndex === 0 })}
+                  key={dIndex}
+                >
+                  {dataVal.value}
+                  {dataVal.isSortable && (
+                    <img
+                      onClick={() => onSortBy(dataVal.sortBy)}
+                      className={styles.sort}
+                      src={sort}
+                      alt="sort"
+                    />
+                  )}
                 </td>
               ))}
             </tr>
-        ))}
-         </tbody>
+          ))}
+        </tbody>
       </table>
     </div>
   );

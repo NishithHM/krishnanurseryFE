@@ -42,7 +42,7 @@ const tableHeader = [
       value: "Total Quantity",
     },
     {
-      value: "Remaining Quantity ₹",
+      value: "Remaining Quantity",
     },
     {
       value: "",
@@ -75,6 +75,8 @@ const ProcurementList = () => {
   const [page, setPage] = useState(1);
   const [pageFilter, setPageFilter] = useState(1);
   const [procurementListHistory, setProcurementListHistory] = useState([]);
+  const [procurementListHistoryTitle, setProcurementListHistoryTitle] =
+    useState("");
   const [searchInput, setSearchInput] = useState("");
   const [searchInputDeb, setSearchInputDeb] = useState("");
   const [startDate, setStartDate] = useState(null);
@@ -100,7 +102,6 @@ const ProcurementList = () => {
   const getProcurementCount = useGetProcurementsQuery({ isCount: true });
 
   const count = _.get(getProcurementCount, "data[0].count", 0);
-  console.log(count, "pro");
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
@@ -114,7 +115,6 @@ const ProcurementList = () => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
-    console.log(variants);
     setQuantity(procurementData?.minimumQuantity);
     if (variants.length > 0) {
       const mappedVariants = variants.map((ele) => {
@@ -139,6 +139,7 @@ const ProcurementList = () => {
     }
     const body = getTableBody(history);
     setProcurementListHistory(body);
+    setProcurementListHistoryTitle(procurementData.names.en.name);
     setHistoryCount(body.length);
     setId(id);
     setStartDate("");
@@ -177,20 +178,21 @@ const ProcurementList = () => {
   };
 
   const onChangeHandler = (e) => {
+    console.log(e);
     setStartDate(e.start_date);
     setEndDate(e.end_date);
   };
 
   const onSubmitHandler = async (e) => {
     const res = await getProcurementHistory({
-      startDate: dayjs(startDate).format("YYYY-MM-DD"),
-      endDate: dayjs(endDate).format("YYYY-MM-DD"),
+      startDate: e.startDate,
+      endDate: e.endDate,
       id: id,
       pageNumber: 1,
     });
     const resCount = await getProcurementHistory({
-      startDate: dayjs(startDate).format("YYYY-MM-DD"),
-      endDate: dayjs(endDate).format("YYYY-MM-DD"),
+      startDate: e.startDate,
+      endDate: e.endDate,
       id: id,
       isCount: true,
     });
@@ -344,6 +346,7 @@ const ProcurementList = () => {
                 </div>
                 <div className={styles.procurementListHeader}>
                   <span>Procurement History</span>
+                  <span>&nbsp;- {procurementListHistoryTitle}</span>
                 </div>
               </>
             )}
@@ -376,7 +379,9 @@ const ProcurementList = () => {
                   <table className={styles.tableVariants}>
                     <thead>
                       {variantHeaders.map((ele) => (
-                        <th key={ele}>{ele}</th>
+                        <th key={ele}>
+                          <span>{ele}</span>
+                        </th>
                       ))}
                     </thead>
                     <tbody>
@@ -415,7 +420,7 @@ const ProcurementList = () => {
                     <Input
                       id="quantity"
                       type="number"
-                      title="Minimum Quantity"
+                      title="Minimum Inventory Quantity"
                       onChange={onQuantityChangeHandler}
                       value={quantity}
                     />
@@ -430,6 +435,7 @@ const ProcurementList = () => {
                     />
                   </div>
                 </div>
+                <p>Minimum stock needs to be mainained in inventory</p>
               </>
             )}
           </div>

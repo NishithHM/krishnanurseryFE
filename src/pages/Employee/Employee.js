@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Footer, Header, Input, Dropdown } from "../../components";
+import {
+  Button,
+  Footer,
+  Header,
+  Input,
+  Dropdown,
+  BackButton,
+} from "../../components";
 import isEmail from "validator/lib/isEmail";
 import styles from "./employee.module.css";
 import _ from "lodash";
@@ -86,6 +93,9 @@ const Employee = () => {
 
   return (
     <>
+      <div>
+        <BackButton navigateTo={"/authorised/dashboard/access-management"} />
+      </div>
       <div className={styles.outerWrapper}>
         <h1 className={styles.header}>Add Employee</h1>
 

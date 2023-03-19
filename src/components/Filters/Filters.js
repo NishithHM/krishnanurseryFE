@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaFilter, FaChevronDown } from "react-icons/fa";
-
+import "./Calendar.css";
+import "./DatePicker.css";
 import styles from "./filters.module.css";
 import Datefilter from "./Datefilter";
 import Button from "../Button";

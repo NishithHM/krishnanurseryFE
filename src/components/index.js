@@ -13,8 +13,10 @@ import Spinner from "./Spinner";
 import Toaster from "./Toaster";
 import Search from "./Search";
 import BackButton from "./BackButton";
+import Dropzone from "./Dropzone";
 
 export {
+  Dropzone,
   LandingTile,
   Input,
   Button,
@@ -29,5 +31,5 @@ export {
   Spinner,
   Toaster,
   Search,
-  BackButton
+  BackButton,
 };

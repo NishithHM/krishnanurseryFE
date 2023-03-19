@@ -52,8 +52,8 @@ const AccessManagement = () => {
     const formatted = data.map((user) => {
       const name = { value: user.name };
       const createdAt = { value: dayjs(user.createdAt).format("DD-MM-YYYY") };
-      const lastModified = {
-        value: dayjs(user.updatedAt).format("DD-MM-YYYY"),
+      const phoneNumber = {
+        value: user.phoneNumber,
       };
       const userRole = { value: user.role };
       const deleteUser = {
@@ -69,7 +69,7 @@ const AccessManagement = () => {
         ),
       };
 
-      const data = [name, createdAt, lastModified, userRole, deleteUser];
+      const data = [name, createdAt, phoneNumber, userRole, deleteUser];
       return data;
     });
 
@@ -120,7 +120,7 @@ const AccessManagement = () => {
       isSortable: false,
     },
     {
-      value: "Last Modified Date",
+      value: "Phone Number",
       isSortable: false,
     },
     {
@@ -136,8 +136,8 @@ const AccessManagement = () => {
   return (
     <div>
       <div>
-          <BackButton navigateTo={"/authorised/dashboard"} />
-        </div>
+        <BackButton navigateTo={"/authorised/dashboard"} />
+      </div>
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>

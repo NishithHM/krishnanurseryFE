@@ -82,13 +82,15 @@ const Dashboard = () => {
   return (
     <div className={styles.gridContainer}>
       {data.map((e) => (
-        <Link to={!e.isDisabled && e.path} key={e.path}>
-          <LandingTile
-            image={e.tile_img}
-            title={e.title}
-            isDisabled={e.isDisabled}
-          />
-        </Link>
+        <div className={e.isDisabled && styles.cardDisabled}>
+          <Link to={e.path} key={e.path}>
+            <LandingTile
+              image={e.tile_img}
+              title={e.title}
+              isDisabled={e.isDisabled}
+            />
+          </Link>
+        </div>
       ))}
     </div>
   );

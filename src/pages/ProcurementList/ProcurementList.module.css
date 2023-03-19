@@ -99,7 +99,7 @@
   background-color: #539c64;
 }
 
-.addButton{
+.addButton {
   cursor: pointer;
 }
 
@@ -111,37 +111,37 @@
   margin: 3px 0 0 0;
 }
 
-.submitBtn{
+.submitBtn {
   padding: 32px 0 0 0;
 }
 
-.quantityWrapper{
+.quantityWrapper {
   display: flex;
   justify-content: space-between;
   margin: 40px 0 0 0;
 }
 
-.submitWrapper{
+.submitWrapper {
   display: flex;
   justify-content: end;
 }
 
-.submitQuantity{
+.submitQuantity {
   height: 40px;
 }
 
-.tableInput{
-  height:30px;
+.tableInput {
+  height: 30px;
   border-radius: 10px;
   text-align: center;
-  border: 1px solid #EDECEB;
+  border: 1px solid #edeceb;
 }
 
-.tableInput:focus{
-  border: 1px solid #EDECEB;
+.tableInput:focus {
+  border: 1px solid #edeceb;
 }
 
-.procurementListHeader{
+.procurementListHeader {
   text-align: center;
   font-size: 25px;
   font-weight: 500;

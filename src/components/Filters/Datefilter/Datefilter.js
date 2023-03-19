@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import "../DatePicker.css";
+import "../Calendar.css";
 import DatePicker from "react-date-picker";
 import Button from "../../Button";
 import styles from "./Datefilter.module.css";
-
 const Datefilter = ({ onSubmit, onReset, closeFilters }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);

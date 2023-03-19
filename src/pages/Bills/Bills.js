@@ -82,6 +82,7 @@ const Bills = () => {
   });
   const [searchPurchase] = useSearchPurchaseMutation();
 
+  console.log(purchaseCountReq);
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
       const date = { value: dayjs(purchase.createdAt).format("DD-MM-YYYY") };

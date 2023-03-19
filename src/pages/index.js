@@ -21,5 +21,5 @@ export {
   ProcurementList,
   AddBills,
   Categories,
-  Bills
+  Bills,
 };

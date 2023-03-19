@@ -14,7 +14,7 @@ import { getCategoriesTableBody, initialCategory } from "./helper";
 import {
   useGetAllCategoriesQuery,
   useDeleteCategoriesMutation,
-  useCreateCategoriesMutation
+  useCreateCategoriesMutation,
 } from "../../services/categories.services";
 import debounce from "lodash/debounce";
 import _, { cloneDeep } from "lodash";
@@ -27,10 +27,10 @@ const tableHeader = [
       id: new Date().toISOString(),
       isSortable: true,
       value: "Category Name",
-      sortBy:"categoryName"
+      sortBy: "categoryName",
     },
     {
-      value: "Created On",
+      value: "Name (Ka)",
     },
     {
       value: "",
@@ -44,21 +44,22 @@ const Categories = () => {
   const [deleteCategory, setDeleteCategory] = useState(false);
   const [deleteCategoryId, setDeleteCategoryId] = useState(null);
   const [addInputCategory, setAddInputCategory] = useState("");
-  const [addInputCategoryKannada, setInputCategoryKannada] = useState("")
+  const [addInputCategoryKannada, setInputCategoryKannada] = useState("");
   const [category, setCategory] = useState(false);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState({sortBy: "", sortType:-1})
+  const [sort, setSort] = useState({ sortBy: "", sortType: -1 });
 
   const { data } = useGetAllCategoriesQuery({
     search: search,
     pageNumber: page,
-    ...sort
+    ...sort,
   });
   const getCategoryCount = useGetAllCategoriesQuery({ isCount: true });
   const count = _.get(getCategoryCount, "data[0].count", 0);
-  const [deleteCategoryReq,{isLoading, isError, isSuccess}] = useDeleteCategoriesMutation();
-  const[error, setError] = useState(false)
-  const[createCategory] = useCreateCategoriesMutation()
+  const [deleteCategoryReq, { isLoading, isError, isSuccess }] =
+    useDeleteCategoriesMutation();
+  const [error, setError] = useState(false);
+  const [createCategory] = useCreateCategoriesMutation();
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
@@ -100,9 +101,9 @@ const Categories = () => {
     setAddInputCategory(event.target.value);
   };
 
-  const onCategoryKannadaInputChangeHandler = (event)=>{
-    setInputCategoryKannada(event.target.value)
-  }
+  const onCategoryKannadaInputChangeHandler = (event) => {
+    setInputCategoryKannada(event.target.value);
+  };
   const onIncrementHandler = () => {
     setPage(page + 1);
   };
@@ -111,43 +112,41 @@ const Categories = () => {
     setPage(page - 1);
   };
 
-  const onCategeorySubmitHandler = async()=>{
+  const onCategeorySubmitHandler = async () => {
     const obj = {
-      "nameInEnglish": addInputCategory,
-      "nameInKannada": addInputCategoryKannada
-    }
+      nameInEnglish: addInputCategory,
+      nameInKannada: addInputCategoryKannada,
+    };
     const res = await createCategory({
-      body: obj
-    })
-    console.log(res)
-    if(res.data){
-      toast.success("Category added Successfully!")
-      setError("")
-      setAddInputCategory("")
-      setInputCategoryKannada("")
-    } 
-    if(res.error){
-      toast.error("Unable to Add...");
-      setError(res?.error?.data.error)
+      body: obj,
+    });
+    console.log(res);
+    if (res.data) {
+      toast.success("Category added Successfully!");
+      setError("");
+      setAddInputCategory("");
+      setInputCategoryKannada("");
     }
-  }
+    if (res.error) {
+      toast.error("Unable to Add...");
+      setError(res?.error?.data.error);
+    }
+  };
 
-  const onSortClick = (sortVal)=>{
-      setSort((prev)=>{
-        return{
-          ...prev,
-          sortBy: sortVal,
-          sortType: prev.sortType === 1 ? -1 : 1
-        }
-      })
-
-  }
-  console.log(sort)
-  
+  const onSortClick = (sortVal) => {
+    setSort((prev) => {
+      return {
+        ...prev,
+        sortBy: sortVal,
+        sortType: prev.sortType === 1 ? -1 : 1,
+      };
+    });
+  };
+  console.log(sort);
 
   return (
     <div className={styles.categoriesContainer}>
-      <Toaster/>
+      <Toaster />
       <div className={styles.innerCategoriesContainer}>
         <div>
           <BackButton navigateTo={"/authorised/dashboard"} />
@@ -190,10 +189,7 @@ const Categories = () => {
           </div>
         </div>
         <div className={styles.categoryTableWrapper}>
-          <Table
-            data={[...tableHeader, ...tableBody]}
-            onSortBy={onSortClick}
-          />
+          <Table data={[...tableHeader, ...tableBody]} onSortBy={onSortClick} />
         </div>
         <Modal isOpen={deleteCategory} contentLabel="Delete User">
           <Alert
@@ -205,32 +201,36 @@ const Categories = () => {
       {category && (
         <div className={styles.addCategoryContainer}>
           <div className={styles.borderView}>
-          <div className={styles.categoryHeader}>
-            <span>Add Category</span>
+            <div className={styles.categoryHeader}>
+              <span>Add Category</span>
+            </div>
+            <div className={styles.categoryInput}>
+              <Input
+                id="english"
+                type="text"
+                title="Category Name:"
+                value={addInputCategory}
+                onChange={(e) => onCategoryInputChangeHandler(e)}
+              />
+            </div>
+            <div className={styles.categoryInput}>
+              <Input
+                id="kannada"
+                type="text"
+                title="Category Name in Kannada:"
+                value={addInputCategoryKannada}
+                onChange={(e) => onCategoryKannadaInputChangeHandler(e)}
+              />
+              <span className={styles.errorText}>{error}</span>
+            </div>
+            <div className={styles.categorySubmitBtn}>
+              <Button
+                onClick={onCategeorySubmitHandler}
+                title="Submit"
+                type="primary"
+              />
+            </div>
           </div>
-          <div className={styles.categoryInput}>
-            <Input
-              id="english"
-              type="text"
-              title="Category Name:"
-              value={addInputCategory}
-              onChange={(e) => onCategoryInputChangeHandler(e)}
-            />
-          </div>
-          <div className={styles.categoryInput}>
-            <Input
-              id="kannada"
-              type="text"
-              title="Category Name in Kannada:"
-              value={addInputCategoryKannada}
-              onChange={(e) => onCategoryKannadaInputChangeHandler(e)}
-            />
-            <span className={styles.errorText}>{error}</span>
-          </div>
-          <div className={styles.categorySubmitBtn}>
-            <Button onClick={onCategeorySubmitHandler} title="Submit" type="primary" />
-          </div>
-        </div>
         </div>
       )}
     </div>

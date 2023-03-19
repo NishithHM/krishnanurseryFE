@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Dropdown, Input, Table, Toaster, BackButton } from "../../components";
+import {
+  Button,
+  Dropdown,
+  Input,
+  Table,
+  Toaster,
+  BackButton,
+  Dropzone,
+} from "../../components";
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
 import { useUpdateProcurementsMutation } from "../../services/procurement.services";
@@ -204,12 +212,15 @@ const AddProcurement = () => {
     [state.addPlantName?.value]
   );
 
+  const getFile = (file) => {
+    console.log(file);
+  };
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
       <div className={styles.outerWrapper}>
         <div>
-          <BackButton navigateTo={"/authorised/dashboard"}/>
+          <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <h1 className={styles.header}>Add Procurement</h1>
         <div className={styles.innerWrapper}>
@@ -301,6 +312,7 @@ const AddProcurement = () => {
             rows={4}
             name="description"
           />
+          <Dropzone getFile={getFile} />
           <div className={styles.formbtn}>
             <Button
               onClick={onSubmitHandler}
