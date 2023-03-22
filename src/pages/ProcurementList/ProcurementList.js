@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Filters,
   Search,
@@ -84,6 +84,7 @@ const billingHistoryHeader = [
   { value: "Vendor Name", width: "15%" },
   { value: "Vendor Contact", width: "15%" },
   { value: "Price Per Plant ₹", width: "15%" },
+  { value: "Vendor Name", width: "15%" },
   { value: "Invoice", width: "15%" },
 ];
 
@@ -106,6 +107,8 @@ const ProcurementList = () => {
   const [sort, setSort] = useState({ sortBy: "", sortType: -1 });
   const [error, setError] = useState(false);
 
+  const [firstLoad, setFirstLoad] = useState(true);
+
   const [values] = useContext(AuthContext);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
@@ -114,6 +117,17 @@ const ProcurementList = () => {
     ...sort,
   });
 
+  useEffect(() => {
+    if (getProcurements.status === "fulfilled" && firstLoad) {
+      const data = getProcurements.data;
+      if (data.length > 0) {
+        console.log(data[0]);
+        onDetailClick(data[0]._id);
+      }
+    }
+  }, [getProcurements]);
+
+  // setId;
   const [getProcurementHistory] = useGetProcurementHistoryMutation();
   const [addProcurementVariants] = useAddProcurementVariantsMutation();
   const [addMinimumQuantity] = useAddMinimumQuantityMutation();

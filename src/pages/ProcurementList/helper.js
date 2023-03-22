@@ -54,6 +54,7 @@ const requiredDataHistory = [
   "vendorName",
   "vendorContact",
   "totalPrice",
+  "createdBy",
   "invoice",
 ];
 
@@ -78,6 +79,7 @@ const handleDownload = (fileUrl) => {
 };
 
 export const getTableBody = (data) => {
+  console.log(data);
   const result = data?.map((ele) => {
     const data = requiredDataHistory.map((data) => {
       if (data === "procuredOn") {
@@ -91,13 +93,22 @@ export const getTableBody = (data) => {
           value: (
             <p
               onClick={() => handleDownload(ele?.invoice || "")}
-              style={{ cursor: "pointer", fontWeight: "bold" }}
+              style={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#302c2c",
+              }}
             >
               download
             </p>
           ),
         };
+      } else if (data === "createdBy") {
+        return {
+          value: <p>{ele["createdBy"]?.name}</p>,
+        };
       } else {
+        console.log(ele);
         return { value: ele[data] };
       }
     });

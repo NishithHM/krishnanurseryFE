@@ -32,6 +32,7 @@
   letter-spacing: 1;
   text-align: end;
   padding: 0 10px;
+  color: #302c2c;
 }
 .paginationInner {
   display: flex;

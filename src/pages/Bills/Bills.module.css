@@ -31,6 +31,8 @@
 .paginationContainer {
   font-weight: 500;
   letter-spacing: 1;
+  color: #302c2c;
+
   text-align: end;
 }
 .paginationInner {
