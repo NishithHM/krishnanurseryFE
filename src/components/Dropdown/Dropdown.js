@@ -9,14 +9,14 @@ import isEmpty from "lodash/isEmpty";
 import get from "lodash/get";
 import styles from "./dropdown.module.css";
 import axios from "axios";
-import { StylesConfig } from "react-select"
+import { StylesConfig } from "react-select";
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 const Dropdown = ({
   data,
   url = null,
   isMultiEnabled = false,
   isClearable = false,
-  canCreate,
+  canCreate = false,
   onChange,
   title = "",
   placeholder = "Select",
@@ -38,35 +38,38 @@ const Dropdown = ({
   };
 
   useEffect(() => {
-    setSelectedOption(value)
-  }, [value])
+    setSelectedOption(value);
+  }, [value]);
 
   useEffect(() => {
-    setOptions(data)
-  }, [JSON.stringify(data)])
-
-
+    setOptions(data);
+  }, [JSON.stringify(data)]);
 
   const loadOptions = async (inputValue, callback) => {
     if (!url || inputValue.length < 3) return [];
     setSearchQuery(inputValue);
     setLoading(true);
-    let config
+    let config;
     if (include_headers) {
       config = {
         headers: {
           Authorization: sessionStorage.getItem("authToken"),
-        }
-      }
+        },
+      };
     }
-    const res = await axios.get(`${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`, config)
-    const optionsVal = res.data.map(opt => ({ label: get(opt, apiDataPath.label), value: get(opt, apiDataPath.value), meta: { ...opt } }))
-    setOptions(optionsVal)
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`,
+      config
+    );
+    const optionsVal = res.data.map((opt) => ({
+      label: get(opt, apiDataPath.label),
+      value: get(opt, apiDataPath.value),
+      meta: { ...opt },
+    }));
+    setOptions(optionsVal);
     setLoading(false);
-    callback(optionsVal)
+    callback(optionsVal);
   };
-
-
 
   const DropdownStyles = {
     control: (baseStyles, state) => ({
@@ -78,8 +81,8 @@ const Dropdown = ({
       outline: "none",
       "&:hover": {
         border: "1px solid #539c64",
-        boxShadow: "0px 0px 1px #539c64"
-      }
+        boxShadow: "0px 0px 1px #539c64",
+      },
     }),
     indicatorSeparator: (baseStyles, state) => ({
       display: "none",

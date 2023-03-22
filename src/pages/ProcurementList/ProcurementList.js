@@ -104,7 +104,10 @@ const ProcurementList = () => {
   const [quantity, setQuantity] = useState("");
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
-  const [sort, setSort] = useState({ sortBy: "", sortType: -1 });
+  const [sort, setSort] = useState({
+    sortBy: "lastProcuredOn",
+    sortType: "asc",
+  });
   const [error, setError] = useState(false);
 
   const [firstLoad, setFirstLoad] = useState(true);
@@ -114,7 +117,8 @@ const ProcurementList = () => {
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
     search: searchInputDeb,
-    ...sort,
+    sortBy: sort.sortBy,
+    sortType: sort.sortType === "asc" ? 1 : -1,
   });
 
   useEffect(() => {
@@ -149,7 +153,6 @@ const ProcurementList = () => {
 
   const onDetailClick = (id) => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
-    console.log(procurementData);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
     setQuantity(procurementData?.minimumQuantity);
@@ -175,7 +178,6 @@ const ProcurementList = () => {
       setVariantRows([rowInitState]);
     }
     const body = getTableBody(history);
-    console.log(history);
     setProcurementListHistory(body);
     setProcurementListHistoryTitle(procurementData.names.en.name);
     setHistoryCount(body.length);
@@ -216,7 +218,6 @@ const ProcurementList = () => {
   };
 
   const onChangeHandler = (e) => {
-    console.log(e);
     setStartDate(e.start_date);
     setEndDate(e.end_date);
   };
@@ -310,7 +311,7 @@ const ProcurementList = () => {
       return {
         ...prev,
         sortBy: val,
-        sortType: prev.sortType === 1 ? -1 : 1,
+        sortType: prev.sortType === "asc" ? "desc" : "asc",
       };
     });
   };

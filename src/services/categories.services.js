@@ -23,7 +23,7 @@ export const categoriesApi = createApi({
     return {
       getAllCategories: builder.query({
         query: ({ search, pageNumber, isCount, sortBy, sortType }) => {
-          const params = { pageNumber, isCount };
+          const params = { sortType };
           if (search) {
             params.search = search;
           }
@@ -35,6 +35,9 @@ export const categoriesApi = createApi({
           }
           if (isCount) {
             params.isCount = isCount;
+          }
+          if (pageNumber) {
+            params.pageNumber = isCount;
           }
           return {
             url: `/getAll`,

@@ -55,8 +55,8 @@ export const procurementsApi = createApi({
           const params = {
             pageNumber,
             isCount,
-            sortBy: "lastProcuredOn",
-            sortType: 1,
+            sortBy,
+            sortType,
           };
           if (search) {
             params.search = search;

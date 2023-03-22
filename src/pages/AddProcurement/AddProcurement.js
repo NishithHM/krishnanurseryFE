@@ -17,6 +17,7 @@ import { isEmpty } from "lodash";
 import { useNavigate } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
+import { useGetAllCategoriesQuery } from "../../services/categories.services";
 
 const tableHeader = [
   [
@@ -59,6 +60,8 @@ const AddProcurement = () => {
   const navigate = useNavigate();
   const [state, setState] = useState(initialState);
   const [file, setFile] = useState(null);
+  const [categoryList, setCategoryList] = useState([]);
+  const [firstLoad, setFirstLoad] = useState(true);
   const [
     updateProcurements,
     {
@@ -69,6 +72,23 @@ const AddProcurement = () => {
   ] = useUpdateProcurementsMutation();
   const [createProcurements, { isLoading, isError, isSuccess }] =
     useCreateProcurementsMutation();
+  const categories = useGetAllCategoriesQuery({ sortType: 1 });
+
+  const formatCategoryData = (data) => {
+    const res = data.map((item) => ({
+      value: item._id,
+      label: item.names.en.name,
+    }));
+    console.log(res);
+    return res;
+  };
+
+  useEffect(() => {
+    if (categories.status === "fulfilled" && firstLoad) {
+      setFirstLoad(false);
+      setCategoryList(formatCategoryData(categories.data));
+    }
+  }, [categories]);
 
   const inputChangeHandler = (event, id) => {
     setState((prev) => {
@@ -264,14 +284,14 @@ const AddProcurement = () => {
           )}
 
           <Dropdown
-            url="/api/category/getAll"
+            // url="/api/category/getAll"
             id="addPlantCategory"
-            apiDataPath={{ label: "names.en.name", value: "_id" }}
             title="Plant Category"
             onChange={dropDownChangeHandler}
             value={state.addPlantCategory}
             required
             isMultiEnabled
+            data={categoryList}
           />
           <Dropdown
             url="/api/vendors/getAll"
