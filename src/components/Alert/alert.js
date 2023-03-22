@@ -3,7 +3,7 @@ import styles from "./alert.module.css";
 import warning from "../../assets/images/warning.png";
 import Button from "../Button";
 
-const Alert = ({ handleConfirm, handleCancel }) => {
+const Alert = ({ handleConfirm, handleCancel, message }) => {
   return (
     <div className={styles.card}>
       <div className={styles.text}>
@@ -11,10 +11,12 @@ const Alert = ({ handleConfirm, handleCancel }) => {
           <div>
             <img src={warning} alt="warning" />
           </div>
-          <span>Are you sure to delete access?</span>
+          <span>{message ? message : "Are you sure to delete access?"}</span>
         </div>
         <div clsasName={styles.subtext}>
-          <span><strong>Warning:</strong> This cannot be undone</span>
+          <span>
+            <strong>Warning:</strong> This cannot be undone
+          </span>
         </div>
         <div className={styles.button}>
           <div className={styles.buttonwidth}>

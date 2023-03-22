@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
 import React, { useEffect, useState } from "react";
@@ -50,7 +50,7 @@ const getRoundedDates = () => {
   }
 
   let formattedRoundedDate = `${roundedYYYY}-${roundedMM}-${roundedDD}`;
-  return { startDate: formattedRoundedDate, endDate: formattedDate };
+  return { start_date: formattedRoundedDate, end_date: formattedDate };
 };
 
 const Bills = () => {
@@ -67,18 +67,23 @@ const Bills = () => {
   // billing modal
   const [showPreview, setShowPreview] = useState(false);
   const [invoiceDetail, setInvoiceDetail] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(null);
+  useEffect(() => {
+    console.log(filterDates);
+  }, [filterDates]);
 
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     page,
-    startDate: filterDates.startDate,
-    endDate: filterDates.endDate,
+    startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
+    endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
     sortBy: sort.sortBy,
     sortType: sort.sortType === "asc" ? 1 : -1,
   });
   const purchaseCountReq = useGetAllPurchasesCountQuery({
-    startDate: filterDates.startDate,
-    endDate: filterDates.endDate,
+    search: searchQuery,
+    startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
+    endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
   });
   const [searchPurchase] = useSearchPurchaseMutation();
 
@@ -122,12 +127,15 @@ const Bills = () => {
     if (query.length >= 3) {
       const res = await searchPurchase({
         search: query,
-        startDate: filterDates.startDate,
-        endDate: filterDates.endDate,
+        startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
+        endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
       });
+      setSearchQuery(query);
       console.log(res);
       const purchases = formatPurchasesData(res.data);
       setData(purchases);
+    } else {
+      setSearchQuery(null);
     }
   }, 500);
 
@@ -174,6 +182,7 @@ const Bills = () => {
   ];
 
   const handleFilterChange = (filterDates) => {
+    console.log(filterDates);
     setFilterDates(filterDates);
   };
 

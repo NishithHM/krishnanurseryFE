@@ -5,17 +5,18 @@ const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 
 export const userApi = createApi({
   reducerPath: "user",
-  baseQuery:(args,api)=> baseQueryWithAuth(args, api,{
-    baseUrl: `${process.env.REACT_APP_BASE_URL}/api/user`,
-    ...(!include_headers && {
-      credentials: "include",
+  baseQuery: (args, api) =>
+    baseQueryWithAuth(args, api, {
+      baseUrl: `${process.env.REACT_APP_BASE_URL}/api/user`,
+      ...(!include_headers && {
+        credentials: "include",
+      }),
+      ...(include_headers && {
+        headers: {
+          Authorization: sessionStorage.getItem("authToken"),
+        },
+      }),
     }),
-    ...(include_headers && {
-      headers: {
-        Authorization: sessionStorage.getItem("authToken"),
-      },
-    }),
-  }),
   tagTypes: ["User", "UserCount"],
 
   endpoints: (builder) => {
@@ -37,11 +38,15 @@ export const userApi = createApi({
         providesTags: ["User"],
       }),
       getAllUsersCount: builder.query({
-        query: () => ({
-          url: "/getAll",
-          method: "GET",
-          params: { isCount: true },
-        }),
+        query: ({ search }) => {
+          const options = {};
+          if (search) options["search"] = search;
+          return {
+            url: "/getAll",
+            method: "GET",
+            params: { isCount: true, ...options },
+          };
+        },
         providesTags: ["UserCount"],
       }),
       searchUser: builder.mutation({

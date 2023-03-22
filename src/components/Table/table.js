@@ -21,7 +21,7 @@ const Table = ({ data, onSortBy }) => {
     <div>
       <table className={styles.table}>
         <tbody>
-          {data.map((rows, rIndex) => (
+          {data.map((rows, rIndex, id) => (
             <tr
               key={rIndex}
               className={cx(

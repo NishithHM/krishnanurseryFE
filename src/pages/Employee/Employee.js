@@ -6,12 +6,14 @@ import {
   Input,
   Dropdown,
   BackButton,
+  Toaster,
 } from "../../components";
 import isEmail from "validator/lib/isEmail";
 import styles from "./employee.module.css";
 import _ from "lodash";
 import { useCreateUserMutation } from "../../services/user.services";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Employee = () => {
   const defaultFormValues = {
@@ -25,11 +27,11 @@ const Employee = () => {
   const navigate = useNavigate();
   const [formState, setFormState] = useState(defaultFormValues);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [createUser, { isLoading, isError, isSuccess }] =
+  const [createUser, { isLoading, isError, isSuccess, error }] =
     useCreateUserMutation();
 
   const passwordRegexPattern =
-    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*.]{6,}$/;
 
   const EMPLOYEE_ROLES = [
     { label: "Admin", value: "admin" },
@@ -85,14 +87,20 @@ const Employee = () => {
     var reqBody = { ...formState };
     delete reqBody.errorFields;
     const response = await createUser(reqBody);
-    if (isError) console.log("Error creating a user");
-    if (isSuccess) console.log("Success Creating the user");
-    navigate("../dashboard/access-management");
-    console.log(response);
+
+    if (isSuccess) {
+      console.log("Success Creating the user");
+      return navigate("../dashboard/access-management");
+    }
+    if (response.error.status === 400) {
+      console.log(response.error.data.error);
+      toast.error(response.error.data.error);
+    }
   };
 
   return (
     <>
+      <Toaster />
       <div>
         <BackButton navigateTo={"/authorised/dashboard/access-management"} />
       </div>

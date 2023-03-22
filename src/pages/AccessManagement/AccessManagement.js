@@ -29,12 +29,12 @@ const AccessManagement = () => {
   const [deleteUser, setDeleteUser] = useState(false);
   const [deleteUserUid, setDeleteUserUid] = useState(null);
 
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState(null);
   const [usersCount, setUsersCount] = useState(0);
 
   // requests
   const usersData = useGetAllUsersQuery(page);
-  const usersCountReq = useGetAllUsersCountQuery();
+  const usersCountReq = useGetAllUsersCountQuery({ search: searchInput });
   const [searchUser] = useSearchUserMutation();
   const [deleteUserReq] = useDeleteUserMutation();
 

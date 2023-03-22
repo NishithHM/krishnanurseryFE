@@ -59,11 +59,17 @@ export const billsApi = createApi({
         invalidatesTags: ["purchaseHistory"],
       }),
       getAllPurchasesCount: builder.query({
-        query: ({ startDate, endDate }) => ({
-          url: "/history",
-          method: "GET",
-          params: { isCount: true, startDate, endDate },
-        }),
+        query: ({ search = null, startDate, endDate }) => {
+          const options = {};
+          if (search) {
+            options["search"] = search;
+          }
+          return {
+            url: "/history",
+            method: "GET",
+            params: { isCount: true, startDate, endDate, ...options },
+          };
+        },
         providesTags: ["purchaseHistory"],
       }),
       searchPurchase: builder.mutation({

@@ -58,6 +58,7 @@ const AddProcurement = () => {
 
   const navigate = useNavigate();
   const [state, setState] = useState(initialState);
+  const [file, setFile] = useState(null);
   const [
     updateProcurements,
     {
@@ -125,6 +126,15 @@ const AddProcurement = () => {
     if (!state.addVendorName?.__isNew__) {
       body.vendorId = state.addVendorName?.value;
     }
+    if (body.totalQuantity < 0) {
+      return toast.error("Total Quantity shouldn't be negative number");
+    }
+    if (body.totalPrice < 0) {
+      return toast.error("Total price shouldn't be negative number");
+    }
+    if (!file) {
+      return toast.error("Select File");
+    }
     body.categories = state.addPlantCategory.map((ele) => {
       return {
         _id: ele.value,
@@ -141,7 +151,11 @@ const AddProcurement = () => {
       body.nameInKannada = state.addPlantKannada;
       body.nameInEnglish = state.addPlantName.label;
 
-      const res = await createProcurements({ body });
+      const formdata = new FormData();
+      formdata.append("body", JSON.stringify(body));
+      formdata.append("invoice", file);
+      console.log(formdata);
+      const res = await createProcurements({ body: formdata });
 
       if (res.error) {
         toast.error("Unable to Add...");
@@ -213,8 +227,9 @@ const AddProcurement = () => {
   );
 
   const getFile = (file) => {
-    console.log(file);
+    setFile(file);
   };
+
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -300,6 +315,11 @@ const AddProcurement = () => {
                 type="number"
                 onChange={inputChangeHandler}
                 title="Total Amount"
+                onInput={(e) => {
+                  if (e.target.value < 0) {
+                    toast.error("Total Amount shouldn't be negative number");
+                  }
+                }}
                 required
               />
             </div>
@@ -324,7 +344,8 @@ const AddProcurement = () => {
                 isEmpty(state.totalAmount) ||
                 isEmpty(state.totalQuantity) ||
                 state.errorFields.length > 0 ||
-                state.submitDisabled
+                state.submitDisabled ||
+                !file
               }
               type="primary"
               title="Save"

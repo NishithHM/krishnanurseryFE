@@ -15,10 +15,19 @@ const Input = (props) => {
     errorMessage,
     onError,
     type,
-    disabled = false
+    disabled = false,
+    minValue = 0,
+    onInput = () => {},
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
+
+  let options = {};
+
+  if (type === "number") {
+    options["min"] = minValue;
+  }
+
   const onInputBlur = () => {
     if (validation && !validation(value)) {
       setError(true);
@@ -51,11 +60,19 @@ const Input = (props) => {
           value={value}
           onBlur={onInputBlur}
           onChange={(e) => onChange(e, id)}
-          className={cx(styles.inputbox, { [`${styles.inputerror}`]: error, [`${styles.inputDisabled}`] : disabled })}
+          className={cx(styles.inputbox, {
+            [`${styles.inputerror}`]: error,
+            [`${styles.inputDisabled}`]: disabled,
+          })}
+          onInput={onInput}
+          {...options}
         />
-        {type === "password"  && (
+        {type === "password" && (
           <i className={styles.passwordIcon} onClick={showPasswordHandler}>
-            <FontAwesomeIcon style={{color: "#539c64"}} icon={!show ? faEyeSlash : faEye} />
+            <FontAwesomeIcon
+              style={{ color: "#539c64" }}
+              icon={!show ? faEyeSlash : faEye}
+            />
           </i>
         )}
       </div>

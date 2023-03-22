@@ -51,7 +51,7 @@ export const procurementsApi = createApi({
         }),
       }),
       getProcurements: builder.query({
-        query: ({ search, pageNumber, isCount }) => {
+        query: ({ search, pageNumber, isCount, sortBy, sortType }) => {
           const params = {
             pageNumber,
             isCount,

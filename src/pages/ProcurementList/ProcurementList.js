@@ -28,15 +28,22 @@ import debounce from "lodash/debounce";
 import dayjs from "dayjs";
 import { AuthContext } from "../../context";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ScrollTable from "../../components/Table/ScrollTable";
 
 const tableHeader = [
   [
     {
       id: new Date().toISOString(),
       value: " Last Procured On",
+      isSortable: true,
+      sortBy: "lastProcuredOn",
     },
     {
       value: "Plant Name",
+      isSortable: true,
+      sortBy: "plantName",
     },
     {
       value: "Total Quantity",
@@ -50,25 +57,34 @@ const tableHeader = [
   ],
 ];
 
-const tableHeaderHistory = [
-  [
-    {
-      id: new Date().toISOString(),
-      value: "Procured On",
-    },
-    {
-      value: "Total Quantity",
-    },
-    {
-      value: "Vendor Name",
-    },
-    {
-      value: "Vendor Contact",
-    },
-    {
-      value: "Price Per Plant ₹",
-    },
-  ],
+// const tableHeaderHistory = [
+//   [
+//     {
+//       id: new Date().toISOString(),
+//       value: "Procured On"
+//     },
+//     {
+//       value: "Total Quantity"
+//     },
+//     {
+//       value: "Vendor Name"
+//     },
+//     {
+//       value: "Vendor Contact"
+//     },
+//     {
+//       value: "Price Per Plant ₹",
+//     }
+//   ],
+// ];
+
+const billingHistoryHeader = [
+  { value: "Procured On", width: "15%" },
+  { value: "Total Quantity", width: "15%" },
+  { value: "Vendor Name", width: "15%" },
+  { value: "Vendor Contact", width: "15%" },
+  { value: "Price Per Plant ₹", width: "15%" },
+  { value: "Invoice", width: "15%" },
 ];
 
 const ProcurementList = () => {
@@ -87,19 +103,25 @@ const ProcurementList = () => {
   const [quantity, setQuantity] = useState("");
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
+  const [sort, setSort] = useState({ sortBy: "", sortType: -1 });
+  const [error, setError] = useState(false);
 
   const [values] = useContext(AuthContext);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
     search: searchInputDeb,
+    ...sort,
   });
 
   const [getProcurementHistory] = useGetProcurementHistoryMutation();
   const [addProcurementVariants] = useAddProcurementVariantsMutation();
   const [addMinimumQuantity] = useAddMinimumQuantityMutation();
 
-  const getProcurementCount = useGetProcurementsQuery({ isCount: true });
+  const getProcurementCount = useGetProcurementsQuery({
+    isCount: true,
+    search: searchInput,
+  });
 
   const count = _.get(getProcurementCount, "data[0].count", 0);
 
@@ -113,10 +135,11 @@ const ProcurementList = () => {
 
   const onDetailClick = (id) => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
+    console.log(procurementData);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
     setQuantity(procurementData?.minimumQuantity);
-    if (variants.length > 0) {
+    if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
         const row = [];
         row.push({
@@ -130,7 +153,7 @@ const ProcurementList = () => {
           type: "text",
         });
         row.push({ value: ele.maxPrice, id: "maxPrice", type: "number" });
-        row.push({ value: ele.minPrice, id: "maxPrice", type: "number" });
+        row.push({ value: ele.minPrice, id: "minPrice", type: "number" });
         return row;
       });
       setVariantRows(mappedVariants);
@@ -138,6 +161,7 @@ const ProcurementList = () => {
       setVariantRows([rowInitState]);
     }
     const body = getTableBody(history);
+    console.log(history);
     setProcurementListHistory(body);
     setProcurementListHistoryTitle(procurementData.names.en.name);
     setHistoryCount(body.length);
@@ -184,6 +208,7 @@ const ProcurementList = () => {
   };
 
   const onSubmitHandler = async (e) => {
+    console.log(e);
     const res = await getProcurementHistory({
       startDate: e.startDate,
       endDate: e.endDate,
@@ -198,9 +223,14 @@ const ProcurementList = () => {
     });
     setHistoryCount(resCount.data[0]?.count);
 
-    if (res) {
+    if (res.data) {
       const body = await getTableBody(res.data);
       setProcurementListHistory(body);
+      setError("");
+    }
+    if (res.error) {
+      toast.error("Unable to Add...");
+      setError(res?.error?.data.error);
     }
   };
 
@@ -223,6 +253,8 @@ const ProcurementList = () => {
         return { ...acc, ...obj };
       }, {});
     });
+    console.log(variants, "here");
+    console.log(variantRows, "here");
     const res = await addProcurementVariants({
       id: id,
       body: { variants },
@@ -259,6 +291,20 @@ const ProcurementList = () => {
     return flattenedArray.some((ele) => !ele.value);
   }, [JSON.stringify(variantRows)]);
 
+  const onSortClickHandler = (val) => {
+    setSort((prev) => {
+      return {
+        ...prev,
+        sortBy: val,
+        sortType: prev.sortType === 1 ? -1 : 1,
+      };
+    });
+  };
+
+  const onDeleteHandler = (index) => {
+    setVariantRows((prev) => prev.filter((val, i) => i !== index));
+  };
+  // console.log(variantRows);
   return (
     <div className={styles.container}>
       <Toaster />
@@ -297,7 +343,7 @@ const ProcurementList = () => {
         <div className={styles.tablewrapper}>
           <Table
             data={[...tableHeader, ...tableBody]}
-            onSortBy={(sort) => console.log(sort)}
+            onSortBy={onSortClickHandler}
           />
         </div>
       </div>
@@ -352,8 +398,9 @@ const ProcurementList = () => {
             )}
             {procurementListHistory?.length !== 0 ? (
               <div>
-                <Table
-                  data={[...tableHeaderHistory, ...procurementListHistory]}
+                <ScrollTable
+                  thead={billingHistoryHeader}
+                  tbody={procurementListHistory}
                 />
               </div>
             ) : (
@@ -388,17 +435,30 @@ const ProcurementList = () => {
                       {variantRows.map((row, rIndex) => (
                         <tr key={rIndex}>
                           {row.map((cell, cIndex) => (
-                            <td key={cell.id + cIndex}>
-                              <InputCell
-                                {...cell}
-                                rIndex={rIndex}
-                                cIndex={cIndex}
-                                onInputChange={(val) =>
-                                  onVariantInputChange({ val, cIndex, rIndex })
-                                }
-                              />
-                            </td>
+                            <>
+                              <td key={cell.id + cIndex}>
+                                <InputCell
+                                  {...cell}
+                                  rIndex={rIndex}
+                                  cIndex={cIndex}
+                                  onInputChange={(val) =>
+                                    onVariantInputChange({
+                                      val,
+                                      cIndex,
+                                      rIndex,
+                                    })
+                                  }
+                                />
+                              </td>
+                            </>
                           ))}
+
+                          <button
+                            className={styles.delIcon}
+                            onClick={() => onDeleteHandler(rIndex)}
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
                         </tr>
                       ))}
                     </tbody>
@@ -415,6 +475,7 @@ const ProcurementList = () => {
                     />
                   </div>
                 </div>
+                <span className={styles.errorText}>{error}</span>
                 <div className={styles.quantityWrapper}>
                   <div>
                     <Input

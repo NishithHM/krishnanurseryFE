@@ -4,7 +4,6 @@ import "./Calendar.css";
 import "./DatePicker.css";
 import styles from "./filters.module.css";
 import Datefilter from "./Datefilter";
-import Button from "../Button";
 
 const Filters = ({ onSubmit = () => {}, onReset = () => {} }) => {
   const [isOpen, setIsOpen] = useState(false);

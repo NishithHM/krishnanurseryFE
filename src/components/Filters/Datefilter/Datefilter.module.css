@@ -21,6 +21,10 @@
   height: fit-content;
   align-self: flex-end;
   display: flex;
+}
+
+.btnSubWrapper{
+
   gap: 5px;
 }
 

@@ -54,7 +54,10 @@ const Categories = () => {
     pageNumber: page,
     ...sort,
   });
-  const getCategoryCount = useGetAllCategoriesQuery({ isCount: true });
+  const getCategoryCount = useGetAllCategoriesQuery({
+    isCount: true,
+    search: searchInput,
+  });
   const count = _.get(getCategoryCount, "data[0].count", 0);
   const [deleteCategoryReq, { isLoading, isError, isSuccess }] =
     useDeleteCategoriesMutation();
@@ -193,6 +196,7 @@ const Categories = () => {
         </div>
         <Modal isOpen={deleteCategory} contentLabel="Delete User">
           <Alert
+            message="Are you sure to delete category?"
             handleCancel={onCancelHandler}
             handleConfirm={onHandleConfirm}
           />
