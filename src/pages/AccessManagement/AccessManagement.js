@@ -21,6 +21,7 @@ import {
 } from "../../services/user.services";
 
 import { ImSearch } from "react-icons/im";
+import get from "lodash/get";
 
 const AccessManagement = () => {
   const [page, setPage] = useState(1);
@@ -29,7 +30,7 @@ const AccessManagement = () => {
   const [deleteUser, setDeleteUser] = useState(false);
   const [deleteUserUid, setDeleteUserUid] = useState(null);
 
-  const [searchInput, setSearchInput] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
 
   // requests
@@ -37,6 +38,8 @@ const AccessManagement = () => {
   const usersCountReq = useGetAllUsersCountQuery({ search: searchInput });
   const [searchUser] = useSearchUserMutation();
   const [deleteUserReq] = useDeleteUserMutation();
+
+  // const count = get(usersCountReq.data, "users[0].count", 0);
 
   const openDeleteModalHandler = (uid) => {
     setDeleteUserUid(uid);
@@ -98,7 +101,7 @@ const AccessManagement = () => {
 
   useEffect(() => {
     if (usersCountReq.status !== "fulfilled") return;
-    setUsersCount(usersCountReq.data.users[0]?.count);
+    setUsersCount(usersCountReq.data.users[0]?.count || 0);
   }, [usersCountReq]);
 
   useEffect(() => {

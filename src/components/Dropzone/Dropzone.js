@@ -8,44 +8,45 @@ import {
 import { ImFilesEmpty } from "react-icons/im";
 import { toast } from "react-toastify";
 
-const DropZone = ({ getFile }) => {
-  const [file, setFile] = useState(null);
-  useEffect(() => {
-    getFile(file);
-  }, [file]);
+const DropZone = ({
+  onDrop,
+  onReject,
+  maxSize,
+  maxFiles,
+  multiple,
+  accept,
+  maxFileSize,
+}) => {
+  // if (files) {
+  //   return (
+  //     <div>
+  //       <p style={{ fontSize: "18px" }}>File Selected</p>
+  //       <div
+  //         style={{
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "space-between",
+  //           border: "2px dashed black",
+  //           borderRadius: "7px",
+  //           padding: "10px",
+  //           margin: 0,
+  //         }}
+  //       >
+  //         <span>{files.name}</span>
 
-  if (file) {
-    return (
-      <div>
-        <p style={{ fontSize: "18px" }}>File Selected</p>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            border: "2px dashed black",
-            borderRadius: "7px",
-            padding: "10px",
-            margin: 0,
-          }}
-        >
-          <span>{file.name}</span>
-
-          <AiOutlineClose onClick={() => setFile(null)} />
-        </div>
-      </div>
-    );
-  }
+  //         <AiOutlineClose onClick={() => setFile(null)} />
+  //       </div>
+  //     </div>
+  //   );
+  // }
   return (
     <Dropzone
-      onDrop={(files) => setFile(files[0])}
-      onReject={(files) =>
-        toast.error(files[0].errors[0].code.replaceAll("-", " "))
-      }
-      maxSize={3 * 1024 ** 2}
-      maxFiles="1"
-      multiple={false}
-      accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.pdf]}
+      onDrop={onDrop}
+      onReject={onReject}
+      maxSize={maxSize}
+      maxFiles={maxFiles}
+      multiple={multiple}
+      accept={accept}
     >
       <div
         style={{
@@ -68,7 +69,13 @@ const DropZone = ({ getFile }) => {
         <div style={{ color: "#8e8e8e" }}>
           <span>Drag images here or click to select files</span>
           <br />
-          <span>file should not exceed 5mb</span>
+          <span>File should not exceed {maxFileSize}mb</span>
+          {maxFiles > 1 && (
+            <span>
+              <br />
+              Maximum {maxFiles} are allowed
+            </span>
+          )}
         </div>
       </div>
     </Dropzone>

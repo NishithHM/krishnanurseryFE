@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
+import { MIME_TYPES } from "@mantine/dropzone";
+import { AiOutlineClose } from "react-icons/ai";
 
 const tableHeader = [
   [
@@ -59,7 +61,8 @@ const AddProcurement = () => {
 
   const navigate = useNavigate();
   const [state, setState] = useState(initialState);
-  const [file, setFile] = useState(null);
+  const [invoiceFile, setInvoiceFile] = useState(null);
+  const [plantImages, setPlantImages] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
   const [
@@ -79,7 +82,6 @@ const AddProcurement = () => {
       value: item._id,
       label: item.names.en.name,
     }));
-    console.log(res);
     return res;
   };
 
@@ -152,8 +154,11 @@ const AddProcurement = () => {
     if (body.totalPrice < 0) {
       return toast.error("Total price shouldn't be negative number");
     }
-    if (!file) {
+    if (!invoiceFile) {
       return toast.error("Select File");
+    }
+    if (plantImages.length == 0) {
+      return toast.error("Upload atleast one plant image.");
     }
     body.categories = state.addPlantCategory.map((ele) => {
       return {
@@ -173,7 +178,11 @@ const AddProcurement = () => {
 
       const formdata = new FormData();
       formdata.append("body", JSON.stringify(body));
-      formdata.append("invoice", file);
+      formdata.append("invoice", invoiceFile);
+
+      plantImages.forEach((img) => {
+        formdata.append("invoice", img);
+      });
       console.log(formdata);
       const res = await createProcurements({ body: formdata });
 
@@ -246,8 +255,33 @@ const AddProcurement = () => {
     [state.addPlantName?.value]
   );
 
-  const getFile = (file) => {
-    setFile(file);
+  // const getFile = (file) => {
+  //   setFile(file);
+  // };
+
+  useEffect(() => {
+    console.log(plantImages);
+  }, [plantImages]);
+
+  const handlePlantimageSelect = (file) => {
+    setPlantImages((prev) => {
+      let updated = [...prev, ...file];
+
+      const uniqueArr = Array.from(new Set(updated.map((a) => a.path))).map(
+        (path) => {
+          return updated.find((a) => a.path === path);
+        }
+      );
+      return uniqueArr;
+    });
+  };
+  const handlePlantImageRemove = (index) => {
+    setPlantImages((prev) => {
+      let updated = [...prev];
+      updated.splice(index, 1);
+
+      return updated;
+    });
   };
 
   return (
@@ -352,7 +386,104 @@ const AddProcurement = () => {
             rows={4}
             name="description"
           />
-          <Dropzone getFile={getFile} />
+          <div>
+            <p style={{ fontSize: "22px", lineHeight: "35px", margin: 0 }}>
+              Invoice
+            </p>
+            {invoiceFile ? (
+              <div>
+                <p style={{ fontSize: "18px" }}>File Selected</p>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    border: "2px dashed black",
+                    borderRadius: "7px",
+                    padding: "10px",
+                    margin: 0,
+                  }}
+                >
+                  <span>{invoiceFile.name}</span>
+
+                  <AiOutlineClose onClick={() => setInvoiceFile(null)} />
+                </div>
+              </div>
+            ) : (
+              <Dropzone
+                onDrop={(files) => {
+                  console.log(files);
+                  setInvoiceFile(files[0]);
+                }}
+                onReject={(files) =>
+                  toast.error(files[0].errors[0].code.replaceAll("-", " "))
+                }
+                maxSize={3 * 1024 ** 2}
+                maxFiles="1"
+                multiple={false}
+                accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.pdf]}
+                maxFileSize="5"
+              />
+            )}
+          </div>
+
+          <div>
+            <p style={{ fontSize: "22px", lineHeight: "35px", margin: 0 }}>
+              Plant Image(s)
+            </p>
+
+            {plantImages.length > 0 && (
+              <div
+                style={{
+                  marginBottom: "10px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <p style={{ fontSize: "18px" }}>File Selected</p>
+                {plantImages.map((image, index) => {
+                  return (
+                    <div key={index}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          border: "2px dashed black",
+                          borderRadius: "7px",
+                          padding: "10px",
+                          margin: 0,
+                        }}
+                      >
+                        <span>{image.name}</span>
+
+                        <AiOutlineClose
+                          onClick={() => handlePlantImageRemove(index)}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {plantImages.length < 3 && (
+              <Dropzone
+                onDrop={(files) => {
+                  // console.log(files);
+                  handlePlantimageSelect(files);
+                }}
+                onReject={(files) => {
+                  toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                }}
+                maxSize={3 * 1024 ** 2}
+                maxFiles="3"
+                multiple={true}
+                accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+                maxFileSize="5"
+              />
+            )}
+          </div>
           <div className={styles.formbtn}>
             <Button
               onClick={onSubmitHandler}
@@ -365,7 +496,7 @@ const AddProcurement = () => {
                 isEmpty(state.totalQuantity) ||
                 state.errorFields.length > 0 ||
                 state.submitDisabled ||
-                !file
+                !invoiceFile
               }
               type="primary"
               title="Save"
