@@ -1,6 +1,7 @@
 {
   "name": "krishnanurseryfe",
   "version": "0.1.0",
+  "proxy": "http://3.110.8.129:8000",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",

@@ -7,6 +7,7 @@ import {
   Button,
   Input,
   Toaster,
+  Modal,
 } from "../../components";
 import {
   useGetProcurementsQuery,
@@ -31,7 +32,7 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ScrollTable from "../../components/Table/ScrollTable";
-
+import { GrClose } from "react-icons/gr";
 const tableHeader = [
   [
     {
@@ -80,12 +81,13 @@ const tableHeader = [
 
 const billingHistoryHeader = [
   { value: "Procured On", width: "15%" },
-  { value: "Total Quantity", width: "15%" },
+  { value: "Total Quantity", width: "10%" },
   { value: "Vendor Name", width: "15%" },
   { value: "Vendor Contact", width: "15%" },
   { value: "Price Per Plant ₹", width: "15%" },
   { value: "Vendor Name", width: "15%" },
-  { value: "Invoice", width: "15%" },
+  { value: "images", width: "10%" },
+  { value: "Invoice", width: "10%" },
 ];
 
 const ProcurementList = () => {
@@ -111,6 +113,10 @@ const ProcurementList = () => {
   const [error, setError] = useState(false);
 
   const [firstLoad, setFirstLoad] = useState(true);
+
+  const [plantImageurls, setPlantImageUrls] = useState([]);
+
+  const [plantImages, setPlantImages] = useState([]);
 
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -140,6 +146,10 @@ const ProcurementList = () => {
     isCount: true,
     search: searchInput,
   });
+
+  const setImageurlsHandler = (data) => {
+    fetchAndDisplayImages(data.images);
+  };
 
   const count = _.get(getProcurementCount, "data[0].count", 0);
 
@@ -177,7 +187,7 @@ const ProcurementList = () => {
     } else {
       setVariantRows([rowInitState]);
     }
-    const body = getTableBody(history);
+    const body = getTableBody(history, setImageurlsHandler);
     setProcurementListHistory(body);
     setProcurementListHistoryTitle(procurementData.names.en.name);
     setHistoryCount(body.length);
@@ -209,7 +219,7 @@ const ProcurementList = () => {
     });
 
     if (res) {
-      const body = await getTableBody(res.data);
+      const body = await getTableBody(res.data, setImageurlsHandler);
       setProcurementListHistory(body);
     }
   };
@@ -239,7 +249,7 @@ const ProcurementList = () => {
     setHistoryCount(resCount.data[0]?.count);
 
     if (res.data) {
-      const body = await getTableBody(res.data);
+      const body = await getTableBody(res.data, setImageurlsHandler);
       setProcurementListHistory(body);
       setError("");
     }
@@ -319,205 +329,313 @@ const ProcurementList = () => {
   const onDeleteHandler = (index) => {
     setVariantRows((prev) => prev.filter((val, i) => i !== index));
   };
-  // console.log(variantRows);
+
+  const fetchAndDisplayImages = (urls) => {
+    const promises = [];
+    const images = [];
+    console.log(urls);
+    if (urls.length === 0) return toast.error("No Images Found!");
+    urls.forEach((url) => {
+      const promise = fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/download?path=${url}`,
+        {
+          headers: {
+            Authorization: sessionStorage.getItem("authToken"),
+          },
+        }
+      )
+        .then((response) => response.blob())
+        .then((data) => {
+          const imageUrl = URL.createObjectURL(data);
+          const img = new Image();
+          img.src = imageUrl;
+          images.push(imageUrl);
+        })
+        .catch((error) => console.error(error));
+      promises.push(promise);
+    });
+    Promise.all(promises).then(() => {
+      console.log(images);
+      setPlantImages(images);
+    });
+  };
+
+  // const fetchAndDisplayImages = (urls) => {
+  //   const images = [];
+  //   console.log(urls);
+  //   if (urls.length === 0) return toast.error("No Images Found!");
+  //   urls.forEach((url) => {
+  //     fetch(`${process.env.REACT_APP_BASE_URL}/api/download?path=${url}`, {
+  //       headers: {
+  //         Authorization: sessionStorage.getItem("authToken"),
+  //       },
+  //     })
+  //       .then((response) => response.blob())
+  //       .then((data) => {
+  //         const imageUrl = URL.createObjectURL(data);
+  //         const img = new Image();
+  //         img.src = imageUrl;
+  //         images.push(imageUrl);
+  //       })
+  //       .catch((error) => console.error(error));
+  //   });
+  //   console.log(images);
+  //   setPlantImages(images);
+  // };
+
+  // useEffect(() => {
+  //   fetchAndDisplayImages();
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log(plantImages);
+  //   // fetchAndDisplayImages();
+  // }, [plantImages]);
+
   return (
-    <div className={styles.container}>
-      <Toaster />
-      <div className={styles.innerContainer}>
-        <div>
-          <BackButton navigateTo={"/authorised/dashboard"} />
-        </div>
-        <div>
-          <Search
-            value={searchInput}
-            title="Search for a Plant..."
-            onChange={handleSearchInputChange}
-          />
-        </div>
-        <div className={styles.paginationContainer}>
-          <div className={styles.paginationInner}>
-            <button
-              disabled={page === 1}
-              className={styles.btnControls}
-              onClick={onDecrementPage}
-            >
-              <FaChevronLeft size={16} />
-            </button>
-            <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
-              page * 10 > count ? count : page * 10
-            } of ${count}`}</span>
-            <button
-              disabled={(page * 10 > count ? count : page * 10) >= count}
-              className={styles.btnControls}
-              onClick={onIncrementPage}
-            >
-              <FaChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-        <div className={styles.tablewrapper}>
-          <Table
-            data={[...tableHeader, ...tableBody]}
-            onSortBy={onSortClickHandler}
-          />
-        </div>
-      </div>
-      {id && (
-        <div className={styles.tableProcurementListData}>
-          {procurementListHistory?.length !== 0 && (
-            <div className={styles.paginationContainerFilter}>
-              <div className={styles.paginationInnerFilter}>
-                <button
-                  disabled={page === 1}
-                  className={styles.btnControls}
-                  onClick={() => onHistoryPageChange(false)}
-                >
-                  <FaChevronLeft size={16} />
-                </button>
-                <span>{`${pageFilter === 1 ? "1" : (pageFilter - 1) * 10 + 1}-${
-                  pageFilter * 10 > historyCount
-                    ? historyCount
-                    : pageFilter * 10
-                } of ${historyCount}`}</span>
-                <button
-                  disabled={
-                    (pageFilter * 10 > historyCount
-                      ? historyCount
-                      : pageFilter * 10) >= historyCount
-                  }
-                  className={styles.btnControls}
-                  onClick={() => onHistoryPageChange(true)}
-                >
-                  <FaChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
+    <>
+      <div className={styles.container}>
+        <Toaster />
+        <div className={styles.innerContainer}>
           <div>
-            {id && (
-              <>
-                <div>
-                  <Filters
-                    startDateInput={startDate}
-                    endDateInput={endDate}
-                    onChange={onChangeHandler}
-                    onSubmit={onSubmitHandler}
-                  />
-                  {/* <Table data={[...tableHeaderHistory, ...procurementListFilter]} /> */}
-                </div>
-                <div className={styles.procurementListHeader}>
-                  <span>Procurement History</span>
-                  <span>&nbsp;- {procurementListHistoryTitle}</span>
-                </div>
-              </>
-            )}
-            {procurementListHistory?.length !== 0 ? (
-              <div>
-                <ScrollTable
-                  thead={billingHistoryHeader}
-                  tbody={procurementListHistory}
-                />
-              </div>
-            ) : (
-              id && (
-                <div className={styles.noDataDisplayText}>
-                  {" "}
-                  <span>There's nothing to display!</span>{" "}
-                </div>
-              )
-            )}
-
-            {role === "admin" && (
-              <>
-                <div>
-                  <div
-                    className={styles.addButton}
-                    onClick={() =>
-                      setVariantRows([...variantRows, rowInitState])
-                    }
-                  >
-                    <div className={styles.plusIcon}> +</div>
-                  </div>
-                  <table className={styles.tableVariants}>
-                    <thead>
-                      {variantHeaders.map((ele) => (
-                        <th key={ele}>
-                          <span>{ele}</span>
-                        </th>
-                      ))}
-                    </thead>
-                    <tbody>
-                      {variantRows.map((row, rIndex) => (
-                        <tr key={rIndex}>
-                          {row.map((cell, cIndex) => (
-                            <>
-                              <td key={cell.id + cIndex}>
-                                <InputCell
-                                  {...cell}
-                                  rIndex={rIndex}
-                                  cIndex={cIndex}
-                                  onInputChange={(val) =>
-                                    onVariantInputChange({
-                                      val,
-                                      cIndex,
-                                      rIndex,
-                                    })
-                                  }
-                                />
-                              </td>
-                            </>
-                          ))}
-
-                          <button
-                            className={styles.delIcon}
-                            onClick={() => onDeleteHandler(rIndex)}
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                          </button>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className={styles.submitWrapper}>
-                  <div className={styles.submitBtn}>
-                    <Button
-                      type="primary"
-                      title="Submit Variants"
-                      onClick={onVariantSubmitHandler}
-                      disabled={disabledVariantsSubmit}
-                      loading={loaders}
-                    />
-                  </div>
-                </div>
-                <span className={styles.errorText}>{error}</span>
-                <div className={styles.quantityWrapper}>
-                  <div>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      title="Minimum Inventory Quantity"
-                      onChange={onQuantityChangeHandler}
-                      value={quantity}
-                    />
-                  </div>
-                  <div className={styles.submitQuantity}>
-                    <Button
-                      type="primary"
-                      title="Submit Quantity"
-                      onClick={onQuantitySubmitHandler}
-                      disabled={!quantity}
-                      loading={quanityLoaders}
-                    />
-                  </div>
-                </div>
-                <p>Minimum stock needs to be mainained in inventory</p>
-              </>
-            )}
+            <BackButton navigateTo={"/authorised/dashboard"} />
+          </div>
+          <div>
+            <Search
+              value={searchInput}
+              title="Search for a Plant..."
+              onChange={handleSearchInputChange}
+            />
+          </div>
+          <div className={styles.paginationContainer}>
+            <div className={styles.paginationInner}>
+              <button
+                disabled={page === 1}
+                className={styles.btnControls}
+                onClick={onDecrementPage}
+              >
+                <FaChevronLeft size={16} />
+              </button>
+              <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
+                page * 10 > count ? count : page * 10
+              } of ${count}`}</span>
+              <button
+                disabled={(page * 10 > count ? count : page * 10) >= count}
+                className={styles.btnControls}
+                onClick={onIncrementPage}
+              >
+                <FaChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+          <div className={styles.tablewrapper}>
+            <Table
+              data={[...tableHeader, ...tableBody]}
+              onSortBy={onSortClickHandler}
+            />
           </div>
         </div>
-      )}
-    </div>
+        {id && (
+          <div className={styles.tableProcurementListData}>
+            {procurementListHistory?.length !== 0 && (
+              <div className={styles.paginationContainerFilter}>
+                <div className={styles.paginationInnerFilter}>
+                  <button
+                    disabled={page === 1}
+                    className={styles.btnControls}
+                    onClick={() => onHistoryPageChange(false)}
+                  >
+                    <FaChevronLeft size={16} />
+                  </button>
+                  <span>{`${
+                    pageFilter === 1 ? "1" : (pageFilter - 1) * 10 + 1
+                  }-${
+                    pageFilter * 10 > historyCount
+                      ? historyCount
+                      : pageFilter * 10
+                  } of ${historyCount}`}</span>
+                  <button
+                    disabled={
+                      (pageFilter * 10 > historyCount
+                        ? historyCount
+                        : pageFilter * 10) >= historyCount
+                    }
+                    className={styles.btnControls}
+                    onClick={() => onHistoryPageChange(true)}
+                  >
+                    <FaChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+            <div>
+              {id && (
+                <>
+                  <div>
+                    <Filters
+                      startDateInput={startDate}
+                      endDateInput={endDate}
+                      onChange={onChangeHandler}
+                      onSubmit={onSubmitHandler}
+                    />
+                    {/* <Table data={[...tableHeaderHistory, ...procurementListFilter]} /> */}
+                  </div>
+                  <div className={styles.procurementListHeader}>
+                    <span>Procurement History</span>
+                    <span>&nbsp;- {procurementListHistoryTitle}</span>
+                  </div>
+                </>
+              )}
+              {procurementListHistory?.length !== 0 ? (
+                <div>
+                  <ScrollTable
+                    thead={billingHistoryHeader}
+                    tbody={procurementListHistory}
+                  />
+                </div>
+              ) : (
+                id && (
+                  <div className={styles.noDataDisplayText}>
+                    {" "}
+                    <span>There's nothing to display!</span>{" "}
+                  </div>
+                )
+              )}
+
+              {role === "admin" && (
+                <>
+                  <div>
+                    <div
+                      className={styles.addButton}
+                      onClick={() =>
+                        setVariantRows([...variantRows, rowInitState])
+                      }
+                    >
+                      <div className={styles.plusIcon}> +</div>
+                    </div>
+                    <table className={styles.tableVariants}>
+                      <thead>
+                        {variantHeaders.map((ele) => (
+                          <th key={ele}>
+                            <span>{ele}</span>
+                          </th>
+                        ))}
+                      </thead>
+                      <tbody>
+                        {variantRows.map((row, rIndex) => (
+                          <tr key={rIndex}>
+                            {row.map((cell, cIndex) => (
+                              <>
+                                <td key={cell.id + cIndex}>
+                                  <InputCell
+                                    {...cell}
+                                    rIndex={rIndex}
+                                    cIndex={cIndex}
+                                    onInputChange={(val) =>
+                                      onVariantInputChange({
+                                        val,
+                                        cIndex,
+                                        rIndex,
+                                      })
+                                    }
+                                  />
+                                </td>
+                              </>
+                            ))}
+
+                            <button
+                              className={styles.delIcon}
+                              onClick={() => onDeleteHandler(rIndex)}
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className={styles.submitWrapper}>
+                    <div className={styles.submitBtn}>
+                      <Button
+                        type="primary"
+                        title="Submit Variants"
+                        onClick={onVariantSubmitHandler}
+                        disabled={disabledVariantsSubmit}
+                        loading={loaders}
+                      />
+                    </div>
+                  </div>
+                  <span className={styles.errorText}>{error}</span>
+                  <div className={styles.quantityWrapper}>
+                    <div>
+                      <Input
+                        id="quantity"
+                        type="number"
+                        title="Minimum Inventory Quantity"
+                        onChange={onQuantityChangeHandler}
+                        value={quantity}
+                      />
+                    </div>
+                    <div className={styles.submitQuantity}>
+                      <Button
+                        type="primary"
+                        title="Submit Quantity"
+                        onClick={onQuantitySubmitHandler}
+                        disabled={!quantity}
+                        loading={quanityLoaders}
+                      />
+                    </div>
+                  </div>
+                  <p>Minimum stock needs to be mainained in inventory</p>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <Modal isOpen={plantImages.length > 0}>
+        <div
+          style={{
+            border: "1px solid black",
+            padding: "1rem",
+            minWidth: "90%",
+            background: "#ffffff",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <h4>Plant Images</h4>
+            <GrClose
+              onClick={() => {
+                setPlantImages([]);
+              }}
+            />
+          </div>
+          <div
+            style={{
+              maxHeight: "70vh",
+              overflow: "auto",
+              display: "flex",
+              gap: "20px",
+              flexWrap: "wrap",
+            }}
+          >
+            {plantImages.map((img) => {
+              return (
+                <>
+                  <img src={img} alt="img" />
+                </>
+              );
+            })}
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import styles from "./ProcurementList.module.css";
+import { useState } from "react";
 
 const requiredData = [
   "lastProcuredOn",
@@ -55,6 +56,7 @@ const requiredDataHistory = [
   "vendorContact",
   "totalPrice",
   "createdBy",
+  "images",
   "invoice",
 ];
 
@@ -77,8 +79,13 @@ const handleDownload = (fileUrl) => {
     })
     .catch((error) => console.error("Error downloading file:", error));
 };
-
-export const getTableBody = (data) => {
+const handleImageOpen = (data) => {
+  const images = data.images;
+  if (images.length === 0)
+    return toast.error("No Images found for this procurement!");
+  else console.log(images);
+};
+export const getTableBody = (data, imagesHandler) => {
   console.log(data);
   const result = data?.map((ele) => {
     const data = requiredDataHistory.map((data) => {
@@ -103,12 +110,26 @@ export const getTableBody = (data) => {
             </p>
           ),
         };
+      } else if (data === "images") {
+        return {
+          value: (
+            <p
+              onClick={() => imagesHandler(ele)}
+              style={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#302c2c",
+              }}
+            >
+              View
+            </p>
+          ),
+        };
       } else if (data === "createdBy") {
         return {
           value: <p>{ele["createdBy"]?.name}</p>,
         };
       } else {
-        console.log(ele);
         return { value: ele[data] };
       }
     });
