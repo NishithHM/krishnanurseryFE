@@ -4,7 +4,7 @@ const userSlice = createSlice({
     name:"userSlice",
     initialState:{
         user:{},
-        lostAuth: false
+        lostAuth: false,
     },
     reducers:{
         addUser(state, params){
@@ -12,7 +12,7 @@ const userSlice = createSlice({
         },
         logout(state, params){
             state.lostAuth = true
-        }
+        },
     }
 })
 

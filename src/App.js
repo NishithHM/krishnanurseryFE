@@ -11,7 +11,7 @@ import { isEmpty } from "lodash";
 
 function App() {
   // dummy data sent to select components
-  const { lostAuth, user } = useSelector(rState => rState.userSlice)
+  const { lostAuth, user, error } = useSelector(rState => rState.userSlice)
   const contextVal = isEmpty(user) ? JSON.parse(sessionStorage.getItem('userData')) : user
   const [context, setContext] = useState(contextVal);
   useEffect(()=>{
