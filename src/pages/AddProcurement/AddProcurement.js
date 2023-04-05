@@ -214,6 +214,10 @@ const AddProcurement = () => {
       // call create api
     } else {
       const id = state.addPlantName?.value;
+      const formdata = new FormData();
+      plantImages.forEach((img) => {
+        formdata.append("invoice", img);
+      });
       const res = await updateProcurements({ body, id });
 
       if (res.error) {
