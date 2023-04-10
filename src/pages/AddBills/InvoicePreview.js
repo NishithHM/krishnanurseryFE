@@ -78,7 +78,6 @@ export const InvoiceSection = (props) => {
     let discounted = false;
 
     for (let index = 0; index < cartData.length; index++) {
-        console.log(cartData[index].mrp , cartData[index].price)
       if (cartData[index].mrp != cartData[index].price) {
         discounted = true;
         break;
