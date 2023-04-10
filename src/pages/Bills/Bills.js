@@ -205,7 +205,7 @@ const Bills = () => {
     };
     const formatInvoiceItems = (data) => {
         return data.map((item) => ({
-            procurementLabel: item.procurementName.en.name,
+            procurementLabel: `${item.procurementName.en.name}(${item.variant.en.name})`,
             price: item.rate,
             quantity: item.quantity,
         }));
