@@ -3,6 +3,7 @@ import { Modal } from "@mantine/core";
 import styles from "./InvoicePreview.module.css";
 import ScrollTable from "../Table/ScrollTable";
 import Button from "../Button";
+import dayjs from "dayjs";
 
 export const InvoicePreview = (props) => {
   const {
@@ -41,11 +42,6 @@ export const InvoicePreview = (props) => {
         </div>
       )}
       <InvoiceSection {...props} printEnabled={printEnabled} />
-      {handlePrintClick && (
-        <div className={styles.thankYouNote}>
-          Make sure to collect money before submitting!
-        </div>
-      )}
       <div className={styles.modalAction}>{children}</div>
     </Modal>
   );
@@ -148,7 +144,7 @@ export const InvoiceSection = (props) => {
           <div className={styles.lableValueDetails}>
             <div className={styles.label}>Invoice Date:</div>
             <div className={styles.value}>
-              {formatDate(new Date(invoiceDetails?.invoiceDate))}
+              {dayjs(new Date(invoiceDetails?.invoiceDate)).format('DD/MM/YYYY HH:mm:ss A')}
             </div>
           </div>
 
@@ -218,21 +214,3 @@ export const InvoiceSection = (props) => {
   );
 };
 
-export const formatDate = (date) => {
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  const strTime = hours + ":" + minutes + " " + ampm;
-  return (
-    date.getDate() +
-    "-" +
-    (date.getMonth() + 1) +
-    "-" +
-    date.getFullYear() +
-    " " +
-    strTime
-  );
-};
