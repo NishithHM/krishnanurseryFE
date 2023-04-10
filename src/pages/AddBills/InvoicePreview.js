@@ -78,7 +78,8 @@ export const InvoiceSection = (props) => {
     let discounted = false;
 
     for (let index = 0; index < cartData.length; index++) {
-      if (cartData[index].mrp !== cartData[index].price) {
+        console.log(cartData[index].mrp , cartData[index].price)
+      if (cartData[index].mrp != cartData[index].price) {
         discounted = true;
         break;
       }
@@ -103,7 +104,7 @@ export const InvoiceSection = (props) => {
       newCartList.push(val)
     });
     setCartList(newCartList)
-  }, [cartData])
+  }, [JSON.stringify(cartData)])
 
   return (
     <div className={styles.modalContent} id="modal-print-section">
