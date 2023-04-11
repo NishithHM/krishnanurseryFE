@@ -508,6 +508,7 @@ export default function AddBills() {
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
+    onAfterPrint:handleSubmit
   });
 
   const today = new Date();
@@ -728,14 +729,14 @@ export default function AddBills() {
         handlePrintClick={handlePrint}
         billedBy={auth.name}
       >
-        <Button
+        {/* <Button
           type="primary"
           title="Submit"
           buttonType="submit"
           onClick={handleSubmit}
           disabled={shouldSubmitDisable()}
           loading={submitLoading}
-        />
+        /> */}
       </InvoicePreview>
     </div>
   );

@@ -211,10 +211,17 @@ const AddProcurement = () => {
         }, 3000);
       }
 
-      // call create api
     } else {
       const id = state.addPlantName?.value;
-      const res = await updateProcurements({ body, id });
+      const formdata = new FormData();
+      formdata.append("body", JSON.stringify(body));
+      formdata.append("invoice", invoiceFile);
+
+      plantImages.forEach((img) => {
+        formdata.append("invoice", img);
+      });
+      console.log(formdata);
+      const res = await updateProcurements({ body: formdata, id });
 
       if (res.error) {
         toast.error("Unable to Add...");
@@ -255,13 +262,6 @@ const AddProcurement = () => {
     [state.addPlantName?.value]
   );
 
-  // const getFile = (file) => {
-  //   setFile(file);
-  // };
-
-  useEffect(() => {
-    console.log(plantImages);
-  }, [plantImages]);
 
   const handlePlantimageSelect = (file) => {
     setPlantImages((prev) => {

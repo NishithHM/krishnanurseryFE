@@ -1,301 +1,334 @@
 import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
-  Button,
-  Modal,
-  Table,
-  Alert,
-  Spinner,
-  BackButton,
-  Filters,
+    Button,
+    Modal,
+    Table,
+    Alert,
+    Spinner,
+    BackButton,
+    Filters,
 } from "../../components";
 
 import { ImSearch } from "react-icons/im";
 import {
-  useGetAllPurchasesCountQuery,
-  useGetAllPurchasesQuery,
-  useSearchPurchaseMutation,
+    useGetAllPurchasesCountQuery,
+    useGetAllPurchasesQuery,
+    useSearchPurchaseMutation,
 } from "../../services/bills.service";
-import { InvoicePreview } from "../../components/InvoicePreviewModal/InvoicePreview";
+import { InvoicePreview, InvoiceSection } from "../../components/InvoicePreviewModal/InvoicePreview";
+import { useReactToPrint } from "react-to-print";
 
 const getRoundedDates = () => {
-  let today = new Date();
-  let yyyy = today.getFullYear();
-  let mm = today.getMonth() + 1;
-  let dd = today.getDate();
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
 
-  if (mm < 10) {
-    mm = `0${mm}`;
-  }
+    if (mm < 10) {
+        mm = `0${mm}`;
+    }
 
-  if (dd < 10) {
-    dd = `0${dd}`;
-  }
-  let formattedDate = `${yyyy}-${mm}-${dd}`;
+    if (dd < 10) {
+        dd = `0${dd}`;
+    }
+    let formattedDate = `${yyyy}-${mm}-${dd}`;
 
-  let roundedDate = new Date(today.getFullYear(), today.getMonth(), 1);
-  let roundedYYYY = roundedDate.getFullYear();
-  let roundedMM = roundedDate.getMonth() + 1;
-  let roundedDD = roundedDate.getDate();
-  if (roundedMM < 10) {
-    roundedMM = `0${roundedMM}`;
-  }
+    let roundedDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    let roundedYYYY = roundedDate.getFullYear();
+    let roundedMM = roundedDate.getMonth() + 1;
+    let roundedDD = roundedDate.getDate();
+    if (roundedMM < 10) {
+        roundedMM = `0${roundedMM}`;
+    }
 
-  if (roundedDD < 10) {
-    roundedDD = `0${roundedDD}`;
-  }
+    if (roundedDD < 10) {
+        roundedDD = `0${roundedDD}`;
+    }
 
-  let formattedRoundedDate = `${roundedYYYY}-${roundedMM}-${roundedDD}`;
-  return { start_date: formattedRoundedDate, end_date: formattedDate };
+    let formattedRoundedDate = `${roundedYYYY}-${roundedMM}-${roundedDD}`;
+    return { start_date: formattedRoundedDate, end_date: formattedDate };
 };
 
 const Bills = () => {
-  const [page, setPage] = useState(1);
-  const [data, setData] = useState([]);
+    const [page, setPage] = useState(1);
+    const [data, setData] = useState([]);
 
-  const [filterDates, setFilterDates] = useState(getRoundedDates());
+    const [filterDates, setFilterDates] = useState(getRoundedDates());
 
-  const [searchInput, setSearchInput] = useState("");
-  const [purchaseCount, setPurchaseCount] = useState(0);
+    const [searchInput, setSearchInput] = useState("");
+    const [purchaseCount, setPurchaseCount] = useState(0);
 
+<<<<<<< HEAD
   const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "desc" });
+=======
+    const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "asc" });
+    const printRef = useRef();
+>>>>>>> master
 
-  // billing modal
-  const [showPreview, setShowPreview] = useState(false);
-  const [invoiceDetail, setInvoiceDetail] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(null);
-  useEffect(() => {
-    console.log(filterDates);
-  }, [filterDates]);
+    // billing modal
+    const [showPreview, setShowPreview] = useState(false);
+    const [invoiceDetail, setInvoiceDetail] = useState(null);
+    const [searchQuery, setSearchQuery] = useState(null);
+    useEffect(() => {
+        console.log(filterDates);
+    }, [filterDates]);
 
-  // requests
-  const purchaseData = useGetAllPurchasesQuery({
-    page,
-    startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
-    endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
-    sortBy: sort.sortBy,
-    sortType: sort.sortType === "asc" ? 1 : -1,
-  });
-  const purchaseCountReq = useGetAllPurchasesCountQuery({
-    search: searchQuery,
-    startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
-    endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
-  });
-  const [searchPurchase] = useSearchPurchaseMutation();
-
-  console.log(purchaseCountReq);
-  const formatPurchasesData = (data) => {
-    const formatted = data.map((purchase) => {
-      const date = { value: dayjs(purchase.createdAt).format("DD-MM-YYYY") };
-
-      const openModal = {
-        value: (
-          <span
-            style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
-            onClick={() => {
-              setShowPreview(true);
-              setInvoiceDetail(purchase);
-            }}
-          >
-            View Details
-          </span>
-        ),
-      };
-      const data = [
-        date,
-        { value: purchase._id },
-        { value: purchase.customerName },
-        {
-          value: new Intl.NumberFormat("ja-JP", {
-            style: "currency",
-            currency: "INR",
-          }).format(purchase.totalPrice),
-        },
-        openModal,
-      ];
-      return data;
-    });
-
-    return formatted;
-  };
-
-  const searchHandler = debounce(async (query) => {
-    if (query.length >= 3) {
-      const res = await searchPurchase({
-        search: query,
+    // requests
+    const purchaseData = useGetAllPurchasesQuery({
+        pageNumber: page,
         startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
         endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
-      });
-      setSearchQuery(query);
-      console.log(res);
-      const purchases = formatPurchasesData(res.data);
-      setData(purchases);
-    } else {
-      setSearchQuery(null);
-    }
-  }, 500);
+        sortBy: sort.sortBy,
+        sortType: sort.sortType === "asc" ? 1 : -1,
+    });
+    const purchaseCountReq = useGetAllPurchasesCountQuery({
+        search: searchQuery,
+        startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
+        endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
+    });
+    const [searchPurchase] = useSearchPurchaseMutation();
 
-  const handleSearchInputChange = (event) => {
-    setSearchInput(event.target.value);
-    searchHandler(event.target.value);
-  };
+    console.log(purchaseCountReq);
+    const formatPurchasesData = (data) => {
+        const formatted = data.map((purchase) => {
+            const date = { value: dayjs(purchase.createdAt).format("DD-MM-YYYY") };
 
-  useEffect(() => {
-    if (purchaseCountReq.status !== "fulfilled") return;
-    setPurchaseCount(purchaseCountReq.data[0]?.count);
-  }, [purchaseCountReq]);
+            const openModal = {
+                value: (
+                    <span
+                        style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
+                        onClick={() => {
+                            setShowPreview(true);
+                            setInvoiceDetail(purchase);
+                        }}
+                    >
+                        View Details
+                    </span>
+                ),
+            };
+            const data = [
+                date,
+                { value: purchase._id },
+                { value: purchase.customerName },
+                {
+                    value: new Intl.NumberFormat("ja-JP", {
+                        style: "currency",
+                        currency: "INR",
+                    }).format(purchase.totalPrice),
+                },
+                openModal,
+            ];
+            return data;
+        });
 
-  useEffect(() => {
-    if (purchaseData.status !== "fulfilled") return;
-    const purchases = formatPurchasesData(purchaseData.data);
-    setData(purchases);
-  }, [purchaseData, searchInput]);
+        return formatted;
+    };
 
-  const TABLE_HEADER = [
-    {
-      value: "Date",
-      isSortable: true,
-      sortBy: "updatedAt",
-    },
+    const searchHandler = debounce(async (query) => {
+        if (query.length >= 3) {
+            const res = await searchPurchase({
+                search: query,
+                startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
+                endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
+            });
+            setSearchQuery(query);
+            console.log(res);
+            const purchases = formatPurchasesData(res.data);
+            setData(purchases);
+        } else {
+            setSearchQuery(null);
+        }
+    }, 500);
 
-    {
-      value: " Bill Number",
-      isSortable: false,
-    },
-    {
-      value: "Customer Name",
-      isSortable: false,
-    },
-    {
-      value: "Total Bill",
-      isSortable: true,
-      sortBy: "totalPrice",
-    },
-    {
-      value: "",
-      isSortable: false,
-    },
-  ];
+    const handleSearchInputChange = (event) => {
+        setSearchInput(event.target.value);
+        searchHandler(event.target.value);
+    };
 
-  const handleFilterChange = (filterDates) => {
-    console.log(filterDates);
-    setFilterDates(filterDates);
-  };
+    useEffect(() => {
+        if (purchaseCountReq.status !== "fulfilled") return;
+        setPurchaseCount(purchaseCountReq.data[0]?.count);
+    }, [purchaseCountReq]);
 
-  const handleFilterReset = () => {
-    setFilterDates(getRoundedDates());
-  };
+    useEffect(() => {
+        if (purchaseData.status !== "fulfilled") return;
+        const purchases = formatPurchasesData(purchaseData.data);
+        setData(purchases);
+    }, [purchaseData, searchInput]);
 
-  const sortData = (sortVal) => {
-    console.log(sortVal);
-    setSort((prev) => ({
-      sortBy: sortVal,
-      sortType: prev.sortType === "asc" ? "desc" : "asc",
-    }));
-  };
-  const formatInvoiceItems = (data) => {
-    return data.map((item) => ({
-      procurementLabel: item.procurementName.en.name,
-      price: item.rate,
-      quantity: item.quantity,
-    }));
-    // return data;
-  };
+    const TABLE_HEADER = [
+        {
+            value: "Date",
+            isSortable: true,
+            sortBy: "updatedAt",
+        },
 
-  return (
-    <div>
-      <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
-      </div>
-      <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
-      <div className={styles.wrapper}>
-        {/* search */}
-        <div className={styles.searchContainer}>
-          <input
-            value={searchInput}
-            onChange={handleSearchInputChange}
-            placeholder="Search for an customer..."
-            className={styles.searchInput}
-          />
-          <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
-        </div>
-        {/* pagination */}
-        <div className={styles.paginationContainer}>
-          <div className={styles.paginationInner}>
-            {/* count */}
-            <span>{`${page === 1 ? "1" : (page - 1) * 10}-${
-              page * 10 > purchaseCount ? purchaseCount : page * 10
-            } of ${purchaseCount}`}</span>
-            {/* controls */}
-            <button
-              onClick={() => setPage((e) => e - 1)}
-              disabled={page === 1}
-              className={styles.paginationControls}
-            >
-              <FaChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => setPage((e) => e + 1)}
-              disabled={
-                (page * 10 > purchaseCount ? purchaseCount : page * 10) >=
-                purchaseCount
-              }
-              className={styles.paginationControls}
-            >
-              <FaChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-      </div>
+        {
+            value: " Bill Number",
+            isSortable: false,
+        },
+        {
+            value: "Customer Name",
+            isSortable: false,
+        },
+        {
+            value: "Total Bill",
+            isSortable: true,
+            sortBy: "totalPrice",
+        },
+        {
+            value: "",
+            isSortable: false,
+        },
+    ];
 
-      {purchaseData.isLoading ? (
-        <Spinner />
-      ) : (
-        purchaseData.status === "fulfilled" && (
-          <Table data={[TABLE_HEADER, ...data]} onSortBy={sortData} />
-        )
-      )}
+    const handleFilterChange = (filterDates) => {
+        console.log(filterDates);
+        setFilterDates(filterDates);
+    };
 
-      {purchaseData.isError && (
-        <p className={styles.errorMessage}>Unable to load Users Data</p>
-      )}
+    const handleFilterReset = () => {
+        setFilterDates(getRoundedDates());
+    };
 
-      {/* <Modal isOpen={deleteUser} contentLabel="Delete User">
+    const handlePrint = useReactToPrint({
+        content: () => printRef.current,
+    });
+
+    const sortData = (sortVal) => {
+        console.log(sortVal);
+        setSort((prev) => ({
+            sortBy: sortVal,
+            sortType: prev.sortType === "asc" ? "desc" : "asc",
+        }));
+    };
+    const formatInvoiceItems = (data) => {
+        return data.map((item) => ({
+            procurementLabel: `${item.procurementName.en.name}(${item.variant.en.name})`,
+            price: item.rate,
+            quantity: item.quantity,
+        }));
+        // return data;
+    };
+
+    return (
+        <div>
+            <div>
+                <BackButton navigateTo={"/authorised/dashboard"} />
+            </div>
+            <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
+            <div className={styles.wrapper}>
+                {/* search */}
+                <div className={styles.searchContainer}>
+                    <input
+                        value={searchInput}
+                        onChange={handleSearchInputChange}
+                        placeholder="Search for an customer..."
+                        className={styles.searchInput}
+                    />
+                    <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
+                </div>
+                {/* pagination */}
+                <div className={styles.paginationContainer}>
+                    <div className={styles.paginationInner}>
+                        {/* count */}
+                        <span>{`${page === 1 ? "1" : (page - 1) * 10}-${page * 10 > purchaseCount ? purchaseCount : page * 10
+                            } of ${purchaseCount}`}</span>
+                        {/* controls */}
+                        <button
+                            onClick={() => setPage((e) => e - 1)}
+                            disabled={page === 1}
+                            className={styles.paginationControls}
+                        >
+                            <FaChevronLeft size={16} />
+                        </button>
+                        <button
+                            onClick={() => setPage((e) => e + 1)}
+                            disabled={
+                                (page * 10 > purchaseCount ? purchaseCount : page * 10) >=
+                                purchaseCount
+                            }
+                            className={styles.paginationControls}
+                        >
+                            <FaChevronRight size={16} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {purchaseData.isLoading ? (
+                <Spinner />
+            ) : (
+                purchaseData.status === "fulfilled" && (
+                    <Table data={[TABLE_HEADER, ...data]} onSortBy={sortData} />
+                )
+            )}
+
+            {purchaseData.isError && (
+                <p className={styles.errorMessage}>Unable to load Users Data</p>
+            )}
+
+            {/* <Modal isOpen={deleteUser} contentLabel="Delete User">
         <Alert
           handleCancel={closeDeleteModalHandler}
           handleConfirm={() => deleteUserHandler(deleteUserUid)}
         />
       </Modal> */}
-
-      {showPreview && invoiceDetail && (
-        <InvoicePreview
-          showPreview={showPreview}
-          onClose={() => setShowPreview(!showPreview)}
-          clientDetails={{
-            name: invoiceDetail.customerName,
-            phoneNumber: invoiceDetail.customerNumber,
-          }}
-          invoiceDetails={{
-            invoiceDate: invoiceDetail.createdAt,
-            billedBy: invoiceDetail.soldBy.name,
-          }}
-          cartData={formatInvoiceItems(invoiceDetail.items)}
-          cartResponse={{
-            discount: invoiceDetail.discount,
-            roundOff: invoiceDetail.roundOff,
-            totalPrice: invoiceDetail.totalPrice,
-          }}
-          invoiceNumber={"123"}
-          setInvoiceNumber={() => {}}
-          handlePrintClick={null}
-        />
-      )}
-    </div>
-  );
+            {showPreview && invoiceDetail && (
+                <div style={{ display: "none" }}>
+                    <div ref={printRef}>
+                        <InvoiceSection
+                            clientDetails={{
+                                name: invoiceDetail?.customerName,
+                                phoneNumber: invoiceDetail?.customerNumber,
+                            }}
+                            cartData={formatInvoiceItems(invoiceDetail?.items)}
+                            cartResponse={{
+                                discount: invoiceDetail?.discount,
+                                roundOff: invoiceDetail?.roundOff,
+                                totalPrice: invoiceDetail?.totalPrice,
+                            }}
+                            invoiceNumber={invoiceDetail._id}
+                            printEnabled={true}
+                            roundOff={invoiceDetail?.roundOff}
+                            invoiceDetails={{
+                                invoiceDate: invoiceDetail.createdAt,
+                                billedBy: invoiceDetail.soldBy.name,
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
+            {showPreview && invoiceDetail && (
+                <InvoicePreview
+                    showPreview={showPreview}
+                    onClose={() => setShowPreview(!showPreview)}
+                    clientDetails={{
+                        name: invoiceDetail.customerName,
+                        phoneNumber: invoiceDetail.customerNumber,
+                    }}
+                    invoiceDetails={{
+                        invoiceDate: invoiceDetail.createdAt,
+                        billedBy: invoiceDetail.soldBy.name,
+                    }}
+                    cartData={formatInvoiceItems(invoiceDetail.items)}
+                    cartResponse={{
+                        discount: invoiceDetail.discount,
+                        roundOff: invoiceDetail.roundOff,
+                        totalPrice: invoiceDetail.totalPrice,
+                    }}
+                    invoiceNumber={invoiceDetail._id}
+                    setInvoiceNumber={() => { }}
+                    handlePrintClick={handlePrint}
+                />
+            )}
+        </div>
+    );
 };
 
 export default Bills;

@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "@mantine/core";
 import styles from "./AddBills.module.css";
+<<<<<<< HEAD
 import ScrollTable from "../../components/Table/ScrollTable";
 import { Button } from "../../components";
+=======
+import ScrollTable from '../../components/Table/ScrollTable';
+import { Button } from '../../components';
+import dayjs from 'dayjs';
+>>>>>>> master
 
 export const InvoicePreview = (props) => {
   const {
@@ -33,7 +39,7 @@ export const InvoicePreview = (props) => {
       <div className={styles.printButton}>
         <Button
           type="primary"
-          title="Print"
+          title="Print & Submit"
           buttonType="submit"
           onClick={handlePrintClick}
         />
@@ -87,7 +93,7 @@ export const InvoiceSection = (props) => {
     let discounted = false;
 
     for (let index = 0; index < cartData.length; index++) {
-      if (cartData[index].mrp !== cartData[index].price) {
+      if (cartData[index].mrp != cartData[index].price) {
         discounted = true;
         break;
       }
@@ -100,10 +106,17 @@ export const InvoiceSection = (props) => {
     }
 
     cartData.forEach((el, index) => {
+<<<<<<< HEAD
       let val = [];
       val.push({ value: index + 1 });
       val.push({ value: el.procurementLabel });
       val.push({ value: el.mrp });
+=======
+      let val = []
+      val.push({ value: index + 1 })
+      val.push({ value: `${el.procurementLabel} ( ${el.variantLabel} )` })
+      val.push({ value: el.mrp })
+>>>>>>> master
       if (discounted) {
         val.push({ value: el.price });
       }
@@ -111,8 +124,13 @@ export const InvoiceSection = (props) => {
       val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
+<<<<<<< HEAD
     setCartList(newCartList);
   }, [cartData]);
+=======
+    setCartList(newCartList)
+  }, [JSON.stringify(cartData)])
+>>>>>>> master
 
   return (
     <div className={styles.modalContent} id="modal-print-section">
@@ -146,7 +164,7 @@ export const InvoiceSection = (props) => {
         <div className={styles.clientDetails}>
           <div className={styles.lableValueDetails}>
             <div className={styles.label}>Invoice Date:</div>
-            <div className={styles.value}>{formatDate(new Date())}</div>
+            <div className={styles.value}>{dayjs().format('DD/MM/YYYY HH:mm:ss A')}</div>
           </div>
 
           <div className={styles.lableValueDetails}>
@@ -215,6 +233,7 @@ export const InvoiceSection = (props) => {
   );
 };
 
+<<<<<<< HEAD
 export const formatDate = (date) => {
   let hours = date.getHours();
   let minutes = date.getMinutes();
@@ -233,3 +252,5 @@ export const formatDate = (date) => {
     strTime
   );
 };
+=======
+>>>>>>> master

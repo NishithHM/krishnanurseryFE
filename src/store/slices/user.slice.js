@@ -5,6 +5,7 @@ const userSlice = createSlice({
     initialState:{
         user:{},
         lostAuth: false,
+        isGlobalError: false
     },
     reducers:{
         addUser(state, params){
@@ -13,6 +14,12 @@ const userSlice = createSlice({
         logout(state, params){
             state.lostAuth = true
         },
+        globalError(state, params){
+            state.isGlobalError = true
+            setTimeout(()=>{
+                state.isGlobalError = false
+            }, 5000)
+        }
     }
 })
 

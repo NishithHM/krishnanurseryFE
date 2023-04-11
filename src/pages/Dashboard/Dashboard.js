@@ -56,7 +56,7 @@ const Dashboard = () => {
       title: "Bills",
       tile_img: billsImg,
       path: "bills",
-      allowed: [USER_ROLES.admin],
+      allowed: [USER_ROLES.admin, USER_ROLES.sales],
     },
     {
       title: "Add Bills",
