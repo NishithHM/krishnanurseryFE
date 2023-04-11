@@ -76,7 +76,7 @@ const Bills = () => {
 
     // requests
     const purchaseData = useGetAllPurchasesQuery({
-        page,
+        pageNumber: page,
         startDate: dayjs(filterDates.start_date).format("YYYY-MM-DD"),
         endDate: dayjs(filterDates.end_date).format("YYYY-MM-DD"),
         sortBy: sort.sortBy,
