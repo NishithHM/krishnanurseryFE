@@ -86,7 +86,7 @@ const billingHistoryHeader = [
   { value: "Vendor Contact", width: "15%" },
   { value: "Price Per Plant ₹", width: "15%" },
   { value: "Vendor Name", width: "15%" },
-  { value: "images", width: "10%" },
+  { value: "Images", width: "10%" },
   { value: "Invoice", width: "10%" },
 ];
 
@@ -108,7 +108,7 @@ const ProcurementList = () => {
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [sort, setSort] = useState({
     sortBy: "lastProcuredOn",
-    sortType: "asc",
+    sortType: "desc",
   });
   const [error, setError] = useState(false);
 
@@ -211,12 +211,14 @@ const ProcurementList = () => {
     const page = isAdd ? pageFilter + 1 : pageFilter - 1;
 
     setPageFilter(page);
-    const res = await getProcurementHistory({
+    const data = {
       startDate: dayjs(startDate).format("YYYY-MM-DD"),
       endDate: dayjs(endDate).format("YYYY-MM-DD"),
       id: id,
       pageNumber: page,
-    });
+    };
+    // console.log(data);
+    const res = await getProcurementHistory(data);
 
     if (res) {
       const body = await getTableBody(res.data, setImageurlsHandler);
@@ -235,14 +237,14 @@ const ProcurementList = () => {
   const onSubmitHandler = async (e) => {
     console.log(e);
     const res = await getProcurementHistory({
-      startDate: e.startDate,
-      endDate: e.endDate,
+      startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
+      endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
       id: id,
       pageNumber: 1,
     });
     const resCount = await getProcurementHistory({
-      startDate: e.startDate,
-      endDate: e.endDate,
+      startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
+      endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
       id: id,
       isCount: true,
     });
@@ -596,10 +598,13 @@ const ProcurementList = () => {
       <Modal isOpen={plantImages.length > 0}>
         <div
           style={{
-            border: "1px solid black",
+            border: "1px solid #e2e2e2",
+            boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
             padding: "1rem",
-            minWidth: "90%",
+            minWidth: "50%",
+            maxWidth: "80%",
             background: "#ffffff",
+            borderRadius: "8px",
           }}
         >
           <div
@@ -609,11 +614,17 @@ const ProcurementList = () => {
               alignItems: "center",
             }}
           >
-            <h4>Plant Images</h4>
+            <p
+              style={{ color: "#539C64", fontSize: "20px", fontWeight: "600" }}
+            >
+              Plant Images
+            </p>
             <GrClose
+              size={22}
               onClick={() => {
                 setPlantImages([]);
               }}
+              style={{ cursor: "pointer" }}
             />
           </div>
           <div
@@ -628,7 +639,7 @@ const ProcurementList = () => {
             {plantImages.map((img) => {
               return (
                 <>
-                  <img src={img} alt="img" />
+                  <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
                 </>
               );
             })}

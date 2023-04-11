@@ -118,12 +118,15 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
           <div>Round Off</div>
           <span>&#x20B9;</span>
           <input
-            value={roundOff}
+            // value={}
             name="roundOff"
             type="number"
             className={styles.cartInput}
-            onChange={onRoundOff}
+            // onChange={onRoundOff}
             onBlur={onBlur}
+            min="0"
+            value={roundOff && Math.max(0, roundOff)}
+            onChange={(e) => onRoundOff(e ? onRoundOff(e) : e)}
           />
         </div>
       )}

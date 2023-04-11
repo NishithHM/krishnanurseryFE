@@ -287,10 +287,11 @@ const AddProcurement = () => {
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
+      <div>
+        <BackButton navigateTo={"/authorised/dashboard"} />
+      </div>
+
       <div className={styles.outerWrapper}>
-        <div>
-          <BackButton navigateTo={"/authorised/dashboard"} />
-        </div>
         <h1 className={styles.header}>Add Procurement</h1>
         <div className={styles.innerWrapper}>
           <Dropdown
@@ -388,7 +389,14 @@ const AddProcurement = () => {
           />
           <div>
             <p style={{ fontSize: "22px", lineHeight: "35px", margin: 0 }}>
-              Invoice
+              Invoice{" "}
+              <span
+                style={{
+                  color: "red",
+                }}
+              >
+                *
+              </span>
             </p>
             {invoiceFile ? (
               <div>
@@ -429,7 +437,14 @@ const AddProcurement = () => {
 
           <div>
             <p style={{ fontSize: "22px", lineHeight: "35px", margin: 0 }}>
-              Plant Image(s)
+              Plant Image(s){" "}
+              <span
+                style={{
+                  color: "red",
+                }}
+              >
+                *
+              </span>
             </p>
 
             {plantImages.length > 0 && (

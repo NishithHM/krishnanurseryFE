@@ -1,27 +1,35 @@
-import React, { useEffect, useState } from 'react'
-import { Modal } from '@mantine/core'
+import React, { useEffect, useState } from "react";
+import { Modal } from "@mantine/core";
 import styles from "./AddBills.module.css";
-import ScrollTable from '../../components/Table/ScrollTable';
-import { Button } from '../../components';
+import ScrollTable from "../../components/Table/ScrollTable";
+import { Button } from "../../components";
 
 export const InvoicePreview = (props) => {
-
-  const { showPreview,
+  const {
+    showPreview,
     onClose,
     children,
     handlePrintClick,
     cartData,
-    setInvoiceNumber } = props;
+    setInvoiceNumber,
+  } = props;
 
   useEffect(() => {
     const invoiceNum = Math.floor(10000000 + Math.random() * 90000000);
-    setInvoiceNumber(invoiceNum)
-  }, [cartData])
+    setInvoiceNumber(invoiceNum);
+  }, [cartData]);
 
   const printEnabled = false;
 
   return (
-    <Modal opened={showPreview} onClose={onClose} centered size="auto" closeOnClickOutside={false} closeOnEscape={true}>
+    <Modal
+      opened={showPreview}
+      onClose={onClose}
+      centered
+      size="auto"
+      closeOnClickOutside={false}
+      closeOnEscape={true}
+    >
       <div className={styles.printButton}>
         <Button
           type="primary"
@@ -31,14 +39,15 @@ export const InvoicePreview = (props) => {
         />
       </div>
       <InvoiceSection {...props} printEnabled={printEnabled} />
-      <div className={styles.thankYouNote}>Make sure to collect money before submitting!</div>
+      <div className={styles.thankYouNote}>
+        Make sure to collect money before submitting!
+      </div>
       <div className={styles.modalAction}>{children}</div>
     </Modal>
-  )
-}
+  );
+};
 
 export const InvoiceSection = (props) => {
-
   const {
     clientDetails,
     cartData,
@@ -46,33 +55,34 @@ export const InvoiceSection = (props) => {
     invoiceNumber,
     printEnabled,
     roundOff,
-    billedBy
+    billedBy,
+    data = {},
   } = props;
 
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
+  console.log(data);
   const invoiceHeaderWithRate = [
-    { value: "S. No.", width: '10%' },
-    { value: "Item Purchased", width: '40%' },
-    { value: "MRP", width: '10%' },
-    { value: "Rate", width: '10%' },
-    { value: "Quantity", width: '10%' },
-    { value: "Sub Total", width: '20%' },
-  ]
+    { value: "S. No.", width: "10%" },
+    { value: "Item Purchased", width: "40%" },
+    { value: "MRP", width: "10%" },
+    { value: "Rate", width: "10%" },
+    { value: "Quantity", width: "10%" },
+    { value: "Sub Total", width: "20%" },
+  ];
 
   const invoiceHeaderWithOutRate = [
-    { value: "S. No.", width: '10%' },
-    { value: "Item Purchased", width: '40%' },
-    { value: "MRP", width: '15%' },
-    { value: "Quantity", width: '15%' },
-    { value: "Sub Total", width: '20%' },
-  ]
+    { value: "S. No.", width: "10%" },
+    { value: "Item Purchased", width: "40%" },
+    { value: "MRP", width: "15%" },
+    { value: "Quantity", width: "15%" },
+    { value: "Sub Total", width: "20%" },
+  ];
 
   const scroll = false;
 
   useEffect(() => {
-
     let newCartList = [];
     let discounted = false;
 
@@ -84,25 +94,25 @@ export const InvoiceSection = (props) => {
     }
 
     if (discounted) {
-      setInvoiceHeader(invoiceHeaderWithRate)
+      setInvoiceHeader(invoiceHeaderWithRate);
     } else {
-      setInvoiceHeader(invoiceHeaderWithOutRate)
+      setInvoiceHeader(invoiceHeaderWithOutRate);
     }
 
     cartData.forEach((el, index) => {
-      let val = []
-      val.push({ value: index + 1 })
-      val.push({ value: el.procurementLabel })
-      val.push({ value: el.mrp })
+      let val = [];
+      val.push({ value: index + 1 });
+      val.push({ value: el.procurementLabel });
+      val.push({ value: el.mrp });
       if (discounted) {
-        val.push({ value: el.price })
+        val.push({ value: el.price });
       }
-      val.push({ value: el.quantity })
-      val.push({ value: el.price * el.quantity })
-      newCartList.push(val)
+      val.push({ value: el.quantity });
+      val.push({ value: el.price * el.quantity });
+      newCartList.push(val);
     });
-    setCartList(newCartList)
-  }, [cartData])
+    setCartList(newCartList);
+  }, [cartData]);
 
   return (
     <div className={styles.modalContent} id="modal-print-section">
@@ -155,17 +165,25 @@ export const InvoiceSection = (props) => {
         </div>
       </div>
 
-      {!printEnabled &&
+      {!printEnabled && (
         <div>
-          {invoiceHeader && invoiceHeader.length > 0 && <ScrollTable thead={invoiceHeader} tbody={cartList} />}
+          {invoiceHeader && invoiceHeader.length > 0 && (
+            <ScrollTable thead={invoiceHeader} tbody={cartList} />
+          )}
         </div>
-      }
+      )}
 
-      {printEnabled &&
+      {printEnabled && (
         <div>
-          {invoiceHeader && invoiceHeader.length > 0 && <ScrollTable thead={invoiceHeader} tbody={cartList} scroll={scroll} />}
+          {invoiceHeader && invoiceHeader.length > 0 && (
+            <ScrollTable
+              thead={invoiceHeader}
+              tbody={cartList}
+              scroll={scroll}
+            />
+          )}
         </div>
-      }
+      )}
 
       <div className={styles.invoiceSummary}>
         <div className={styles.lableValueDetails}>
@@ -175,28 +193,43 @@ export const InvoiceSection = (props) => {
 
         <div className={styles.dicountDetails}>
           <div className={styles.lableValueDetails}>
-            {cartResponse.discount + roundOff > 0 && <div className={styles.label}>Discount Price: </div>}
+            {cartResponse.discount + roundOff > 0 && (
+              <div className={styles.label}>Discount Price: </div>
+            )}
             <div className={styles.label}>Total Price: </div>
           </div>
 
           <div className={styles.lableValueDetails}>
-            {cartResponse.discount + roundOff > 0 && <div className={styles.discountValue}><b>&#x20B9;{cartResponse.discount + parseInt(roundOff, 10)}</b></div>}
-            <div className={styles.discountValue}><b>&#x20B9;{cartResponse.totalPrice- roundOff}</b></div>
+            {cartResponse.discount + roundOff > 0 && (
+              <div className={styles.discountValue}>
+                <b>&#x20B9;{cartResponse.discount + parseInt(roundOff, 10)}</b>
+              </div>
+            )}
+            <div className={styles.discountValue}>
+              <b>&#x20B9;{cartResponse.totalPrice - roundOff}</b>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
-
+  );
+};
 
 export const formatDate = (date) => {
   let hours = date.getHours();
   let minutes = date.getMinutes();
-  let ampm = hours >= 12 ? 'PM' : 'AM';
+  let ampm = hours >= 12 ? "PM" : "AM";
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  const strTime = hours + ':' + minutes + ' ' + ampm;
-  return date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " " + strTime;
-}
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  const strTime = hours + ":" + minutes + " " + ampm;
+  return (
+    date.getDate() +
+    "-" +
+    (date.getMonth() + 1) +
+    "-" +
+    date.getFullYear() +
+    " " +
+    strTime
+  );
+};

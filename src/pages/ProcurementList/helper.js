@@ -106,7 +106,7 @@ export const getTableBody = (data, imagesHandler) => {
                 color: "#302c2c",
               }}
             >
-              download
+              View
             </p>
           ),
         };
@@ -114,7 +114,9 @@ export const getTableBody = (data, imagesHandler) => {
         return {
           value: (
             <p
-              onClick={() => imagesHandler(ele)}
+              onClick={async () => {
+                imagesHandler(ele);
+              }}
               style={{
                 cursor: "pointer",
                 fontWeight: "bold",

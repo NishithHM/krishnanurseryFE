@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { Input, Button, Toaster } from "../../components";
+import { Input, Button, Toaster, BackButton } from "../../components";
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -433,6 +433,8 @@ export default function AddBills() {
   };
 
   const handleRoundOff = (e) => {
+    if (e > 0) return toast.error("Round Off Should not be less than 0");
+
     if (!state.cartResponse) {
       return;
     }
@@ -518,6 +520,9 @@ export default function AddBills() {
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
+      <div>
+        <BackButton navigateTo={"/authorised/dashboard"} />
+      </div>
 
       <div className={styles.headerWrapper}>
         <h1 className={styles.header}>Generate Bill</h1>
@@ -651,7 +656,9 @@ export default function AddBills() {
                     type="primary"
                     title="Preview Invoice"
                     buttonType="submit"
-                    onClick={() => setShowPreview(!showPreview)}
+                    onClick={() => {
+                      setShowPreview(!showPreview);
+                    }}
                     disabled={shouldSubmitDisable()}
                   />
                 </div>
@@ -704,6 +711,7 @@ export default function AddBills() {
             invoiceNumber={invoiceNumber}
             printEnabled={printEnabled}
             roundOff={state.roundOff}
+            data={state}
           />
         </div>
       </div>

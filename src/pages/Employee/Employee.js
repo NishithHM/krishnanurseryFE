@@ -88,15 +88,16 @@ const Employee = () => {
     delete reqBody.errorFields;
     const response = await createUser(reqBody);
 
-    if (isSuccess) {
-      console.log("Success Creating the user");
-      return navigate("../dashboard/access-management");
-    }
     if (response.error.status === 400) {
       console.log(response.error.data.error);
       toast.error(response.error.data.error);
     }
   };
+  if (isSuccess) {
+    console.log("Success Creating the user");
+    navigate("../dashboard/access-management");
+    return;
+  }
 
   return (
     <>

@@ -15,6 +15,7 @@
 }
 .inputTitle {
   line-height: 4px;
+  color: #302c2c;
 }
 
 .buttonWrapper {
@@ -23,8 +24,7 @@
   display: flex;
 }
 
-.btnSubWrapper{
-
+.btnSubWrapper {
   gap: 5px;
 }
 
