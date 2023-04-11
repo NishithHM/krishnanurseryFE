@@ -25,7 +25,7 @@
 }
 
 .billGenerator > div {
-  overflow: hidden;
+  /* overflow: hidden; */
   /* padding: 0px 10px; */
 }
 
