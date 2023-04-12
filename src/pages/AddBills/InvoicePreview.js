@@ -190,6 +190,8 @@ export const InvoiceSection = (props) => {
         <div className={styles.lableValueDetails}>
           <div className={styles.label}>Billed By:</div>
           <div className={styles.value}>{billedBy}</div>
+          <div className={styles.label}>Sold By:</div>
+          <div className={styles.value}>{billedBy}</div>
         </div>
 
         <div className={styles.dicountDetails}>

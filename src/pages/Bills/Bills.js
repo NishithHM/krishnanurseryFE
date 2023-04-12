@@ -108,7 +108,7 @@ const Bills = () => {
             };
             const data = [
                 date,
-                { value: purchase._id },
+                { value: purchase.invoiceId },
                 { value: purchase.customerName },
                 {
                     value: new Intl.NumberFormat("ja-JP", {
@@ -288,12 +288,13 @@ const Bills = () => {
                                 roundOff: invoiceDetail?.roundOff,
                                 totalPrice: invoiceDetail?.totalPrice,
                             }}
-                            invoiceNumber={invoiceDetail._id}
+                            invoiceNumber={invoiceDetail.invoiceId}
                             printEnabled={true}
                             roundOff={invoiceDetail?.roundOff}
                             invoiceDetails={{
                                 invoiceDate: invoiceDetail.createdAt,
-                                billedBy: invoiceDetail.soldBy.name,
+                                billedBy: invoiceDetail.billedBy.name,
+                                soldBy: invoiceDetail.soldBy.name,
                             }}
                         />
                     </div>
@@ -309,7 +310,8 @@ const Bills = () => {
                     }}
                     invoiceDetails={{
                         invoiceDate: invoiceDetail.createdAt,
-                        billedBy: invoiceDetail.soldBy.name,
+                        billedBy: invoiceDetail.billedBy.name,
+                        soldBy: invoiceDetail.soldBy.name,
                     }}
                     cartData={formatInvoiceItems(invoiceDetail.items)}
                     cartResponse={{
@@ -317,7 +319,7 @@ const Bills = () => {
                         roundOff: invoiceDetail.roundOff,
                         totalPrice: invoiceDetail.totalPrice,
                     }}
-                    invoiceNumber={invoiceDetail._id}
+                    invoiceNumber={invoiceDetail.invoiceId}
                     setInvoiceNumber={() => { }}
                     handlePrintClick={handlePrint}
                 />
