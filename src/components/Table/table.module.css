@@ -42,9 +42,20 @@
 }
 
 .scrollTable {
-  /* max-height: 426px;
-  overflow: auto; */
+  max-height: 426px;
+  overflow: auto;
 }
+
+.noScrollTable{
+    height: auto;
+    max-height: unset !important;
+    overflow: visible;
+}
+.table > thead > tr > th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+  }
 
 .noItemToDisplay {
   height: 426px;
@@ -63,9 +74,12 @@
   }
 
   .scrollTableWrapper {
-    height: auto !important;
-    overflow: auto !important;
     page-break-before: auto;
     -webkit-print-color-adjust: exact;
+    display: block !important;
+    position: relative !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 }

@@ -60,7 +60,7 @@ export const InvoiceSection = (props) => {
     data = {},
   } = props;
 
-  const [cartList, setCartList] = useState();
+  const [cartList, setCartList] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
   console.log(data);
@@ -173,14 +173,13 @@ export const InvoiceSection = (props) => {
           )}
         </div>
       )}
-
       {printEnabled && (
         <div>
           {invoiceHeader && invoiceHeader.length > 0 && (
             <ScrollTable
               thead={invoiceHeader}
               tbody={cartList}
-              scroll={scroll}
+              scroll={false}
             />
           )}
         </div>
@@ -189,8 +188,6 @@ export const InvoiceSection = (props) => {
       <div className={styles.invoiceSummary}>
         <div className={styles.lableValueDetails}>
           <div className={styles.label}>Billed By:</div>
-          <div className={styles.value}>{billedBy}</div>
-          <div className={styles.label}>Sold By:</div>
           <div className={styles.value}>{billedBy}</div>
         </div>
 

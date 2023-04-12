@@ -59,6 +59,7 @@ const Input = (props) => {
           type={!show && type}
           value={value}
           onBlur={onInputBlur}
+          onWheel={(e) => e.target.blur()}
           onChange={(e) => onChange(e, id)}
           className={cx(styles.inputbox, {
             [`${styles.inputerror}`]: error,

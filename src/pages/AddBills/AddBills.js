@@ -713,6 +713,7 @@ export default function AddBills() {
             printEnabled={printEnabled}
             roundOff={state.roundOff}
             data={state}
+            billedBy={auth.name}
           />
         </div>
       </div>
