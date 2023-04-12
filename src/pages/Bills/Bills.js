@@ -63,13 +63,8 @@ const Bills = () => {
     const [searchInput, setSearchInput] = useState("");
     const [purchaseCount, setPurchaseCount] = useState(0);
 
-<<<<<<< HEAD
   const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "desc" });
-=======
-    const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "asc" });
-    const printRef = useRef();
->>>>>>> master
-
+  const printRef = useRef()
     // billing modal
     const [showPreview, setShowPreview] = useState(false);
     const [invoiceDetail, setInvoiceDetail] = useState(null);
