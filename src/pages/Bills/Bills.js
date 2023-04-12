@@ -160,7 +160,7 @@ const Bills = () => {
         {
             value: "Date",
             isSortable: true,
-            sortBy: "updatedAt",
+            sortBy: "createdAt",
         },
 
         {
