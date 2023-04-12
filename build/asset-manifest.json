@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.fd31928e.css",
-    "main.js": "/static/js/main.c6705af6.js",
+    "main.css": "/static/css/main.1c1c56c6.css",
+    "main.js": "/static/js/main.e35c8b87.js",
     "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/coden-logo.png": "/static/media/coden-logo.16243e80c79ad8d79f3a.png",
     "static/media/access.png": "/static/media/access.482e0792f3566096f906.png",
@@ -11,12 +11,12 @@
     "static/media/procurement.png": "/static/media/procurement.f3f5ef6369f20bafe3cd.png",
     "static/media/logo.png": "/static/media/logo.4eddcf9debbeeb8002c0.png",
     "index.html": "/index.html",
-    "main.fd31928e.css.map": "/static/css/main.fd31928e.css.map",
-    "main.c6705af6.js.map": "/static/js/main.c6705af6.js.map",
+    "main.1c1c56c6.css.map": "/static/css/main.1c1c56c6.css.map",
+    "main.e35c8b87.js.map": "/static/js/main.e35c8b87.js.map",
     "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fd31928e.css",
-    "static/js/main.c6705af6.js"
+    "static/css/main.1c1c56c6.css",
+    "static/js/main.e35c8b87.js"
   ]
 }
