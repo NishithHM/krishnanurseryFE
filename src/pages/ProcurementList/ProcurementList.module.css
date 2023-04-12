@@ -171,3 +171,14 @@
 .borderTable {
   border: 1px solid #539c64;
 }
+
+.immediateButton{
+    height: 44px;
+    margin: 20px 0 0 0;
+}
+
+.searchContainer{
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+}

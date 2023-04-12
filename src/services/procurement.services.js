@@ -30,6 +30,27 @@ export const procurementsApi = createApi({
         providesTags: ["procurements"],
       }),
 
+    //   getAllMinimumProcurements: builder.mutation({
+    //     query: ({isCount, search, pageNumber, sortBy, sortType}) => {
+    //         const params = {
+    //             pageNumber, 
+    //             sortBy,
+    //             sortType
+    //         }
+    //         if(isCount){
+    //             params.isCount = isCount
+    //         }
+    //         if(search){
+    //             params.search = search
+    //         }
+    //         return{
+    //           url: "/low-quantity",
+    //           method: "GET",
+    //           params: params,
+    //         }
+    //     },
+    //   }),
+
       searchProducts: builder.query({
         query: ({ searchQuery }) => ({
           url: `/getAll?search=${searchQuery}`,
@@ -51,7 +72,7 @@ export const procurementsApi = createApi({
         }),
       }),
       getProcurements: builder.query({
-        query: ({ search, pageNumber, isCount, sortBy, sortType }) => {
+        query: ({ search, pageNumber, isCount, sortBy, sortType, isMinimumSelected }) => {
           const params = {
             pageNumber,
             isCount,
@@ -62,7 +83,7 @@ export const procurementsApi = createApi({
             params.search = search;
           }
           return {
-            url: `/getAll`,
+            url: isMinimumSelected ? '/low-quantity' :`/getAll`,
             params: params,
           };
         },
@@ -107,4 +128,5 @@ export const {
   useGetProcurementHistoryMutation,
   useAddProcurementVariantsMutation,
   useAddMinimumQuantityMutation,
+//   useGetAllMinimumProcurementsMutation
 } = procurementsApi;
