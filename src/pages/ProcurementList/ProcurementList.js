@@ -42,7 +42,6 @@ const billingHistoryHeader = [
   { value: "Vendor Name", width: "15%" },
   { value: "Vendor Contact", width: "15%" },
   { value: "Price Per Plant ₹", width: "15%" },
-  { value: "Vendor Name", width: "15%" },
   { value: "Images", width: "10%" },
   { value: "Invoice", width: "10%" },
 ];

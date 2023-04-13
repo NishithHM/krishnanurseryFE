@@ -1,7 +1,7 @@
 import Dropdown from "./components/Dropdown/Dropdown";
 import "./App.css";
 
-import { Login } from "./pages";
+import { CustomerOnboarding, Login } from "./pages";
 import { Route, Routes } from "react-router-dom";
 import { AuthContext } from "./context";
 import Protected from "./hocs/protected/Protected";
@@ -34,6 +34,11 @@ function App() {
       <AuthContext.Provider value={[context, setContext]}>
         <Routes>
           <Route path="/" exact element={<Login />} />
+          <Route
+              path="/customer-onboarding"
+              exact
+              element={<CustomerOnboarding />}
+            />
           <Route path="/authorised/*" element={<Protected />} />
         </Routes>
       </AuthContext.Provider>

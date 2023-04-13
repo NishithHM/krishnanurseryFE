@@ -55,7 +55,6 @@ const requiredDataHistory = [
   "vendorName",
   "vendorContact",
   "totalPrice",
-  "createdBy",
   "images",
   "invoice",
 ];

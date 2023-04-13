@@ -5,7 +5,6 @@ import {
   AccessManagement,
   AddProcurement,
   Categories,
-  CustomerOnboarding,
   Dashboard,
   Employee,
   ProcurementList,
@@ -49,11 +48,6 @@ const Protected = () => {
               path="/dashboard/access-management"
               exact
               element={<AccessManagement />}
-            />
-            <Route
-              path="/customer-onboarding"
-              exact
-              element={<CustomerOnboarding />}
             />
             <Route
               path="/dashboard/add-procurement"
