@@ -110,7 +110,7 @@
   color: white;
   font-weight: 500;
   color: white;
-  margin: 3px 0 0 0;
+  margin: 5px 0 0 0;
 }
 
 .submitBtn {
@@ -188,6 +188,6 @@
   and (max-device-width: 1400px) 
   and (-webkit-min-device-pixel-ratio: 1) { 
     .innerContainer{
-        width: 56vw;
+        width: 60vw;
     }
 }

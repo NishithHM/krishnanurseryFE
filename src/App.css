@@ -15,6 +15,7 @@
     display: flex;
     height: 100%;
     flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
 }
 
 @media (prefers-reduced-motion: no-preference) {
