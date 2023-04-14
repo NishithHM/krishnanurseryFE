@@ -61,7 +61,6 @@
 
 .innerContainer {
   flex: 2;
-  width: max-content;
 }
 
 .paginationContainerFilter {
@@ -146,7 +145,7 @@
 
 .procurementListHeader {
   text-align: center;
-  font-size: 25px;
+  font-size: 24px;
   font-weight: 500;
   color: #539c64;
 }
@@ -188,5 +187,7 @@
   and (min-device-width: 900px) 
   and (max-device-width: 1400px) 
   and (-webkit-min-device-pixel-ratio: 1) { 
-   
+   .procurementListHeader{
+    font-size: 20px;
+   }
 }

@@ -9,3 +9,12 @@
 .backButton:hover {
   cursor: pointer;
 }
+
+@media screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1400px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+    .backButton{
+        font-size: 18px;
+    }
+}

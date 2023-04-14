@@ -30,3 +30,15 @@
 .poweredBy img {
   max-width: 150px;
 }
+
+@media screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1400px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+    .aboutcontent{
+        font-size: 14px;
+    }
+    .poweredBy{
+        font-size: 14px;
+    }
+}

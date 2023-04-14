@@ -9,12 +9,11 @@
     margin: 0 10px;
   }
   .searchInput {
-    width: 18rem;
+    width: 250px;
     background: #edeceb;
     border: none;
     outline: none;
     padding: 0.8rem;
-    font-size: 18px;
     border-radius: 4px;
   }
   .searchInput:focus {

@@ -7,7 +7,7 @@
 
 .header {
   color: #539c64;
-  font-size: 2rem;
+  font-size: 20px;
   font-weight: 500;
   margin-top: 3rem;
   line-height: 1rem;
@@ -58,3 +58,8 @@
     font-weight: 500;
     margin-left: 16px;
   }
+  @media screen and (min-device-width: 1024px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
+    .header .historyheader {
+        font-size: 16px;
+    }
+}

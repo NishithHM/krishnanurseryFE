@@ -8,7 +8,6 @@
 
 .label{
     color:#302C2C;
-    font-size: 20px;
     text-align: left;
 }
 
@@ -16,7 +15,6 @@
     border:0;
     border-bottom: 1px solid #302C2C;
     width: 100%;
-    font-size: 18px;
     padding: 0 2px 6px 0
 }
 
