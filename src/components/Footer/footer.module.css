@@ -1,7 +1,5 @@
 .footer {
   box-shadow: 4px 4px 6px 4px #d6d5d2;
-  width: 100%;
-  max-width: 100vw;
 }
 .footercontent {
   display: flex;

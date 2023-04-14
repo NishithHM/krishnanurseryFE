@@ -372,7 +372,7 @@ const ProcurementList = () => {
               onChange={handleSearchInputChange}
             />
             {countLow > 0 &&<div className={styles.immediateButton}>
-                <Button onClick={onMinimumClick} title={isMinimumSelected ? "All Procurements" : "Immediate Procurements"} type={isMinimumSelected? 'primary' :"alert" }/>
+                <Button onClick={onMinimumClick} title={isMinimumSelected ? "All Items" : "Low Quantity"} type={isMinimumSelected? 'primary' :"alert" }/>
             </div> 
             }
           </div>
