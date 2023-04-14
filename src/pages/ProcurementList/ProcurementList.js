@@ -358,8 +358,9 @@ const ProcurementList = () => {
 
   return (
     <>
-      <div className={styles.container}>
         <Toaster />
+
+      <div className={styles.container}>
         <div className={styles.innerContainer}>
           <div>
             <BackButton navigateTo={"/authorised/dashboard"} />

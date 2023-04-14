@@ -36,3 +36,12 @@
   background-color: #edeceb;
   cursor: not-allowed;
 }
+
+@media screen 
+  and (min-device-width: 900px) 
+  and (max-device-width: 1400px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+    .text {
+        font-size: 18px;
+      }
+}

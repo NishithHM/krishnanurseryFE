@@ -27,3 +27,17 @@
   background-color: #d3d3d3 !important;
   cursor: not-allowed !important;
 }
+
+
+
+@media screen 
+  and (min-device-width: 900px) 
+  and (max-device-width: 1400px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+    .image {
+        height: 90px;
+      }
+    .card{
+        width: 95%;
+    }  
+}

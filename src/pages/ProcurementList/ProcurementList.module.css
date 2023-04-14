@@ -182,3 +182,12 @@
     display: flex;
     justify-content: space-between;
 }
+
+@media screen 
+  and (min-device-width: 900px) 
+  and (max-device-width: 1400px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+    .innerContainer{
+        width: 56vw;
+    }
+}

@@ -11,7 +11,7 @@ const Header = () => {
   const [context,setContext] = useContext(AuthContext);
 
   const onLogoClick = ()=>{
-    navigate("/authorised/dashboard")
+    // navigate("/authorised/dashboard")
   }
   const onLogoutHandler = ()=>{
     sessionStorage.clear()
@@ -22,8 +22,8 @@ const Header = () => {
     <div className={styles.header}>
       <header className={styles.headercontent}>
         <div className={styles.logo}>
-          <div className={styles.logoclick} onClick={onLogoClick}>
-            <img height={100} src={logo} alt="Logo"/>
+          <div className={styles.logoclick} >
+            <img className={styles.logoHeader} src={logo} alt="Logo"/>
             </div>
             <div className={styles.headertitle}>
             <span className={styles.title}>Shree Krishna Farm & Nursery</span>
