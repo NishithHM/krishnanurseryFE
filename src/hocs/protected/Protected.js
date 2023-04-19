@@ -14,6 +14,7 @@ import {
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
+import OrderMgmt from "../../pages/OrderManagement";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
@@ -48,6 +49,11 @@ const Protected = () => {
               path="/dashboard/access-management"
               exact
               element={<AccessManagement />}
+            />
+            <Route
+              path="/dashboard/orders"
+              exact
+              element={<OrderMgmt />}
             />
             <Route
               path="/dashboard/add-procurement"
