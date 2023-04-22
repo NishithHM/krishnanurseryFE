@@ -11,10 +11,12 @@ import {
   Test,
   AddBills,
   Bills,
+  PlaceOrder,
+  RequestOrder,
+  OrderManagement,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
-import OrderMgmt from "../../pages/OrderManagement";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
@@ -53,7 +55,7 @@ const Protected = () => {
             <Route
               path="/dashboard/orders"
               exact
-              element={<OrderMgmt />}
+              element={<OrderManagement />}
             />
             <Route
               path="/dashboard/add-procurement"
@@ -65,13 +67,23 @@ const Protected = () => {
               exact
               element={<ProcurementList />}
             />
-            
+
             <Route path="/dashboard/bills" exact element={<Bills />} />
-            <Route path="/dashboard/add-bills" exact element={<AddBills />}/>
-             <Route
+            <Route path="/dashboard/add-bills" exact element={<AddBills />} />
+            <Route
               path="/dashboard/categories"
               exact
               element={<Categories />}
+            />
+            <Route
+              path="/dashboard/orders/place-order"
+              exact
+              element={<PlaceOrder />}
+            />
+            <Route
+              path="/dashboard/orders/request-order"
+              exact
+              element={<RequestOrder />}
             />
           </Routes>
         </div>

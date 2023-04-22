@@ -18,6 +18,7 @@ const Input = (props) => {
     disabled = false,
     minValue = 0,
     onInput = () => {},
+    onBlur = () => {},
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);

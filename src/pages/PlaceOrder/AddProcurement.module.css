@@ -1,0 +1,66 @@
+.outerWrapper {
+  margin: 10px;
+  padding: 10px;
+  flex: 3;
+}
+
+.header {
+  color: #539c64;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 3rem;
+  line-height: 1rem;
+}
+
+.innerWrapper {
+  border: 1px solid #e2e2e2;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.inputdiv {
+  flex: 1;
+  margin: 0px 40px 0px 0px;
+}
+
+.secondinputdiv {
+  flex: 1;
+}
+
+.formbtn {
+  width: 120px;
+}
+
+.addProcurementPage {
+  flex-direction: row;
+  display: flex;
+}
+
+.tableWrapper {
+  margin: 10px;
+  max-width: 50%;
+  padding: 10px;
+  flex: 4;
+}
+
+.historyheader {
+  font-size: 20px;
+  color: #539c64;
+  font-weight: 500;
+  margin-left: 16px;
+}
+@media screen and (min-device-width: 1024px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
+  .header .historyheader {
+    font-size: 16px;
+  }
+}

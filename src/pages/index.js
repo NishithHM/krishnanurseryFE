@@ -9,7 +9,9 @@ import ProcurementList from "./ProcurementList";
 import AddBills from "./AddBills";
 import Bills from "./Bills";
 import Categories from "./Categories";
-
+import PlaceOrder from "./PlaceOrder";
+import RequestOrder from "./RequestOrder";
+import OrderManagement from "./OrderManagement";
 export {
   Login,
   Test,
@@ -22,4 +24,7 @@ export {
   AddBills,
   Categories,
   Bills,
+  PlaceOrder,
+  RequestOrder,
+  OrderManagement,
 };

@@ -30,26 +30,26 @@ export const procurementsApi = createApi({
         providesTags: ["procurements"],
       }),
 
-    //   getAllMinimumProcurements: builder.mutation({
-    //     query: ({isCount, search, pageNumber, sortBy, sortType}) => {
-    //         const params = {
-    //             pageNumber, 
-    //             sortBy,
-    //             sortType
-    //         }
-    //         if(isCount){
-    //             params.isCount = isCount
-    //         }
-    //         if(search){
-    //             params.search = search
-    //         }
-    //         return{
-    //           url: "/low-quantity",
-    //           method: "GET",
-    //           params: params,
-    //         }
-    //     },
-    //   }),
+      //   getAllMinimumProcurements: builder.mutation({
+      //     query: ({isCount, search, pageNumber, sortBy, sortType}) => {
+      //         const params = {
+      //             pageNumber,
+      //             sortBy,
+      //             sortType
+      //         }
+      //         if(isCount){
+      //             params.isCount = isCount
+      //         }
+      //         if(search){
+      //             params.search = search
+      //         }
+      //         return{
+      //           url: "/low-quantity",
+      //           method: "GET",
+      //           params: params,
+      //         }
+      //     },
+      //   }),
 
       searchProducts: builder.query({
         query: ({ searchQuery }) => ({
@@ -71,8 +71,29 @@ export const procurementsApi = createApi({
           body,
         }),
       }),
+      requestOrder: builder.mutation({
+        query: ({ body }) => ({
+          url: "/request-order",
+          method: "POST",
+          body,
+        }),
+      }),
+      placeOrder: builder.mutation({
+        query: ({ body }) => ({
+          url: "/place-order",
+          method: "POST",
+          body,
+        }),
+      }),
       getProcurements: builder.query({
-        query: ({ search, pageNumber, isCount, sortBy, sortType, isMinimumSelected }) => {
+        query: ({
+          search,
+          pageNumber,
+          isCount,
+          sortBy,
+          sortType,
+          isMinimumSelected,
+        }) => {
           const params = {
             pageNumber,
             isCount,
@@ -83,7 +104,7 @@ export const procurementsApi = createApi({
             params.search = search;
           }
           return {
-            url: isMinimumSelected ? '/low-quantity' :`/getAll`,
+            url: isMinimumSelected ? "/low-quantity" : `/getAll`,
             params: params,
           };
         },
@@ -143,6 +164,8 @@ export const {
   useAddProcurementVariantsMutation,
   useAddMinimumQuantityMutation,
   useGetOrdersMutation,
-  useRejectOrderMutation
-//   useGetAllMinimumProcurementsMutation
+  useRejectOrderMutation,
+  useRequestOrderMutation,
+  usePlaceOrderMutation,
+  //   useGetAllMinimumProcurementsMutation
 } = procurementsApi;
