@@ -103,7 +103,7 @@ const RequestOrder = () => {
         <h1 className={styles.header}>Request Order</h1>
         <div className={styles.innerWrapper}>
           <Dropdown
-            url="/api/procurements/getAll"
+            url="/api/procurements/getAll?isAll=true"
             id="addPlantName"
             apiDataPath={{ label: "names.en.name", value: "_id" }}
             title="Plant Name"
