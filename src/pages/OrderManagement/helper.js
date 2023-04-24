@@ -40,13 +40,7 @@ export const ROLE_TABLE_HEADER = {
       value: "Sales Desc",
     },
     {
-      value: "Requested Qty",
-    },
-    {
-      value: "Ordered Qty",
-    },
-    {
-      value: "Arrived Qty",
+      value: "Quantities",
     },
     {
       value: "Placed By",
@@ -86,13 +80,7 @@ export const ROLE_TABLE_HEADER = {
       value: "Sales Desc",
     },
     {
-      value: "Requested Qty",
-    },
-    {
-      value: "Ordered Qty",
-    },
-    {
-      value: "Arrived Qty",
+      value: "Quantities",
     },
     {
       value: "Placed By",
@@ -120,13 +108,7 @@ export const ROLE_TABLE_HEADER = {
       value: "Sales Desc",
     },
     {
-      value: "Requested Qty",
-    },
-    {
-      value: "Ordered Qty",
-    },
-    {
-      value: "Arrived Qty",
+      value: "Quantities",
     },
     {
       value: "Expected Delivery",
@@ -153,9 +135,7 @@ const roleRows = {
     { value: "currentPaidAmount" },
     { value: "requestedBy.name" },
     { value: "descriptionSales" },
-    { value: "requestedQuantity" },
-    { value: "orderedQuantity" },
-    { value: "quantity" },
+    { value: "quantities" },
     { value: "placedBy.name" },
     { value: "expectedDeliveryDate" },
     { value: "descriptionProc" },
@@ -169,9 +149,7 @@ const roleRows = {
     { value: "totalPrice" },
     { value: "currentPaidAmount" },
     { value: "descriptionSales" },
-    { value: "requestedQuantity" },
-    { value: "orderedQuantity" },
-    { value: "quantity" },
+    { value: "quantities" },
     { value: "placedBy.name" },
     { value: "expectedDeliveryDate" },
     { value: "status" },
@@ -180,9 +158,7 @@ const roleRows = {
     { value: "names.en.name" },
     { value: "createdAt" },
     { value: "descriptionSales" },
-    { value: "requestedQuantity" },
-    { value: "orderedQuantity" },
-    { value: "quantity" },
+    { value: "quantities" },
     { value: "expectedDeliveryDate" },
     { value: "descriptionProc" },
     { value: "status" },
@@ -218,7 +194,22 @@ export const formatOrdersData = ({ data, role, onAction }) => {
             {get(order, `${ele.value}`, "").toLowerCase()}
           </span>
         );
-      } else {
+      }else if (ele.value === "quantities"){
+        value = 
+        <>
+        <span>{`${order.requestedQuantity} (Req)`}
+        </span>
+        <br />
+        <span>{`${order.orderedQuantity} (Ord)`}
+        </span>
+        <br />
+        <span>{`${order.quantity} (Arr)`}
+        </span>
+        </>
+
+        
+      }
+       else {
         value = get(order, `${ele.value}`, "");
       }
       value = value || "--";

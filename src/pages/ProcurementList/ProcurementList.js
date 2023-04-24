@@ -79,7 +79,7 @@ const ProcurementList = () => {
         sortBy: "plantName",
       },
       {
-        value: "Total Quantity",
+        value: "Under Maintenance",
       },
       {
         value: "Remaining Quantity",

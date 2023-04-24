@@ -29,7 +29,7 @@ export const CartTableRow = ({
         <Dropdown
           onChange={(value) => onChangeHandler(value, "procurementId")}
           value={selectedProcurement}
-          url="/api/procurements/getAll"
+          url="/api/procurements/getAll?isList=true"
           apiDataPath={{ label: "names.en.name", value: "_id" }}
           id={`procurement_${item.id}`}
         />
