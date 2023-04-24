@@ -14,6 +14,7 @@ import {
   PlaceOrder,
   RequestOrder,
   OrderManagement,
+  WasteManagement,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -84,6 +85,11 @@ const Protected = () => {
               path="/dashboard/orders/request-order"
               exact
               element={<RequestOrder />}
+            />
+            <Route
+              path="/dashboard/waste-management"
+              exact
+              element={<WasteManagement/>}
             />
           </Routes>
         </div>

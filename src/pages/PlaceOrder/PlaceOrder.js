@@ -188,7 +188,7 @@ export const PlaceOrder = () => {
       </div>
 
       <div className={styles.outerWrapper}>
-        <h1 className={styles.header}>Place Order</h1>
+        {/* <h1 className={styles.header}>Place Order</h1> */}
         <div className={styles.innerWrapper}>
           <Dropdown
             url="/api/procurements/getAll"

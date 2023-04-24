@@ -15,9 +15,12 @@
   font-size: 18px;
   padding-bottom: 10px;
 }
+.image{
+  margin-bottom: 4px;
+}
 .poweredBy {
   display: flex;
-  gap: 10px;
+  gap: 4px;
   align-items: center;
   justify-content: center;
 }

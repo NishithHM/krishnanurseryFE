@@ -12,6 +12,7 @@ import Categories from "./Categories";
 import PlaceOrder from "./PlaceOrder";
 import RequestOrder from "./RequestOrder";
 import OrderManagement from "./OrderManagement";
+import WasteManagement from "./WasteManagement";
 export {
   Login,
   Test,
@@ -27,4 +28,5 @@ export {
   PlaceOrder,
   RequestOrder,
   OrderManagement,
+  WasteManagement
 };
