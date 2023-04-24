@@ -7,7 +7,7 @@ import { useState } from "react";
 const requiredData = [
   "lastProcuredOn",
   "plantName",
-  "totalQuantity",
+  "underMaintenanceQuantity",
   "remainingQuantity",
   "view",
 ];
