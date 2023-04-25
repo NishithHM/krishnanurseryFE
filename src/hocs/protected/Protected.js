@@ -18,6 +18,7 @@ import {
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
+import WasteList from "../../pages/WasteManagement/WasteManagementList";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
@@ -87,9 +88,14 @@ const Protected = () => {
               element={<RequestOrder />}
             />
             <Route
-              path="/dashboard/waste-management"
+              path="/dashboard/waste-management/add"
               exact
               element={<WasteManagement/>}
+            />
+            <Route
+              path="/dashboard/waste-management"
+              exact
+              element={<WasteList/>}
             />
           </Routes>
         </div>

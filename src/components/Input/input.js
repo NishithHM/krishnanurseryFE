@@ -19,6 +19,7 @@ const Input = (props) => {
     minValue = 0,
     onInput = () => {},
     onBlur = () => {},
+    ref
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
@@ -56,6 +57,7 @@ const Input = (props) => {
       </div>
       <div className={styles.inputDiv}>
         <input
+          ref={ref}
           disabled={disabled}
           type={!show && type}
           value={value}
