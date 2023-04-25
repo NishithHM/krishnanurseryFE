@@ -3,7 +3,7 @@ import styles from "./alert.module.css";
 import warning from "../../assets/images/warning.png";
 import Button from "../Button";
 
-const Alert = ({
+const AlertMessage = ({
   handleConfirm,
   handleCancel,
   message,
@@ -19,22 +19,9 @@ const Alert = ({
     <div className={styles.card}>
       <div className={styles.text}>
         <div className={styles.maintext}>
-          <div>
-            <img src={warning} alt="warning" />
-          </div>
-          <span>{message ? message : "Are you sure to delete access?"}</span>
+          <span>{message || ""}</span>
         </div>
-        <div className={styles.subtext}>
-          <span>
-            {subMessage ? (
-              subMessage
-            ) : (
-              <>
-                <strong>Warning:</strong> This cannot be undone
-              </>
-            )}
-          </span>
-        </div>
+
         {children}
         <div className={styles.button}>
           <div className={styles.buttonwidth}>
@@ -61,4 +48,4 @@ const Alert = ({
   );
 };
 
-export default Alert;
+export default AlertMessage;

@@ -224,7 +224,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
               <span
                 style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
                 onClick={() => {
-                  onAction({ id: order._id, action: "reject" });
+                  onAction({ id: order._id, action: "reject", data: order });
                 }}
               >
                 Reject
@@ -233,7 +233,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
               <span
                 style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
                 onClick={() => {
-                  onAction({ id: order._id, action: "accept" });
+                  onAction({ id: order._id, action: "accept", data: order });
                 }}
               >
                 Accept
@@ -252,7 +252,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
             <span
               style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
               onClick={() => {
-                onAction({ id: order._id, action: "addInvoice" });
+                onAction({ id: order._id, action: "addInvoice", data: order });
               }}
             >
               Add Invoice
@@ -272,7 +272,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
             <span
               style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
               onClick={() => {
-                onAction({ id: order._id, action: "verify" });
+                onAction({ id: order._id, action: "verify", data: order });
               }}
             >
               Verify

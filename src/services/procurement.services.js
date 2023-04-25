@@ -144,7 +144,7 @@ export const procurementsApi = createApi({
         }),
       }),
       rejectOrder: builder.mutation({
-        query: ({ body }) => ({
+        query: (body) => ({
           url: `/reject-order`,
           method: "POST",
           body,
@@ -176,6 +176,20 @@ export const procurementsApi = createApi({
           }
         },
       }),
+      verifyOrder: builder.mutation({
+        query: (body) => ({
+          url: `/verify-order`,
+          method: "POST",
+          body,
+        }),
+      }),
+      addOrderInvoice: builder.mutation({
+        query: ({ id, body }) => ({
+          url: `/add-invoice/${id}`,
+          method: "POST",
+          body,
+        }),
+    })
     };
   },
 });
@@ -195,5 +209,8 @@ export const {
   usePlaceOrderMutation,
   useReportDamageMutation,
   useGetProcurementMutation,
-  useGetDamagesListMutation
+  useGetDamagesListMutation,
+  useVerifyOrderMutation,
+  useAddOrderInvoiceMutation,
+  //   useGetAllMinimumProcurementsMutation
 } = procurementsApi;
