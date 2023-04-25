@@ -251,7 +251,7 @@ const OrderMgmt = () => {
       </Modal>
 
       {/* verify order modal */}
-      <Modal isOpen={verifyOrder.isActive} contentLabel="Reject Order">
+      <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
         <AlertMessage
           message={`Verify the order of ${
             verifyOrder?.data?.names?.en?.name || "Plants"
@@ -378,14 +378,14 @@ const OrderMgmt = () => {
       </Modal>
 
       {/* Add Invoice modal */}
-      <Modal isOpen={addInvoice.isActive} contentLabel="Reject Order">
+      <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
         <AlertMessage
           message={`Add invoice for the order`}
           confirmBtnType="primary"
           subMessage={""}
           cancelBtnLabel={"Close"}
           confirmBtnLabel={"Add Invoice"}
-          successLoading={isVerifyLoading}
+          successLoading={isAddInvoiceLoading}
           handleCancel={() => {
             setAddInvoice({ isActive: false, id: null });
             setOrderInvoiceFile(null);
