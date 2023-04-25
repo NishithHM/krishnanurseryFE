@@ -8,6 +8,7 @@ import categoriesImg from "../../assets/images/dashboard/categories.png";
 import billsImg from "../../assets/images/dashboard/bills.png";
 import salesImg from "../../assets/images/dashboard/sales.png";
 import orders from "../../assets/images/dashboard/orders.png";
+import waste from "../../assets/images/dashboard/wasteManagementIcon.png"
 import { Link, Route, Routes } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
@@ -77,6 +78,12 @@ const Dashboard = () => {
         tile_img: orders,
         path: "orders",
         allowed: [USER_ROLES.admin, USER_ROLES.procurement, USER_ROLES.sales],
+      },
+      {
+        title: "Waste Management",
+        tile_img: waste,
+        path: "waste-management",
+        allowed: [USER_ROLES.admin, USER_ROLES.sales],
       },
   ];
 

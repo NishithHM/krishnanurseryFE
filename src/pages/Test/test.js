@@ -84,7 +84,7 @@ const Test = () => {
         <p>fetch from api dropdown</p>
         <Dropdown
           onChange={onChangeHandler}
-          url="/api/procurements/getAll"
+          url="/api/procurements/getAll?isList=true"
           apiDataPath={{ label: "names.en.name", value: "_id" }}
         />
 

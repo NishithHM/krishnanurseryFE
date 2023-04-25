@@ -1,18 +1,18 @@
 import React from "react";
 import styles from "./footer.module.css";
-import codenlogo from "../../assets/images/coden-logo.png";
+import SignWhiteBG from "../../assets/images/SignWhiteBG.png";
 const Footer = () => {
   return (
     <div className={styles.footer}>
       <footer className={styles.footercontent}>
         <div className={styles.poweredBy}>
-          <p>Powered By</p>
+          <p><strong>Powered By</strong></p>
           <a
             href="https://www.codentechnologies.com"
             target="_blank"
             rel="noreferrer"
           >
-            <img src={codenlogo} alt="coden-logo" />
+            <img className={styles.image} height={24} src={SignWhiteBG} alt="coden-logo" />
           </a>
         </div>
         <div className={styles.content}>
@@ -22,7 +22,7 @@ const Footer = () => {
             target="_blank"
             rel="noreferrer"
           >
-            Report an Issue
+            <strong>Report an Issue</strong>
           </a>
         </div>
       </footer>
