@@ -152,6 +152,32 @@ export const procurementsApi = createApi({
         }),
         invalidatesTags: ["procurements"],
       }),
+      reportDamage: builder.mutation({
+        query: ({ body, id }) => ({
+          url: `/report-damage/${id}`,
+          method: "POST",
+          body,
+        }),
+      }),
+      getProcurement: builder.mutation({
+        query: ({ id }) => ({
+          url: `/${id}`,
+          method: "GET",
+        }),
+      }),
+      getDamagesList: builder.mutation({
+        query: ({ isCount, pageNumber, startDate, endDate, search }) => {
+          const params = { startDate, endDate, pageNumber, search };
+          if (isCount) {
+            params.isCount = isCount;
+          }
+          return {
+            url: `/get-damages`,
+            method: "GET",
+            params,
+          };
+        },
+      }),
       verifyOrder: builder.mutation({
         query: (body) => ({
           url: `/verify-order`,
@@ -192,6 +218,9 @@ export const {
   useRejectOrderMutation,
   useRequestOrderMutation,
   usePlaceOrderMutation,
+  useReportDamageMutation,
+  useGetProcurementMutation,
+  useGetDamagesListMutation,
   useVerifyOrderMutation,
   useAddOrderInvoiceMutation,
   useReportMaintainenceMutation,

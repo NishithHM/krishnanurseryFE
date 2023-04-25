@@ -91,21 +91,22 @@ const OrderMgmt = () => {
     };
     functionObj[action]();
   };
-  const loadInitialOrders = async () => {
+  const loadInitialOrders = async (page) => {
     const countBody = {
       isCount: true,
       sortBy: "plantName",
       sortType: -1,
     };
     const listBody = {
-      pageNumber: 1,
+      pageNumber: page,
       sortBy: "plantName",
       sortType: -1,
     };
-
-    const counts = await getOrders({ body: { ...countBody } });
+    if(page===1){
+        const counts = await getOrders({ body: { ...countBody } });
+        setOrdersCount(get(counts, "data[0].count", 0));
+    }
     const list = await getOrders({ body: { ...listBody } });
-    setOrdersCount(get(counts, "data[0].count", 0));
     const formattedData = formatOrdersData({
       data: list.data,
       role: user.role,
@@ -116,8 +117,9 @@ const OrderMgmt = () => {
   };
 
   useEffect(() => {
-    loadInitialOrders();
-  }, []);
+    loadInitialOrders(page);
+  }, [page]);
+
 
   const searchHandler = debounce(async (query) => {
     console.log("search triggered", query);
@@ -134,7 +136,7 @@ const OrderMgmt = () => {
       });
       setData(list);
     } else if (query.length === 0) {
-      loadInitialOrders();
+      loadInitialOrders(1);
     }
   }, 500);
 
