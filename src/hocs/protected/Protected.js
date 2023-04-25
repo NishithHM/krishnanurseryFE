@@ -60,11 +60,11 @@ const Protected = () => {
               exact
               element={<OrderManagement />}
             />
-            <Route
+            {/* <Route
               path="/dashboard/add-procurement"
               exact
               element={<AddProcurement />}
-            />
+            /> */}
             <Route
               path="/dashboard/procurement-list"
               exact

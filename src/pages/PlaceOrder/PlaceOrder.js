@@ -11,39 +11,17 @@ import {
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
 import {
+    useGetProcurementMutation,
   usePlaceOrderMutation,
-  useUpdateProcurementsMutation,
 } from "../../services/procurement.services";
-import { useCreateProcurementsMutation } from "../../services/procurement.services";
 import _ from "lodash";
 import { isEmpty } from "lodash";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
-import { MIME_TYPES } from "@mantine/dropzone";
-import { AiOutlineClose } from "react-icons/ai";
 
-const tableHeader = [
-  [
-    {
-      id: new Date().toISOString(),
-      value: "Procured On",
-    },
-    {
-      value: "Quantity",
-    },
-    {
-      value: "Vendor Name",
-    },
-    {
-      value: "Vendor Contact",
-    },
-    {
-      value: "Price Per Plant ₹",
-    },
-  ],
-];
+
 
 export const PlaceOrder = () => {
   const initialState = {
@@ -65,32 +43,14 @@ export const PlaceOrder = () => {
   };
 
   const navigate = useNavigate();
-  const { state: locationState } = useLocation();
-
+  const [search] = useSearchParams()
+    const procId = search.get('id');
+  const [getProcurement] = useGetProcurementMutation() 
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
 
-  useEffect(() => {
-    if (locationState.id) {
-      const data = locationState.data;
-      setState((prev) => ({
-        ...prev,
-        id: locationState.id,
-      }));
-    }
-  }, []);
 
-  // const [
-  //   updateProcurements,
-  //   {
-  //     isLoading: isLoadingUpdate,
-  //     isError: isErrorUpdate,
-  //     isSuccess: isSuccessUpdate,
-  //   },
-  // ] = useUpdateProcurementsMutation();
-  // const [createProcurements, { isLoading, isError, isSuccess }] =
-  //   useCreateProcurementsMutation();
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
 
   const [PlaceOrder, { isLoading: isOrderLoading }] = usePlaceOrderMutation();
@@ -165,7 +125,7 @@ export const PlaceOrder = () => {
 
     const body = {
       nameInEnglish: state.addPlantName.meta.names.en.name,
-      nameInKannada: state.addPlantName.meta.names.ka.name,
+      nameInKannada: state.addPlantName.meta.names.ka.name || state.addPlantKannada,
       vendorName: state.addVendorName.label,
       vendorContact: state.addVendorContact,
       vendorId: state.addVendorName.value,
@@ -178,8 +138,8 @@ export const PlaceOrder = () => {
       currentPaidAmount: state.currentPaidAmount,
     };
 
-    if (state.id) {
-      body.id = state.id;
+    if (search.get('orderId')) {
+      body.id = search.get('orderId');
     }
     const categories = body.categories.map((c) => ({
       name: c.label,
@@ -196,12 +156,25 @@ export const PlaceOrder = () => {
     }, 1000);
   };
 
-  const tableBody = useMemo(
-    () => getTableBody(state.addPlantName),
-    [state.addPlantName?.value]
-  );
+  useEffect(()=>{
+    if(procId){
+         getProcurement({id: procId}).then(res=>{
+            const data = res.data
+            const plantData = {
+                label: data?.names?.en?.name,
+                value: data?._id,
+                meta: {...data}
+            }
+            setState(prev=>({
+                ...prev,
+                addPlantName: plantData
+            }))
+         }).catch(err=>{
+            console.log(err)
+         })
+    }
+}, [procId])
 
-  console.log(tableBody);
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -213,17 +186,17 @@ export const PlaceOrder = () => {
         {/* <h1 className={styles.header}>Place Order</h1> */}
         <div className={styles.innerWrapper}>
           <Dropdown
-            url="/api/procurements/getAll?isList=true"
+            url="/api/procurements/getAll?isList=true&isAll=true"
             id="addPlantName"
             apiDataPath={{ label: "names.en.name", value: "_id" }}
             title="Plant Name"
             onChange={dropDownChangeHandler}
             value={state.addPlantName}
-            canCreate={false}
+            canCreate={true}
             required
           />
           <Input
-            value={state?.addPlantName?.meta?.names?.ka?.name || ""}
+            value={state?.addPlantName?.meta?.names?.ka?.name || state.addPlantKannada}
             id="addPlantKannada"
             type="text"
             onChange={inputChangeHandler}
@@ -232,10 +205,10 @@ export const PlaceOrder = () => {
             onError={onError}
             validation={(text) => text.length > 0}
             errorMessage="Please Enter new Plant in Kannada"
-            disabled={true}
+            disabled={state?.addPlantName?.meta?.names?.ka?.name }
           />
 
-          <div style={{ pointerEvents: "none" }}>
+          <div>
             <Dropdown
               // url="/api/category/getAll"
               id="addPlantCategory"
@@ -344,7 +317,6 @@ export const PlaceOrder = () => {
                 isEmpty(state.addPlantName) ||
                 isEmpty(state.addVendorName) ||
                 isEmpty(state.totalPrice) ||
-                state.currentPaidAmount > 0 ||
                 isEmpty(state.totalQuantity) ||
                 isEmpty(state.description) ||
                 isEmpty(state.expectedDeliveryDate)

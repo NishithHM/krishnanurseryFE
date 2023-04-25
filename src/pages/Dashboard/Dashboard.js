@@ -37,12 +37,6 @@ const Dashboard = () => {
       allowed: [USER_ROLES.admin],
     },
     {
-      title: "Add Procurement",
-      tile_img: produrementImg,
-      path: "add-procurement",
-      allowed: [USER_ROLES.procurement],
-    },
-    {
       title: "Procurement List",
       tile_img: billsImg,
       path: "procurement-list",

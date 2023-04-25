@@ -58,7 +58,7 @@ const Dropdown = ({
       };
     }
     const res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`,
+        url.includes('?') ? `${process.env.REACT_APP_BASE_URL}${url}&search=${inputValue}`: `${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`,
       config
     );
     const optionsVal = res.data.map((opt) => ({

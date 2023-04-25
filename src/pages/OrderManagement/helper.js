@@ -208,6 +208,10 @@ export const formatOrdersData = ({ data, role, onAction }) => {
         </>
 
         
+      }else if(ele.value === "descriptionProc" || ele.value === "descriptionSales"){
+        value = <span style={{maxWidth:'200px', display:'block'}}>
+            {get(order, `${ele.value}`, "")}
+        </span>
       }
        else {
         value = get(order, `${ele.value}`, "");
@@ -233,7 +237,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
               <span
                 style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
                 onClick={() => {
-                  onAction({ id: order._id, action: "accept", data: order });
+                  onAction({ id: order.procurementId, action: "accept", data: order, orderId: order._id });
                 }}
               >
                 Accept

@@ -14,38 +14,11 @@ import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
 import {
   useRequestOrderMutation,
-  useUpdateProcurementsMutation,
 } from "../../services/procurement.services";
-import { useCreateProcurementsMutation } from "../../services/procurement.services";
-import _ from "lodash";
 import { isEmpty } from "lodash";
 import { useNavigate } from "react-router-dom";
-import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
-import { useGetAllCategoriesQuery } from "../../services/categories.services";
-import { MIME_TYPES } from "@mantine/dropzone";
-import { AiOutlineClose } from "react-icons/ai";
 
-const tableHeader = [
-  [
-    {
-      id: new Date().toISOString(),
-      value: "Procured On",
-    },
-    {
-      value: "Quantity",
-    },
-    {
-      value: "Vendor Name",
-    },
-    {
-      value: "Vendor Contact",
-    },
-    {
-      value: "Price Per Plant ₹",
-    },
-  ],
-];
 
 const RequestOrder = () => {
   const initialState = {
@@ -85,9 +58,10 @@ const RequestOrder = () => {
       return toast.error("Something Went Wrong! Please try again");
     if (state?.addPlantName?.meta?.remainingQuantity || 0 >= 90) {
       setDeleteConfirmModal(true);
-    }
+    }else{
+        updateHandler()
 
-    return console.log(state);
+    }
   };
 
   const updateHandler = async () => {
@@ -95,8 +69,11 @@ const RequestOrder = () => {
       nameInEnglish: state.addPlantName.label,
       descriptionSales: state.description,
       totalQuantity: parseInt(state.totalQuantity),
-      id: state.addPlantName.value,
+      
     };
+    if(!state.addPlantName?.__isNew__){
+        body.id = state.addPlantName.value
+    }
     const response = await RequestOrder({ body });
     toast.success(response.data.message);
     setTimeout(() => {
@@ -116,16 +93,15 @@ const RequestOrder = () => {
           <h1 className={styles.header}>Request Order</h1>
           <div className={styles.innerWrapper}>
             <Dropdown
-              url="/api/procurements/getAll"
+              url="/api/procurements/getAll?isList=true"
               id="addPlantName"
               apiDataPath={{ label: "names.en.name", value: "_id" }}
               title="Plant Name"
               onChange={dropDownChangeHandler}
               value={state.addPlantName}
-              canCreate={false}
+              canCreate={true}
               required
             />
-
             <TextArea
               value={state.description}
               id="description"
@@ -176,7 +152,7 @@ const RequestOrder = () => {
           }}
           handleConfirm={() => {
             setDeleteConfirmModal(false);
-            navigate("../dashboard/waste-management");
+            navigate(`../dashboard/waste-management/add?id=${state.addPlantName?.value}`);
           }}
         />
       </Modal>

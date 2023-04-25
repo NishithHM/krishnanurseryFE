@@ -70,18 +70,16 @@ const OrderMgmt = () => {
     useAddOrderInvoiceMutation();
 
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
-  const onAction = ({ id, action, data }) => {
+  const onAction = ({ id, action, data, orderId }) => {
     const functionObj = {
       reject: () => {
-        // console.log("reject", id);
         setRejectOrder({ isActive: true, id: id, reason: "" });
       },
       accept: () => {
         console.log("accept", id, data);
-        navigate("./place-order", { state: { id, data } });
+        navigate(`./place-order?id=${id}&orderId=${orderId}` );
       },
       verify: () => {
-        // console.log("verify", id, data);
         setVerifyOrder({ isActive: true, id, data, quantity: 0 });
       },
       addInvoice: () => {
