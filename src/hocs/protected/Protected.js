@@ -15,6 +15,7 @@ import {
   RequestOrder,
   OrderManagement,
   WasteManagement,
+  UnderMaintainence,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -89,7 +90,12 @@ const Protected = () => {
             <Route
               path="/dashboard/waste-management"
               exact
-              element={<WasteManagement/>}
+              element={<WasteManagement />}
+            />
+            <Route
+              path="/dashboard/under-maintainence"
+              exact
+              element={<UnderMaintainence />}
             />
           </Routes>
         </div>

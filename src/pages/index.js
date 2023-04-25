@@ -13,6 +13,8 @@ import PlaceOrder from "./PlaceOrder";
 import RequestOrder from "./RequestOrder";
 import OrderManagement from "./OrderManagement";
 import WasteManagement from "./WasteManagement";
+import UnderMaintainence from "./UnderMaintainence";
+
 export {
   Login,
   Test,
@@ -28,5 +30,6 @@ export {
   PlaceOrder,
   RequestOrder,
   OrderManagement,
-  WasteManagement
+  WasteManagement,
+  UnderMaintainence,
 };

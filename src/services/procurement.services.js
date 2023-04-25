@@ -108,6 +108,7 @@ export const procurementsApi = createApi({
             params: params,
           };
         },
+        providesTags: ["procurements"],
       }),
       getProcurementHistory: builder.mutation({
         query: ({ id, startDate, endDate, isCount, pageNumber }) => {
@@ -149,6 +150,7 @@ export const procurementsApi = createApi({
           method: "POST",
           body,
         }),
+        invalidatesTags: ["procurements"],
       }),
       verifyOrder: builder.mutation({
         query: (body) => ({
@@ -156,6 +158,7 @@ export const procurementsApi = createApi({
           method: "POST",
           body,
         }),
+        invalidatesTags: ["procurements"],
       }),
       addOrderInvoice: builder.mutation({
         query: ({ id, body }) => ({
@@ -163,6 +166,14 @@ export const procurementsApi = createApi({
           method: "POST",
           body,
         }),
+        invalidatesTags: ["procurements"],
+      }),
+      reportMaintainence: builder.mutation({
+        query: ({ id, count }) => ({
+          url: `/report-maintenance/${id}?count=${count}`,
+          method: "GET",
+        }),
+        invalidatesTags: ["procurements"],
       }),
     };
   },
@@ -183,5 +194,6 @@ export const {
   usePlaceOrderMutation,
   useVerifyOrderMutation,
   useAddOrderInvoiceMutation,
+  useReportMaintainenceMutation,
   //   useGetAllMinimumProcurementsMutation
 } = procurementsApi;
