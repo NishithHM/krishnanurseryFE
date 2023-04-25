@@ -14,7 +14,7 @@ import Toaster from "./Toaster";
 import Search from "./Search";
 import BackButton from "./BackButton";
 import Dropzone from "./Dropzone";
-
+import AlertMessage from "./AlertMessage";
 export {
   Dropzone,
   LandingTile,
@@ -32,4 +32,5 @@ export {
   Toaster,
   Search,
   BackButton,
+  AlertMessage,
 };

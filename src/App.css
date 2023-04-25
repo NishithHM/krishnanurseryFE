@@ -1,29 +1,25 @@
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
-.App{
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-#root{
-    flex: 1;
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    font-family: 'Montserrat', sans-serif;
+#root {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
 }
-@media screen 
-  and (min-device-width: 1024px) 
-  and (max-device-width: 1400px) 
-  and (-webkit-min-device-pixel-ratio: 1) { 
-    .App{
-        font-size: 14px;
-    }
+@media screen and (min-device-width: 1024px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
+  .App {
+    font-size: 14px;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -31,7 +27,6 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
 
 .App-link {
   color: #61dafb;
@@ -64,4 +59,9 @@ input[type="number"] {
 
 .react-date-picker__wrapper {
   border: none;
+}
+
+.mantine-Textarea-input:focus {
+  outline: none;
+  border-color: #539c64;
 }

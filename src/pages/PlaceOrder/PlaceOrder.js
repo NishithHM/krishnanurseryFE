@@ -17,7 +17,7 @@ import {
 import { useCreateProcurementsMutation } from "../../services/procurement.services";
 import _ from "lodash";
 import { isEmpty } from "lodash";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
@@ -65,21 +65,32 @@ export const PlaceOrder = () => {
   };
 
   const navigate = useNavigate();
+  const { state: locationState } = useLocation();
+
   const [state, setState] = useState(initialState);
-  const [invoiceFile, setInvoiceFile] = useState(null);
-  const [plantImages, setPlantImages] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
-  const [
-    updateProcurements,
-    {
-      isLoading: isLoadingUpdate,
-      isError: isErrorUpdate,
-      isSuccess: isSuccessUpdate,
-    },
-  ] = useUpdateProcurementsMutation();
-  const [createProcurements, { isLoading, isError, isSuccess }] =
-    useCreateProcurementsMutation();
+
+  useEffect(() => {
+    if (locationState.id) {
+      const data = locationState.data;
+      setState((prev) => ({
+        ...prev,
+        id: locationState.id,
+      }));
+    }
+  }, []);
+
+  // const [
+  //   updateProcurements,
+  //   {
+  //     isLoading: isLoadingUpdate,
+  //     isError: isErrorUpdate,
+  //     isSuccess: isSuccessUpdate,
+  //   },
+  // ] = useUpdateProcurementsMutation();
+  // const [createProcurements, { isLoading, isError, isSuccess }] =
+  //   useCreateProcurementsMutation();
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
 
   const [PlaceOrder, { isLoading: isOrderLoading }] = usePlaceOrderMutation();
@@ -150,6 +161,8 @@ export const PlaceOrder = () => {
   };
 
   const onSubmitHandler = async () => {
+    // console.log(state);
+
     const body = {
       nameInEnglish: state.addPlantName.meta.names.en.name,
       nameInKannada: state.addPlantName.meta.names.ka.name,
@@ -161,10 +174,19 @@ export const PlaceOrder = () => {
       description: state.description,
       categories: state.addPlantCategory,
       expectedDeliveryDate: state.expectedDeliveryDate,
-      id: "643eb2b414555c3870b6d15c",
       procurementId: state.addPlantName.value,
       currentPaidAmount: state.currentPaidAmount,
     };
+
+    if (state.id) {
+      body.id = state.id;
+    }
+    const categories = body.categories.map((c) => ({
+      name: c.label,
+      _id: c.value,
+    }));
+    body.categories = categories;
+    // console.log(state);
 
     console.log(body);
     const response = await PlaceOrder({ body });
@@ -322,7 +344,7 @@ export const PlaceOrder = () => {
                 isEmpty(state.addPlantName) ||
                 isEmpty(state.addVendorName) ||
                 isEmpty(state.totalPrice) ||
-                isEmpty(state.currentPaidAmount) ||
+                state.currentPaidAmount > 0 ||
                 isEmpty(state.totalQuantity) ||
                 isEmpty(state.description) ||
                 isEmpty(state.expectedDeliveryDate)
@@ -331,17 +353,6 @@ export const PlaceOrder = () => {
               title="Save"
             />
           </div>
-        </div>
-        <div className={styles.tableWrapper}>
-          {tableBody.length > 0 && (
-            <>
-              <span className={styles.historyheader}>Procurement history</span>
-              <Table
-                data={[...tableHeader, ...tableBody]}
-                onSortBy={(sort) => console.log(sort)}
-              />
-            </>
-          )}
         </div>
       </div>
     </div>
