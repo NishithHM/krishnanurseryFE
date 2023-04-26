@@ -83,7 +83,7 @@ const Dashboard = () => {
       title: "Under Maintainence",
       tile_img: waste,
       path: "under-maintainence",
-      allowed: [USER_ROLES.sales],
+      allowed: [USER_ROLES.sales, USER_ROLES.admin],
     },
   ];
 
