@@ -20,6 +20,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
+import dayjs from "dayjs";
 
 
 
@@ -296,6 +297,7 @@ export const PlaceOrder = () => {
                 type="date"
                 onChange={inputChangeHandler}
                 title="Expected Delivery Date"
+                min={dayjs().format('YYYY-MM-DD')}
                 required
               />
             </div>

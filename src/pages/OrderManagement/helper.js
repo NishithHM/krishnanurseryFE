@@ -16,10 +16,12 @@ export const ROLE_TABLE_HEADER = {
     {
       value: "Name",
       isSortable: true,
+      sortBy: "plantName",
     },
     {
       value: "Created On",
       isSortable: true,
+      sortBy: "createdAt",
     },
     {
       value: "Vendor Name",
@@ -59,10 +61,12 @@ export const ROLE_TABLE_HEADER = {
     {
       value: "Name",
       isSortable: true,
+      sortBy: "plantName",
     },
     {
       value: "Created On",
       isSortable: true,
+      sortBy: "createdAt",
     },
     {
       value: "Vendor Name",
@@ -99,10 +103,12 @@ export const ROLE_TABLE_HEADER = {
     {
       value: "Name",
       isSortable: true,
+      sortBy: "plantName",
     },
     {
       value: "Created On",
       isSortable: true,
+      sortBy: "createdAt",
     },
     {
       value: "Sales Desc",

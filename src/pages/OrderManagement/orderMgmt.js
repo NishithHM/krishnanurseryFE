@@ -42,6 +42,7 @@ const OrderMgmt = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [user] = useContext(AuthContext);
+  const [sort, setSort] = useState({sortBy:'createdAt', sortType:'-1'})
   const [plantImage, setPlantImage] = useState(null);
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
   const [searchInput, setSearchInput] = useState("");
@@ -89,16 +90,16 @@ const OrderMgmt = () => {
     };
     functionObj[action]();
   };
-  const loadInitialOrders = async (page) => {
+  const loadInitialOrders = async (page, sortData) => {
     const countBody = {
       isCount: true,
-      sortBy: "plantName",
-      sortType: -1,
+      sortBy: sortData.sortBy,
+      sortType: sortData.sortType,
     };
     const listBody = {
       pageNumber: page,
-      sortBy: "plantName",
-      sortType: -1,
+      sortBy: sortData.sortBy,
+      sortType: sortData.sortType,
     };
     if(page===1){
         const counts = await getOrders({ body: { ...countBody } });
@@ -115,12 +116,11 @@ const OrderMgmt = () => {
   };
 
   useEffect(() => {
-    loadInitialOrders(page);
+    loadInitialOrders(page, sort);
   }, [page]);
 
 
   const searchHandler = debounce(async (query) => {
-    console.log("search triggered", query);
     if (query.length >= 3) {
       const res = await getOrders({ body: { search: query } });
       const counts = await getOrders({
@@ -134,7 +134,7 @@ const OrderMgmt = () => {
       });
       setData(list);
     } else if (query.length === 0) {
-      loadInitialOrders(1);
+      loadInitialOrders(1, sort);
     }
   }, 500);
 
@@ -142,6 +142,17 @@ const OrderMgmt = () => {
     setSearchInput(event.target.value);
     searchHandler(event.target.value);
   };
+
+  const onSortClickHandler = (val) => {
+    const  newSort = {
+        sortBy: val,
+        sortType: sort.sortType === "1" ? "-1" : "1",
+    }
+    setSort(newSort)
+    loadInitialOrders(page, newSort)
+  };
+
+  console.log(sort)
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
@@ -201,7 +212,7 @@ const OrderMgmt = () => {
         {isLoading ? (
           <Spinner />
         ) : (
-          isSuccess && <Table data={[TABLE_HEADER, ...data]} />
+          isSuccess && <Table data={[TABLE_HEADER, ...data]} onSortBy={onSortClickHandler} />
         )}
 
         {isError && (
@@ -231,7 +242,7 @@ const OrderMgmt = () => {
             const res = await RejectOrder(data);
             toast.success("Order Updated!");
             setRejectOrder({ isActive: false, id: null, reason: "" });
-            loadInitialOrders();
+            loadInitialOrders(1, sort);
           }}
         >
           <Textarea
@@ -295,7 +306,7 @@ const OrderMgmt = () => {
             });
             setPlantImage(null);
 
-            loadInitialOrders();
+            loadInitialOrders(1, sort);
           }}
         >
           <div
@@ -404,7 +415,7 @@ const OrderMgmt = () => {
             toast.success("Invoice Updated!");
             setAddInvoice({ isActive: false, id: null });
             setOrderInvoiceFile(null);
-            loadInitialOrders();
+            loadInitialOrders(1, sort);
           }}
         >
           <div

@@ -5,7 +5,7 @@ const TextArea = (props)=>{
     return(
         <div>
             <label className={styles.textareatitle}>{props.title}</label>
-            <textarea value={props.value} onChange={(e)=>props.onChange(e,props.id)} className={styles.textareastyle} name={props.name} rows={props.rows}></textarea>
+            <textarea maxLength={30} value={props.value} onChange={(e)=>props.onChange(e,props.id)} className={styles.textareastyle} name={props.name} rows={props.rows}></textarea>
         </div>
     )
 }
