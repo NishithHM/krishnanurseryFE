@@ -4,6 +4,8 @@ import { toUpper } from "lodash";
 
 import access_managementImg from "../../assets/images/dashboard/access_management.png";
 import produrementImg from "../../assets/images/dashboard/procurement.png";
+import maintenanceImg from "../../assets/images/dashboard/maintenance.png";
+import billBook from "../../assets/images/dashboard/billBook.png";
 import categoriesImg from "../../assets/images/dashboard/categories.png";
 import billsImg from "../../assets/images/dashboard/bills.png";
 import salesImg from "../../assets/images/dashboard/sales.png";
@@ -50,7 +52,7 @@ const Dashboard = () => {
     },
     {
       title: "Bills",
-      tile_img: billsImg,
+      tile_img: billBook,
       path: "bills",
       allowed: [USER_ROLES.admin, USER_ROLES.sales],
     },
@@ -81,7 +83,7 @@ const Dashboard = () => {
     },
     {
       title: "Under Maintainence",
-      tile_img: waste,
+      tile_img: maintenanceImg,
       path: "under-maintainence",
       allowed: [USER_ROLES.sales, USER_ROLES.admin],
     },

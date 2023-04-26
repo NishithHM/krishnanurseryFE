@@ -117,7 +117,7 @@ const OrderMgmt = () => {
 
   useEffect(() => {
     loadInitialOrders(page, sort);
-  }, [page]);
+  }, [page, sort]);
 
 
   const searchHandler = debounce(async (query) => {
@@ -149,7 +149,7 @@ const OrderMgmt = () => {
         sortType: sort.sortType === "1" ? "-1" : "1",
     }
     setSort(newSort)
-    loadInitialOrders(page, newSort)
+    setPage(1)
   };
 
   console.log(sort)
