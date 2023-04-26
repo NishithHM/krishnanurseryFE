@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import _ from "lodash";
 import { toast } from "react-toastify";
-import styles from "./ProcurementList.module.css";
+import styles from "./UnderMaintenance.module.css";
 import { useState } from "react";
 import { Button } from "../../components";
 import QuantityInput from "./QuantityInput";

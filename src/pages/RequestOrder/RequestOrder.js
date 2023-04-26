@@ -57,10 +57,10 @@ const RequestOrder = () => {
     if (!state.addPlantName)
       return toast.error("Something Went Wrong! Please try again");
     if (state?.addPlantName?.meta?.remainingQuantity || 0 >= 90) {
-      setDeleteConfirmModal(true);
+        updateHandler()
+        setDeleteConfirmModal(true);
     }else{
         updateHandler()
-
     }
   };
 
@@ -76,9 +76,12 @@ const RequestOrder = () => {
     }
     const response = await RequestOrder({ body });
     toast.success(response.data.message);
-    setTimeout(() => {
-      navigate("../dashboard/orders");
-    }, 1000);
+    if (state?.addPlantName?.meta?.remainingQuantity || 0 < 90) {
+        setTimeout(() => {
+            navigate("../dashboard/orders");
+          }, 1000);
+    }
+    
   };
 
   return (
@@ -148,7 +151,7 @@ const RequestOrder = () => {
           cancelBtnLabel="Skip"
           cancelLoading={isOrderLoading}
           handleCancel={() => {
-            updateHandler();
+            navigate("../dashboard/orders");
           }}
           handleConfirm={() => {
             setDeleteConfirmModal(false);

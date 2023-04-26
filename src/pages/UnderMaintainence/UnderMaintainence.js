@@ -23,7 +23,7 @@ import {
   rowInitState,
   variantHeaders,
 } from "./helper";
-import styles from "./ProcurementList.module.css";
+import styles from "./UnderMaintenance.module.css";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { cloneDeep, get } from "lodash";
 import debounce from "lodash/debounce";
