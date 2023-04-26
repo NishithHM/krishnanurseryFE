@@ -134,7 +134,6 @@ export const PlaceOrder = () => {
       description: state.description,
       categories: state.addPlantCategory,
       expectedDeliveryDate: state.expectedDeliveryDate,
-      procurementId: state.addPlantName.value,
       currentPaidAmount: state.currentPaidAmount,
     };
 
