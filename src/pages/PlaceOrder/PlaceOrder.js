@@ -129,7 +129,6 @@ export const PlaceOrder = () => {
       nameInKannada: state.addPlantName.meta.names.ka.name || state.addPlantKannada,
       vendorName: state.addVendorName.label,
       vendorContact: state.addVendorContact,
-      vendorId: state.addVendorName.value,
       totalQuantity: state.totalQuantity,
       totalPrice: state.totalPrice,
       description: state.description,
@@ -141,6 +140,9 @@ export const PlaceOrder = () => {
 
     if (search.get('orderId')) {
       body.id = search.get('orderId');
+    }
+    if(!state?.addVendorName?.__isNew__){
+        body.vendorId = state.addVendorName.value
     }
     const categories = body.categories.map((c) => ({
       name: c.label,
