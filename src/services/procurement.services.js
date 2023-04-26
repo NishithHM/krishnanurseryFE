@@ -93,6 +93,7 @@ export const procurementsApi = createApi({
           sortBy,
           sortType,
           isMinimumSelected,
+          isAll,
         }) => {
           const params = {
             pageNumber,
@@ -102,6 +103,9 @@ export const procurementsApi = createApi({
           };
           if (search) {
             params.search = search;
+          }
+          if(isAll){
+            params.isAll = isAll
           }
           return {
             url: isMinimumSelected ? "/low-quantity" : `/getAll`,

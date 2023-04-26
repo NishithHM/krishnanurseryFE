@@ -132,7 +132,7 @@ const WasteManagement = () => {
                     <Dropdown 
                         title="Plant Name" 
                         placeholder="Select Role" 
-                        url="/api/procurements/getAll?isList=true"
+                        url="/api/procurements/getAll?isList=true&isAll=true"
                         id="addPlantName"
                         apiDataPath={{ label: "names.en.name", value: "_id" }} 
                         onChange={dropDownChangeHandler}

@@ -100,6 +100,7 @@ const UnderMaintainence = () => {
     sortBy: isMinimumSelected ? "minimumQuantity" : sort.sortBy,
     sortType: sort.sortType === "asc" ? 1 : -1,
     isMinimumSelected,
+    isAll: true,
   });
 
   useEffect(() => {
