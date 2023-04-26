@@ -125,8 +125,8 @@ export const PlaceOrder = () => {
     // console.log(state);
 
     const body = {
-      nameInEnglish: state.addPlantName.label,
-      nameInKannada: state.addPlantName.meta.names.ka.name || state.addPlantKannada,
+      nameInEnglish: state.addPlantName?.label,
+      nameInKannada: state.addPlantName?.meta?.names?.ka?.name || state.addPlantKannada,
       vendorName: state.addVendorName.label,
       vendorContact: state.addVendorContact,
       totalQuantity: state.totalQuantity,
