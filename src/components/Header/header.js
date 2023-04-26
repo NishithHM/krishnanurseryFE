@@ -8,7 +8,7 @@ import { AuthContext } from "../../context";
 
 const Header = () => {
   const navigate = useNavigate()
-  const [context,setContext] = useContext(AuthContext);
+  const [user,setContext] = useContext(AuthContext);
 
   const onLogoClick = ()=>{
     // navigate("/authorised/dashboard")
@@ -30,7 +30,10 @@ const Header = () => {
             </div>
         </div>
         <div className={styles.logout}>
-            <img onClick={onLogoutHandler} src={logout} alt="Logout"/>
+        <img onClick={onLogoutHandler} src={logout} alt="Logout"/>
+        <div>
+        <span className={styles.title}>{`Hello ${user.name}`} </span>
+        </div>
         </div>
       </header>
     </div>
