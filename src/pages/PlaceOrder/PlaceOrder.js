@@ -144,6 +144,9 @@ export const PlaceOrder = () => {
     if(!state?.addVendorName?.__isNew__){
         body.vendorId = state.addVendorName.value
     }
+    if(!state?.addPlantName?.__isNew__){
+        body.procurementId = state.addPlantName.value
+    }
     const categories = body.categories.map((c) => ({
       name: c.label,
       _id: c.value,
