@@ -210,7 +210,6 @@ const AddProcurement = () => {
           navigate("../dashboard");
         }, 3000);
       }
-
     } else {
       const id = state.addPlantName?.value;
       const formdata = new FormData();
@@ -261,7 +260,6 @@ const AddProcurement = () => {
     () => getTableBody(state.addPlantName),
     [state.addPlantName?.value]
   );
-
 
   const handlePlantimageSelect = (file) => {
     setPlantImages((prev) => {
@@ -386,6 +384,7 @@ const AddProcurement = () => {
             title="Description"
             rows={4}
             name="description"
+            required
           />
           <div>
             <p style={{ fontSize: "22px", lineHeight: "35px", margin: 0 }}>

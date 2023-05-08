@@ -11,3 +11,9 @@
   pointer-events: none;
 }
 
+@media only screen and (max-width: 600px) {
+  .gridContainer {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(200px, 1fr));
+  }
+}

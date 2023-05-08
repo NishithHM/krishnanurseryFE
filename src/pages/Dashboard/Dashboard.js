@@ -51,7 +51,7 @@ const Dashboard = () => {
       allowed: [USER_ROLES.admin],
     },
     {
-      title: "Bills",
+      title: "Bill History",
       tile_img: billBook,
       path: "bills",
       allowed: [USER_ROLES.admin, USER_ROLES.sales],
@@ -62,7 +62,7 @@ const Dashboard = () => {
       path: "add-bills",
       allowed: [USER_ROLES.sales, USER_ROLES.preSales],
     },
-    
+
     {
       title: "Orders",
       tile_img: orders,
@@ -82,12 +82,12 @@ const Dashboard = () => {
       allowed: [USER_ROLES.sales, USER_ROLES.admin],
     },
     {
-        title: "Sales",
-        tile_img: salesImg,
-        path: "sales",
-        allowed: [USER_ROLES.admin],
-        isDisabled: true,
-      },
+      title: "Sales",
+      tile_img: salesImg,
+      path: "sales",
+      allowed: [USER_ROLES.admin],
+      isDisabled: true,
+    },
   ];
 
   const getDashboardData = (role) => {

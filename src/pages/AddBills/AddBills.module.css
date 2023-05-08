@@ -1,377 +1,387 @@
 .header {
-    color: #539c64;
-    font-size: 20px;
-    font-weight: 500;
-    margin-top: 3rem;
-    line-height: 1rem;
+  color: #539c64;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 3rem;
+  line-height: 1rem;
 }
 
 .headerWrapper {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .billWrapper {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 
-    justify-content: space-between;
-    border-bottom: 3px solid #edeceb;
+  justify-content: space-between;
+  border-bottom: 3px solid #edeceb;
 }
 
 .billGenerator {
-    border-right: 3px solid #edeceb;
-    width: 60%;
+  border-right: 3px solid #edeceb;
+  width: 60%;
 }
 
-.billGenerator>div {
-    /* overflow: hidden; */
-    /* padding: 0px 10px; */
+.billGenerator > div {
+  /* overflow: hidden; */
+  /* padding: 0px 10px; */
 }
 
 .itemTitleWrap {
-    display: flex;
-    padding: 0 10px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  padding: 0 10px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .formWrapper {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    max-width: 100%;
-    gap: 10px;
-    padding: 0 10px;
-    /* align-items: flex-end; */
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  max-width: 100%;
+  gap: 10px;
+  padding: 0 10px;
+  /* align-items: flex-end; */
 }
 
-.formWrapper>div {
-    margin: 0px 40px 0px 0px;
+.formWrapper > div {
+  margin: 0px 40px 0px 0px;
 }
 
 .billHistory {
-    width: 40%;
+  width: 40%;
 }
 
 .iconButton {
-    background-color: #539c64;
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
-    border: 0px;
-    color: #ffffff;
-    cursor: pointer;
+  background-color: #539c64;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  border: 0px;
+  color: #ffffff;
+  cursor: pointer;
 }
 
 .iconButton:disabled {
-    background: #b1a8a8;
-    cursor: not-allowed;
+  background: #b1a8a8;
+  cursor: not-allowed;
 }
 
 .cartTableContainer {
-    max-width: 90vw;
-    padding: 10px 0;
-    margin: 0 10px;
-    padding: 10px 0 10px 0;
+  max-width: 90vw;
+  overflow: auto;
+  padding: 10px 0;
+  margin: 0 10px;
+  padding: 10px 0 10px 0;
+  padding-bottom: 10rem;
 }
 
 .cartTable {
-    width: 100%;
+  width: 100%;
 }
 
 .cartTable th {
-    color: #539c64;
+  color: #539c64;
 }
 
 .cartTable td {
-    text-align: center;
+  text-align: center;
 }
 
 .finalSubmission {
-    width: 70%;
-    display: block;
+  width: 70%;
+  display: block;
 }
 
 .finalSubmissionMobile {
-    display: none;
+  display: none;
 }
 
 .billDetails {
-    margin: 23px 0px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  margin: 23px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .billFigure {
-    display: flex;
+  display: flex;
 }
 
-.billFigure>div {
-    color: #539c64;
-    margin: 0px 10px;
+.billFigure > div {
+  color: #539c64;
+  margin: 0px 10px;
 }
 
-.billFigure>span {
-    color: #302c2c;
-    font-weight: 500;
+.billFigure > span {
+  color: #302c2c;
+  font-weight: 500;
 }
 
 .submitWrapper {
-    display: flex;
-    justify-content: space-between;
-    margin: 40px 0px;
+  display: flex;
+  justify-content: space-between;
+  margin: 40px 0px;
 }
-
 
 .submitBtnWrapper {
-    display: flex;
+  display: flex;
 }
 
-.submitBtnWrapper>button {
-    margin: 0px 10px;
-    width: auto;
-    padding: 7px 20px;
+.submitBtnWrapper > button {
+  margin: 0px 10px;
+  width: auto;
+  padding: 7px 20px;
 }
 
-.submitBtnWrapper>button>span {
-    font-weight: 600;
-    font-size: 16px;
+.submitBtnWrapper > button > span {
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .checkOutWrapper {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0px 20px 0;
-    border: none;
-    margin: 0 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0px 20px 0;
+  border: none;
+  margin: 0 10px 0 0;
 }
 
-.checkOutWrapper>button {
-    width: fit-content;
-    padding: 7px 20px;
+.checkOutWrapper > button {
+  width: fit-content;
+  padding: 7px 20px;
 }
 
-.checkOutWrapper>button>span {
-    font-weight: 600;
-    font-size: 16px;
+.checkOutWrapper > button > span {
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .cartInput {
-    border: 1px solid #dbd8d4;
-    width: 50%;
-    padding: 4px;
-    border-radius: 4px;
+  border: 1px solid #dbd8d4;
+  width: 50%;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 .error {
-    padding: 6px;
-    border-radius: 4px;
-    color: #ff2400;
+  padding: 6px;
+  border-radius: 4px;
+  color: #ff2400;
 }
 
 .success {
-    background-color: rgb(11, 196, 137);
-    padding: 6px;
-    border-radius: 4px;
-    color: #ffffff;
+  background-color: rgb(11, 196, 137);
+  padding: 6px;
+  border-radius: 4px;
+  color: #ffffff;
 }
 
 .tableScroll {
-    overflow: auto;
-    height: 100px;
+  overflow: auto;
+  height: 100px;
 }
 
 .selectDropDown {
-    padding: 4px;
-    border-radius: 4px;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 .modalContent {
-    min-width: 856px;
+  min-width: 856px;
 }
 
 .clientDetailsWrapper {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .headerModal {
-    color: #539c64;
-    font-size: 20px;
-    font-weight: 500;
-    margin-top: 1rem;
-    line-height: 1rem;
+  color: #539c64;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 1rem;
+  line-height: 1rem;
 }
 
 .headerWrapperModal {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .companyDetails {
-    line-height: 24px;
+  line-height: 24px;
 }
 
 .addressDetails {
-    padding: 10px 0px 16px 0px;
+  padding: 10px 0px 16px 0px;
 }
 
 .billedTo {
-    padding: 26px 0px 16px 0px;
+  padding: 26px 0px 16px 0px;
 }
 
 .lableValueDetails {
-    display: flex;
+  display: flex;
 }
 
 .lableValueDetails .label {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .lableValueDetails .value {
-    margin: 0px 10px;
+  margin: 0px 10px;
 }
 
 .dicountDetails {
-    display: flex;
+  display: flex;
 }
 
 .dicountDetails .lableValueDetails {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-.lableValueDetails .discountLabel {}
+.lableValueDetails .discountLabel {
+}
 
 .lableValueDetails .discountValue {
-    font-weight: 500;
-    margin: 0px 10px;
+  font-weight: 500;
+  margin: 0px 10px;
 }
 
 .invoiceSummary .lableValueDetails {
-    line-height: 24px;
+  line-height: 24px;
 }
 
 .clientDetails {
-    line-height: 24px;
+  line-height: 24px;
 }
 
 .invoiceSummary {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .thankYouNote {
-    display: flex;
-    justify-content: center;
-    line-height: 24px;
-    color: #ff2400;
+  display: flex;
+  justify-content: center;
+  line-height: 24px;
+  color: #ff2400;
+}
+.credits {
+  display: flex;
+  justify-content: center;
+  line-height: 24px;
+  color: #000000;
 }
 
 .modalAction {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .modalAction button {
-    width: 15%;
-    margin: 0px 10px;
-    padding: 7px 20px;
+  width: 15%;
+  margin: 0px 10px;
+  padding: 7px 20px;
 }
 
-.modalAction>button>span {
-    font-weight: 600;
-    font-size: 16px;
+.modalAction > button > span {
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .printButton {
-    position: absolute;
-    right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .printButton button {
-    width: auto;
-    margin: 0px 10px;
-    padding: 7px 20px;
+  width: auto;
+  margin: 0px 10px;
+  padding: 7px 20px;
 }
 
-.printButton>button>span {
-    font-weight: 600;
-    font-size: 16px;
+.printButton > button > span {
+  font-weight: 600;
+  font-size: 16px;
 }
 
 @media print {
-    .modalContent {
-        padding: 10px;
-        margin: 20px 0px;
-    }
+  .modalContent {
+    padding: 10px;
+    margin: 20px 0px;
+  }
 }
 
 @media only screen and (max-width: 900px) {
-    .billWrapper {
-        flex-direction: column;
-    }
+  .billWrapper {
+    flex-direction: column;
+  }
 
-    .billGenerator {
-        border-right: 3px solid #edeceb;
-        width: 100%;
-    }
+  .billGenerator {
+    border-right: 3px solid #edeceb;
+    width: 100%;
+  }
 
-    .billHistory {
-        width: 100%;
-    }
+  .billHistory {
+    width: 100%;
+  }
 
-    .checkOutWrapper {
-        border-bottom: 1px solid #e2e2e2;
-    }
+  .checkOutWrapper {
+    border-bottom: 1px solid #e2e2e2;
+  }
 
-    .finalSubmission {
-        display: none;
-    }
+  .finalSubmission {
+    display: none;
+  }
 
-    .finalSubmissionMobile {
-        width: 100%;
-        overflow: hidden;
-        max-width: 95vw;
-        display: block;
-    }
+  .finalSubmissionMobile {
+    width: 100%;
+    overflow: hidden;
+    max-width: 95vw;
+    display: block;
+  }
 
-    .cartTable {
-        width: max-content;
-    }
+  .cartTable {
+    width: max-content;
+  }
 
-    .billDetails {
-        flex-direction: row;
-    }
+  .billDetails {
+    flex-direction: row;
+  }
 }
 
 @media only screen and (max-width: 900px) {
-    .billDetails {
-        flex-direction: column;
-        gap: 10px;
-    }
+  .billDetails {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 @media screen and (min-device-width: 1024px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
-    .header .headerModal {
-        font-size: 16px;
-    }
+  .header .headerModal {
+    font-size: 16px;
+  }
 
-    .submitBtnWrapper>button>span {
-        font-size: 14px;
-    }
+  .submitBtnWrapper > button > span {
+    font-size: 14px;
+  }
 
-    .checkOutWrapper>button>span {
-        font-weight: 600;
-        font-size: 13px;
-    }
+  .checkOutWrapper > button > span {
+    font-weight: 600;
+    font-size: 13px;
+  }
 
-    .modalAction>button>span {
-        font-size: 13px;
-    }
-    .printButton>button>span {
-        font-size: 13px;
-    }
+  .modalAction > button > span {
+    font-size: 13px;
+  }
+  .printButton > button > span {
+    font-size: 13px;
+  }
 }

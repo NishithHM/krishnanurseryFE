@@ -12,13 +12,10 @@ import {
 } from "../../components";
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
-import {
-  useRequestOrderMutation,
-} from "../../services/procurement.services";
+import { useRequestOrderMutation } from "../../services/procurement.services";
 import { isEmpty } from "lodash";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 
 const RequestOrder = () => {
   const initialState = {
@@ -57,10 +54,9 @@ const RequestOrder = () => {
     if (!state.addPlantName)
       return toast.error("Something Went Wrong! Please try again");
     if (state?.addPlantName?.meta?.remainingQuantity || 0 >= 90) {
-        updateHandler()
-        setDeleteConfirmModal(true);
-    }else{
-        updateHandler()
+      setDeleteConfirmModal(true);
+    } else {
+      updateHandler();
     }
   };
 
@@ -69,19 +65,17 @@ const RequestOrder = () => {
       nameInEnglish: state.addPlantName.label,
       descriptionSales: state.description,
       totalQuantity: parseInt(state.totalQuantity),
-      
     };
-    if(!state.addPlantName?.__isNew__){
-        body.id = state.addPlantName.value
+    if (!state.addPlantName?.__isNew__) {
+      body.id = state.addPlantName.value;
     }
     const response = await RequestOrder({ body });
     toast.success(response.data.message);
     if (state?.addPlantName?.meta?.remainingQuantity || 0 < 90) {
-        setTimeout(() => {
-            navigate("../dashboard/orders");
-          }, 1000);
+      setTimeout(() => {
+        navigate("../dashboard/orders");
+      }, 1000);
     }
-    
   };
 
   return (
@@ -112,6 +106,7 @@ const RequestOrder = () => {
               title="Description"
               rows={4}
               name="description"
+              required
             />
             <Input
               value={state.totalQuantity}
@@ -151,11 +146,13 @@ const RequestOrder = () => {
           cancelBtnLabel="Skip"
           cancelLoading={isOrderLoading}
           handleCancel={() => {
-            navigate("../dashboard/orders");
+            updateHandler();
           }}
           handleConfirm={() => {
             setDeleteConfirmModal(false);
-            navigate(`../dashboard/waste-management/add?id=${state.addPlantName?.value}`);
+            navigate(
+              `../dashboard/waste-management/add?id=${state.addPlantName?.value}`
+            );
           }}
         />
       </Modal>

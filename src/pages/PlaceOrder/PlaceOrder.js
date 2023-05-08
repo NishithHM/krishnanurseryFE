@@ -11,7 +11,7 @@ import {
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
 import {
-    useGetProcurementMutation,
+  useGetProcurementMutation,
   usePlaceOrderMutation,
 } from "../../services/procurement.services";
 import _ from "lodash";
@@ -22,8 +22,6 @@ import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import dayjs from "dayjs";
 
-
-
 export const PlaceOrder = () => {
   const initialState = {
     totalQuantity: 0,
@@ -33,6 +31,7 @@ export const PlaceOrder = () => {
     addPlantCategory: [],
     addVendorName: {},
     addVendorContact: "",
+    vendorDeviation: "",
     addPlantKannada: "",
     expectedDeliveryDate: "",
     currentPaidAmount: 0,
@@ -44,13 +43,13 @@ export const PlaceOrder = () => {
   };
 
   const navigate = useNavigate();
-  const [search] = useSearchParams()
-    const procId = search.get('id');
-  const [getProcurement] = useGetProcurementMutation() 
+  const [search] = useSearchParams();
+  const procId = search.get("id");
+  const requestedQuantity = search.get("requestedQuantity");
+  const [getProcurement] = useGetProcurementMutation();
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
-
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
 
@@ -110,9 +109,22 @@ export const PlaceOrder = () => {
   }, [state.addPlantName?.value]);
 
   useEffect(() => {
+    console.log(state);
     setState((prev) => ({
       ...prev,
       addVendorContact: state.addVendorName?.meta?.contact,
+      vendorDeviation:
+        state.addVendorName?.meta?.deviation === undefined
+          ? ""
+          : state.addVendorName?.meta?.deviation &&
+            state.addVendorName?.meta?.deviation > 0
+          ? `You owe ${state.addVendorName.label || ""} ${
+              state.addVendorName?.meta?.deviation
+            } `
+          : `${state.addVendorName.label || ""} owes you ${
+              state.addVendorName?.meta?.deviation
+            }`,
+
       disabledVendorContact: state.addVendorName?.__isNew__ ? false : true,
     }));
   }, [state.addVendorName?.value]);
@@ -126,7 +138,8 @@ export const PlaceOrder = () => {
 
     const body = {
       nameInEnglish: state.addPlantName?.label,
-      nameInKannada: state.addPlantName?.meta?.names?.ka?.name || state.addPlantKannada,
+      nameInKannada:
+        state.addPlantName?.meta?.names?.ka?.name || state.addPlantKannada,
       vendorName: state.addVendorName.label,
       vendorContact: state.addVendorContact,
       totalQuantity: state.totalQuantity,
@@ -137,14 +150,14 @@ export const PlaceOrder = () => {
       currentPaidAmount: state.currentPaidAmount,
     };
 
-    if (search.get('orderId')) {
-      body.id = search.get('orderId');
+    if (search.get("orderId")) {
+      body.id = search.get("orderId");
     }
-    if(!state?.addVendorName?.__isNew__){
-        body.vendorId = state.addVendorName.value
+    if (!state?.addVendorName?.__isNew__) {
+      body.vendorId = state.addVendorName.value;
     }
-    if(!state?.addPlantName?.__isNew__){
-        body.procurementId = state.addPlantName.value
+    if (!state?.addPlantName?.__isNew__) {
+      body.procurementId = state.addPlantName.value;
     }
     const categories = body.categories.map((c) => ({
       name: c.label,
@@ -161,24 +174,33 @@ export const PlaceOrder = () => {
     }, 1000);
   };
 
-  useEffect(()=>{
-    if(procId){
-         getProcurement({id: procId}).then(res=>{
-            const data = res.data
-            const plantData = {
-                label: data?.names?.en?.name,
-                value: data?._id,
-                meta: {...data}
-            }
-            setState(prev=>({
-                ...prev,
-                addPlantName: plantData
-            }))
-         }).catch(err=>{
-            console.log(err)
-         })
+  useEffect(() => {
+    if (procId) {
+      getProcurement({ id: procId })
+        .then((res) => {
+          const data = res.data;
+          console.log(data);
+          const plantData = {
+            label: data?.names?.en?.name,
+            value: data?._id,
+            meta: { ...data },
+          };
+          setState((prev) => ({
+            ...prev,
+            addPlantName: plantData,
+          }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-}, [procId])
+  }, [procId]);
+
+  useEffect(() => {
+    setState((prev) => {
+      return { ...prev, totalQuantity: requestedQuantity || 0 };
+    });
+  }, [requestedQuantity]);
 
   return (
     <div className={styles.addProcurementPage}>
@@ -201,7 +223,10 @@ export const PlaceOrder = () => {
             required
           />
           <Input
-            value={state?.addPlantName?.meta?.names?.ka?.name || state.addPlantKannada}
+            value={
+              state?.addPlantName?.meta?.names?.ka?.name ||
+              state.addPlantKannada
+            }
             id="addPlantKannada"
             type="text"
             onChange={inputChangeHandler}
@@ -210,7 +235,7 @@ export const PlaceOrder = () => {
             onError={onError}
             validation={(text) => text.length > 0}
             errorMessage="Please Enter new Plant in Kannada"
-            disabled={state?.addPlantName?.meta?.names?.ka?.name }
+            disabled={state?.addPlantName?.meta?.names?.ka?.name}
           />
 
           <div>
@@ -250,6 +275,16 @@ export const PlaceOrder = () => {
             onError={onError}
             errorMessage="Please Enter a Valid Number"
           />
+          {state.vendorDeviation !== "" && (
+            <Input
+              value={state.vendorDeviation || ""}
+              id="vendorDeviation"
+              onChange={() => {}}
+              title="Vendor Deviation Amount"
+              required
+              disabled={true}
+            />
+          )}
           <div className={styles.inputWrapper}>
             <div className={styles.inputdiv}>
               <Input
@@ -301,7 +336,7 @@ export const PlaceOrder = () => {
                 type="date"
                 onChange={inputChangeHandler}
                 title="Expected Delivery Date"
-                min={dayjs().format('YYYY-MM-DD')}
+                min={dayjs().format("YYYY-MM-DD")}
                 required
               />
             </div>
@@ -313,6 +348,7 @@ export const PlaceOrder = () => {
             title="Description"
             rows={4}
             name="description"
+            required
           />
 
           <div className={styles.formbtn}>

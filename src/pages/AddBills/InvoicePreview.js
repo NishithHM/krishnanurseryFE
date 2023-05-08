@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "@mantine/core";
 import styles from "./AddBills.module.css";
-import ScrollTable from '../../components/Table/ScrollTable';
-import { Button } from '../../components';
-import dayjs from 'dayjs';
+import ScrollTable from "../../components/Table/ScrollTable";
+import { Button } from "../../components";
+import dayjs from "dayjs";
 
 export const InvoicePreview = (props) => {
   const {
@@ -31,6 +31,10 @@ export const InvoicePreview = (props) => {
       closeOnClickOutside={false}
       closeOnEscape={true}
     >
+      <InvoiceSection {...props} printEnabled={printEnabled} />
+      <div className={styles.thankYouNote}>
+        Make sure to collect money before submitting!
+      </div>
       <div className={styles.printButton}>
         <Button
           type="primary"
@@ -39,10 +43,7 @@ export const InvoicePreview = (props) => {
           onClick={handlePrintClick}
         />
       </div>
-      <InvoiceSection {...props} printEnabled={printEnabled} />
-      <div className={styles.thankYouNote}>
-        Make sure to collect money before submitting!
-      </div>
+
       <div className={styles.modalAction}>{children}</div>
     </Modal>
   );
@@ -63,7 +64,6 @@ export const InvoiceSection = (props) => {
   const [cartList, setCartList] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
-  console.log(data);
   const invoiceHeaderWithRate = [
     { value: "S. No.", width: "10%" },
     { value: "Item Purchased", width: "40%" },
@@ -101,10 +101,10 @@ export const InvoiceSection = (props) => {
     }
 
     cartData.forEach((el, index) => {
-      let val = []
-      val.push({ value: index + 1 })
-      val.push({ value: `${el.procurementLabel} ( ${el.variantLabel} )` })
-      val.push({ value: el.mrp })
+      let val = [];
+      val.push({ value: index + 1 });
+      val.push({ value: `${el.procurementLabel} ( ${el.variantLabel} )` });
+      val.push({ value: el.mrp });
       if (discounted) {
         val.push({ value: el.price });
       }
@@ -112,8 +112,8 @@ export const InvoiceSection = (props) => {
       val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
-    setCartList(newCartList)
-  }, [JSON.stringify(cartData)])
+    setCartList(newCartList);
+  }, [JSON.stringify(cartData)]);
 
   return (
     <div className={styles.modalContent} id="modal-print-section">
@@ -147,7 +147,9 @@ export const InvoiceSection = (props) => {
         <div className={styles.clientDetails}>
           <div className={styles.lableValueDetails}>
             <div className={styles.label}>Invoice Date:</div>
-            <div className={styles.value}>{dayjs().format('DD/MM/YYYY HH:mm:ss A')}</div>
+            <div className={styles.value}>
+              {dayjs().format("DD/MM/YYYY HH:mm:ss A")}
+            </div>
           </div>
 
           <div className={styles.lableValueDetails}>
@@ -211,7 +213,7 @@ export const InvoiceSection = (props) => {
           </div>
         </div>
       </div>
+      <div className={styles.credits}>Innovative IT solutions by Coden</div>
     </div>
   );
 };
-

@@ -25,6 +25,7 @@ export default function AddBills() {
     id: new Date().toISOString(),
     procurementId: "",
     procurementLabel: "",
+    procurementLabelKa: "",
     variants: [],
     variantId: "",
     variantLabel: "",
@@ -137,14 +138,16 @@ export default function AddBills() {
       }));
       return;
     }
-
+    console.log(customerDetails);
     if (customerDetails.data) {
       let billingData = [];
 
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
           let val = [];
-          val.push({ value: item.procurementName.en.name });
+          val.push({
+            value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+          });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
               year: "numeric",
@@ -162,20 +165,21 @@ export default function AddBills() {
       if (customerCart.data) {
         let cartRows = [];
         customerCart.data.items.forEach((item) => {
+          console.log(item);
           cartRows.push({
             id: new Date().toISOString() + Math.random(),
             procurementId: item.procurementId,
-            procurementLabel: item.procurementName.en.name,
+            procurementLabel: `${item.procurementName.en.name}(${item.procurementName.ka.name}) `,
             variants: [
               {
-                label: item.variant.en.name,
+                label: `${item.variant.en.name}(${item.variant.ka.name})`,
                 value: item.variant.variantId,
                 maxPrice: item.mrp,
                 minPrice: item.mrp,
               },
             ],
             variantId: item.variant.variantId,
-            variantLabel: item.variant.en.name,
+            variantLabel: `${item.variant.en.name}(${item.variant.ka.name})`,
             mrp: item.mrp,
             price: item.rate,
             quantity: item.quantity,
@@ -214,6 +218,7 @@ export default function AddBills() {
         checkOutDone: false,
         cartResponse: {},
       }));
+      console.log(customerDetails.data);
     } else {
       setTableRowData([tableRowBlank]);
       setState((prev) => ({
@@ -245,13 +250,14 @@ export default function AddBills() {
       checkOutDone: false,
     }));
 
+    console.log(value);
     if (name === "procurementId") {
       tableRowClone.procurementId = value.value;
-      tableRowClone.procurementLabel = value.label;
+      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${value.meta.names.ka.name})`;
       let tempVariant = [];
       value.meta.variants.forEach((el) => {
         tempVariant.push({
-          label: el.names.en.name,
+          label: `${el.names.en.name} (${el.names.ka.name})`,
           value: el._id,
           maxPrice: el.maxPrice,
           minPrice: el.minPrice,
@@ -386,6 +392,18 @@ export default function AddBills() {
     }
 
     if (checkout.data) {
+      console.log(checkout.data);
+      console.log(state);
+
+      if (!state.customerDetails.name) {
+        setState((prev) => ({
+          ...prev,
+          customerDetails: {
+            name: checkout.data.customerName,
+            phoneNumber: checkout.data.customerNumber,
+          },
+        }));
+      }
       setState((prev) => ({
         ...prev,
         cartResponse: checkout.data,
@@ -508,7 +526,7 @@ export default function AddBills() {
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
-    onAfterPrint:handleSubmit
+    onAfterPrint: handleSubmit,
   });
 
   const today = new Date();

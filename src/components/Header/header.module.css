@@ -1,48 +1,58 @@
-.header{
-    box-shadow: 4px 4px 8px 1px #d6d5d2;
-    width: 100%;
+.header {
+  box-shadow: 4px 4px 8px 1px #d6d5d2;
+  width: 100%;
 }
 
-.headercontent{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.headercontent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.logout{
-    margin: auto 0;
-    padding-right: 10px;
-    cursor: pointer;
-    text-align: center;
+.logout {
+  margin: auto 0;
+  padding-right: 10px;
+  cursor: pointer;
+  text-align: center;
 }
 
-.logo{
-    display: flex;
-    align-items: center;
+.logo {
+  display: flex;
+  align-items: center;
 }
 
-.headertitle{
-    font-size: 35px;
-    color: #539C64;
+.headertitle {
+  font-size: 35px;
+  color: #539c64;
 }
 
-.logoclick{
-    cursor: pointer;
+.logoclick {
+  cursor: pointer;
 }
 
-.logoHeader{
-    height: 100px;
+.logoHeader {
+  height: 100px;
 }
 
-@media screen 
-  and (min-device-width: 900px) 
-  and (max-device-width: 1400px) 
-  and (-webkit-min-device-pixel-ratio: 1) { 
-    .headertitle{
-        font-size: 28px;
-        color: #539C64;
-    }
-    .logoHeader{
-        height: 80px;
-    }
+.userId {
+  white-space: nowrap;
+}
+@media screen and (min-device-width: 900px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
+  .headertitle {
+    font-size: 28px;
+    color: #539c64;
+  }
+  .logoHeader {
+    height: 80px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .headertitle {
+    font-size: 18px;
+    color: #539c64;
+  }
+  .logoHeader {
+    height: 60px;
+  }
 }

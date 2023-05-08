@@ -42,7 +42,7 @@ const OrderMgmt = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [user] = useContext(AuthContext);
-  const [sort, setSort] = useState({sortBy:'createdAt', sortType:'-1'})
+  const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
   const [plantImage, setPlantImage] = useState(null);
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
   const [searchInput, setSearchInput] = useState("");
@@ -77,8 +77,13 @@ const OrderMgmt = () => {
         setRejectOrder({ isActive: true, id: id, reason: "" });
       },
       accept: () => {
+        console.log(data);
         console.log("accept", id, data);
-        navigate(`./place-order?id=${id}&orderId=${orderId}` );
+        navigate(
+          `./place-order?id=${id}&orderId=${orderId}&requestedQuantity=${
+            data?.requestedQuantity || 0
+          }`
+        );
       },
       verify: () => {
         setVerifyOrder({ isActive: true, id, data, quantity: 0 });
@@ -101,9 +106,9 @@ const OrderMgmt = () => {
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
     };
-    if(page===1){
-        const counts = await getOrders({ body: { ...countBody } });
-        setOrdersCount(get(counts, "data[0].count", 0));
+    if (page === 1) {
+      const counts = await getOrders({ body: { ...countBody } });
+      setOrdersCount(get(counts, "data[0].count", 0));
     }
     const list = await getOrders({ body: { ...listBody } });
     const formattedData = formatOrdersData({
@@ -118,7 +123,6 @@ const OrderMgmt = () => {
   useEffect(() => {
     loadInitialOrders(page, sort);
   }, [page, sort]);
-
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
@@ -144,15 +148,15 @@ const OrderMgmt = () => {
   };
 
   const onSortClickHandler = (val) => {
-    const  newSort = {
-        sortBy: val,
-        sortType: sort.sortType === "1" ? "-1" : "1",
-    }
-    setSort(newSort)
-    setPage(1)
+    const newSort = {
+      sortBy: val,
+      sortType: sort.sortType === "1" ? "-1" : "1",
+    };
+    setSort(newSort);
+    setPage(1);
   };
 
-  console.log(sort)
+  console.log(sort);
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
@@ -212,7 +216,12 @@ const OrderMgmt = () => {
         {isLoading ? (
           <Spinner />
         ) : (
-          isSuccess && <Table data={[TABLE_HEADER, ...data]} onSortBy={onSortClickHandler} />
+          isSuccess && (
+            <Table
+              data={[TABLE_HEADER, ...data]}
+              onSortBy={onSortClickHandler}
+            />
+          )
         )}
 
         {isError && (
@@ -343,7 +352,7 @@ const OrderMgmt = () => {
                     margin: 0,
                   }}
                 >
-                  Image{" "}
+                  Plant Image{" "}
                   <span
                     style={{
                       color: "red",
@@ -381,7 +390,7 @@ const OrderMgmt = () => {
                   quantity: e.target.value,
                 }));
               }}
-              title="Total Quantity"
+              title="Total Quantity Arrived"
               required
             />
           </div>

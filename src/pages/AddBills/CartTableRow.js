@@ -126,7 +126,7 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
             onBlur={onBlur}
             min="0"
             value={roundOff && Math.max(0, roundOff)}
-            onChange={(e) => onRoundOff(e ? onRoundOff(e) : e)}
+            onChange={(e) => onRoundOff(e)}
           />
         </div>
       )}
