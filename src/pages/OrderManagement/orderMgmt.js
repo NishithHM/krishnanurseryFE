@@ -14,6 +14,7 @@ import {
   AlertMessage,
   Dropzone,
   Input,
+  AddInvoiceModal,
 } from "../../components";
 
 import {
@@ -44,7 +45,6 @@ const OrderMgmt = () => {
   const [user] = useContext(AuthContext);
   const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
   const [plantImage, setPlantImage] = useState(null);
-  const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [ordersCount, setOrdersCount] = useState(0);
   const [rejectOrder, setRejectOrder] = useState({
@@ -61,6 +61,7 @@ const OrderMgmt = () => {
   const [addInvoice, setAddInvoice] = useState({
     isActive: false,
     id: null,
+    data: null,
   });
   const [RejectOrder, { isLoading: isRejectLoading }] =
     useRejectOrderMutation();
@@ -90,7 +91,8 @@ const OrderMgmt = () => {
       },
       addInvoice: () => {
         console.log("add invoice", id);
-        setAddInvoice({ isActive: true, id });
+        console.log(data);
+        setAddInvoice({ isActive: true, id, data });
       },
     };
     functionObj[action]();
@@ -156,7 +158,7 @@ const OrderMgmt = () => {
     setPage(1);
   };
 
-  console.log(sort);
+  // console.log(sort);
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
@@ -398,97 +400,17 @@ const OrderMgmt = () => {
       </Modal>
 
       {/* Add Invoice modal */}
-      <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
-        <AlertMessage
-          message={`Add invoice for the order`}
-          confirmBtnType="primary"
-          subMessage={""}
-          cancelBtnLabel={"Close"}
-          confirmBtnLabel={"Add Invoice"}
-          successLoading={isAddInvoiceLoading}
-          handleCancel={() => {
-            setAddInvoice({ isActive: false, id: null });
-            setOrderInvoiceFile(null);
-          }}
-          handleConfirm={async () => {
-            if (!orderInvoiceFile)
-              return toast.error("Please Select Invoice File");
-
-            const data = new FormData();
-            data.append("invoice", orderInvoiceFile);
-
-            const res = await AddOrderInvoice({
-              id: addInvoice.id,
-              body: data,
-            });
-            toast.success("Invoice Updated!");
-            setAddInvoice({ isActive: false, id: null });
-            setOrderInvoiceFile(null);
-            loadInitialOrders(1, sort);
-          }}
-        >
-          <div
-            style={{
-              margin: "20px 0",
-              textAlign: "start",
-            }}
-          >
-            {orderInvoiceFile ? (
-              <div>
-                <p style={{ fontSize: "18px" }}>Invoice Selected</p>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    border: "2px dashed black",
-                    borderRadius: "7px",
-                    padding: "10px",
-                    margin: 0,
-                  }}
-                >
-                  <span>{orderInvoiceFile.name}</span>
-
-                  <AiOutlineClose onClick={() => setOrderInvoiceFile(null)} />
-                </div>
-              </div>
-            ) : (
-              <>
-                <p
-                  style={{
-                    fontSize: "18px",
-                    lineHeight: "35px",
-                    margin: 0,
-                  }}
-                >
-                  Invoice{" "}
-                  <span
-                    style={{
-                      color: "red",
-                    }}
-                  >
-                    *
-                  </span>
-                </p>
-                <Dropzone
-                  onDrop={(files) => {
-                    console.log(files);
-                    setOrderInvoiceFile(files[0]);
-                  }}
-                  onReject={(files) =>
-                    toast.error(files[0].errors[0].code.replaceAll("-", " "))
-                  }
-                  maxSize={3 * 1024 ** 2}
-                  maxFiles="1"
-                  multiple={false}
-                  accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.pdf]}
-                  maxFileSize="5"
-                />
-              </>
-            )}
-          </div>
-        </AlertMessage>
-      </Modal>
+      {addInvoice.isActive && (
+        <AddInvoiceModal
+          addInvoice={addInvoice}
+          setAddInvoice={setAddInvoice}
+          AddOrderInvoice={AddOrderInvoice}
+          isAddInvoiceLoading={isAddInvoiceLoading}
+          loadInitialOrders={loadInitialOrders}
+          sort={sort}
+          toast={toast}
+        />
+      )}
     </>
   );
 };

@@ -25,7 +25,9 @@
 .button {
   display: flex;
   justify-content: space-around;
-  margin-top: 2rem;
+  max-width: 30rem;
+  margin: auto;
+  margin-top: 4rem;
 }
 
 .buttonwidth {

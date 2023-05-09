@@ -15,6 +15,7 @@ import Search from "./Search";
 import BackButton from "./BackButton";
 import Dropzone from "./Dropzone";
 import AlertMessage from "./AlertMessage";
+import AddInvoiceModal from "./AddInvoiceModal";
 export {
   Dropzone,
   LandingTile,
@@ -33,4 +34,5 @@ export {
   Search,
   BackButton,
   AlertMessage,
+  AddInvoiceModal,
 };

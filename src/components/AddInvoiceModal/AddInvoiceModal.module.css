@@ -1,0 +1,6 @@
+.invoiceItem {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  line-height: 30px;
+}
