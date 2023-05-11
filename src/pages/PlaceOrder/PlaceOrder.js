@@ -202,6 +202,7 @@ export const PlaceOrder = () => {
     });
   }, [requestedQuantity]);
 
+  console.log(state);
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />

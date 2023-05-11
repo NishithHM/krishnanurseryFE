@@ -11,6 +11,7 @@ import billsImg from "../../assets/images/dashboard/bills.png";
 import salesImg from "../../assets/images/dashboard/sales.png";
 import orders from "../../assets/images/dashboard/orders.png";
 import waste from "../../assets/images/dashboard/wasteManagementIcon.png";
+import paymentsIcon from "../../assets/images/dashboard/payments.png";
 import { Link, Route, Routes } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
@@ -80,6 +81,12 @@ const Dashboard = () => {
       tile_img: maintenanceImg,
       path: "under-maintainence",
       allowed: [USER_ROLES.sales, USER_ROLES.admin],
+    },
+    {
+      title: "Payments",
+      tile_img: paymentsIcon,
+      path: "payments",
+      allowed: [USER_ROLES.admin, USER_ROLES.sales, USER_ROLES.procurement],
     },
     {
       title: "Sales",

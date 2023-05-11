@@ -14,6 +14,7 @@ import RequestOrder from "./RequestOrder";
 import OrderManagement from "./OrderManagement";
 import WasteManagement from "./WasteManagement";
 import UnderMaintainence from "./UnderMaintainence";
+import Payments from "./Payments";
 
 export {
   Login,
@@ -32,4 +33,5 @@ export {
   OrderManagement,
   WasteManagement,
   UnderMaintainence,
+  Payments,
 };

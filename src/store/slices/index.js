@@ -8,6 +8,7 @@ import { procurementsApi } from "../../services/procurement.services";
 import { userApi } from "../../services/user.services";
 import { commonApi } from "../../services/common.services";
 import userSlice from "./user.slice";
+import { paymentsApi } from "../../services/payments.services";
 export const store = configureStore({
   reducer: {
     [loginApi.reducerPath]: loginApi.reducer,
@@ -17,6 +18,7 @@ export const store = configureStore({
     [billsApi.reducerPath]: billsApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
+    [paymentsApi.reducerPath]: paymentsApi.reducer,
     userSlice: userSlice.reducer,
   },
   middleware: (middlewares) =>
@@ -27,7 +29,8 @@ export const store = configureStore({
       .concat(customerApi.middleware)
       .concat(billsApi.middleware)
       .concat(categoriesApi.middleware)
-      .concat(commonApi.middleware),
+      .concat(commonApi.middleware)
+      .concat(paymentsApi.middleware),
 });
 
 setupListeners(store.dispatch);
