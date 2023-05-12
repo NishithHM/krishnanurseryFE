@@ -59,8 +59,6 @@ const AddInvoiceModal = ({
     }));
   }, []);
 
-  console.log(state.totalToPay, state.totalAmount, state.deviation, state.advanceAmount)
-  console.log(state.totalAmount + state.deviation - state.advanceAmount)
 
   useEffect(()=>{
     setState((prev)=>({
@@ -95,7 +93,7 @@ const AddInvoiceModal = ({
             return toast.error("Invoice Amount should not be less than 0");
           const data = new FormData();
           data.append("invoice", orderInvoiceFile);
-          data.append("body", JSON.stringify({finalInvoiceAmount:state.invoiceAmount, finalAmountPaid: state.totalToPay + currentPaidAmount}));
+          data.append("body", JSON.stringify({finalInvoiceAmount:state.invoiceAmount, finalAmountPaid: parseInt(state.totalToPay,10) + parseInt(state.advanceAmount, 10)}));
 
           const res = await AddOrderInvoice({
             id: addInvoice.id,

@@ -33,7 +33,7 @@ export const ROLE_TABLE_HEADER = {
       value: "Total Amount",
     },
     {
-      value: "Advance Amount",
+      value: "Amount Paid",
     },
     {
       value: "Requested By",
@@ -78,7 +78,7 @@ export const ROLE_TABLE_HEADER = {
       value: "Total Amount",
     },
     {
-      value: "Advance Amount",
+      value: "Amount Paid",
     },
     {
       value: "Sales Desc",
