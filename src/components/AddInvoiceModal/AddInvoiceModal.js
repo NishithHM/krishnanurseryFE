@@ -31,13 +31,6 @@ const AddInvoiceModal = ({
     totalToPay: 0,
   });
 
-  function convertNumber(num) {
-    if (num >= 0) {
-      return -num;
-    } else {
-      return Math.abs(num);
-    }
-  }
 
   const totalAmount = addInvoice.data.totalPrice;
   const currentPaidAmount = addInvoice.data.currentPaidAmount;
@@ -59,18 +52,25 @@ const AddInvoiceModal = ({
       totalAmount: totalAmount,
       advanceAmount: currentPaidAmount,
       deviation: deviationAmount,
+      invoiceTotal:
+        totalAmount - currentPaidAmount + deviationAmount,
+      totalToPay:
+        totalAmount - currentPaidAmount + deviationAmount
     }));
   }, []);
 
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      invoiceTotal:
-        prev.totalAmount - prev.advanceAmount + convertNumber(prev.deviation),
-      totalToPay:
-        prev.totalAmount - prev.advanceAmount + convertNumber(prev.deviation),
-    }));
-  }, []);
+  console.log(state.totalToPay, state.totalAmount, state.deviation, state.advanceAmount)
+  console.log(state.totalAmount + state.deviation - state.advanceAmount)
+
+  useEffect(()=>{
+    setState((prev)=>({
+        ...prev,
+        invoiceTotal:
+            state.totalAmount - state.advanceAmount + state.deviation,
+        totalToPay:
+        state.totalAmount - state.advanceAmount + state.deviation
+    }))
+  }, [state.totalAmount, state.deviation, state.advanceAmount])
 
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
@@ -243,7 +243,7 @@ const AddInvoiceModal = ({
 
               <div className={styles.invoiceItem}>
                 <span>
-                  {state.deviationAmount > 0 ? "You Lent :" : "You Borrowed"}
+                  {state.deviationAmount < 0 ? "You Lent :" : "You Borrowed"}
                 </span>
                 <span>{state.deviation}</span>
               </div>
