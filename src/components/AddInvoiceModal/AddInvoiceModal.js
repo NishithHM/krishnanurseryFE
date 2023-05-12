@@ -95,8 +95,7 @@ const AddInvoiceModal = ({
             return toast.error("Invoice Amount should not be less than 0");
           const data = new FormData();
           data.append("invoice", orderInvoiceFile);
-          data.append("finalInvoiceAmount", state.invoiceAmount);
-          data.append("finalAmountPaid", state.totalToPay);
+          data.append("body", {finalInvoiceAmount:state.invoiceAmount, finalAmountPaid: state.totalToPay + currentPaidAmount});
 
           const res = await AddOrderInvoice({
             id: addInvoice.id,
