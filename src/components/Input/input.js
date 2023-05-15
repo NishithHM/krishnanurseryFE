@@ -21,6 +21,7 @@ const Input = (props) => {
     onBlur = () => {},
     ref,
     min,
+    max,
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
@@ -70,6 +71,7 @@ const Input = (props) => {
             [`${styles.inputDisabled}`]: disabled,
           })}
           min={min}
+          max={max}
           onInput={onInput}
           {...options}
         />

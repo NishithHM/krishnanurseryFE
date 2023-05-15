@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
   Button,
@@ -79,6 +79,13 @@ const Bills = () => {
     console.log(filterDates);
   }, [filterDates]);
 
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const value = searchParams.get("search");
+    setSearchInput(value);
+    searchHandler(value);
+  }, []);
+
   const dates = {};
 
   if (filterDates.start_date && filterDates.end_date) {
@@ -97,9 +104,9 @@ const Bills = () => {
     search: searchQuery,
     ...dates,
   });
+
   const [searchPurchase] = useSearchPurchaseMutation();
 
-  console.log(purchaseCountReq);
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
       const date = { value: dayjs(purchase.createdAt).format("DD-MM-YYYY") };
@@ -110,6 +117,7 @@ const Bills = () => {
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
               setShowPreview(true);
+              console.log(purchase);
               setInvoiceDetail(purchase);
             }}
           >

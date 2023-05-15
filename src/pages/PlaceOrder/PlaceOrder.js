@@ -118,13 +118,12 @@ export const PlaceOrder = () => {
           ? ""
           : state.addVendorName?.meta?.deviation &&
             state.addVendorName?.meta?.deviation > 0
-          ? `You owe ${state.addVendorName.label || ""} ${
+          ? `${state.addVendorName.label || ""} owes you ${Math.abs(
               state.addVendorName?.meta?.deviation
-            } `
-          : `${state.addVendorName.label || ""} owes you ${
+            )}`
+          : `You owe ${state.addVendorName.label || ""} ${Math.abs(
               state.addVendorName?.meta?.deviation
-            }`,
-
+            )} `,
       disabledVendorContact: state.addVendorName?.__isNew__ ? false : true,
     }));
   }, [state.addVendorName?.value]);
@@ -320,8 +319,18 @@ export const PlaceOrder = () => {
                 value={state.currentPaidAmount}
                 id="currentPaidAmount"
                 type="number"
-                onChange={inputChangeHandler}
-                title="Current Paid Amount"
+                onChange={(e) => {
+                  if (e.target.value > state.totalPrice) {
+                    toast.error("Adavnce should not be more than total price");
+                  }
+                  const value = Math.max(
+                    0,
+                    Math.min(state.totalPrice, Number(e.target.value))
+                  );
+                  setState((prev) => ({ ...prev, currentPaidAmount: value }));
+                }}
+                title="Advance Paid"
+                max={state.totalPrice}
                 onBlur={(e) => {
                   if (e.target.value < 0) {
                     toast.error("Total Price shouldn't be negative number");

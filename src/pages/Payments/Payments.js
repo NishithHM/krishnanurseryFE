@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import debounce from "lodash/debounce";
-import styles from "./AccessManagement.module.css";
+import styles from "./Payments.module.css";
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -39,6 +39,11 @@ const Payments = () => {
   const paymentsCountReq = useGetAllPaymentsCountQuery({ search: searchInput });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
+
+  const handleViewBill = (id) => {
+    console.log(id);
+  };
+
   const formatPaymentsData = (data) => {
     console.log(data);
     const formatted = data.map((item) => {
@@ -48,16 +53,19 @@ const Payments = () => {
         value: item.amount,
       };
       const action = {
-        value: (
+        value: item.invoiceId ? (
           <Link
-            to={`/${item._id}`}
+            to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
             style={{
               fontWeight: "bold",
               color: "#539c64",
+              cursor: "pointer",
             }}
           >
             View Bill
           </Link>
+        ) : (
+          <span>--</span>
         ),
       };
 
@@ -143,6 +151,27 @@ const Payments = () => {
     const data = newPayment;
 
     if (newPayment.type.value === "BROKER") {
+      if (!data.broker) return toast.error("Broker Name cannot be empty");
+
+      if (!data.brokerPhone || String(data.brokerPhone).length !== 10)
+        return toast.error("Invalid Broker Phone Number");
+
+      if (!data.amount && data.amount === "" && data.amount >= 0)
+        return toast.error("Amount Should not be empty or less than 0");
+
+      if (!data.invoiceId) return toast.error("Invalid Invoice Id");
+
+      const res = {
+        type: data.type.value,
+        amount: data.amount,
+        invoiceId: data.invoiceId,
+        brokerName: data.broker.value,
+        brokerNumber: data.brokerPhone,
+      };
+      const resp = await mutate(res);
+      setNewPaymentModal(false);
+      setNewPayment({ type: null });
+      toast.success(resp.data.message);
     } else {
       if (!data.name && data.name === "")
         return toast.error("Payment Name cannot be empty");
@@ -155,10 +184,10 @@ const Payments = () => {
         empName: data.name,
         amount: data.amount,
       };
-      await mutate(res);
+      const resp = await mutate(res);
       setNewPaymentModal(false);
       setNewPayment({ type: null });
-      toast.success("Payment Created!");
+      toast.success(resp.data.message);
     }
   };
 
@@ -245,6 +274,7 @@ const Payments = () => {
           }}
         >
           <Dropdown
+            required
             title="Payment Type"
             data={filtered_payment_types}
             value={newPayment.type}
@@ -252,10 +282,75 @@ const Payments = () => {
           />
 
           {newPayment.type && newPayment.type.value === "BROKER" ? (
-            <>brokerage</>
+            <>
+              <Dropdown
+                url="/api/brokers/getAll"
+                id="addVendorName"
+                apiDataPath={{ label: "name", value: "_id" }}
+                title="Broker Name"
+                onChange={(e) => {
+                  console.log(e);
+                  if (e?.meta?.contact) {
+                    setNewPayment((prev) => ({
+                      ...prev,
+                      broker: { ...e, __isNew__: true, disabled: true },
+                      brokerPhone: e.meta.contact,
+                    }));
+                  } else
+                    setNewPayment((prev) => ({
+                      ...prev,
+                      broker: e,
+                      brokerPhone: "",
+                    }));
+                }}
+                value={newPayment?.broker || ""}
+                canCreate
+                required
+              />
+              {newPayment?.broker?.__isNew__ && (
+                <Input
+                  title="Phone Number"
+                  required
+                  disabled={newPayment?.broker?.disabled || false}
+                  type="number"
+                  value={newPayment.brokerPhone}
+                  onChange={(e) =>
+                    setNewPayment((prev) => ({
+                      ...prev,
+                      brokerPhone: e.target.value,
+                    }))
+                  }
+                />
+              )}
+              <Input
+                required
+                title="Bill Number"
+                value={newPayment.invoiceId}
+                onChange={(e) =>
+                  setNewPayment((prev) => ({
+                    ...prev,
+                    invoiceId: e.target.value,
+                  }))
+                }
+              />
+
+              <Input
+                required
+                title="Amount Paid"
+                type="number"
+                value={newPayment.amount}
+                onChange={(e) =>
+                  setNewPayment((prev) => ({
+                    ...prev,
+                    amount: e.target.value,
+                  }))
+                }
+              />
+            </>
           ) : newPayment.type ? (
             <>
               <Input
+                required
                 title="Name"
                 value={newPayment.name}
                 onChange={(e) =>
@@ -263,6 +358,7 @@ const Payments = () => {
                 }
               />
               <Input
+                required
                 title="Amount Paid"
                 type="number"
                 value={newPayment.amount}

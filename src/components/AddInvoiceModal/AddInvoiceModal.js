@@ -31,7 +31,6 @@ const AddInvoiceModal = ({
     totalToPay: 0,
   });
 
-
   const totalAmount = addInvoice.data.totalPrice;
   const currentPaidAmount = addInvoice.data.currentPaidAmount;
   const deviationAmount = 0;
@@ -52,24 +51,31 @@ const AddInvoiceModal = ({
       totalAmount: totalAmount,
       advanceAmount: currentPaidAmount,
       deviation: deviationAmount,
-      invoiceTotal:
-        totalAmount - currentPaidAmount + deviationAmount,
-      totalToPay:
-        totalAmount - currentPaidAmount + deviationAmount
+      invoiceTotal: 0,
+      totalToPay: 0,
     }));
   }, []);
 
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      invoiceTotal: state.totalAmount - state.advanceAmount + state.deviation,
+    }));
+  }, [state.totalAmount, state.deviation, state.advanceAmount]);
 
-  useEffect(()=>{
-    setState((prev)=>({
+  useEffect(() => {
+    if (state.invoiceAmount)
+      setState((prev) => ({
         ...prev,
-        invoiceTotal:
-            state.totalAmount - state.advanceAmount + state.deviation,
-        totalToPay:
-        state.totalAmount - state.advanceAmount + state.deviation
-    }))
-  }, [state.totalAmount, state.deviation, state.advanceAmount])
-
+        totalToPay: prev.invoiceAmount - Math.abs(prev.deviation),
+      }));
+    else {
+      setState((prev) => ({
+        ...prev,
+        totalToPay: "",
+      }));
+    }
+  }, [state.invoiceAmount]);
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
       <AlertMessage
@@ -87,13 +93,23 @@ const AddInvoiceModal = ({
           if (!orderInvoiceFile)
             return toast.error("Please Select Invoice File");
           if (state.invoiceAmount <= 0)
-            return toast.error("Invoice Amount should not be less than 0");
+            return toast.error(
+              "Total amount to be paid should not be less than 0"
+            );
 
           if (state.totalToPay <= 0)
             return toast.error("Invoice Amount should not be less than 0");
           const data = new FormData();
           data.append("invoice", orderInvoiceFile);
-          data.append("body", JSON.stringify({finalInvoiceAmount:state.invoiceAmount, finalAmountPaid: parseInt(state.totalToPay,10) + parseInt(state.advanceAmount, 10)}));
+          data.append(
+            "body",
+            JSON.stringify({
+              finalInvoiceAmount: state.invoiceAmount,
+              finalAmountPaid:
+                parseInt(state.totalToPay, 10) +
+                parseInt(state.advanceAmount, 10),
+            })
+          );
 
           const res = await AddOrderInvoice({
             id: addInvoice.id,
@@ -193,7 +209,7 @@ const AddInvoiceModal = ({
                     invoiceAmount: e.target.value,
                   }))
                 }
-                title="Invoice Amount"
+                title="Amount In Invoice"
                 required
               />
 
@@ -241,9 +257,9 @@ const AddInvoiceModal = ({
 
               <div className={styles.invoiceItem}>
                 <span>
-                  {state.deviationAmount < 0 ? "You Lent :" : "You Borrowed"}
+                  {state.deviationAmount < 0 ? "You Borrowed :" : "You Lent"}
                 </span>
-                <span>{state.deviation}</span>
+                <span>{Math.abs(state.deviation)}</span>
               </div>
 
               <hr />
@@ -254,20 +270,23 @@ const AddInvoiceModal = ({
             </div>
 
             <p>
-              {state.invoiceTotal > state.totalToPay && (
+              {state.totalToPay && state.invoiceAmount > state.totalToPay && (
                 <span>
                   <span style={{ color: "#ea8c10" }}>You Borrowed</span>{" "}
                   {Math.abs(state.totalToPay - state.invoiceTotal)}₹ in this
                   transaction!
                 </span>
               )}{" "}
-              {state.invoiceTotal < state.totalToPay && (
-                <span>
-                  {" "}
-                  <span style={{ color: "red" }}>You Lent </span>
-                  {state.totalToPay - state.invoiceTotal}₹ in this transaction!
-                </span>
-              )}
+              {state.totalToPay &&
+                state.invoiceAmount < state.totalToPay &&
+                state.invoiceAmount !== 0 && (
+                  <span>
+                    {" "}
+                    <span style={{ color: "red" }}>You Lent </span>
+                    {state.totalToPay - state.invoiceTotal}₹ in this
+                    transaction!
+                  </span>
+                )}
             </p>
           </div>
         </div>
