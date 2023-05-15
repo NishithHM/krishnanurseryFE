@@ -64,7 +64,6 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                             <Button
                                 title="Submit"
                                 onClick={handleSubmitFilter}
-                                disabled={isEmpty(filters.vendors) && isEmpty(filters.status) && isEmpty(filterDates.start_date) && isEmpty(filterDates.end_date)}
                             />
                         </div>
                     </div>
