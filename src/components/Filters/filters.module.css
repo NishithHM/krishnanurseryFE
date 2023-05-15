@@ -1,21 +1,42 @@
 .wrapper {
-  padding: 1rem;
+    padding: 1rem;
 }
+
 .innerWrapper {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #539c64;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #539c64;
 }
+
 .title {
-  line-height: 5px;
-  font-weight: 500;
+    line-height: 5px;
+    font-weight: 500;
 }
+
 .controlBtn {
-  background: #539c64;
-  padding: 1px 4px;
-  color: white;
-  border-radius: 5px;
-  margin-left: 1rem;
-  cursor: pointer;
+    background: #539c64;
+    padding: 1px 4px;
+    color: white;
+    border-radius: 5px;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+.buttonWrapper {
+    height: fit-content;
+    align-self: flex-end;
+    display: flex;
+}
+
+.btnSubWrapper {
+    gap: 5px;
+}
+
+.wrapperFilter {
+    display: flex;
+    gap: 3rem;
+    background: #f3f3f3;
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+    border-radius: 8px;
 }

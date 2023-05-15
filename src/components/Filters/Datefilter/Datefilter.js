@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../DatePicker.css";
 import "../Calendar.css";
 import DatePicker from "react-date-picker";
-import Button from "../../Button";
 import styles from "./Datefilter.module.css";
 
 const Datefilter = ({
@@ -35,22 +34,6 @@ const Datefilter = ({
     }
   };
 
-  const onSubmitHandler = () => {
-    const data = {
-      start_date: startDate,
-      end_date: endDate,
-    };
-
-    onSubmit(data);
-  };
-
-  const onResetHandler = () => {
-    const data = {
-      start_date: startDate,
-      end_date: endDate,
-    };
-    onReset(data);
-  };
 
   return (
     <div className={styles.wrapper}>
@@ -95,15 +78,6 @@ const Datefilter = ({
         </div>
       </div>
 
-      <div className={styles.buttonWrapper}>
-        <div className={styles.btnSubWrapper}>
-          <Button
-            title="Submit"
-            onClick={onSubmitHandler}
-            disabled={!startDate || !endDate}
-          />
-        </div>
-      </div>
     </div>
   );
 };
