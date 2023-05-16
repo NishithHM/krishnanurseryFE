@@ -16,6 +16,7 @@ import BackButton from "./BackButton";
 import Dropzone from "./Dropzone";
 import AlertMessage from "./AlertMessage";
 import AddInvoiceModal from "./AddInvoiceModal";
+import Checkbox from "./CheckBox/checkbox";
 export {
   Dropzone,
   LandingTile,
@@ -35,4 +36,5 @@ export {
   BackButton,
   AlertMessage,
   AddInvoiceModal,
+  Checkbox
 };

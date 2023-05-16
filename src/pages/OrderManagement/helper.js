@@ -179,9 +179,6 @@ const getStatusColor = {
 };
 
 export const formatOrdersData = ({ data, role, onAction }) => {
-    console.log(data);
-    console.log(role);
-
     const formatted = data.map((order) => {
         const rowData = roleRows[role].map((ele) => {
             let value;

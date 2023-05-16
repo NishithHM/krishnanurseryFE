@@ -9,6 +9,7 @@ import {
   Dropzone,
   Modal,
   Alert,
+  Checkbox,
 } from "../../components";
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
@@ -23,6 +24,7 @@ const RequestOrder = () => {
     description: "",
     addPlantName: {},
     submitDisabled: false,
+    ownProduction: false
   };
 
   const navigate = useNavigate();
@@ -65,6 +67,7 @@ const RequestOrder = () => {
       nameInEnglish: state.addPlantName.label,
       descriptionSales: state.description,
       totalQuantity: parseInt(state.totalQuantity),
+      ownProduction: state.ownProduction
     };
     if (!state.addPlantName?.__isNew__) {
       body.id = state.addPlantName.value;
@@ -116,6 +119,7 @@ const RequestOrder = () => {
               title="Total Quantity"
               required
             />
+            <Checkbox onChange={dropDownChangeHandler} label="Check this if plant is grown in house" id="ownProduction" />
 
             <div className={styles.formbtn}>
               <Button

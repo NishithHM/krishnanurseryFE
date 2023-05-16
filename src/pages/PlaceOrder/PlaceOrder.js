@@ -43,6 +43,7 @@ export const PlaceOrder = () => {
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [search] = useSearchParams();
   const procId = search.get("id");
   const requestedQuantity = search.get("requestedQuantity");
@@ -69,6 +70,15 @@ export const PlaceOrder = () => {
       setCategoryList(formatCategoryData(categories.data));
     }
   }, [categories]);
+
+  useEffect(()=>{
+    if(location.state){
+        setState((prev)=>({
+            ...prev,
+            addVendorName:{label:location.state?.label, value: location.state?.value, meta:{contact:location?.state?.vendorContact}}
+        }))
+    }
+  }, [location.state])
 
   const inputChangeHandler = (event, id) => {
     setState((prev) => {

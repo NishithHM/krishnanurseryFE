@@ -88,7 +88,7 @@ const OrderMgmt = () => {
                 navigate(
                     `./place-order?id=${id}&orderId=${orderId}&requestedQuantity=${data?.requestedQuantity || 0
                     }`
-                );
+                ,{state:{label:data?.vendorName, vendorContact: data.vendorContact, value: data.vendorId}});
             },
             verify: () => {
                 setVerifyOrder({ isActive: true, id, data, quantity: 0 });
