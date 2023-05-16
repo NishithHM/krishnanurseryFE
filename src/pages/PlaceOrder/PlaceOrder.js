@@ -127,7 +127,7 @@ export const PlaceOrder = () => {
         state.addVendorName?.meta?.deviation === undefined
           ? ""
           : state.addVendorName?.meta?.deviation &&
-            state.addVendorName?.meta?.deviation > 0
+            state.addVendorName?.meta?.deviation < 0
           ? `${state.addVendorName.label || ""} owes you ${Math.abs(
               state.addVendorName?.meta?.deviation
             )}`
