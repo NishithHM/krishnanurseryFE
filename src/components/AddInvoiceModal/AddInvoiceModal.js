@@ -245,7 +245,7 @@ const AddInvoiceModal = ({
 
               <div className={styles.invoiceItem}>
                 <span>
-                  {state.deviationAmount < 0 ? "You Borrowed :" : "You Lent"}
+                  {state.deviationAmount < 0 ? "You Lent :" : "You Borrowed"}
                 </span>
                 <span>{Math.abs(state.deviation)}</span>
               </div>
@@ -258,18 +258,18 @@ const AddInvoiceModal = ({
             </div>
 
             <div>
-              {(state.totalAmount - state.totalToPay - state.advanceAmount - state.deviation) > 0 && (
+              {(state.invoiceTotal - state.totalToPay) > 0 && (
                 <span>
                   <span style={{ color: "#ea8c10" }}>You Borrowed</span>{" "}
-                  {Math.abs(state.totalAmount - state.totalToPay - state.advanceAmount -state.deviation)}₹ in this
+                  {Math.abs(state.invoiceTotal - state.totalToPay )}₹ in this
                   transaction!
                 </span>
               )}
-              {(state.totalAmount - state.totalToPay - state.advanceAmount - state.deviation) < 0 && (
+              {(state.invoiceTotal - state.totalToPay) < 0 && (
                   <span>
                     {" "}
                     <span style={{ color: "red" }}>You Lent </span>
-                    {Math.abs(state.totalAmount - state.totalToPay - state.advanceAmount -state.deviation)}₹ in this
+                    {Math.abs(state.invoiceTotal - state.totalToPay )}₹ in this
                     transaction!
                   </span>
                 )}
