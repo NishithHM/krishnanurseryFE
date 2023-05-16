@@ -89,6 +89,15 @@ export const PlaceOrder = () => {
     });
   };
 
+  const inputChangeHandlerNumber = (event, id) => {
+    setState((prev) => {
+      return {
+        ...prev,
+        [id]: parseInt(event.target.value, 10),
+      };
+    });
+  };
+
   const dropDownChangeHandler = (event, id) => {
     setState((prev) => {
       return {
@@ -301,7 +310,7 @@ export const PlaceOrder = () => {
                 value={state.totalQuantity}
                 id="totalQuantity"
                 type="number"
-                onChange={inputChangeHandler}
+                onChange={inputChangeHandlerNumber}
                 title="Total Quantity"
                 required
                 min={0}
@@ -312,7 +321,7 @@ export const PlaceOrder = () => {
                 value={state.totalPrice}
                 id="totalPrice"
                 type="number"
-                onChange={inputChangeHandler}
+                onChange={inputChangeHandlerNumber}
                 title="Total Price"
                 onBlur={(e) => {
                   if (e.target.value < 0) {
@@ -337,7 +346,7 @@ export const PlaceOrder = () => {
                     0,
                     Math.min(state.totalPrice, Number(e.target.value))
                   );
-                  setState((prev) => ({ ...prev, currentPaidAmount: value }));
+                  setState((prev) => ({ ...prev, currentPaidAmount:  parseInt(value, 10) }));
                 }}
                 title="Advance Paid"
                 max={state.totalPrice}
