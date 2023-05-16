@@ -24,7 +24,7 @@ const RequestOrder = () => {
     description: "",
     addPlantName: {},
     submitDisabled: false,
-    ownProduction: false
+    ownProduction: false,
   };
 
   const navigate = useNavigate();
@@ -55,10 +55,17 @@ const RequestOrder = () => {
     console.log(state?.addPlantName?.meta?.remainingQuantity);
     if (!state.addPlantName)
       return toast.error("Something Went Wrong! Please try again");
+
+    updateHandler();
+
     if (state?.addPlantName?.meta?.remainingQuantity || 0 >= 90) {
       setDeleteConfirmModal(true);
     } else {
-      updateHandler();
+      if (state?.addPlantName?.meta?.remainingQuantity || 0 < 90) {
+        setTimeout(() => {
+          navigate("../dashboard/orders");
+        }, 1000);
+      }
     }
   };
 
@@ -67,18 +74,13 @@ const RequestOrder = () => {
       nameInEnglish: state.addPlantName.label,
       descriptionSales: state.description,
       totalQuantity: parseInt(state.totalQuantity),
-      ownProduction: state.ownProduction
+      ownProduction: state.ownProduction,
     };
     if (!state.addPlantName?.__isNew__) {
       body.id = state.addPlantName.value;
     }
     const response = await RequestOrder({ body });
     toast.success(response.data.message);
-    if (state?.addPlantName?.meta?.remainingQuantity || 0 < 90) {
-      setTimeout(() => {
-        navigate("../dashboard/orders");
-      }, 1000);
-    }
   };
 
   return (
@@ -119,7 +121,11 @@ const RequestOrder = () => {
               title="Total Quantity"
               required
             />
-            <Checkbox onChange={dropDownChangeHandler} label="Check this if plant is grown in house" id="ownProduction" />
+            <Checkbox
+              onChange={dropDownChangeHandler}
+              label="Check this if plant is grown in house"
+              id="ownProduction"
+            />
 
             <div className={styles.formbtn}>
               <Button
@@ -150,7 +156,8 @@ const RequestOrder = () => {
           cancelBtnLabel="Skip"
           cancelLoading={isOrderLoading}
           handleCancel={() => {
-            updateHandler();
+            setDeleteConfirmModal(false);
+            navigate("../dashboard/orders");
           }}
           handleConfirm={() => {
             setDeleteConfirmModal(false);

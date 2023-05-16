@@ -14,7 +14,7 @@ import {
   useGetProcurementHistoryMutation,
   useAddProcurementVariantsMutation,
   useAddMinimumQuantityMutation,
-//   useGetAllMinimumProcurementsMutation
+  //   useGetAllMinimumProcurementsMutation
 } from "../../services/procurement.services";
 import {
   getProcurementListTableBody,
@@ -35,7 +35,6 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ScrollTable from "../../components/Table/ScrollTable";
 import { GrClose } from "react-icons/gr";
 
-
 const billingHistoryHeader = [
   { value: "Procured On", width: "15%" },
   { value: "Total Quantity", width: "10%" },
@@ -47,7 +46,6 @@ const billingHistoryHeader = [
 ];
 
 const ProcurementList = () => {
-    
   const [page, setPage] = useState(1);
   const [pageFilter, setPageFilter] = useState(1);
   const [procurementListHistory, setProcurementListHistory] = useState([]);
@@ -105,9 +103,9 @@ const ProcurementList = () => {
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
     search: searchInputDeb,
-    sortBy: isMinimumSelected ? 'minimumQuantity' : sort.sortBy,
+    sortBy: isMinimumSelected ? "minimumQuantity" : sort.sortBy,
     sortType: sort.sortType === "asc" ? 1 : -1,
-    isMinimumSelected
+    isMinimumSelected,
   });
 
   useEffect(() => {
@@ -120,7 +118,6 @@ const ProcurementList = () => {
     }
   }, [getProcurements]);
 
-
   // setId;
   const [getProcurementHistory] = useGetProcurementHistoryMutation();
   const [addProcurementVariants] = useAddProcurementVariantsMutation();
@@ -128,12 +125,11 @@ const ProcurementList = () => {
   const getProcurementCount = useGetProcurementsQuery({
     isCount: true,
     search: searchInput,
-    
   });
   const getLowProcurementCount = useGetProcurementsQuery({
     isCount: true,
     search: searchInput,
-    isMinimumSelected: true
+    isMinimumSelected: true,
   });
 
   const setImageurlsHandler = (data) => {
@@ -142,7 +138,7 @@ const ProcurementList = () => {
 
   const count = get(getProcurementCount, "data[0].count", 0);
   const countLow = get(getLowProcurementCount, "data[0].count", 0);
-  const finalCount = isMinimumSelected ? countLow : count
+  const finalCount = isMinimumSelected ? countLow : count;
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
       setSearchInputDeb(query);
@@ -155,6 +151,7 @@ const ProcurementList = () => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
+    console.log(procurementData);
     setQuantity(procurementData?.minimumQuantity);
     if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
@@ -352,13 +349,13 @@ const ProcurementList = () => {
     });
   };
 
-  const onMinimumClick =()=>{
-    setMinimumMode(!isMinimumSelected)
-  }
+  const onMinimumClick = () => {
+    setMinimumMode(!isMinimumSelected);
+  };
 
   return (
     <>
-        <Toaster />
+      <Toaster />
 
       <div className={styles.container}>
         <div className={styles.innerContainer}>
@@ -371,10 +368,15 @@ const ProcurementList = () => {
               title="Search for a Plant..."
               onChange={handleSearchInputChange}
             />
-            {countLow > 0 &&<div className={styles.immediateButton}>
-                <Button onClick={onMinimumClick} title={isMinimumSelected ? "All Items" : "Low Quantity"} type={isMinimumSelected? 'primary' :"alert" }/>
-            </div> 
-            }
+            {countLow > 0 && (
+              <div className={styles.immediateButton}>
+                <Button
+                  onClick={onMinimumClick}
+                  title={isMinimumSelected ? "All Items" : "Low Quantity"}
+                  type={isMinimumSelected ? "primary" : "alert"}
+                />
+              </div>
+            )}
           </div>
           <div className={styles.paginationContainer}>
             <div className={styles.paginationInner}>
@@ -389,7 +391,10 @@ const ProcurementList = () => {
                 page * 10 > finalCount ? finalCount : page * 10
               } of ${finalCount}`}</span>
               <button
-                disabled={(page * 10 > finalCount ? finalCount : page * 10) >= finalCount}
+                disabled={
+                  (page * 10 > finalCount ? finalCount : page * 10) >=
+                  finalCount
+                }
                 className={styles.btnControls}
                 onClick={onIncrementPage}
               >
@@ -552,6 +557,22 @@ const ProcurementList = () => {
                         onClick={onQuantitySubmitHandler}
                         disabled={!quantity}
                         loading={quanityLoaders}
+                      />
+                    </div>
+                  </div>
+                  <p>Minimum stock needs to be mainained in inventory</p>
+                </>
+              )}
+              {role === "procurement" && (
+                <>
+                  <div className={styles.quantityWrapper}>
+                    <div>
+                      <Input
+                        id="quantity"
+                        type="number"
+                        title="Minimum Inventory Quantity"
+                        onChange={onQuantityChangeHandler}
+                        value={quantity}
                       />
                     </div>
                   </div>

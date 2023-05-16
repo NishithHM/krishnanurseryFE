@@ -53,20 +53,21 @@ const Payments = () => {
         value: item.amount,
       };
       const action = {
-        value: item.invoiceId ? (
-          <Link
-            to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
-            style={{
-              fontWeight: "bold",
-              color: "#539c64",
-              cursor: "pointer",
-            }}
-          >
-            View Bill
-          </Link>
-        ) : (
-          <span>--</span>
-        ),
+        value:
+          item.invoiceId && item.type === "BROKER" ? (
+            <Link
+              to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
+              style={{
+                fontWeight: "bold",
+                color: "#539c64",
+                cursor: "pointer",
+              }}
+            >
+              View Bill
+            </Link>
+          ) : (
+            <span>--</span>
+          ),
       };
 
       const data = [name, createdAt, amount, action];
@@ -139,9 +140,9 @@ const Payments = () => {
   if (user_role === "admin") {
     filtered_payment_types = PAYMENT_TYPES;
   } else if (user_role === "sales") {
-    filtered_payment_types = [PAYMENT_TYPES[0], PAYMENT_TYPES[1]];
+    filtered_payment_types = [PAYMENT_TYPES[0], PAYMENT_TYPES[2]];
   } else if (user_role === "procurement") {
-    filtered_payment_types = [PAYMENT_TYPES[2]];
+    filtered_payment_types = [PAYMENT_TYPES[1], PAYMENT_TYPES[2]];
   }
 
   // console.log(values);
@@ -169,6 +170,9 @@ const Payments = () => {
         brokerNumber: data.brokerPhone,
       };
       const resp = await mutate(res);
+      if (resp["error"] !== undefined) {
+        return toast.error(resp.error.data.message);
+      }
       setNewPaymentModal(false);
       setNewPayment({ type: null });
       toast.success(resp.data.message);
@@ -178,13 +182,20 @@ const Payments = () => {
 
       if (!data.amount && data.amount === "" && data.amount >= 0)
         return toast.error("Amount Should not be empty or less than 0");
+      if (data.type.value === "SALARY" && !data.invoiceId)
+        return toast.error("Invalid Invoice Id");
 
       const res = {
         type: data.type.value,
         empName: data.name,
         amount: data.amount,
       };
+      if (data.type.value === "SALARY") res.invoiceId = data.invoiceId;
+
       const resp = await mutate(res);
+      if (resp["error"] !== undefined) {
+        return toast.error(resp.error.data.message);
+      }
       setNewPaymentModal(false);
       setNewPayment({ type: null });
       toast.success(resp.data.message);
@@ -357,6 +368,19 @@ const Payments = () => {
                   setNewPayment((prev) => ({ ...prev, name: e.target.value }))
                 }
               />
+              {newPayment.type.value === "SALARY" && (
+                <Input
+                  required
+                  title="Bill Number"
+                  value={newPayment.invoiceId}
+                  onChange={(e) =>
+                    setNewPayment((prev) => ({
+                      ...prev,
+                      invoiceId: e.target.value,
+                    }))
+                  }
+                />
+              )}
               <Input
                 required
                 title="Amount Paid"
