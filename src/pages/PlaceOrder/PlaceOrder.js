@@ -379,7 +379,6 @@ export const PlaceOrder = () => {
             name="description"
             required
           />
-
           <div className={styles.formbtn}>
             <Button
               onClick={onSubmitHandler}
@@ -387,8 +386,8 @@ export const PlaceOrder = () => {
               disabled={
                 isEmpty(state.addPlantName) ||
                 isEmpty(state.addVendorName) ||
-                isEmpty(state.totalPrice) ||
-                isEmpty(state.totalQuantity) ||
+                isEmpty(state.totalPrice.toString()) ||
+                isEmpty(state.totalQuantity.toString()) ||
                 isEmpty(state.description) ||
                 isEmpty(state.expectedDeliveryDate)
               }
