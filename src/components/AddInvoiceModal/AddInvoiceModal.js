@@ -193,8 +193,8 @@ const AddInvoiceModal = ({
                 onChange={(e) =>
                   setState((prev) => ({
                     ...prev,
-                    invoiceAmount: e.target.value,
-                    totalAmount: e.target.value
+                    invoiceAmount: parseInt(e.target.value, 10),
+                    totalAmount: parseInt(e.target.value, 10)
                   }))
                 }
                 title="Amount In Invoice"
@@ -258,18 +258,18 @@ const AddInvoiceModal = ({
             </div>
 
             <div>
-              {(state.totalToPay - state.invoiceTotal - state.advanceAmount - state.deviation) > 0 && (
+              {(state.totalAmount - state.totalToPay - state.advanceAmount - state.deviation) > 0 && (
                 <span>
-                  <span style={{ color: "#ea8c10" }}>You Lent</span>{" "}
-                  {Math.abs(state.totalToPay - state.invoiceTotal - state.advanceAmount -state.deviation)}₹ in this
+                  <span style={{ color: "#ea8c10" }}>You Borrowed</span>{" "}
+                  {Math.abs(state.totalAmount - state.totalToPay - state.advanceAmount -state.deviation)}₹ in this
                   transaction!
                 </span>
               )}
-              {(state.totalToPay - state.invoiceTotal - state.advanceAmount - state.deviation) < 0 && (
+              {(state.totalAmount - state.totalToPay - state.advanceAmount - state.deviation) < 0 && (
                   <span>
                     {" "}
-                    <span style={{ color: "red" }}>You Borrowed </span>
-                    {Math.abs(state.totalToPay - state.invoiceTotal - state.advanceAmount -state.deviation)}₹ in this
+                    <span style={{ color: "red" }}>You Lent </span>
+                    {Math.abs(state.totalAmount - state.totalToPay - state.advanceAmount -state.deviation)}₹ in this
                     transaction!
                   </span>
                 )}
