@@ -125,7 +125,7 @@ const Payments = () => {
       isSortable: false,
     },
     {
-        value: "Invoice Id",
+        value: "Bill Number",
         isSortable: false,
       },
     {
@@ -193,7 +193,7 @@ const Payments = () => {
 
       if (!data.amount && data.amount === "" && data.amount >= 0)
         return toast.error("Amount Should not be empty or less than 0");
-      if (data.type.value === "SALARY" && !data.invoiceId)
+      if (data.type.value === "OTHERS" && !data.invoiceId)
         return toast.error("Invalid Invoice Id");
 
       const res = {
@@ -201,7 +201,7 @@ const Payments = () => {
         empName: data.name,
         amount: data.amount,
       };
-      if (data.type.value === "SALARY") res.invoiceId = data.invoiceId;
+      if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
       const resp = await mutate(res);
       if (resp["error"] !== undefined) {

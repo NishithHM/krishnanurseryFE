@@ -571,8 +571,8 @@ const ProcurementList = () => {
                         id="quantity"
                         type="number"
                         title="Minimum Inventory Quantity"
-                        onChange={onQuantityChangeHandler}
                         value={quantity}
+                        disabled
                       />
                     </div>
                   </div>
