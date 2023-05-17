@@ -9,7 +9,7 @@ const TextArea = (props) => {
         {props.required && <span style={{ color: "red" }}>*</span>}
       </label>
       <textarea
-        maxLength={30}
+        maxLength={100}
         value={props.value}
         onChange={(e) => props.onChange(e, props.id)}
         className={styles.textareastyle}
