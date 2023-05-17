@@ -24,6 +24,7 @@ const Dropdown = ({
   error = null,
   errorMessage = null,
   apiDataPath = {},
+  disabled = false,
   id,
   value,
 }) => {
@@ -58,7 +59,9 @@ const Dropdown = ({
       };
     }
     const res = await axios.get(
-        url.includes('?') ? `${process.env.REACT_APP_BASE_URL}${url}&search=${inputValue}`: `${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`,
+      url.includes("?")
+        ? `${process.env.REACT_APP_BASE_URL}${url}&search=${inputValue}`
+        : `${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`,
       config
     );
     const optionsVal = res.data.map((opt) => ({
@@ -102,6 +105,8 @@ const Dropdown = ({
           value={selectedOption}
           defaultOptions={options}
           // onInputChange={handleChange}
+
+          isDisabled={disabled}
           onChange={handleChange}
           loadOptions={loadOptions}
           isClearable={isClearable}
@@ -135,6 +140,7 @@ const Dropdown = ({
           isMulti={isMultiEnabled}
           isLoading={loading}
           styles={DropdownStyles}
+          isDisabled={disabled}
         />
         {error && (
           <div className={styles.errortext}>
@@ -159,6 +165,7 @@ const Dropdown = ({
           isClearable={isClearable}
           isMulti={isMultiEnabled}
           styles={DropdownStyles}
+          isDisabled={disabled}
         />
         {error && (
           <div className={styles.errortext}>
@@ -184,6 +191,7 @@ const Dropdown = ({
           isMulti={isMultiEnabled}
           placeholder={placeholder}
           styles={DropdownStyles}
+          isDisabled={disabled}
         />
         {error && (
           <div className={styles.errortext}>

@@ -71,14 +71,18 @@ export const PlaceOrder = () => {
     }
   }, [categories]);
 
-  useEffect(()=>{
-    if(location.state){
-        setState((prev)=>({
-            ...prev,
-            addVendorName:{label:location.state?.label, value: location.state?.value, meta:{contact:location?.state?.vendorContact}}
-        }))
+  useEffect(() => {
+    if (location.state) {
+      setState((prev) => ({
+        ...prev,
+        addVendorName: {
+          label: location.state?.label,
+          value: location.state?.value,
+          meta: { contact: location?.state?.vendorContact },
+        },
+      }));
     }
-  }, [location.state])
+  }, [location.state]);
 
   const inputChangeHandler = (event, id) => {
     setState((prev) => {
@@ -186,6 +190,10 @@ export const PlaceOrder = () => {
 
     console.log(body);
     const response = await PlaceOrder({ body });
+    if (response["error"] !== undefined) {
+      console.log(response);
+      return toast.error(response.error.data.error);
+    }
     toast.success(response.data.message);
     setTimeout(() => {
       navigate("../dashboard/orders");
@@ -221,6 +229,31 @@ export const PlaceOrder = () => {
   }, [requestedQuantity]);
 
   console.log(state);
+
+  const isInhouseOrder =
+    state.addVendorContact && state.addVendorContact === "9999999999";
+
+  const isSubmitDisabled =
+    isEmpty(state.addPlantName) ||
+    isEmpty(state.addVendorName) ||
+    isEmpty(state.totalPrice.toString()) ||
+    isEmpty(state.totalQuantity.toString()) ||
+    isEmpty(state.description) ||
+    isEmpty(state.expectedDeliveryDate);
+
+  const isSubmitDisabledWithInHouse =
+    isEmpty(state.addPlantName) ||
+    isEmpty(state.addVendorName) ||
+    isEmpty(state.totalQuantity.toString()) ||
+    isEmpty(state.description);
+
+  useEffect(() => {
+    if (isInhouseOrder)
+      setState((prev) => ({
+        ...prev,
+        expectedDeliveryDate: dayjs().format("YYYY-MM-DD"),
+      }));
+  }, [isInhouseOrder]);
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -277,6 +310,7 @@ export const PlaceOrder = () => {
             title="Vendor Name"
             onChange={dropDownChangeHandler}
             value={state.addVendorName}
+            disabled={isInhouseOrder}
             canCreate
             required
           />
@@ -328,7 +362,10 @@ export const PlaceOrder = () => {
                     toast.error("Total Price shouldn't be negative number");
                   }
                 }}
-                required
+                disabled={isInhouseOrder}
+                {...(isInhouseOrder
+                  ? { required: !isInhouseOrder }
+                  : { required: true })}
               />
             </div>
           </div>
@@ -338,6 +375,7 @@ export const PlaceOrder = () => {
                 value={state.currentPaidAmount}
                 id="currentPaidAmount"
                 type="number"
+                disabled={isInhouseOrder}
                 onChange={(e) => {
                   if (e.target.value > state.totalPrice) {
                     toast.error("Adavnce should not be more than total price");
@@ -346,7 +384,10 @@ export const PlaceOrder = () => {
                     0,
                     Math.min(state.totalPrice, Number(e.target.value))
                   );
-                  setState((prev) => ({ ...prev, currentPaidAmount:  parseInt(value, 10) }));
+                  setState((prev) => ({
+                    ...prev,
+                    currentPaidAmount: parseInt(value, 10),
+                  }));
                 }}
                 title="Advance Paid"
                 max={state.totalPrice}
@@ -355,7 +396,9 @@ export const PlaceOrder = () => {
                     toast.error("Total Price shouldn't be negative number");
                   }
                 }}
-                required
+                {...(isInhouseOrder
+                  ? { required: !isInhouseOrder }
+                  : { required: true })}
               />
             </div>
             <div className={styles.secondinputdiv}>
@@ -366,7 +409,10 @@ export const PlaceOrder = () => {
                 onChange={inputChangeHandler}
                 title="Expected Delivery Date"
                 min={dayjs().format("YYYY-MM-DD")}
-                required
+                disabled={isInhouseOrder}
+                {...(isInhouseOrder
+                  ? { required: !isInhouseOrder }
+                  : { required: true })}
               />
             </div>
           </div>
@@ -384,12 +430,7 @@ export const PlaceOrder = () => {
               onClick={onSubmitHandler}
               loading={isOrderLoading}
               disabled={
-                isEmpty(state.addPlantName) ||
-                isEmpty(state.addVendorName) ||
-                isEmpty(state.totalPrice.toString()) ||
-                isEmpty(state.totalQuantity.toString()) ||
-                isEmpty(state.description) ||
-                isEmpty(state.expectedDeliveryDate)
+                isInhouseOrder ? isSubmitDisabledWithInHouse : isSubmitDisabled
               }
               type="primary"
               title="Save"
