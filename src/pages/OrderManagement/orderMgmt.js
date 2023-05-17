@@ -35,18 +35,18 @@ import {
     ROLE_TABLE_HEADER,
 } from "./helper";
 import { get } from "lodash";
-import TextArea from "../../components/TextArea";
 import { Textarea } from "@mantine/core";
 import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
+import DropZone from "../../components/Dropzone/Dropzone";
 const OrderMgmt = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [data, setData] = useState([]);
     const [user] = useContext(AuthContext);
     const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
-    const [plantImage, setPlantImage] = useState(null);
+    const [plantImages, setPlantImages] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [ordersCount, setOrdersCount] = useState(0);
     const [search, setSearch] = useState("")
@@ -66,7 +66,7 @@ const OrderMgmt = () => {
         id: null,
         data: null,
     });
-    const [filters, setFilters] = useState({status:[], vendors:[], startData:'', endData:''})
+    const [filters, setFilters] = useState({ status: [], vendors: [], startData: '', endData: '' })
 
     const [RejectOrder, { isLoading: isRejectLoading }] =
         useRejectOrderMutation();
@@ -88,7 +88,7 @@ const OrderMgmt = () => {
                 navigate(
                     `./place-order?id=${id}&orderId=${orderId}&requestedQuantity=${data?.requestedQuantity || 0
                     }`
-                ,{state:{label:data?.vendorName, vendorContact: data.vendorContact, value: data.vendorId}});
+                    , { state: { label: data?.vendorName, vendorContact: data.vendorContact, value: data.vendorId } });
             },
             verify: () => {
                 setVerifyOrder({ isActive: true, id, data, quantity: 0 });
@@ -167,22 +167,47 @@ const OrderMgmt = () => {
 
     const handleFilterChange = async (filters) => {
         const formattedFilter = formatFilter(filters)
-        
+
         setFilters(filters)
-        const res = await getOrders({ body: { search: search, ...formattedFilter, sortBy: sort.sortBy,
-            sortType: sort.sortType,} });
-          const counts = await getOrders({
-            body: { search: search, isCount: true, ...formattedFilter},
-          });
-          setOrdersCount(get(counts, "data[0].count", 0));
-          const list = formatOrdersData({
+        const res = await getOrders({
+            body: {
+                search: search, ...formattedFilter, sortBy: sort.sortBy,
+                sortType: sort.sortType,
+            }
+        });
+        const counts = await getOrders({
+            body: { search: search, isCount: true, ...formattedFilter },
+        });
+        setOrdersCount(get(counts, "data[0].count", 0));
+        const list = formatOrdersData({
             data: res.data,
             role: user.role,
             onAction,
-          });
-          setData(list);
+        });
+        setData(list);
     }
-    // console.log(sort);
+
+    const handlePlantimageSelect = (file) => {
+        setPlantImages((prev) => {
+          let updated = [...prev, ...file];
+    
+          const uniqueArr = Array.from(new Set(updated.map((a) => a.path))).map(
+            (path) => {
+              return updated.find((a) => a.path === path);
+            }
+          );
+          return uniqueArr
+          
+        });
+      };
+
+      const handlePlantImageRemove = (index) => {
+        setPlantImages((prev) => {
+          let updated = [...prev];
+          updated.splice(index, 1);
+          return  updated
+        });
+      };  
 
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
@@ -313,15 +338,18 @@ const OrderMgmt = () => {
                             id: null,
                             quantity: 0,
                         });
-                        setPlantImage(null);
+                        setPlantImages([]);
                     }}
                     handleConfirm={async () => {
-                        if (!plantImage) return toast.error("Select Plant Image");
+                        if (plantImages.length === 0) return toast.error("Select Plant Image");
                         if (verifyOrder.quantity <= 0)
                             return toast.error("Quantity cannot be less than one.");
 
                         const data = new FormData();
-                        data.append("images", plantImage);
+                        plantImages.forEach((img) => {
+                            data.append("images", img);
+                        });
+
                         data.append(
                             "body",
                             JSON.stringify({
@@ -338,7 +366,7 @@ const OrderMgmt = () => {
                             id: null,
                             quantity: 0,
                         });
-                        setPlantImage(null);
+                        setPlantImages([]);
 
                         loadInitialOrders(1, sort);
                     }}
@@ -349,58 +377,43 @@ const OrderMgmt = () => {
                             textAlign: "start",
                         }}
                     >
-                        {plantImage ? (
-                            <div>
-                                <p style={{ fontSize: "18px" }}>Image Selected</p>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                        border: "2px dashed black",
-                                        borderRadius: "7px",
-                                        padding: "10px",
-                                        margin: 0,
-                                    }}
-                                >
-                                    <span>{plantImage.name}</span>
-
-                                    <AiOutlineClose onClick={() => setPlantImage(null)} />
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <p
-                                    style={{
-                                        fontSize: "18px",
-                                        lineHeight: "35px",
-                                        margin: 0,
-                                    }}
-                                >
-                                    Plant Image{" "}
-                                    <span
+                        {plantImages.map((image, index) => {
+                            return (
+                                <div key={index}>
+                                    <div
                                         style={{
-                                            color: "red",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            border: "2px dashed black",
+                                            borderRadius: "7px",
+                                            padding: "10px",
+                                            margin: 0,
                                         }}
                                     >
-                                        *
-                                    </span>
-                                </p>
-                                <Dropzone
-                                    onDrop={(files) => {
-                                        console.log(files);
-                                        setPlantImage(files[0]);
-                                    }}
-                                    onReject={(files) =>
-                                        toast.error(files[0].errors[0].code.replaceAll("-", " "))
-                                    }
-                                    maxSize={3 * 1024 ** 2}
-                                    maxFiles="1"
-                                    multiple={false}
-                                    accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
-                                    maxFileSize="5"
-                                />
-                            </>
+                                        <span>{image.name}</span>
+
+                                        <AiOutlineClose
+                                            onClick={() => handlePlantImageRemove(index)}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        {plantImages.length < 3 && (
+                            <DropZone
+                                onDrop={(files) => {
+                                    handlePlantimageSelect(files);
+                                }}
+                                onReject={(files) => {
+                                    toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                                }}
+                                maxSize={3 * 1024 ** 2}
+                                maxFiles="3"
+                                multiple={true}
+                                accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+                                maxFileSize="5"
+                            />
                         )}
                     </div>
 

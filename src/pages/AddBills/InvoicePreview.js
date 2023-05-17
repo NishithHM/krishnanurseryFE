@@ -132,16 +132,6 @@ export const InvoiceSection = (props) => {
             <br></br>
             Shivmogga 577452
           </div>
-
-          <div className={styles.lableValueDetails}>
-            <div className={styles.label}>PAN NO:</div>
-            <div className={styles.value}>GBKPS2231C</div>
-          </div>
-
-          <div className={styles.lableValueDetails}>
-            <div className={styles.label}>GST NO:</div>
-            <div className={styles.value}>08GBKPS2231C2ZP</div>
-          </div>
         </div>
 
         <div className={styles.clientDetails}>
