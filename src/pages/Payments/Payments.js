@@ -52,6 +52,9 @@ const Payments = () => {
       const amount = {
         value: item.amount,
       };
+      const invoiceId = {
+        value: item.invoiceId || '---',
+      };
       const action = {
         value:
           item.invoiceId && item.type === "BROKER" ? (
@@ -70,7 +73,7 @@ const Payments = () => {
           ),
       };
 
-      const data = [name, createdAt, amount, action];
+      const data = [name, createdAt, amount,invoiceId, action, ];
       return data;
     });
 
@@ -122,6 +125,10 @@ const Payments = () => {
       isSortable: false,
     },
     {
+        value: "Invoice Id",
+        isSortable: false,
+      },
+    {
       value: "Action",
       isSortable: false,
     },
@@ -132,7 +139,7 @@ const Payments = () => {
   const PAYMENT_TYPES = [
     { value: "BROKER", label: "Brokerage" },
     { value: "SALARY", label: "Salaries" },
-    { values: "OTHERS", label: "Others" },
+    { value: "OTHERS", label: "Others" },
   ];
 
   let filtered_payment_types = [];
@@ -166,9 +173,13 @@ const Payments = () => {
         type: data.type.value,
         amount: data.amount,
         invoiceId: data.invoiceId,
-        brokerName: data.broker.value,
+        brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
+        brokerId: data.broker.value
       };
+      if(data?.broker?.__isNew__){
+        delete res.brokerId
+      }
       const resp = await mutate(res);
       if (resp["error"] !== undefined) {
         return toast.error(resp.error.data.message);
@@ -291,7 +302,7 @@ const Payments = () => {
             value={newPayment.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
-
+            {console.log(newPayment)}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
@@ -368,7 +379,7 @@ const Payments = () => {
                   setNewPayment((prev) => ({ ...prev, name: e.target.value }))
                 }
               />
-              {newPayment.type.value === "SALARY" && (
+              {newPayment.type.value === "OTHERS" && (
                 <Input
                   required
                   title="Bill Number"

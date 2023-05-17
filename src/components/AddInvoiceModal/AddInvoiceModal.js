@@ -211,7 +211,7 @@ const AddInvoiceModal = ({
                     totalToPay: parseInt(e.target.value),
                   }))
                 }
-                title="Total Amount to be paid"
+                title="Amount paid to vendor"
                 required
               />
             </div>
