@@ -13,14 +13,18 @@ import styles from "./AddProcurement.module.css";
 import {
   useGetProcurementMutation,
   usePlaceOrderMutation,
+  useGetOrderIdMutation
 } from "../../services/procurement.services";
 import _ from "lodash";
 import { isEmpty } from "lodash";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
-import { useGetAllCategoriesQuery } from "../../services/categories.services";
+import { useGetAllCategoriesQuery} from "../../services/categories.services";
 import dayjs from "dayjs";
+
+/* /api/procurements/vendor-orders/:id GET --> [1235353, 345345455, 34534354]  ---> [{label:1235353, value: 1235353}]
+*/
 
 export const PlaceOrder = () => {
   const initialState = {
@@ -40,6 +44,8 @@ export const PlaceOrder = () => {
     isNameInKannada: false,
     addProcurementError: [],
     submitDisabled: false,
+    orderId: {},
+    orderDropdownValues: []
   };
 
   const navigate = useNavigate();
@@ -53,6 +59,7 @@ export const PlaceOrder = () => {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
+  const [getOrderId] = useGetOrderIdMutation()
 
   const [PlaceOrder, { isLoading: isOrderLoading }] = usePlaceOrderMutation();
 
@@ -149,6 +156,25 @@ export const PlaceOrder = () => {
             )} `,
       disabledVendorContact: state.addVendorName?.__isNew__ ? false : true,
     }));
+    getOrderId({id:state.addVendorName?.value})
+    .then((res) => {
+      if(state.addVendorName?.value){
+      const data = res?.data;
+      const orderMap = data.map((ele)=>{
+        return {
+          label: ele,
+          value: ele
+        }
+      })
+      setState((prev) => ({
+        ...prev,
+        orderDropdownValues: orderMap,
+      }))} else{
+        return {}
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
   }, [state.addVendorName?.value]);
 
   const onError = (error) => {
@@ -170,6 +196,7 @@ export const PlaceOrder = () => {
       categories: state.addPlantCategory,
       expectedDeliveryDate: state.expectedDeliveryDate,
       currentPaidAmount: state.currentPaidAmount,
+      orderId: state.orderId?.value
     };
 
     if (search.get("orderId")) {
@@ -338,6 +365,15 @@ export const PlaceOrder = () => {
               disabled={true}
             />
           )}
+          <Dropdown
+      
+            id="orderId"
+            data={state.orderDropdownValues}
+            title="Select Order Id"
+            onChange={dropDownChangeHandler}
+            value={state.orderId}
+            required
+          />
           <div className={styles.inputWrapper}>
             <div className={styles.inputdiv}>
               <Input

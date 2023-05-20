@@ -62,7 +62,7 @@ export const categoriesApi = createApi({
           body,
         }),
         invalidatesTags: ["categories"],
-      }),
+      })
     };
   },
 });
@@ -70,5 +70,5 @@ export const categoriesApi = createApi({
 export const {
   useGetAllCategoriesQuery,
   useDeleteCategoriesMutation,
-  useCreateCategoriesMutation,
+  useCreateCategoriesMutation
 } = categoriesApi;
