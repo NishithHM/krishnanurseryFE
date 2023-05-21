@@ -20,21 +20,22 @@ const AddInvoiceModal = ({
   console.log(addInvoice);
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
-  const data ={
-   items: [{
-      name: 'Rose',
-      quantity: 100,
-      totalPrice: 2000
-    },
-    {
-      name: 'Lotus',
-      quantity: 200,
-      totalPrice: 6000
-    }],
+  const data = {
+    items: [
+      {
+        name: "Rose",
+        quantity: 100,
+        totalPrice: 2000,
+      },
+      {
+        name: "Lotus",
+        quantity: 200,
+        totalPrice: 6000,
+      },
+    ],
     totalAmount: 4000,
-    totalAdvance: 1000
-  }
-  
+    totalAdvance: 1000,
+  };
 
   const [getVendor] = useGetVendorMutation();
 
@@ -45,6 +46,7 @@ const AddInvoiceModal = ({
     deviation: 0,
     invoiceTotal: 0,
     totalToPay: 0,
+    orderVal: data,
   });
 
   const totalAmount = addInvoice.data.totalPrice;
@@ -67,7 +69,7 @@ const AddInvoiceModal = ({
       totalAmount: totalAmount,
       advanceAmount: currentPaidAmount,
       deviation: deviationAmount,
-      invoiceAmount: totalAmount
+      invoiceAmount: totalAmount,
     }));
   }, []);
 
@@ -210,7 +212,7 @@ const AddInvoiceModal = ({
                   setState((prev) => ({
                     ...prev,
                     invoiceAmount: parseInt(e.target.value, 10),
-                    totalAmount: parseInt(e.target.value, 10)
+                    totalAmount: parseInt(e.target.value, 10),
                   }))
                 }
                 title="Amount In Invoice"
@@ -250,13 +252,23 @@ const AddInvoiceModal = ({
               }}
             >
               <div className={styles.invoiceItem}>
-                <span>Total Amount : </span>
-                <span>{state.totalAmount}</span>
+                {state.orderVal.items.map((ele) => {
+                  return (
+                    <>
+                      <span>{`${ele.name} x ${ele.quantity}`}</span>
+                      <span>{ele.totalPrice}</span>
+                    </>
+                  );
+                })}
+              </div>
+              <div className={styles.invoiceItem}>
+                <span>Total Amount</span>
+                <span>{state.orderVal.totalAmount}</span>
               </div>
 
               <div className={styles.invoiceItem}>
                 <span>Advance Paid : </span>
-                <span>{state.advanceAmount}</span>
+                <span>{state.orderVal.totalAdvance}</span>
               </div>
 
               <div className={styles.invoiceItem}>
@@ -274,21 +286,21 @@ const AddInvoiceModal = ({
             </div>
 
             <div>
-              {(state.invoiceTotal - state.totalToPay) > 0 && (
+              {state.invoiceTotal - state.totalToPay > 0 && (
                 <span>
                   <span style={{ color: "#ea8c10" }}>You Borrowed</span>{" "}
-                  {Math.abs(state.invoiceTotal - state.totalToPay )}₹ in this
+                  {Math.abs(state.invoiceTotal - state.totalToPay)}₹ in this
                   transaction!
                 </span>
               )}
-              {(state.invoiceTotal - state.totalToPay) < 0 && (
-                  <span>
-                    {" "}
-                    <span style={{ color: "red" }}>You Lent </span>
-                    {Math.abs(state.invoiceTotal - state.totalToPay )}₹ in this
-                    transaction!
-                  </span>
-                )}
+              {state.invoiceTotal - state.totalToPay < 0 && (
+                <span>
+                  {" "}
+                  <span style={{ color: "red" }}>You Lent </span>
+                  {Math.abs(state.invoiceTotal - state.totalToPay)}₹ in this
+                  transaction!
+                </span>
+              )}
             </div>
           </div>
         </div>
