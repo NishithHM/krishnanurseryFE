@@ -139,7 +139,6 @@ export const PlaceOrder = () => {
   }, [state.addPlantName?.value]);
 
   useEffect(() => {
-    console.log(state);
     setState((prev) => ({
       ...prev,
       addVendorContact: state.addVendorName?.meta?.contact,
@@ -160,9 +159,10 @@ export const PlaceOrder = () => {
     .then((res) => {
       if(state.addVendorName?.value){
       const data = res?.data;
-      const orderMap = data.map((ele)=>{
+      const orderMap = data.map((ele, index)=>{
+        const isLast = index === data.length -1 ? '(new)' : ''
         return {
-          label: ele,
+          label: `${ele} ${isLast}`,
           value: ele
         }
       })
