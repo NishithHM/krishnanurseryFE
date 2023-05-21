@@ -210,6 +210,12 @@ export const procurementsApi = createApi({
           url:`/vendor-orders/${id}`,
           method:'GET'
         })
+      }),
+      getInvoice:builder.mutation({
+        query:({id})=>({
+          url: `/order/${id}`,
+          method:'GET'
+        })
       })
     };
   },
@@ -234,6 +240,7 @@ export const {
   useVerifyOrderMutation,
   useAddOrderInvoiceMutation,
   useReportMaintainenceMutation,
-  useGetOrderIdMutation
+  useGetOrderIdMutation,
+  useGetInvoiceMutation
   //   useGetAllMinimumProcurementsMutation
 } = procurementsApi;

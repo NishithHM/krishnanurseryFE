@@ -7,6 +7,7 @@ import Modal from "../Modal";
 import Input from "../Input";
 import styles from "./AddInvoiceModal.module.css";
 import { useGetVendorMutation } from "../../services/common.services";
+import {useGetInvoiceMutation} from "../../services/procurement.services";
 
 const AddInvoiceModal = ({
   addInvoice,
@@ -16,47 +17,39 @@ const AddInvoiceModal = ({
   loadInitialOrders,
   sort,
   toast,
+  orderId
 }) => {
   console.log(addInvoice);
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
-  const data = {
-    items: [
-      {
-        name: "Rose",
-        quantity: 100,
-        totalPrice: 2000,
-      },
-      {
-        name: "Lotus",
-        quantity: 200,
-        totalPrice: 6000,
-      },
-    ],
-    totalAmount: 4000,
-    totalAdvance: 1000,
-  };
 
   const [getVendor] = useGetVendorMutation();
+  const [getInvoice] = useGetInvoiceMutation();
 
   const [state, setState] = useState({
-    totalAmount: 0,
     invoiceAmount: 0,
     advanceAmount: 0,
     deviation: 0,
     invoiceTotal: 0,
     totalToPay: 0,
-    orderVal: data,
+    orderVal: {
+      items:[],
+      totalAmount:0,
+      advanceAmount:0
+    },
   });
-
-  const totalAmount = addInvoice.data.totalPrice;
-  const currentPaidAmount = addInvoice.data.currentPaidAmount;
-  const deviationAmount = 0;
 
   useEffect(() => {
     async function get(id) {
       const res = await getVendor({ id });
-      setState((prev) => ({ ...prev, deviation: res.data.deviation }));
+      const invoiceRes = await getInvoice({id:orderId});
+      console.log(invoiceRes, 'invoice')
+      setState((prev) => ({ ...prev, 
+        deviation: res.data.deviation,
+        orderVal: invoiceRes?.data, 
+        invoiceAmount : invoiceRes?.data?.totalAmount,
+        advanceAmount: invoiceRes?.data?.advanceAmount
+      }));
     }
 
     get(addInvoice.data.vendorId);
@@ -66,20 +59,10 @@ const AddInvoiceModal = ({
   useEffect(() => {
     setState((prev) => ({
       ...prev,
-      totalAmount: totalAmount,
-      advanceAmount: currentPaidAmount,
-      deviation: deviationAmount,
-      invoiceAmount: totalAmount,
+      invoiceTotal: state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
+      totalToPay: state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
     }));
-  }, []);
-
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      invoiceTotal: state.totalAmount - state.advanceAmount + state.deviation,
-      totalToPay: state.totalAmount - state.advanceAmount + state.deviation,
-    }));
-  }, [state.totalAmount, state.deviation, state.advanceAmount]);
+  }, [state?.orderVal?.totalAmount, state.deviation, state.advanceAmount]);
 
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
@@ -117,7 +100,7 @@ const AddInvoiceModal = ({
           );
 
           const res = await AddOrderInvoice({
-            id: addInvoice.id,
+            id: addInvoice?.data?.orderId,
             body: data,
           });
           toast.success("Invoice Updated!");
@@ -205,7 +188,7 @@ const AddInvoiceModal = ({
               }}
             >
               <Input
-                value={state.invoiceAmount}
+                value={state.orderVal?.totalAmount}
                 id="invoiceAmount"
                 type="number"
                 onChange={(e) =>
@@ -251,16 +234,15 @@ const AddInvoiceModal = ({
                 marginTop: "3rem",
               }}
             >
-              <div className={styles.invoiceItem}>
-                {state.orderVal.items.map((ele) => {
+               {state.orderVal?.items.map((ele) => {
                   return (
-                    <>
-                      <span>{`${ele.name} x ${ele.quantity}`}</span>
-                      <span>{ele.totalPrice}</span>
-                    </>
+                    <div className={styles.invoiceItem}>
+                       <span>{`${ele?.names?.en?.name} x ${ele?.orderedQuantity}`}</span>
+                      <span>{ele?.totalPrice}</span>
+                    </div>
                   );
                 })}
-              </div>
+              
               <div className={styles.invoiceItem}>
                 <span>Total Amount</span>
                 <span>{state.orderVal.totalAmount}</span>
@@ -268,7 +250,7 @@ const AddInvoiceModal = ({
 
               <div className={styles.invoiceItem}>
                 <span>Advance Paid : </span>
-                <span>{state.orderVal.totalAdvance}</span>
+                <span>{state.orderVal?.advanceAmount}</span>
               </div>
 
               <div className={styles.invoiceItem}>

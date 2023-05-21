@@ -66,6 +66,7 @@ const OrderMgmt = () => {
         id: null,
         data: null,
     });
+    console.log(addInvoice,'in')
     const [filters, setFilters] = useState({ status: [], vendors: [], startData: '', endData: '' })
 
     const [RejectOrder, { isLoading: isRejectLoading }] =
@@ -445,6 +446,7 @@ const OrderMgmt = () => {
                     loadInitialOrders={loadInitialOrders}
                     sort={sort}
                     toast={toast}
+                    orderId={addInvoice?.data?.orderId}
                 />
             )}
         </>
