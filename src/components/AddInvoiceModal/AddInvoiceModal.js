@@ -20,6 +20,22 @@ const AddInvoiceModal = ({
   console.log(addInvoice);
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
+  const data ={
+   items: [{
+      name: 'Rose',
+      quantity: 100,
+      totalPrice: 2000
+    },
+    {
+      name: 'Lotus',
+      quantity: 200,
+      totalPrice: 6000
+    }],
+    totalAmount: 4000,
+    totalAdvance: 1000
+  }
+  
+
   const [getVendor] = useGetVendorMutation();
 
   const [state, setState] = useState({
