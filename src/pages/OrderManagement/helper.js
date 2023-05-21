@@ -42,6 +42,9 @@ export const ROLE_TABLE_HEADER = {
             value: "Sales Desc",
         },
         {
+            value: "Order Id",
+        },
+        {
             value: "Quantities",
         },
         {
@@ -82,6 +85,9 @@ export const ROLE_TABLE_HEADER = {
         },
         {
             value: "Sales Desc",
+        },
+        {
+            value: "Order Id",
         },
         {
             value: "Quantities",
@@ -141,6 +147,7 @@ const roleRows = {
         { value: "currentPaidAmount" },
         { value: "requestedBy.name" },
         { value: "descriptionSales" },
+        { value: "orderId" },
         { value: "quantities" },
         { value: "placedBy.name" },
         { value: "expectedDeliveryDate" },
@@ -155,6 +162,7 @@ const roleRows = {
         { value: "totalPrice" },
         { value: "currentPaidAmount" },
         { value: "descriptionSales" },
+        { value: "orderId" },
         { value: "quantities" },
         { value: "placedBy.name" },
         { value: "expectedDeliveryDate" },
