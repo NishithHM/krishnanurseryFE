@@ -138,7 +138,6 @@ export default function AddBills() {
       }));
       return;
     }
-    console.log(customerDetails);
     if (customerDetails.data) {
       let billingData = [];
 
@@ -165,7 +164,6 @@ export default function AddBills() {
       if (customerCart.data) {
         let cartRows = [];
         customerCart.data.items.forEach((item) => {
-          console.log(item);
           cartRows.push({
             id: new Date().toISOString() + Math.random(),
             procurementId: item.procurementId,
@@ -218,7 +216,6 @@ export default function AddBills() {
         checkOutDone: false,
         cartResponse: {},
       }));
-      console.log(customerDetails.data);
     } else {
       setTableRowData([tableRowBlank]);
       setState((prev) => ({
@@ -249,8 +246,6 @@ export default function AddBills() {
       ...prev,
       checkOutDone: false,
     }));
-
-    console.log(value);
     if (name === "procurementId") {
       tableRowClone.procurementId = value.value;
       tableRowClone.procurementLabel = `${value.meta.names.en.name} (${value.meta.names.ka.name})`;
@@ -392,8 +387,6 @@ export default function AddBills() {
     }
 
     if (checkout.data) {
-      console.log(checkout.data);
-      console.log(state);
 
       if (!state.customerDetails.name) {
         setState((prev) => ({

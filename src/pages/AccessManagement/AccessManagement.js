@@ -51,7 +51,6 @@ const AccessManagement = () => {
   };
 
   const formatUsersData = (data) => {
-    console.log(data);
     const formatted = data.map((user) => {
       const name = { value: user.name };
       const createdAt = { value: dayjs(user.createdAt).format("DD-MM-YYYY") };
@@ -85,10 +84,8 @@ const AccessManagement = () => {
   };
 
   const searchHandler = debounce(async (query) => {
-    console.log("search triggered", query);
     if (query.length >= 3) {
       const res = await searchUser(query);
-      console.log(res);
       const users = formatUsersData(res.data.users);
       setData(users);
     }
@@ -110,7 +107,6 @@ const AccessManagement = () => {
     setData(users);
   }, [usersData, searchInput]);
 
-  console.log(usersData);
   const TABLE_HEADER = [
     {
       // id: new Date().toISOString(),

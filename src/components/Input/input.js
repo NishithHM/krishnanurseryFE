@@ -74,6 +74,7 @@ const Input = (props) => {
           max={max}
           onInput={onInput}
           {...options}
+          autoComplete="off"
         />
         {type === "password" && (
           <i className={styles.passwordIcon} onClick={showPasswordHandler}>

@@ -56,7 +56,6 @@ export const InvoiceSection = (props) => {
     printEnabled,
     invoiceDetails,
   } = props;
-  console.log(invoiceDetails);
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 

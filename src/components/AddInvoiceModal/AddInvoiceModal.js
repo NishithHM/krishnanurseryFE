@@ -19,7 +19,6 @@ const AddInvoiceModal = ({
   toast,
   orderId
 }) => {
-  console.log(addInvoice);
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
 
@@ -43,7 +42,6 @@ const AddInvoiceModal = ({
     async function get(id) {
       const res = await getVendor({ id });
       const invoiceRes = await getInvoice({id:orderId});
-      console.log(invoiceRes, 'invoice')
       setState((prev) => ({ ...prev, 
         deviation: res.data.deviation,
         orderVal: invoiceRes?.data, 
@@ -139,9 +137,11 @@ const AddInvoiceModal = ({
                     margin: 0,
                   }}
                 >
+                  <div className={styles.fileNameStyle}>
                   <span>{orderInvoiceFile.name}</span>
 
-                  <AiOutlineClose onClick={() => setOrderInvoiceFile(null)} />
+                  <AiOutlineClose className={styles.closeIcon} onClick={() => setOrderInvoiceFile(null)} />
+                  </div>
                 </div>
               </div>
             ) : (
@@ -164,7 +164,6 @@ const AddInvoiceModal = ({
                 </p>
                 <DropZone
                   onDrop={(files) => {
-                    console.log(files);
                     setOrderInvoiceFile(files[0]);
                   }}
                   onReject={(files) =>
@@ -183,7 +182,6 @@ const AddInvoiceModal = ({
               style={{
                 marginTop: "40px",
                 display: "flex",
-                flexDirection: "column",
                 gap: "40px",
               }}
             >

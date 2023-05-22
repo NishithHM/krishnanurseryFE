@@ -26,7 +26,7 @@ const Header = () => {
             <img className={styles.logoHeader} src={logo} alt="Logo" />
           </div>
           <div className={styles.headertitle}>
-            <span className={styles.title}>Shree Krishna Farm & Nursery</span>
+            <span className={styles.title}>Shree Krishna Nursery</span>
           </div>
         </div>
         <div className={styles.logout}>

@@ -183,7 +183,6 @@ const AddProcurement = () => {
       plantImages.forEach((img) => {
         formdata.append("invoice", img);
       });
-      console.log(formdata);
       const res = await createProcurements({ body: formdata });
 
       if (res.error) {
@@ -219,7 +218,6 @@ const AddProcurement = () => {
       plantImages.forEach((img) => {
         formdata.append("invoice", img);
       });
-      console.log(formdata);
       const res = await updateProcurements({ body: formdata, id });
 
       if (res.error) {
@@ -419,7 +417,6 @@ const AddProcurement = () => {
             ) : (
               <Dropzone
                 onDrop={(files) => {
-                  console.log(files);
                   setInvoiceFile(files[0]);
                 }}
                 onReject={(files) =>
@@ -484,7 +481,6 @@ const AddProcurement = () => {
             {plantImages.length < 3 && (
               <Dropzone
                 onDrop={(files) => {
-                  // console.log(files);
                   handlePlantimageSelect(files);
                 }}
                 onReject={(files) => {

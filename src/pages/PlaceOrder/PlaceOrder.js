@@ -303,7 +303,7 @@ export const PlaceOrder = () => {
     <div className={styles.addProcurementPage}>
       <Toaster />
       <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
+        <BackButton navigateTo={"/authorised/dashboard/orders"} />
       </div>
 
       <div className={styles.outerWrapper}>
@@ -391,14 +391,14 @@ export const PlaceOrder = () => {
           />
           {state.orderDetails?.items?.length > 0 &&
           <div>
-            <span className={styles.orderLabel}>Order Details:</span>
+            <span className={styles.orderLabel}>Previous Order Details:</span>
             {state.orderDetails.items.map((ele, ind)=>{
               return(<div className={styles.orderItems}>
                 {`${ind+1}) ${ele?.names?.en?.name}    X   ${ele.orderedQuantity}   =   ${ele.totalPrice}`}   
               </div>)
             })}
-            <div className={styles.orderItems}>Total Advance amount (this order): {state.orderDetails.advanceAmount}</div>
-            <div className={styles.orderItems}>Total amount (this order): {state.orderDetails.totalAmount}</div>
+            <div className={styles.orderItems}>Total Advance amount: {state.orderDetails.advanceAmount}</div>
+            <div className={styles.orderItems}>Total amount: {state.orderDetails.totalAmount}</div>
           </div>}
           <div className={styles.inputWrapper}>
             <div className={styles.inputdiv}>

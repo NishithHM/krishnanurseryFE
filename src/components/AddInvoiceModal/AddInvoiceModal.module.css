@@ -3,4 +3,14 @@
   gap: 10px;
   justify-content: space-between;
   line-height: 30px;
+  font-weight: 600;
+}
+
+.fileNameStyle{
+  word-wrap: break-word;
+  width: 100%;
+}
+
+.closeIcon {
+  margin-left: 16px;
 }

@@ -83,7 +83,7 @@ const Login = () => {
         <img src={logo} alt="Logo" />
       </div>
       <div className={styles.logotitle}>
-        <span>Shree Krishna Farm & Nursery</span>
+        <span>Shree Krishna Nursery</span>
       </div>
       <div className={styles.inputlabel}>
         <div>

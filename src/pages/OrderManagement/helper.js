@@ -260,7 +260,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                 rowData.push(rejectOrder);
             } else if (
                 order.invoice === "" &&
-                ["PLACED", "VERIFIED"].includes(order.status)
+                ["PLACED", "VERIFIED"].includes(order.status) && order.vendorContact !== '9999999999'
             ) {
                 const AddInvoice = {
                     value: (

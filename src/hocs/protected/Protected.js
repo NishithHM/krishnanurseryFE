@@ -26,7 +26,6 @@ const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
   const [isAuthorised, setAuthorised] = useState(false);
   const navigate = useNavigate();
-  // console.log(context)
   useEffect(() => {
     if (!isEmpty(context)) {
       setAuthorised(true);
