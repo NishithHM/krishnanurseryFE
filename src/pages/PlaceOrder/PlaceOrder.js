@@ -22,6 +22,7 @@ import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery} from "../../services/categories.services";
 import dayjs from "dayjs";
+import { useGetInvoiceMutation } from "../../services/procurement.services";
 
 /* /api/procurements/vendor-orders/:id GET --> [1235353, 345345455, 34534354]  ---> [{label:1235353, value: 1235353}]
 */
@@ -45,7 +46,9 @@ export const PlaceOrder = () => {
     addProcurementError: [],
     submitDisabled: false,
     orderId: {},
-    orderDropdownValues: []
+    orderDropdownValues: [],
+    orderDetails: {},
+    disableExpectedDate: false
   };
 
   const navigate = useNavigate();
@@ -57,6 +60,7 @@ export const PlaceOrder = () => {
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [getInvoice] = useGetInvoiceMutation()
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
   const [getOrderId] = useGetOrderIdMutation()
@@ -255,7 +259,6 @@ export const PlaceOrder = () => {
     });
   }, [requestedQuantity]);
 
-  console.log(state);
 
   const isInhouseOrder =
     state.addVendorContact && state.addVendorContact === "9999999999";
@@ -281,6 +284,21 @@ export const PlaceOrder = () => {
         expectedDeliveryDate: dayjs().format("YYYY-MM-DD"),
       }));
   }, [isInhouseOrder]);
+
+  useEffect(()=>{
+    const getOrderDetails = async ()=>{
+      const {data} = await getInvoice({id:state.orderId?.value});
+      console.log(data)
+      setState((prev)=>({
+        ...prev,
+        orderDetails: data,
+        expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format('YYYY-MM-DD'),
+        disableExpectedDate: data?.expectedDeliveryDate ? true : false
+      }))
+
+    }
+    getOrderDetails()
+  }, [state.orderId?.value])
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -319,11 +337,8 @@ export const PlaceOrder = () => {
 
           <div>
             <Dropdown
-              // url="/api/category/getAll"
               id="addPlantCategory"
               title="Plant Category"
-              // onChange={dropDownChangeHandler}
-
               value={state.addPlantCategory}
               required
               isMultiEnabled
@@ -374,6 +389,17 @@ export const PlaceOrder = () => {
             value={state.orderId}
             required
           />
+          {state.orderDetails?.items?.length > 0 &&
+          <div>
+            <span className={styles.orderLabel}>Order Details:</span>
+            {state.orderDetails.items.map((ele, ind)=>{
+              return(<div className={styles.orderItems}>
+                {`${ind+1}) ${ele?.names?.en?.name}    X   ${ele.orderedQuantity}   =   ${ele.totalPrice}`}   
+              </div>)
+            })}
+            <div className={styles.orderItems}>Total Advance amount (this order): {state.orderDetails.advanceAmount}</div>
+            <div className={styles.orderItems}>Total amount (this order): {state.orderDetails.totalAmount}</div>
+          </div>}
           <div className={styles.inputWrapper}>
             <div className={styles.inputdiv}>
               <Input
@@ -445,7 +471,7 @@ export const PlaceOrder = () => {
                 onChange={inputChangeHandler}
                 title="Expected Delivery Date"
                 min={dayjs().format("YYYY-MM-DD")}
-                disabled={isInhouseOrder}
+                disabled={isInhouseOrder || state.disableExpectedDate}
                 {...(isInhouseOrder
                   ? { required: !isInhouseOrder }
                   : { required: true })}
