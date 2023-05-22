@@ -26,7 +26,6 @@ const AddInvoiceModal = ({
   const [getInvoice] = useGetInvoiceMutation();
 
   const [state, setState] = useState({
-    invoiceAmount: 0,
     advanceAmount: 0,
     deviation: 0,
     invoiceTotal: 0,
@@ -41,11 +40,11 @@ const AddInvoiceModal = ({
   useEffect(() => {
     async function get(id) {
       const res = await getVendor({ id });
-      const invoiceRes = await getInvoice({id:orderId});
+      const invoiceRes = await getInvoice({id:orderId, page:'orders'});
+      console.log(invoiceRes, 'invoice')
       setState((prev) => ({ ...prev, 
         deviation: res.data.deviation,
         orderVal: invoiceRes?.data, 
-        invoiceAmount : invoiceRes?.data?.totalAmount,
         advanceAmount: invoiceRes?.data?.advanceAmount
       }));
     }
@@ -61,6 +60,23 @@ const AddInvoiceModal = ({
       totalToPay: state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
     }));
   }, [state?.orderVal?.totalAmount, state.deviation, state.advanceAmount]);
+
+  const onItemChange=(e, id)=>{
+    const newOrderData = {...state.orderVal}
+    const mewItems = newOrderData.items.map(ele=> {
+      const newEle = {...ele}
+      if(ele._id === id){
+        newEle.totalPrice =  parseInt(e?.target?.value || 0, 10)
+      }
+      return newEle
+    })
+    newOrderData.items = mewItems
+    newOrderData.totalAmount = mewItems.reduce((acc, ele)=> acc+ele.totalPrice, 0)
+    setState(prev=>({
+      ...prev,
+      orderVal: newOrderData
+    }))
+  }
 
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
@@ -78,10 +94,6 @@ const AddInvoiceModal = ({
         handleConfirm={async () => {
           if (!orderInvoiceFile)
             return toast.error("Please Select Invoice File");
-          if (state.invoiceAmount <= 0)
-            return toast.error(
-              "Total amount to be paid should not be less than 0"
-            );
 
           if (state.totalToPay <= 0)
             return toast.error("Invoice Amount should not be less than 0");
@@ -90,7 +102,7 @@ const AddInvoiceModal = ({
           data.append(
             "body",
             JSON.stringify({
-              finalInvoiceAmount: state.invoiceAmount,
+              orderData:  state.orderVal,
               finalAmountPaid:
                 parseInt(state.totalToPay, 10) +
                 parseInt(state.advanceAmount, 10),
@@ -185,20 +197,6 @@ const AddInvoiceModal = ({
                 gap: "40px",
               }}
             >
-              <Input
-                value={state.orderVal?.totalAmount}
-                id="invoiceAmount"
-                type="number"
-                onChange={(e) =>
-                  setState((prev) => ({
-                    ...prev,
-                    invoiceAmount: parseInt(e.target.value, 10),
-                    totalAmount: parseInt(e.target.value, 10),
-                  }))
-                }
-                title="Amount In Invoice"
-                required
-              />
 
               <Input
                 value={state.totalToPay}
@@ -236,13 +234,15 @@ const AddInvoiceModal = ({
                   return (
                     <div className={styles.invoiceItem}>
                        <span>{`${ele?.names?.en?.name} x ${ele?.orderedQuantity}`}</span>
-                      <span>{ele?.totalPrice}</span>
+                       <div style={{width:'100px'}}>
+                      <Input type="number" onChange={e=> onItemChange(e, ele._id)} style={{width:'100px'}} value={ele?.totalPrice}/>
+                      </div>
                     </div>
                   );
                 })}
               
               <div className={styles.invoiceItem}>
-                <span>Total Amount</span>
+                <span>Total Amount (invoice)</span>
                 <span>{state.orderVal.totalAmount}</span>
               </div>
 
