@@ -212,8 +212,8 @@ export const procurementsApi = createApi({
         })
       }),
       getInvoice:builder.mutation({
-        query:({id})=>({
-          url: `/order/${id}`,
+        query:({id, page})=>({
+          url: `/order/${id}?page=${page}`,
           method:'GET'
         })
       })

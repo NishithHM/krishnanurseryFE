@@ -287,7 +287,7 @@ export const PlaceOrder = () => {
 
   useEffect(()=>{
     const getOrderDetails = async ()=>{
-      const {data} = await getInvoice({id:state.orderId?.value});
+      const {data} = await getInvoice({id:state.orderId?.value, page:'placeOrder'});
       console.log(data)
       setState((prev)=>({
         ...prev,
