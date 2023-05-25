@@ -36,9 +36,15 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build": "react-scripts build",
+    "start:local": "env-cmd -f ./.local.env npm run-script start",
+    "start:qa": "env-cmd -f ./.qa.env npm run-script start",
+    "start:prod": "env-cmd -f ./.prod.env npm run-script start",
+    "build:local": "env-cmd -f ./.local.env npm run-script build",
+    "build:qa": "env-cmd -f ./.qa.env npm run-script build",
+    "build:prod": "env-cmd -f ./.prod.env npm run-script build"
   },
   "eslintConfig": {
     "extends": [
