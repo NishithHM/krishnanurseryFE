@@ -35,14 +35,16 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:local": "env-cmd -f ./.local.env npm run-script start",
-    "start:qa": "env-cmd -f ./.qa.env npm run-script start",
-    "start:prod": "env-cmd -f ./.prod.env npm run-script start",
-    "build:local": "env-cmd -f ./.local.env npm run-script build",
-    "build:qa": "env-cmd -f ./.qa.env npm run-script build",
-    "build:prod": "env-cmd -f ./.prod.env npm run-script build"
+    "build": "react-scripts build",
+    "start:local": "env-cmd -f ./.local.env react-scripts start",
+    "start:qa": "env-cmd -f ./.qa.env react-scripts start",
+    "start:prod": "env-cmd -f ./.prod.env react-scripts start",
+    "build:local": "env-cmd -f ./.local.env react-scripts build",
+    "build:qa": "env-cmd -f ./.qa.env react-scripts build",
+    "build:prod": "env-cmd -f ./.prod.env react-scripts build"
   },
   "eslintConfig": {
     "extends": [

@@ -343,6 +343,7 @@ export const PlaceOrder = () => {
               required
               isMultiEnabled
               data={categoryList}
+              onChange={dropDownChangeHandler}
             />
           </div>
           <Dropdown
