@@ -1,5 +1,6 @@
 .wrapper {
   margin: 10px;
+  padding: 60px;
 }
 .innerWrapper {
   display: flex;
@@ -11,4 +12,9 @@
   border-radius: 10px;
   max-width: 520px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.formButton{
+  width: 20%;
+  margin-top: 16px;
 }
