@@ -25,8 +25,15 @@ export const customerApi = createApi({
           method: "GET"
         }),
       }),
+      getCustomerOnboarding:builder.mutation({
+        query:(body)=>({
+          url: `${process.env.REACT_APP_BASE_URL}/api/customer/create`,
+          method:'POST',
+          body
+        })
+      })
     };
   },
 });
 
-export const { useLazyGetCustomerByPhoneQuery } = customerApi;
+export const { useLazyGetCustomerByPhoneQuery, useGetCustomerOnboardingMutation } = customerApi;

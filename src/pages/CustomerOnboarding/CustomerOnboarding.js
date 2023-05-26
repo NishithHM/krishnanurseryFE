@@ -3,6 +3,10 @@ import { DatePicker } from "@mantine/dates";
 import { Button, Input, SelectPill } from "../../components";
 import styles from "./CustomerOnboarding.module.css";
 import { uniq } from "lodash";
+import { useGetAllCategoriesQuery } from "../../services/categories.services";
+import { useGetCustomerOnboardingMutation } from "../../services/customer.service";
+import { Toaster } from "../../components";
+import { toast } from "react-toastify";
 
 const CustomerOnboarding = () => {
   const defaultFormValues = {
@@ -14,15 +18,10 @@ const CustomerOnboarding = () => {
   };
   const [formState, setFormState] = useState(defaultFormValues);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const { data } = useGetAllCategoriesQuery({});
 
-  const categoryOptions = [
-    "item 1",
-    "item 2",
-    "this is item 3",
-    "this is item 4 ",
-    "item 5",
-    "item 006",
-  ];
+  const categoryOptions = data?.map((ele) => ele?.names?.en?.name);
+  const [customer] = useGetCustomerOnboardingMutation();
 
   const validForm =
     formState.name !== "" &&
@@ -35,7 +34,7 @@ const CustomerOnboarding = () => {
     setFormState((prev) => {
       return {
         ...prev,
-        dateOfBirth: event.value,
+        dateOfBirth: event,
       };
     });
   };
@@ -76,11 +75,33 @@ const CustomerOnboarding = () => {
     event.preventDefault();
     if (validForm) {
       setFormSubmitted(true);
-      console.log(formState);
+    }
+  };
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    const res = await customer({
+      name: formState.name,
+      phoneNumber: formState.phone,
+      dob: formState.dateOfBirth,
+      categoryList: formState.category.map((ele) => {
+        const { _id, names } = data.find((val) => val?.names?.en?.name === ele);
+        return {
+          id: _id,
+          categoryNameInEnglish: ele,
+          categoryNameInKannada: names?.ka?.name,
+        };
+      }),
+    });
+    if (res.error) {
+      toast.error(res?.error?.data.error);
+    } else {
+      toast.success("Thank You For Registering!!!");
     }
   };
   return (
     <div className={styles.wrapper}>
+      <Toaster />
       <form className={styles.innerWrapper} onSubmit={formSubmitHandler}>
         <Input
           title="Name"
@@ -88,8 +109,8 @@ const CustomerOnboarding = () => {
           required={true}
           value={formState.name}
           type="text"
-          errorMessage="Name Value Required"
-          validation={(name) => name.length > 2}
+          errorMessage="Name must contain only Alphabets"
+          validation={(name) => /[A-Za-z]/.test(name)}
           onChange={inputChangeHanlder}
           onError={inputErrorHandler}
         />
@@ -116,6 +137,7 @@ const CustomerOnboarding = () => {
             value={formState.date}
             onChange={dateChangeHandler}
             clearable={false}
+            maxDate={new Date()}
             styles={{
               label: {
                 fontSize: "18px",
@@ -161,6 +183,7 @@ const CustomerOnboarding = () => {
         </div>
         <div className={styles.formButton}>
           <Button
+            onClick={onSubmitHandler}
             type="primary"
             title="Save"
             buttonType="submit"
