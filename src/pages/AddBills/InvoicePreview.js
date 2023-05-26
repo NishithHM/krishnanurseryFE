@@ -126,11 +126,11 @@ export const InvoiceSection = (props) => {
         <div className={styles.companyDetails}>
           <div>Sold By</div>
           <div className={styles.addressDetails}>
-            <b>Noni Nursery</b>
+            <b>Shree Krishna Nursery</b>
             <br></br>
-            AirVilla, Airport Road
+            Santhekadur Post
             <br></br>
-            Shivmogga 577452
+            Shivmogga 577222
           </div>
         </div>
 

@@ -114,6 +114,7 @@ export const PlaceOrder = () => {
   };
 
   const dropDownChangeHandler = (event, id) => {
+    console.log(event)
     setState((prev) => {
       return {
         ...prev,
@@ -184,7 +185,7 @@ export const PlaceOrder = () => {
   const onError = (error) => {
     toast.error(error);
   };
-
+console.log(state.addPlantCategory)
   const onSubmitHandler = async () => {
     // console.log(state);
 
@@ -202,7 +203,7 @@ export const PlaceOrder = () => {
       currentPaidAmount: state.currentPaidAmount,
       orderId: state.orderId?.value
     };
-
+    console.log(body,'body')
     if (search.get("orderId")) {
       body.id = search.get("orderId");
     }
@@ -217,9 +218,7 @@ export const PlaceOrder = () => {
       _id: c.value,
     }));
     body.categories = categories;
-    // console.log(state);
 
-    console.log(body);
     const response = await PlaceOrder({ body });
     if (response["error"] !== undefined) {
       console.log(response);
@@ -299,6 +298,7 @@ export const PlaceOrder = () => {
     }
     getOrderDetails()
   }, [state.orderId?.value])
+  console.log(state.addPlantCategory)
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -343,6 +343,7 @@ export const PlaceOrder = () => {
               required
               isMultiEnabled
               data={categoryList}
+              onChange={dropDownChangeHandler}
             />
           </div>
           <Dropdown
@@ -381,7 +382,6 @@ export const PlaceOrder = () => {
             />
           )}
           <Dropdown
-      
             id="orderId"
             data={state.orderDropdownValues}
             title="Select Order Id"
