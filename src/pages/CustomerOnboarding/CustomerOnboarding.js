@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DatePicker } from "@mantine/dates";
-import { Button, Input, SelectPill } from "../../components";
+import { Button, Footer, Header, Input, SelectPill } from "../../components";
 import styles from "./CustomerOnboarding.module.css";
 import { uniq } from "lodash";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
@@ -100,6 +100,8 @@ const CustomerOnboarding = () => {
     }
   };
   return (
+    <>
+    <Header />
     <div className={styles.wrapper}>
       <Toaster />
       <form className={styles.innerWrapper} onSubmit={formSubmitHandler}>
@@ -128,6 +130,7 @@ const CustomerOnboarding = () => {
         />
         <div>
           <DatePicker
+            className={styles.dateText}
             placeholder="dd-mm-yyyy"
             label="Date Of Birth"
             inputFormat="DD/MM/YYYY"
@@ -161,20 +164,16 @@ const CustomerOnboarding = () => {
 
         <div>
           <p
-            style={{
-              fontSize: "18px",
-              lineHeight: 0,
-              fontWeight: 400,
-              fontFamily: "sans-serif",
-            }}
+          className={styles.categoryText}
           >
             Category <span style={{ color: "red" }}>*</span>
           </p>
-
+          <div className={styles.selectPill}>
           <SelectPill
             onChange={categoryChangeHandler}
             options={categoryOptions}
           />
+          </div>
           {formSubmitted && formState.category.length === 0 && (
             <p style={{ color: "red", lineHeight: 0 }}>
               Select atleast one category
@@ -192,6 +191,8 @@ const CustomerOnboarding = () => {
         </div>
       </form>
     </div>
+    <Footer />
+    </>
   );
 };
 
