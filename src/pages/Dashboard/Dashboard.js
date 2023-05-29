@@ -101,7 +101,14 @@ const Dashboard = () => {
       path: "agri-variants",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
       isDisabled: false,
-    }
+    },
+    {
+      title: "Add New Variants",
+      tile_img: salesImg,
+      path: "agri-add-variants",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+    },
   ];
 
   const getDashboardData = (role) => {
