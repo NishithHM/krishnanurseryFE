@@ -19,15 +19,18 @@ const AddNewVariants = () => {
       {
         optionName: "color",
         optionValues: ["red", "green", "yellow"],
+        optionOptions: ["red", "green", "yellow"],
         _id: "6471b7a7524d957e8cfc2535",
       },
       {
         optionName: "liters",
         optionValues: ["1", "2"],
+        optionOptions:["1", "2"],
         _id: "6471b7a7524d957e8cfc2536",
       },
     ],
   };
+  // this comes api
   const optionsType = ['color', 'liters', 'size']
 
   const [options, setOptions] = useState(jsonData.options)
@@ -47,12 +50,11 @@ const AddNewVariants = () => {
 
   const addNewOption =()=>{
     const newOptions = cloneDeep(options)
-    newOptions.push({optionName:null, optionValues:[]})
+    newOptions.push({optionName:null, optionValues:[], optionOptions: []})
     setOptions(newOptions)
   }
 
   const onTypeChange =({index, value, isNew, category})=>{
-    console.log(value)
     const newOption = cloneDeep(options[index])
     if(category === 'type'){
       newOption.optionName = value
@@ -66,6 +68,7 @@ const AddNewVariants = () => {
     if(category === 'options'){
       newOption.optionValues = [...value]
     }
+    newOption.optionOptions = ['big', 'medium', 'small']
     
     const newOptions = [
       ...options.slice(0, index),
@@ -94,7 +97,8 @@ const AddNewVariants = () => {
                     key={option.optionName}
                     type={option.optionName}
                     typeValues={option.optionValues}
-                    typeOptions={typeOptions}
+                    typeOptionsValues={typeOptions}
+                    typeOptionOptions={option.optionOptions}
                     onTypeChange={onTypeChange}
                     index={index}
                   />

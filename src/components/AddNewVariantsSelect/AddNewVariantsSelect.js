@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Dropdown from "../Dropdown";
 import { formatDropOptions } from "../../pages/AddNewVariants/helper";
-const AddNewVariantsSelect = ({ typeOptions, type, typeValues, onTypeChange, index }) => {
-  console.log(formatDropOptions(typeOptions))
+const AddNewVariantsSelect = ({ typeOptionsValues, type, typeValues, onTypeChange, index, typeOptionOptions }) => {
   return (
     <div
       style={{
@@ -15,7 +14,7 @@ const AddNewVariantsSelect = ({ typeOptions, type, typeValues, onTypeChange, ind
       <div style={{ flex: "1" }}>
         <Dropdown
           canCreate={true}
-          data={formatDropOptions(typeOptions)}
+          data={formatDropOptions(typeOptionsValues)}
           value={{label: type, value: type}}
           onChange={(e)=>onTypeChange({index, value: e.label, isNew:false, category:"type" })}
           onCreateOption={e=> onTypeChange({index, value: e, isNew:true, category:"type" })}
@@ -29,7 +28,7 @@ const AddNewVariantsSelect = ({ typeOptions, type, typeValues, onTypeChange, ind
           canCreate={true}
           onCreateOption={e=>onTypeChange({index, value: [...typeValues, e], isNew:true, category:"options" })}
           onChange={e=> onTypeChange({index, value: e?.map(ele=> ele.label), isNew:false, category:"options" })}
-          data={formatDropOptions(typeValues)}
+          data={formatDropOptions(typeOptionOptions)}
           value={formatDropOptions(typeValues)}
         />
       </div>
