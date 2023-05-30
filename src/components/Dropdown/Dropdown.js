@@ -35,6 +35,7 @@ const Dropdown = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selectedOption) => {
+    console.log(selectedOption)
     setSelectedOption(selectedOption);
     onChange(selectedOption, id);
   };

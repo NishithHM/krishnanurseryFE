@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Styles from "./AgriVariants.module.css";
 import {
   AddNewVariantsSelect,
@@ -7,12 +7,10 @@ import {
   Input,
 } from "../../components";
 import { Divider, Modal } from "@mantine/core";
+import { cloneDeep } from "lodash";
 
 const AddNewVariants = () => {
-  const [newVariantInput, setNewVariantInput] = useState({
-    opened: false,
-    value: "",
-  });
+  
   const jsonData = {
     _id: "64719ba09c45ffa439f34771",
     type: "pot",
@@ -30,20 +28,52 @@ const AddNewVariants = () => {
       },
     ],
   };
+  const optionsType = ['color', 'liters', 'size']
 
-  const [options, setOptions] = useState(jsonData.options);
+  const [options, setOptions] = useState(jsonData.options)
+  const [typeOptions, setTypeOptions] = useState(optionsType)
 
-  const addNewOption = (value) => {
-    setOptions((prev) => {
-      return [...prev, { optionName: value, optionValues: [] }];
-    });
-  };
+  useEffect(()=>{
+     const newtypeOptions = optionsType.filter(opt=> options.findIndex(ele=> ele.optionName === opt) ===-1)
+     console.log(newtypeOptions)
+     setTypeOptions(newtypeOptions)
+  }, [JSON.stringify(options), JSON.stringify(optionsType)])
 
-  const handleButtonClick = () => {
-    console.log({
-      ...options,
-    });
-  };
+  // comes from backend types api
+
+  const handleButtonClick =()=>{
+    console.log(options)
+  }
+
+  const addNewOption =()=>{
+    const newOptions = cloneDeep(options)
+    newOptions.push({optionName:null, optionValues:[]})
+    setOptions(newOptions)
+  }
+
+  const onTypeChange =({index, value, isNew, category})=>{
+    console.log(value)
+    const newOption = cloneDeep(options[index])
+    if(category === 'type'){
+      newOption.optionName = value
+      if(isNew){
+        newOption.optionValues = []
+      }else{
+        const newOptioValues = cloneDeep(options).find(ele=>ele.optionName===value)?.optionValues || cloneDeep(jsonData.options).find(ele=>ele.optionName===value)?.optionValues || []
+        newOption.optionValues = newOptioValues
+      }
+    }
+    if(category === 'options'){
+      newOption.optionValues = [...value]
+    }
+    
+    const newOptions = [
+      ...options.slice(0, index),
+      newOption,
+      ...options.slice(index+1)
+    ]
+    setOptions(newOptions)
+  }
 
   return (
     <>
@@ -55,47 +85,25 @@ const AddNewVariants = () => {
 
           <div>
             <Button
-              title="Add New"
-              onClick={() =>
-                setNewVariantInput((prev) => ({ ...prev, opened: true }))
-              }
+              title="Add"
+              onClick={addNewOption}
             />
-            {options.map((option) => {
+            {options.map((option, index) => {
               return (
-                <>
                   <AddNewVariantsSelect
                     key={option.optionName}
-                    options={options}
-                    setOptions={setOptions}
-                    preselectedOption={option.optionName}
+                    type={option.optionName}
+                    typeValues={option.optionValues}
+                    typeOptions={typeOptions}
+                    onTypeChange={onTypeChange}
+                    index={index}
                   />
-                </>
               );
             })}
           </div>
           <button onClick={handleButtonClick}>Log Data</button>
         </div>
       </div>
-      <Modal opened={newVariantInput.opened} title="Add New Option">
-        <Input
-          title="Add New"
-          value={newVariantInput.value}
-          onChange={(e) =>
-            setNewVariantInput((prev) => ({ ...prev, value: e.target.value }))
-          }
-        />
-
-        <Button
-          title="Add"
-          onClick={() => {
-            addNewOption(newVariantInput.value);
-            setNewVariantInput({
-              opened: false,
-              value: "",
-            });
-          }}
-        />
-      </Modal>
     </>
   );
 };
