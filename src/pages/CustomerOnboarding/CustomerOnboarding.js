@@ -143,7 +143,7 @@ const CustomerOnboarding = () => {
             maxDate={new Date()}
             styles={{
               label: {
-                fontSize: "20px",
+                fontSize: "18px",
                 marginBottom: "2px",
                 fontFamily: "Montserrat, sans-serif",
                 fontWeight: 600,
