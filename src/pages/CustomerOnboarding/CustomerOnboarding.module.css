@@ -1,5 +1,5 @@
 .wrapper {
-  margin: 10px;
+  margin: auto;
 }
 .innerWrapper {
   display: flex;
@@ -11,4 +11,36 @@
   border-radius: 10px;
   max-width: 520px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.formButton {
+  width: 20%;
+  margin-top: 16px;
+}
+.categoryText {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: "2px";
+  font-family: Montserrat, sans-serif;
+}
+
+.selectPill{
+  display: flex;
+  justify-content: left;
+}
+
+@media only screen and (min-width: 320px) and (max-device-width: 425px) {
+  .wrapper {
+    margin: auto;
+  }
+
+  .categoryText{
+    font-size: 16px;
+    margin-bottom: "2px";
+    font-family: Montserrat, sans-serif;
+  }
+
+  .formButton{
+    width: 40%;
+  }
 }
