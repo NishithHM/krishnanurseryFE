@@ -66,7 +66,6 @@ export default function AddBills() {
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
-  const [invoiceNumber, setInvoiceNumber] = useState();
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -417,7 +416,6 @@ export default function AddBills() {
   const handleSubmit = async () => {
     const payload = {
       roundOff: state.roundOff,
-      invoiceId: `${invoiceNumber}`,
     };
 
     const confirmCart = await submitCart({
@@ -720,7 +718,7 @@ export default function AddBills() {
             clientDetails={state.customerDetails}
             cartData={tableRowData}
             cartResponse={state.cartResponse}
-            invoiceNumber={invoiceNumber}
+            invoiceNumber={state.cartResponse?.invoiceId}
             printEnabled={printEnabled}
             roundOff={state.roundOff}
             data={state}
@@ -735,9 +733,8 @@ export default function AddBills() {
         clientDetails={state.customerDetails}
         cartData={tableRowData}
         cartResponse={state.cartResponse}
-        invoiceNumber={invoiceNumber}
+        invoiceNumber={state.cartResponse?.invoiceId}
         roundOff={state.roundOff}
-        setInvoiceNumber={(num) => setInvoiceNumber(num)}
         handlePrintClick={handlePrint}
         billedBy={auth.name}
       >
