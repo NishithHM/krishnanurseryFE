@@ -27,9 +27,6 @@ const Header = () => {
           <div className={styles.logoclick}>
             <img className={styles.logoHeader} src={logo} alt="Logo" />
           </div>
-          <div className={styles.headertitle}>
-            <span className={styles.title}>Shree Krishna Nursery</span>
-          </div>
         </div>
         {location.pathname!=='/customer-onboarding' && <div className={styles.logout}>
           <img onClick={onLogoutHandler} src={logout} alt="Logout" />

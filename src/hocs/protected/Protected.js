@@ -17,7 +17,6 @@ import {
   WasteManagement,
   UnderMaintainence,
   Payments,
-  AgriVariants,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -105,11 +104,6 @@ const Protected = () => {
               element={<WasteList />}
             />
             <Route path="/dashboard/payments" exact element={<Payments />} />
-            <Route
-              path="/dashboard/agri-variants"
-              exact
-              element={<AgriVariants />}
-            />
           </Routes>
         </div>
         <Footer />
