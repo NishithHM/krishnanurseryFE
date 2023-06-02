@@ -17,7 +17,6 @@ import {
   WasteManagement,
   UnderMaintainence,
   Payments,
-  AgriVariants,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
