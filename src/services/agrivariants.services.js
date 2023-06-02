@@ -59,6 +59,13 @@ export const agriVariantsApi = createApi({
           };
         },
       }),
+      getAgriVariantById: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/variants/${id}`,
+          };
+        },
+      }),
     };
   },
 });
@@ -67,4 +74,5 @@ export const {
   useGetAgriVariantsQuery,
   useGetAgriOptionsQuery,
   useGetAgriOptionValuesMutation,
+  useGetAgriVariantByIdMutation
 } = agriVariantsApi;

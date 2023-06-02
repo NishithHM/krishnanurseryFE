@@ -49,6 +49,7 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                             onChange={dropDownChangeHandler}
                             value={filters.vendors}
                             isMultiEnabled
+                            minInputToFireApi={3}
                         />
                     }
                     {config.orderStatus && <Dropdown
