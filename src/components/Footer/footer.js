@@ -11,6 +11,7 @@ const Footer = () => {
             href="https://www.codentechnologies.com"
             target="_blank"
             rel="noreferrer"
+            style={{minWidth:'100px'}}
           >
             <img className={styles.image} height={24} src={SignWhiteBG} alt="coden-logo" />
           </a>

@@ -61,3 +61,12 @@
     padding-bottom: 10px;
   }
 }
+
+@media only screen and (min-width: 320px) and (max-device-width: 425px) {
+  .poweredBy{
+    margin: -16px;
+  }
+  .poweredBy img {
+    width: 80%;
+  }
+}

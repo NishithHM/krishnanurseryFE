@@ -12,13 +12,8 @@ export const InvoicePreview = (props) => {
     children,
     handlePrintClick,
     cartData,
-    setInvoiceNumber,
   } = props;
 
-  useEffect(() => {
-    const invoiceNum = Math.floor(10000000 + Math.random() * 90000000);
-    setInvoiceNumber(invoiceNum);
-  }, [cartData]);
 
   const printEnabled = false;
 
