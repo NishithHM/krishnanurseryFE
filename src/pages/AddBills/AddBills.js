@@ -62,6 +62,7 @@ export default function AddBills() {
     submitSuccess: { isExist: false, msg: "" },
     checkOutDone: false,
     submitDisable: false,
+    invoiceNumber: "",
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
@@ -386,7 +387,6 @@ export default function AddBills() {
     }
 
     if (checkout.data) {
-
       if (!state.customerDetails.name) {
         setState((prev) => ({
           ...prev,
@@ -422,6 +422,8 @@ export default function AddBills() {
       cartId: state.cartResponse._id,
       cartRoundOff: payload,
     });
+
+    console.log(confirmCart);
     if (confirmCart.error) {
       setState((prev) => ({
         ...prev,
@@ -436,8 +438,13 @@ export default function AddBills() {
         submitError: { isExist: false, error: "" },
         submitSuccess: { isExist: true, msg: "Billing is successful" },
       }));
-      toast.success("Billing is successful!");
-      handleReset();
+
+      // added this set timeout because print is being called before the state is updated so, to add some delay...
+      setTimeout(() => {
+        handlePrint();
+      }, 1000);
+      // toast.success("Billing is successful!");
+      // handleReset();
     }
   };
 
@@ -517,7 +524,10 @@ export default function AddBills() {
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
-    onAfterPrint: handleSubmit,
+    onAfterPrint: () => {
+      toast.success("Invoice Print Success");
+      handleReset();
+    },
   });
 
   const today = new Date();
@@ -718,7 +728,7 @@ export default function AddBills() {
             clientDetails={state.customerDetails}
             cartData={tableRowData}
             cartResponse={state.cartResponse}
-            invoiceNumber={state.cartResponse?.invoiceId}
+            invoiceNumber={state?.submitResponse?.invoiceId}
             printEnabled={printEnabled}
             roundOff={state.roundOff}
             data={state}
@@ -732,10 +742,10 @@ export default function AddBills() {
         onClose={() => setShowPreview(!showPreview)}
         clientDetails={state.customerDetails}
         cartData={tableRowData}
-        cartResponse={state.cartResponse}
-        invoiceNumber={state.cartResponse?.invoiceId}
+        cartResponse={state?.cartResponse}
+        invoiceNumber={state?.submitResponse?.invoiceId}
         roundOff={state.roundOff}
-        handlePrintClick={handlePrint}
+        handlePrintClick={handleSubmit}
         billedBy={auth.name}
       >
         {/* <Button
