@@ -16,14 +16,15 @@
   -khtml-user-select: none;
   -webkit-user-select: none;
   color: #000;
-  border-color: #000;
+  border-color: #539c64;
   font-weight: 500;
   transition: all 0.1s ease-in;
 }
 
 .selected {
-  background-color: #000;
+  background-color: #539c64;
   color: #ffffff;
+  font-weight: 600;
 }
 
 .selectedOptions {

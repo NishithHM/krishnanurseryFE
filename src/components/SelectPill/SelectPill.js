@@ -29,7 +29,7 @@ const SelectPill = ({ options = [], onChange }) => {
           key={option}
           onClick={() => handleChange(option)}
         >
-          {option}
+         <span>{option}</span> 
         </div>
       ))}
     </div>

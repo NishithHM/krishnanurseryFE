@@ -160,6 +160,8 @@ export const PlaceOrder = () => {
             )} `,
       disabledVendorContact: state.addVendorName?.__isNew__ ? false : true,
     }));
+    
+    if(state.addVendorName?.value){
     getOrderId({id:state.addVendorName?.value})
     .then((res) => {
       if(state.addVendorName?.value){
@@ -180,6 +182,7 @@ export const PlaceOrder = () => {
     }).catch((err) => {
       console.log(err);
     });
+  }
   }, [state.addVendorName?.value]);
 
   const onError = (error) => {
@@ -286,6 +289,7 @@ console.log(state.addPlantCategory)
 
   useEffect(()=>{
     const getOrderDetails = async ()=>{
+      if(state.orderId?.value){
       const {data} = await getInvoice({id:state.orderId?.value, page:'placeOrder'});
       console.log(data)
       setState((prev)=>({
@@ -294,7 +298,7 @@ console.log(state.addPlantCategory)
         expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format('YYYY-MM-DD'),
         disableExpectedDate: data?.expectedDeliveryDate ? true : false
       }))
-
+    }
     }
     getOrderDetails()
   }, [state.orderId?.value])
