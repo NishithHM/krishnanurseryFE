@@ -1,10 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Styles from "./AgriVariants.module.css";
 import { BackButton, Dropdown, Search, Table } from "../../components";
 import { getVariantsBody, initialCategory } from "./helper";
-import { useGetAgriVariantsQuery } from "../../services/agrivariants.services";
+import {
+  useGetAgriOptionValuesMutation,
+  useGetAgriVariantsQuery,
+} from "../../services/agrivariants.services";
 import _, { debounce } from "lodash";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const tableHeader = [
   [
@@ -23,19 +27,40 @@ const tableHeader = [
 ];
 
 const AgriVariants = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState(1);
-  const { data } = useGetAgriVariantsQuery({
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [selectedTypeOption, setSelectedTypeOption] = useState(null);
+  const { data, refetch } = useGetAgriVariantsQuery({
     search: search,
     pageNumber: page,
+    type: selectedTypeOption?.value || null,
   });
   const getCategoryCount = useGetAgriVariantsQuery({
     isCount: true,
     search: searchInput,
   });
+
+  const [getOptionValues] = useGetAgriOptionValuesMutation();
+
+  const getValues = async () => {
+    const res = await getOptionValues({ type: "type" });
+    const options = res.data.map((e) => ({ label: e, value: e }));
+    setTypeOptions(options);
+    setSelectedTypeOption(options[0]);
+  };
+  useEffect(() => {
+    getValues();
+  }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [selectedTypeOption]);
+
   const count = _.get(getCategoryCount, "data[0].count", 0);
-  console.log(data);
+
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
       setSearch(query);
@@ -55,8 +80,12 @@ const AgriVariants = () => {
   const onDecrementHandler = () => {
     setPage(page - 1);
   };
+
+  const editClickHandler = (id) => {
+    navigate("../dashboard/agri-add-variants?editId=" + id);
+  };
   const tableBody = useMemo(() => {
-    return getVariantsBody(data);
+    return getVariantsBody(data, editClickHandler, editClickHandler);
   }, [JSON.stringify(data)]);
 
   return (
@@ -73,7 +102,11 @@ const AgriVariants = () => {
               onChange={onSearchInputHandler}
             />
             <div className={Styles.dropdownContainer}>
-              <Dropdown />
+              <Dropdown
+                data={typeOptions}
+                value={selectedTypeOption}
+                onChange={(e) => setSelectedTypeOption(e)}
+              />
             </div>
           </div>
           <div className={Styles.agriPaginationContainer}>

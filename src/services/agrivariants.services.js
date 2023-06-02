@@ -32,11 +32,18 @@ export const agriVariantsApi = createApi({
             params.search = search;
           }
           if (type) {
-            pageNumber.type = type;
+            params.type = type;
           }
           return {
             url: `/variants`,
             params: params,
+          };
+        },
+      }),
+      getAgriVariant: builder.query({
+        query: ({ id }) => {
+          return {
+            url: `/variants/${id}`,
           };
         },
       }),
@@ -59,12 +66,23 @@ export const agriVariantsApi = createApi({
           };
         },
       }),
+      updateAgriOptionValues: builder.mutation({
+        query: ({ id, body }) => {
+          return {
+            url: `/variants/${id}`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
     };
   },
 });
 
 export const {
   useGetAgriVariantsQuery,
+  useGetAgriVariantQuery,
   useGetAgriOptionsQuery,
   useGetAgriOptionValuesMutation,
+  useUpdateAgriOptionValuesMutation,
 } = agriVariantsApi;

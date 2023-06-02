@@ -12,36 +12,37 @@ import { cloneDeep } from "lodash";
 import {
   useGetAgriOptionValuesMutation,
   useGetAgriOptionsQuery,
+  useGetAgriVariantQuery,
+  useUpdateAgriOptionValuesMutation,
 } from "../../services/agrivariants.services";
+import { useSearchParams } from "react-router-dom";
 
 const AddNewVariants = () => {
-  const jsonData = {
-    _id: "64719ba09c45ffa439f34771",
-    type: "pot",
-    name: "test pot",
-    options: [
-      {
-        optionName: "color",
-        optionValues: ["red", "green", "yellow"],
-        optionOptions: ["red", "green", "yellow"],
-        _id: "6471b7a7524d957e8cfc2535",
-      },
-      {
-        optionName: "liters",
-        optionValues: ["1", "2"],
-        optionOptions: ["1", "2"],
-        _id: "6471b7a7524d957e8cfc2536",
-      },
-    ],
-  };
-  // this comes api
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [jsonData, setJsonData] = useState({});
 
   const [optionOptionsData, setOptionOptionsData] = useState([]);
+  const [options, setOptions] = useState([]);
 
   const { data, isLoading: isGetOptionsLoading } = useGetAgriOptionsQuery();
   const optionsType = data || [];
 
+  const [typeOptions, setTypeOptions] = useState(optionsType);
+
   const [getOptionValues] = useGetAgriOptionValuesMutation();
+
+  const editId = searchParams.get("editId");
+  const { data: agriVariantData } = useGetAgriVariantQuery({
+    id: editId,
+  });
+
+  const [updateAgriVariantOptions] = useUpdateAgriOptionValuesMutation();
+
+  useEffect(() => {
+    console.log(agriVariantData);
+    setJsonData(agriVariantData);
+    setOptions(agriVariantData?.options || []);
+  }, [agriVariantData]);
 
   useEffect(() => {
     const promises = [];
@@ -63,9 +64,6 @@ const AddNewVariants = () => {
     }
   }, [optionsType]);
 
-  const [options, setOptions] = useState(jsonData.options);
-  const [typeOptions, setTypeOptions] = useState(optionsType);
-
   useEffect(() => {
     const newtypeOptions = optionsType.filter(
       (opt) => options.findIndex((ele) => ele.optionName === opt) === -1
@@ -76,13 +74,22 @@ const AddNewVariants = () => {
 
   // comes from backend types api
 
-  const handleButtonClick = () => {
-    console.log(options);
+  const handleButtonClick = async () => {
+    const data = options.map((option) => ({
+      optionName: option.optionName,
+      optionValues: option.values,
+    }));
+
+    const res = await updateAgriVariantOptions({
+      id: editId,
+      body: { options: data },
+    });
+    console.log(res);
   };
 
   const addNewOption = () => {
     const newOptions = cloneDeep(options);
-    newOptions.push({ optionName: null, optionValues: [], optionOptions: [] });
+    newOptions.push({ optionName: null, optionValues: [] });
     setOptions(newOptions);
   };
 
@@ -105,7 +112,7 @@ const AddNewVariants = () => {
     if (category === "options") {
       newOption.optionValues = [...value];
     }
-    newOption.optionOptions = [];
+    // newOption.optionOptions = [];
 
     const newOptions = [
       ...options.slice(0, index),
@@ -156,7 +163,7 @@ const AddNewVariants = () => {
               );
             })}
           </div>
-          <button onClick={handleButtonClick}>Log Data</button>
+          <button onClick={handleButtonClick}>Save</button>
         </div>
       </div>
     </>
