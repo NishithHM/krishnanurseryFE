@@ -30,7 +30,7 @@ export const store = configureStore({
       .concat(billsApi.middleware)
       .concat(categoriesApi.middleware)
       .concat(commonApi.middleware)
-      .concat(paymentsApi.middleware),
+      .concat(paymentsApi.middleware)
 });
 
 setupListeners(store.dispatch);
