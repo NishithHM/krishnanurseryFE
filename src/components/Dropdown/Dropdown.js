@@ -27,6 +27,7 @@ const Dropdown = ({
   disabled = false,
   id,
   value,
+  onCreateOption = () => {},
 }) => {
   const [selectedOption, setSelectedOption] = useState({});
   const [options, setOptions] = useState(data || []);
@@ -34,6 +35,7 @@ const Dropdown = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selectedOption) => {
+    console.log(selectedOption)
     setSelectedOption(selectedOption);
     onChange(selectedOption, id);
   };
@@ -166,6 +168,7 @@ const Dropdown = ({
           isMulti={isMultiEnabled}
           styles={DropdownStyles}
           isDisabled={disabled}
+          onCreateOption={onCreateOption}
         />
         {error && (
           <div className={styles.errortext}>
