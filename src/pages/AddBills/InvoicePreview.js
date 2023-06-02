@@ -6,19 +6,7 @@ import { Button } from "../../components";
 import dayjs from "dayjs";
 
 export const InvoicePreview = (props) => {
-  const {
-    showPreview,
-    onClose,
-    children,
-    handlePrintClick,
-    cartData,
-    setInvoiceNumber,
-  } = props;
-
-  useEffect(() => {
-    const invoiceNum = Math.floor(10000000 + Math.random() * 90000000);
-    setInvoiceNumber(invoiceNum);
-  }, [cartData]);
+  const { showPreview, onClose, children, handlePrintClick, cartData } = props;
 
   const printEnabled = false;
 
@@ -115,6 +103,7 @@ export const InvoiceSection = (props) => {
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
 
+  console.log(invoiceNumber);
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
@@ -132,6 +121,8 @@ export const InvoiceSection = (props) => {
             <br></br>
             Shivmogga 577222
           </div>
+          <div><strong>Phone Number</strong> : {process.env.REACT_APP_PHONE_NUMBER}</div>
+          <div><strong>Email </strong>: {process.env.REACT_APP_EMAIL_ID}</div>
         </div>
 
         <div className={styles.clientDetails}>
@@ -142,10 +133,12 @@ export const InvoiceSection = (props) => {
             </div>
           </div>
 
-          <div className={styles.lableValueDetails}>
-            <div className={styles.label}>Invoice Number:</div>
-            <div className={styles.value}>{invoiceNumber}</div>
-          </div>
+          {invoiceNumber && invoiceNumber !== "" && (
+            <div className={styles.lableValueDetails}>
+              <div className={styles.label}>Invoice Number:</div>
+              <div className={styles.value}>{invoiceNumber}</div>
+            </div>
+          )}
 
           <div className={styles.billedTo}>
             Billed To

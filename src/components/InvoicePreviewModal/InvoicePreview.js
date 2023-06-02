@@ -127,6 +127,8 @@ export const InvoiceSection = (props) => {
             <br></br>
             Shivamogga, 577222
           </div>
+          <div><strong>Phone Number</strong> : {process.env.REACT_APP_PHONE_NUMBER}</div>
+          <div><strong>Email </strong>: {process.env.REACT_APP_EMAIL_ID}</div>
         </div>
 
         <div className={styles.clientDetails}>
