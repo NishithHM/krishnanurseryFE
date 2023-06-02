@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from './AgriVarinatsAddition.module.css'
 import cx from 'classnames'
 import Dropdown from "../Dropdown";
@@ -6,10 +6,11 @@ import { cloneDeep } from "lodash";
 import { useGetAgriVariantByIdMutation } from "../../services/agrivariants.services";
 import { formatDropOptions } from "../../pages/AddNewVariants/helper";
 import Input from "../Input";
+import Button from "../Button";
 const initialState = {
-    variants: [{ type: {}, name: {}, options: [], totalQuantity: null }]
+    variants: [{ type: {}, name: {}, options: [], totalQuantity: undefined }]
 }
-const AgriVarinatsAddition = ({ }) => {
+const AgriVarinatsAddition = ({ onChange=()=>null }) => {
     const [{ variants }, setState] = useState(initialState)
     const [getAgriVariantById] = useGetAgriVariantByIdMutation()
     const dropDownChangeHandler = async (event, id, index, optIndex) => {
@@ -33,14 +34,31 @@ const AgriVarinatsAddition = ({ }) => {
             ...prev,
             variants: newOptions
         }))
-
-
     }
+
+    useEffect(()=>{
+        onChange(variants)
+    }, [JSON.stringify(variants)])
+
+    const onAddVariant=()=>{
+        const newVariants = cloneDeep(variants)
+        newVariants.push(...cloneDeep(initialState.variants))
+        setState(prev=>({
+            ...prev,
+            variants: newVariants
+        }))
+    }
+
     return (
         <div className={styles.variantsAddWrapper}>
+            <div className={styles.buttonWrapper}>
+                <div className={styles.dropDownWrapper}>
+                    <Button onClick={onAddVariant} title="Add Variant" disabled={variants.some(ele=> !ele.totalQuantity)} />
+                </div>
+            </div>
             {variants.map((ele, index) => {
                 return (
-                    <div key={ele.type} className={styles.variantsRow}>
+                    <div key={index} className={styles.variantsRow}>
                         <div className={styles.dropDownWrapper}>
                             <Dropdown
                                 url="/api/agri/type-options?type=type"
@@ -68,7 +86,7 @@ const AgriVarinatsAddition = ({ }) => {
                         {ele?.options.length > 0 &&
                             ele?.options?.map((opt, jIndex) => {
                                 return (
-                                    <div className={styles.dropDownWrapper}>
+                                    <div className={styles.dropDownWrapper} key={opt.optionName}>
                                         <Dropdown
                                             onChange={(e, id) => dropDownChangeHandler(e, id, index, jIndex)}
                                             title={opt.optionName}
@@ -79,18 +97,18 @@ const AgriVarinatsAddition = ({ }) => {
                                 )
                             })
                         }
-                        {ele.options.length> 0 && ele?.options.every(opt => !!opt.value) && 
-                        <div className={cx(styles.dropDownWrapper, styles.inputDropDown)}>
-                            <Input
-                                value={ele.totalQuantity}
-                                id="totalQuantity"
-                                type="number"
-                                onChange={(e, id)=>dropDownChangeHandler(e?.target?.value, id, index)}
-                                title="Total Quantity"
-                                required
-                                min={0}
-                            />
-                        </div>}
+                        {ele.options.length > 0 && ele?.options.every(opt => !!opt.value) &&
+                            <div className={cx(styles.dropDownWrapper, styles.inputDropDown)}>
+                                <Input
+                                    value={ele.totalQuantity}
+                                    id="totalQuantity"
+                                    type="number"
+                                    onChange={(e, id) => dropDownChangeHandler(e?.target?.value, id, index)}
+                                    title="Total Quantity"
+                                    required
+                                    min={0}
+                                />
+                            </div>}
                     </div>
                 )
             })}

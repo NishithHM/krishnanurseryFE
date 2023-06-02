@@ -4,7 +4,7 @@ import { AgriVarinatsAddition } from "../../components";
 const AgriPlaceOrder = ()=>{
     return(
         <div>
-              <AgriVarinatsAddition />
+              <AgriVarinatsAddition onChange={e=>console.log(e)} />
         </div>
       
     )
