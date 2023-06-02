@@ -17,6 +17,7 @@ import UnderMaintainence from "./UnderMaintainence";
 import Payments from "./Payments";
 import AgriVariants from "./AgriVariants";
 import AddNewVariants from "./AddNewVariants";
+import AgriPlaceOrder from "./AgriPlaceOrder";
 export {
   Login,
   Test,
@@ -37,4 +38,5 @@ export {
   Payments,
   AgriVariants,
   AddNewVariants,
+  AgriPlaceOrder
 };
