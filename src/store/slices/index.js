@@ -9,7 +9,6 @@ import { userApi } from "../../services/user.services";
 import { commonApi } from "../../services/common.services";
 import userSlice from "./user.slice";
 import { paymentsApi } from "../../services/payments.services";
-import { agriVariantsApi, useGetAgriVariantsQuery } from "../../services/agrivariants.services";
 export const store = configureStore({
   reducer: {
     [loginApi.reducerPath]: loginApi.reducer,
@@ -20,7 +19,6 @@ export const store = configureStore({
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
     [paymentsApi.reducerPath]: paymentsApi.reducer,
-    [agriVariantsApi.reducerPath] : agriVariantsApi.reducer,
     userSlice: userSlice.reducer,
   },
   middleware: (middlewares) =>
@@ -33,7 +31,6 @@ export const store = configureStore({
       .concat(categoriesApi.middleware)
       .concat(commonApi.middleware)
       .concat(paymentsApi.middleware)
-      .concat(agriVariantsApi.middleware)
 });
 
 setupListeners(store.dispatch);
