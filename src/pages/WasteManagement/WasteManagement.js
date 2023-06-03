@@ -137,6 +137,7 @@ const WasteManagement = () => {
                         apiDataPath={{ label: "names.en.name", value: "_id" }} 
                         onChange={dropDownChangeHandler}
                         value={addPlantName}
+                        minInputToFireApi={3}
                         required/>
 
                     <Input title="Expected Remaining Quantity" type="number" disabled value={addPlantName?.meta?.remainingQuantity} />

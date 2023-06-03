@@ -1,8 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Styles from "./AgriVariants.module.css";
-import { BackButton, Button, Dropdown, Search, Table } from "../../components";
+import {
+  Alert,
+  BackButton,
+  Button,
+  Dropdown,
+  Modal,
+  Search,
+  Table,
+} from "../../components";
 import { getVariantsBody, initialCategory } from "./helper";
 import {
+  useDeleteAgriVariantByIdMutation,
   useGetAgriOptionValuesMutation,
   useGetAgriVariantsQuery,
 } from "../../services/agrivariants.services";
@@ -33,6 +42,8 @@ const AgriVariants = () => {
   const [page, setPage] = useState(1);
   const [typeOptions, setTypeOptions] = useState([]);
   const [selectedTypeOption, setSelectedTypeOption] = useState(null);
+  const [deleteVariant, setDeleteVariant] = useState({ opened: false });
+
   const { data, refetch } = useGetAgriVariantsQuery({
     search: search,
     pageNumber: page,
@@ -44,6 +55,7 @@ const AgriVariants = () => {
   });
 
   const [getOptionValues] = useGetAgriOptionValuesMutation();
+  const [deleteAgriVariant] = useDeleteAgriVariantByIdMutation();
 
   const getValues = async () => {
     const res = await getOptionValues({ type: "type" });
@@ -84,70 +96,94 @@ const AgriVariants = () => {
   const editClickHandler = (id) => {
     navigate("../dashboard/agri-add-variants?editId=" + id);
   };
+  const deleteClickHandler = (id) => {
+    console.log(id);
+    setDeleteVariant({ opened: true, id });
+  };
   const tableBody = useMemo(() => {
-    return getVariantsBody(data, editClickHandler, editClickHandler);
+    return getVariantsBody(data, deleteClickHandler, editClickHandler);
   }, [JSON.stringify(data)]);
-
+  console.log(tableBody, "tab");
   return (
-    <div className={Styles.agriContainer}>
-      <div className={Styles.innerAgriContainer}>
-        <div>
-          <BackButton navigateTo={"/authorised/dashboard"} />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "start",
-          }}
-        >
-          <div className={Styles.wrapper}>
-            <Search
-              value={searchInput}
-              title="Search for Agri Variants..."
-              onChange={onSearchInputHandler}
-            />
-            <div className={Styles.dropdownContainer}>
-              <Dropdown
-                data={typeOptions}
-                value={selectedTypeOption}
-                onChange={(e) => setSelectedTypeOption(e)}
+    <>
+      <div className={Styles.agriContainer}>
+        <div className={Styles.innerAgriContainer}>
+          <div>
+            <BackButton navigateTo={"/authorised/dashboard"} />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "start",
+            }}
+          >
+            <div className={Styles.wrapper}>
+              <Search
+                value={searchInput}
+                title="Search for Agri Variants..."
+                onChange={onSearchInputHandler}
               />
+              <div className={Styles.dropdownContainer}>
+                <Dropdown
+                  data={typeOptions}
+                  value={selectedTypeOption}
+                  onChange={(e) => setSelectedTypeOption(e)}
+                />
+              </div>
+            </div>
+            <div className={Styles.agriPaginationContainer}>
+              <Button
+                title="Add New Variant"
+                onClick={() => {
+                  navigate("../dashboard/agri-add-variants");
+                }}
+              />
+              <div className={Styles.agriPaginationInner}>
+                <button
+                  disabled={page === 1}
+                  onClick={onDecrementHandler}
+                  className={Styles.catBtnCtrls}
+                >
+                  <FaChevronLeft size={16} />
+                </button>
+                <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
+                  page * 10 > count ? count : page * 10
+                } of ${count}`}</span>
+                <button
+                  disabled={(page * 10 > count ? count : page * 10) >= count}
+                  onClick={onIncrementHandler}
+                  className={Styles.catBtnCtrls}
+                >
+                  <FaChevronRight size={16} />
+                </button>
+              </div>
             </div>
           </div>
-          <div className={Styles.agriPaginationContainer}>
-            <Button
-              title="Add New Variant"
-              onClick={() => {
-                navigate("../dashboard/agri-add-variants");
-              }}
-            />
-            <div className={Styles.agriPaginationInner}>
-              <button
-                disabled={page === 1}
-                onClick={onDecrementHandler}
-                className={Styles.catBtnCtrls}
-              >
-                <FaChevronLeft size={16} />
-              </button>
-              <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
-                page * 10 > count ? count : page * 10
-              } of ${count}`}</span>
-              <button
-                disabled={(page * 10 > count ? count : page * 10) >= count}
-                onClick={onIncrementHandler}
-                className={Styles.catBtnCtrls}
-              >
-                <FaChevronRight size={16} />
-              </button>
-            </div>
+          <div className={Styles.variantsTableWrapper}>
+            <Table data={[...tableHeader, ...tableBody]} />
           </div>
-        </div>
-        <div className={Styles.variantsTableWrapper}>
-          <Table data={[...tableHeader, ...tableBody]} />
         </div>
       </div>
-    </div>
+      <Modal isOpen={deleteVariant.opened} contentLabel="Delete User">
+        <Alert
+          message={`Are you sure to delete this variant?`}
+          subMessage={"This action cannot be undone."}
+          confirmBtnType="alert"
+          confirmBtnLabel="Delete"
+          cancelBtnLabel="cancel"
+          handleCancel={() => {
+            setDeleteVariant({ opened: false });
+          }}
+          handleConfirm={async () => {
+            console.log("hello");
+            await deleteAgriVariant({ id: deleteVariant.id });
+            // setDeleteVariant({ opened: false });
+            // refetch();
+          }}
+        />
+      </Modal>
+    </>
   );
 };
 
