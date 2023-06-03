@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Styles from "./AgriVariants.module.css";
-import { BackButton, Dropdown, Search, Table } from "../../components";
+import { BackButton, Button, Dropdown, Search, Table } from "../../components";
 import { getVariantsBody, initialCategory } from "./helper";
 import {
   useGetAgriOptionValuesMutation,
@@ -94,7 +94,13 @@ const AgriVariants = () => {
         <div>
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
-        <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "start",
+          }}
+        >
           <div className={Styles.wrapper}>
             <Search
               value={searchInput}
@@ -110,6 +116,12 @@ const AgriVariants = () => {
             </div>
           </div>
           <div className={Styles.agriPaginationContainer}>
+            <Button
+              title="Add New Variant"
+              onClick={() => {
+                navigate("../dashboard/agri-add-variants");
+              }}
+            />
             <div className={Styles.agriPaginationInner}>
               <button
                 disabled={page === 1}
