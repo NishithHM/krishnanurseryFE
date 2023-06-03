@@ -3,6 +3,7 @@ import "../DatePicker.css";
 import "../Calendar.css";
 import DatePicker from "react-date-picker";
 import styles from "./Datefilter.module.css";
+import MyDatePricker from "../../MyDatePicker/MyDatePicker";
 
 const Datefilter = ({
   onChange = () => {},
@@ -34,13 +35,24 @@ const Datefilter = ({
     }
   };
 
+  const datePickerStyles = {
+    input: {
+      background: "#edecea",
+      width: "110px",
+      fontSize: "15px",
+      fontWeight: 400,
+      padding: 0,
+      textAlign: "center",
+      fontFamily: "Montserrat, sans-serif",
+    },
+  };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.innerWrapper}>
         <div>
           <p className={styles.inputTitle}>Start Date</p>
-          <DatePicker
+          {/* <DatePicker
             onChange={(e) => {
               setParentSet(false);
               setStartDate(e);
@@ -54,12 +66,23 @@ const Datefilter = ({
             clearIcon={null}
             format="dd-MM-yyyy"
             className={styles.dateInput}
+          /> */}
+          <MyDatePricker
+            onChange={(e) => {
+              setParentSet(false);
+              setStartDate(e);
+            }}
+            size="xs"
+            value={startDate}
+            maxDate={new Date()}
+            styles={datePickerStyles}
+            clearable={false}
           />
         </div>
 
         <div>
           <p className={styles.inputTitle}>End Date</p>
-          <DatePicker
+          {/* <DatePicker
             onChange={(e) => {
               setParentSet(false);
               setEndDate(e);
@@ -74,10 +97,21 @@ const Datefilter = ({
             format="dd-MM-yyyy"
             minDate={startDate}
             className={styles.dateInput}
+          /> */}
+          <MyDatePricker
+            onChange={(e) => {
+              setParentSet(false);
+              setEndDate(e);
+            }}
+            size="xs"
+            value={endDate}
+            maxDate={new Date()}
+            styles={datePickerStyles}
+            minDate={startDate}
+            clearable={false}
           />
         </div>
       </div>
-
     </div>
   );
 };
