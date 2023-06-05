@@ -19,7 +19,7 @@ import {
   Payments,
   AgriVariants,
   AddNewVariants,
-  AgriPlaceOrder,
+  AgriRequesrOrder,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -120,7 +120,7 @@ const Protected = () => {
              <Route
               path="/dashboard/orders-agri/place-order"
               exact
-              element={<AgriPlaceOrder />}
+              element={<AgriRequesrOrder />}
             />
           </Routes>
         </div>

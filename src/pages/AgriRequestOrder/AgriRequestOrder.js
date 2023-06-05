@@ -1,7 +1,7 @@
 import React from "react";
 import { AgriVarinatsAddition } from "../../components";
 
-const AgriPlaceOrder = ()=>{
+const AgriRequesrOrder = ()=>{
     return(
         <div>
               <AgriVarinatsAddition onChange={e=>console.log(e)} />
@@ -10,4 +10,4 @@ const AgriPlaceOrder = ()=>{
     )
 }
 
-export default AgriPlaceOrder
+export default AgriRequesrOrder
