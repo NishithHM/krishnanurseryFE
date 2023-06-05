@@ -85,7 +85,7 @@ export const agriVariantsApi = createApi({
       deleteAgriVariantById: builder.mutation({
         query: ({ id }) => {
           return {
-            url: `/variants/delete-variant/${id}`,
+            url: `/delete-variant/${id}`,
             method: "GET",
           };
         },

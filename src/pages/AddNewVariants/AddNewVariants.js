@@ -148,9 +148,9 @@ const AddNewVariants = () => {
         newOption.optionValues = [];
       } else {
         const newOptioValues =
-          cloneDeep(options).find((ele) => ele.optionName === value)
+          cloneDeep(options)?.find((ele) => ele.optionName === value)
             ?.optionValues ||
-          cloneDeep(jsonData.options).find((ele) => ele.optionName === value)
+          cloneDeep(jsonData.options)?.find((ele) => ele.optionName === value)
             ?.optionValues ||
           [];
         newOption.optionValues = newOptioValues;
