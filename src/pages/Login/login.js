@@ -82,9 +82,9 @@ const Login = () => {
       <div className={styles.loginlogo}>
         <img src={logo} alt="Logo" />
       </div>
-      <div className={styles.logotitle}>
+      {/* <div className={styles.logotitle}>
         <span>Shree Krishna Nursery</span>
-      </div>
+      </div> */}
       <div className={styles.inputlabel}>
         <div>
           <Input
