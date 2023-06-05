@@ -78,9 +78,28 @@ const Login = () => {
 
   return (
     <div className={styles.loginPage}>
-      <div className={styles.logincard}>
-        <div className={styles.loginlogo}>
-          <img src={logo} alt="Logo" />
+
+    <div className={styles.logincard}>
+      <div className={styles.loginlogo}>
+        <img src={logo} alt="Logo" />
+      </div>
+      {/* <div className={styles.logotitle}>
+        <span>Shree Krishna Nursery</span>
+      </div> */}
+      <div className={styles.inputlabel}>
+        <div>
+          <Input
+            id="phone"
+            type="number"
+            errorMessage="Invalid Mobile Number"
+            required
+            validation={(number) => number.length === 10}
+            value={state.phone}
+            onChange={inputChangeHanlder}
+            title="Phone Number"
+            onError={onError}
+          />
+
         </div>
         <div className={styles.logotitle}>
           <span>Shree Krishna Nursery</span>
