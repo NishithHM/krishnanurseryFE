@@ -178,8 +178,8 @@ const AgriVariants = () => {
           handleConfirm={async () => {
             console.log("hello");
             await deleteAgriVariant({ id: deleteVariant.id });
-            // setDeleteVariant({ opened: false });
-            // refetch();
+            setDeleteVariant({ opened: false });
+            refetch();
           }}
         />
       </Modal>
