@@ -118,7 +118,7 @@ const Protected = () => {
               element={<AddNewVariants />}
             />
              <Route
-              path="/dashboard/orders-agri/place-order"
+              path="/dashboard/orders-agri/request-order"
               exact
               element={<AgriRequesrOrder />}
             />
