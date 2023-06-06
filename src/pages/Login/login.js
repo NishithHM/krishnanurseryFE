@@ -82,48 +82,51 @@ const Login = () => {
         <div className={styles.loginlogo}>
           <img src={logo} alt="Logo" />
         </div>
-        <div className={styles.logotitle}>
-          <span>Shree Krishna Nursery</span>
-        </div>
+
         <div className={styles.inputlabel}>
-          <div>
-            <Input
-              id="phone"
-              type="number"
-              errorMessage="Invalid Mobile Number"
-              required
-              validation={(number) => number.length === 10}
-              value={state.phone}
-              onChange={inputChangeHanlder}
-              title="Phone Number"
-              onError={onError}
-            />
+          <div className={styles.logotitle}>
+            <span>Shree Krishna Nursery</span>
           </div>
-          <div className={styles.label}>
-            <Input
-              id="password"
-              value={state.password}
-              type="password"
-              errorMessage="Password should be 7 characters"
-              onChange={inputChangeHanlder}
-              required
-              validation={(number) => number.length > 6}
-              title="Password"
-              onError={onError}
-            />
-          </div>
-          <div className={styles.loginbtn}>
-            <Button
-              disabled={
-                state.errorFields.length > 0 ||
-                state.phone.length === 0 ||
-                state.password.length === 0
-              }
-              type="primary"
-              title="Login"
-              onClick={onSubmitHandler}
-            />
-            <p style={{ color: "red" }}>{state.loginError}</p>
+          <div className={styles.inputlabel}>
+            <div>
+              <Input
+                id="phone"
+                type="number"
+                errorMessage="Invalid Mobile Number"
+                required
+                validation={(number) => number.length === 10}
+                value={state.phone}
+                onChange={inputChangeHanlder}
+                title="Phone Number"
+                onError={onError}
+              />
+            </div>
+            <div className={styles.label}>
+              <Input
+                id="password"
+                value={state.password}
+                type="password"
+                errorMessage="Password should be 7 characters"
+                onChange={inputChangeHanlder}
+                required
+                validation={(number) => number.length > 6}
+                title="Password"
+                onError={onError}
+              />
+            </div>
+            <div className={styles.loginbtn}>
+              <Button
+                disabled={
+                  state.errorFields.length > 0 ||
+                  state.phone.length === 0 ||
+                  state.password.length === 0
+                }
+                type="primary"
+                title="Login"
+                onClick={onSubmitHandler}
+              />
+              <p style={{ color: "red" }}>{state.loginError}</p>
+            </div>
           </div>
         </div>
       </div>

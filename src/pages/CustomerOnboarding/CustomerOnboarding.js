@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DatePicker } from "@mantine/dates";
+
 import { Button, Footer, Header, Input, SelectPill } from "../../components";
 import styles from "./CustomerOnboarding.module.css";
 import { uniq } from "lodash";
@@ -7,7 +7,7 @@ import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import { useGetCustomerOnboardingMutation } from "../../services/customer.service";
 import { Toaster } from "../../components";
 import { toast } from "react-toastify";
-import MyDatePicker from "../../components/MyDatePicker/MyDatePicker";
+import Datepicker from "../../components/Datepicker/Datepicker";
 
 const CustomerOnboarding = () => {
   const defaultFormValues = {
@@ -132,38 +132,11 @@ const CustomerOnboarding = () => {
             onError={inputErrorHandler}
           />
           <div>
-            {/* <DatePicker
-              className={styles.dateText}
-              placeholder="dd-mm-yyyy"
-              label="Date Of Birth"
-              inputFormat="DD/MM/YYYY"
-              labelFormat="MMMM - YYYY"
-              size="sm"
-              withAsterisk
-              value={formState.dateOfBirth}
-              onChange={dateChangeHandler}
-              clearable={false}
-              maxDate={new Date()}
-              styles={{
-                label: {
-                  fontSize: "16px",
-                  marginBottom: "2px",
-                  fontFamily: "Montserrat, sans-serif",
-                },
-                input: {
-                  border: "none",
-                  borderBottom: "1.5px solid black",
-                  borderRadius: 0,
-                  fontSize: "18px",
-                  fontWeight: 400,
-                },
-              }}
-            /> */}
-            <MyDatePicker
+            <Datepicker
               label="Date Of Birth"
               maxDate={new Date()}
               size="sm"
-              withAsterisk={true}
+              isRequired={true}
               value={formState.dateOfBirth}
               onChange={dateChangeHandler}
               styles={{
