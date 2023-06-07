@@ -15,21 +15,22 @@ const Datepicker = ({
   const customStyles = {
     label: {
       fontStyle: "'Montserrat', sans-serif",
-      fontSize: "1.1rem",
       fontWeight: 400,
       color: "#302C2C",
       letterSpacing: "0.1rem",
     },
     input: {
       width: "10rem",
-      fontSize: "1.1rem",
       fontWeight: 400,
       textAlign: "center",
       fontFamily: "Montserrat, sans-serif",
+      color: "#302C2C",
     },
+
+    ...parentStyle,
   };
 
-  const appliedStyles = parentStyle ? parentStyle : customStyles;
+  // const appliedStyles = parentStyle ? parentStyle : customStyles;
 
   return (
     <DatePicker
@@ -40,7 +41,7 @@ const Datepicker = ({
       maxDate={maxDate ? maxDate : new Date()}
       size={size}
       withAsterisk={isRequired ? isRequired : false}
-      styles={appliedStyles}
+      styles={customStyles}
       value={value}
       onChange={onChange}
       minDate={minDate}

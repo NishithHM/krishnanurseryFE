@@ -141,7 +141,7 @@ const CustomerOnboarding = () => {
               onChange={dateChangeHandler}
               styles={{
                 label: {
-                  fontSize: "16px",
+                  fontSize: "20px",
                   marginBottom: "2px",
                   fontFamily: "Montserrat, sans-serif",
                 },
@@ -149,8 +149,10 @@ const CustomerOnboarding = () => {
                   border: "none",
                   borderBottom: "1.5px solid black",
                   borderRadius: 0,
-                  fontSize: "18px",
+                  fontSize: "16px",
                   fontWeight: 400,
+                  color: "#302C2C",
+                  fontFamily: "Montserrat, sans-serif",
                 },
               }}
               className={styles.dateText}
