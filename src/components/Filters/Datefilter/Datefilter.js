@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "../DatePicker.css";
 import "../Calendar.css";
-import DatePicker from "react-date-picker";
 import styles from "./Datefilter.module.css";
+import Datepicker from "../../Datepicker/Datepicker";
 
 const Datefilter = ({
   onChange = () => {},
@@ -34,50 +33,53 @@ const Datefilter = ({
     }
   };
 
+  const datePickerStyles = {
+    input: {
+      background: "#edecea",
+      width: "110px",
+      fontSize: "15px",
+      fontWeight: 400,
+      padding: 0,
+      textAlign: "center",
+      fontFamily: "Montserrat, sans-serif",
+    },
+  };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.innerWrapper}>
         <div>
           <p className={styles.inputTitle}>Start Date</p>
-          <DatePicker
+
+          <Datepicker
             onChange={(e) => {
               setParentSet(false);
               setStartDate(e);
             }}
+            size="xs"
             value={startDate}
             maxDate={new Date()}
-            dayPlaceholder="dd"
-            monthPlaceholder="mm"
-            yearPlaceholder="yyyy"
-            calendarIcon={null}
-            clearIcon={null}
-            format="dd-MM-yyyy"
-            className={styles.dateInput}
+            styles={datePickerStyles}
+            clearable={false}
           />
         </div>
 
         <div>
           <p className={styles.inputTitle}>End Date</p>
-          <DatePicker
+          <Datepicker
             onChange={(e) => {
               setParentSet(false);
               setEndDate(e);
             }}
+            size="xs"
             value={endDate}
             maxDate={new Date()}
-            dayPlaceholder="dd"
-            monthPlaceholder="mm"
-            yearPlaceholder="yyyy"
-            calendarIcon={null}
-            clearIcon={null}
-            format="dd-MM-yyyy"
+            styles={datePickerStyles}
             minDate={startDate}
-            className={styles.dateInput}
+            clearable={false}
           />
         </div>
       </div>
-
     </div>
   );
 };

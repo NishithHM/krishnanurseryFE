@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DatePicker } from "@mantine/dates";
+
 import { Button, Footer, Header, Input, SelectPill } from "../../components";
 import styles from "./CustomerOnboarding.module.css";
 import { uniq } from "lodash";
@@ -7,6 +7,7 @@ import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import { useGetCustomerOnboardingMutation } from "../../services/customer.service";
 import { Toaster } from "../../components";
 import { toast } from "react-toastify";
+import Datepicker from "../../components/Datepicker/Datepicker";
 
 const CustomerOnboarding = () => {
   const defaultFormValues = {
@@ -76,6 +77,7 @@ const CustomerOnboarding = () => {
     if (validForm) {
       setFormSubmitted(true);
     }
+    console.log(defaultFormValues);
   };
 
   const onSubmitHandler = async (e) => {
@@ -98,99 +100,94 @@ const CustomerOnboarding = () => {
     } else {
       toast.success("Thank You For Registering!!!");
     }
+    console.log(defaultFormValues);
   };
   return (
     <>
-    <Header />
-    <div className={styles.wrapper}>
-      <Toaster />
-      <form className={styles.innerWrapper} onSubmit={formSubmitHandler}>
-        <Input
-          title="Name"
-          id="name"
-          required={true}
-          value={formState.name}
-          type="text"
-          errorMessage="Name must contain only Alphabets"
-          validation={(name) => /[A-Za-z]/.test(name)}
-          onChange={inputChangeHanlder}
-          onError={inputErrorHandler}
-        />
-
-        <Input
-          id="phone"
-          type="number"
-          errorMessage="Invalid Mobile Number"
-          required
-          validation={(number) => number.length === 10}
-          value={formState.phone}
-          onChange={inputChangeHanlder}
-          title="Phone Number"
-          onError={inputErrorHandler}
-        />
-        <div>
-          <DatePicker
-            className={styles.dateText}
-            placeholder="dd-mm-yyyy"
-            label="Date Of Birth"
-            inputFormat="DD/MM/YYYY"
-            labelFormat="MMMM - YYYY"
-            size="sm"
-            withAsterisk
-            value={formState.date}
-            onChange={dateChangeHandler}
-            clearable={false}
-            maxDate={new Date()}
-            styles={{
-              label: {
-                fontSize: "16px",
-                marginBottom: "2px",
-                fontFamily: "Montserrat, sans-serif",
-              },
-              input: {
-                border: "none",
-                borderBottom: "1.5px solid black",
-                borderRadius: 0,
-                fontSize: "18px",
-                fontWeight: 400,
-              },
-            }}
+      <Header />
+      <div className={styles.wrapper}>
+        <Toaster />
+        <form className={styles.innerWrapper} onSubmit={formSubmitHandler}>
+          <Input
+            title="Name"
+            id="name"
+            required={true}
+            value={formState.name}
+            type="text"
+            errorMessage="Name must contain only Alphabets"
+            validation={(name) => /[A-Za-z]/.test(name)}
+            onChange={inputChangeHanlder}
+            onError={inputErrorHandler}
           />
-          {formSubmitted && formState.dateOfBirth === "" && (
-            <p style={{ color: "red", lineHeight: 0 }}>Select Date</p>
-          )}
-        </div>
 
-        <div>
-          <p
-          className={styles.categoryText}
-          >
-            Category <span style={{ color: "red" }}>*</span>
-          </p>
-          <div className={styles.selectPill}>
-          <SelectPill
-            onChange={categoryChangeHandler}
-            options={categoryOptions}
+          <Input
+            id="phone"
+            type="number"
+            errorMessage="Invalid Mobile Number"
+            required
+            validation={(number) => number.length === 10}
+            value={formState.phone}
+            onChange={inputChangeHanlder}
+            title="Phone Number"
+            onError={inputErrorHandler}
           />
+          <div>
+            <Datepicker
+              label="Date Of Birth"
+              maxDate={new Date()}
+              size="sm"
+              isRequired={true}
+              value={formState.dateOfBirth}
+              onChange={dateChangeHandler}
+              styles={{
+                label: {
+                  fontSize: "16px",
+                  marginBottom: "2px",
+                  fontFamily: "Montserrat, sans-serif",
+                },
+                input: {
+                  border: "none",
+                  borderBottom: "1.5px solid black",
+                  borderRadius: 0,
+                  fontSize: "18px",
+                  fontWeight: 400,
+                },
+              }}
+              className={styles.dateText}
+            />
+            {formSubmitted && formState.dateOfBirth === "" && (
+              <p style={{ color: "red", lineHeight: 0 }}>Select Date</p>
+            )}
           </div>
-          {formSubmitted && formState.category.length === 0 && (
-            <p style={{ color: "red", lineHeight: 0 }}>
-              Select atleast one category
+
+          <div>
+            <p className={styles.categoryText}>
+              Category <span style={{ color: "red" }}>*</span>
             </p>
-          )}
-        </div>
-        <div className={styles.formButton}>
-          <Button
-            onClick={onSubmitHandler}
-            type="primary"
-            title="Save"
-            buttonType="submit"
-            disabled={!validForm}
-          />
-        </div>
-      </form>
-    </div>
-    <Footer />
+            <div className={styles.selectPill}>
+              <SelectPill
+                onChange={categoryChangeHandler}
+                options={categoryOptions}
+              />
+            </div>
+            {formSubmitted && formState.category.length === 0 && (
+              <p style={{ color: "red", lineHeight: 0 }}>
+                Select atleast one category
+              </p>
+            )}
+          </div>
+          <div className={styles.formButton}>
+            <Button
+              onClick={onSubmitHandler}
+              type="primary"
+              title="Save"
+              buttonType="submit"
+              disabled={!validForm}
+            />
+          </div>
+        </form>
+      </div>
+      <Footer />
     </>
   );
 };

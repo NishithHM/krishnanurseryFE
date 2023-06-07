@@ -18,6 +18,7 @@ import ScrollTable from "../../components/Table/ScrollTable";
 import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
+import Datepicker from "../../components/Datepicker/Datepicker";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
 
@@ -576,17 +577,13 @@ export default function AddBills() {
               </>
               <>
                 {state.showDOB && (
-                  <DatePicker
-                    placeholder="dd-mm-yyyy"
-                    label="Date Of Birth"
-                    inputFormat="DD/MM/YYYY"
-                    labelFormat="MMMM - YYYY"
-                    size="sm"
-                    withAsterisk={false}
+                  <Datepicker
+                    label={"Date Of Birth"}
+                    size={"sm"}
                     value={state.dateOfBirth}
                     onChange={dateChangeHandler}
-                    clearable={false}
                     maxDate={new Date(today.setDate(today.getDate() - 1))}
+                    clearable={false}
                     styles={{
                       label: {
                         fontSize: "18px",
