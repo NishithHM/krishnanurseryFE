@@ -1,21 +1,31 @@
-.variantsRow{
-    display: flex;
-    flex-direction: row;
+.variantsRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
-.dropDownWrapper{
-    width: 200px;
-    gap: 5;
-    margin: 20px;
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #fcfcfc;
+  margin: 10px 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 2px;
+  padding: 10px;
+  align-items: end;
+}
+.dropDownWrapper {
+  width: 200px;
+  gap: 5;
+  margin: 10px;
 }
 
 .inputDropDown input {
-    margin-top: 11px;
-    font-size: 16px;
+  margin-top: 11px;
+  font-size: 16px;
 }
 
-.buttonWrapper{
-    display: flex;
-    justify-content: flex-end;
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
 }
-

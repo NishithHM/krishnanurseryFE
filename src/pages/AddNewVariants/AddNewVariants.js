@@ -11,15 +11,17 @@ import {
 import { Divider, Modal } from "@mantine/core";
 import { cloneDeep } from "lodash";
 import {
+  useAddAgriVariantMutation,
   useGetAgriOptionValuesMutation,
   useGetAgriOptionsQuery,
   useGetAgriVariantMutation,
   useUpdateAgriOptionValuesMutation,
 } from "../../services/agrivariants.services";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddNewVariants = () => {
+  const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const [variantTypeOptions, setVariantTypeOptions] = useState([]);
   const [jsonData, setJsonData] = useState({});
@@ -40,6 +42,8 @@ const AddNewVariants = () => {
   const [agriVariantData] = useGetAgriVariantMutation();
 
   const [updateAgriVariantOptions] = useUpdateAgriOptionValuesMutation();
+
+  const [AddNewAgriVariant] = useAddAgriVariantMutation();
 
   useEffect(() => {
     async function getVariantOptions() {
@@ -129,7 +133,10 @@ const AddNewVariants = () => {
       });
       toast.success("Variant Options Updated");
     } else {
-      console.log({ selectedVariant, variantName, options });
+      const data = { type: selectedVariant.value, name: variantName, options };
+      const res = await AddNewAgriVariant(data);
+      toast.success(res.data.message);
+      navigate("../dashboard/agri-variants");
     }
   };
 

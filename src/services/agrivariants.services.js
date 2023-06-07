@@ -90,6 +90,24 @@ export const agriVariantsApi = createApi({
           };
         },
       }),
+      addAgriVariant: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/variants`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      requestAgriOrder: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/request-order`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
     };
   },
 });
@@ -102,4 +120,6 @@ export const {
   useUpdateAgriOptionValuesMutation,
   useGetAgriVariantByIdMutation,
   useDeleteAgriVariantByIdMutation,
+  useAddAgriVariantMutation,
+  useRequestAgriOrderMutation,
 } = agriVariantsApi;
