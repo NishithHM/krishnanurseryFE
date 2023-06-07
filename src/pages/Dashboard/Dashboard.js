@@ -103,11 +103,17 @@ const Dashboard = () => {
       isDisabled: false,
     },
     {
-      title: "Agri Orders",
+      title: "Agri Place Order",
       tile_img: orders,
       path: "orders-agri/request-order",
       allowed: [USER_ROLES.sales, USER_ROLES.procurement],
       isDisabled: false,
+    },
+    {
+      title: "Orders",
+      tile_img: orders,
+      path: "agri-orders",
+      allowed: [USER_ROLES.procurement, USER_ROLES.sales],
     },
   ];
 

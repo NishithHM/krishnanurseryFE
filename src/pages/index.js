@@ -18,6 +18,7 @@ import Payments from "./Payments";
 import AgriVariants from "./AgriVariants";
 import AddNewVariants from "./AddNewVariants";
 import AgriRequesrOrder from "./AgriRequestOrder";
+import AgriOrderMgmt from "./AgriOrderManagement";
 export {
   Login,
   Test,
@@ -38,5 +39,6 @@ export {
   Payments,
   AgriVariants,
   AddNewVariants,
-  AgriRequesrOrder
+  AgriRequesrOrder,
+  AgriOrderMgmt,
 };
