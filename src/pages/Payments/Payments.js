@@ -307,6 +307,7 @@ const Payments = () => {
             <>
               <Dropdown
                 url="/api/brokers/getAll"
+                minInputToFireApi={3}
                 id="addVendorName"
                 apiDataPath={{ label: "name", value: "_id" }}
                 title="Broker Name"

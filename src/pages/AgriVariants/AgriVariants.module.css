@@ -1,54 +1,107 @@
 .variantsTableWrapper {
-    margin: 10px;
-    width: 100%;
-    padding: 10px;
-    flex: 4;
-  }
-  
-  .agriContainer {
-    display: flex;
-    margin: 10px;
-    padding: 10px;
-  }
-  
-  .innerAgriContainer {
-    flex: 3;
-  }
-  
-  .agriPaginationContainer {
-    font-weight: 500;
-    letter-spacing: 1;
-    text-align: end;
-  }
-  
-  .agriPaginationInner {
-    display: flex;
-    flex: 4;
-    justify-content: end;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    align-items: center;
-  }
-  
-  .catBtnCtrls{
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #539c64;
-      padding: 0 10px;
-      cursor: pointer;
-    }
-  
-    .catBtnCtrls:disabled {
-      color: #919191;
-      cursor: not-allowed;
-    }
-  
-    .dropdownContainer{
-      width: 20%;
-      margin: 24px;
-    }
-  
-    .wrapper{
-      display: flex;
-    }
+  margin: 10px;
+  width: 100%;
+  padding: 10px;
+  flex: 4;
+}
+
+.agriContainer {
+  display: flex;
+  margin: 10px;
+  padding: 10px;
+}
+
+.innerAgriContainer {
+  flex: 3;
+}
+
+.agriPaginationContainer {
+  font-weight: 500;
+  letter-spacing: 1;
+  text-align: end;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.agriPaginationInner {
+  display: flex;
+  flex: 4;
+  justify-content: end;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.catBtnCtrls {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #539c64;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.catBtnCtrls:disabled {
+  color: #919191;
+  cursor: not-allowed;
+}
+
+.dropdownContainer {
+  width: 20%;
+  margin: 24px;
+}
+
+.wrapper {
+  display: flex;
+  width: 80%;
+}
+
+.agriContainer {
+  display: flex;
+  margin: 10px;
+  padding: 10px;
+}
+
+.innerAgriContainer {
+  flex: 3;
+}
+
+.agriPaginationContainer {
+  font-weight: 500;
+  letter-spacing: 1;
+  text-align: end;
+}
+
+.agriPaginationInner {
+  display: flex;
+  flex: 4;
+  justify-content: end;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.catBtnCtrls {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #539c64;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.catBtnCtrls:disabled {
+  color: #919191;
+  cursor: not-allowed;
+}
+
+.dropdownContainer {
+  width: 20%;
+  margin: 24px;
+}
+
+.wrapper {
+  display: flex;
+}

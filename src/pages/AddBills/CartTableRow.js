@@ -32,6 +32,7 @@ export const CartTableRow = ({
           url="/api/procurements/getAll"
           apiDataPath={{ label: "names.en.name", value: "_id" }}
           id={`procurement_${item.id}`}
+          minInputToFireApi={3}
         />
       </td>
       <td>

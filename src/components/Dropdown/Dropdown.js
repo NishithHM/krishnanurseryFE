@@ -27,6 +27,7 @@ const Dropdown = ({
   disabled = false,
   id,
   value,
+  minInputToFireApi = 3,
   onCreateOption = () => {},
 }) => {
   const [selectedOption, setSelectedOption] = useState({});
@@ -35,7 +36,6 @@ const Dropdown = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (selectedOption) => {
-    console.log(selectedOption)
     setSelectedOption(selectedOption);
     onChange(selectedOption, id);
   };
@@ -49,7 +49,7 @@ const Dropdown = ({
   }, [JSON.stringify(data)]);
 
   const loadOptions = async (inputValue, callback) => {
-    if (!url || inputValue.length < 3) return [];
+    if (!url || inputValue.length < minInputToFireApi) return [];
     setSearchQuery(inputValue);
     setLoading(true);
     let config;
@@ -67,8 +67,8 @@ const Dropdown = ({
       config
     );
     const optionsVal = res.data.map((opt) => ({
-      label: get(opt, apiDataPath.label),
-      value: get(opt, apiDataPath.value),
+      label: get(opt, apiDataPath.label, opt),
+      value: get(opt, apiDataPath.value, opt),
       meta: { ...opt },
     }));
     setOptions(optionsVal);

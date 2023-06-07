@@ -321,6 +321,7 @@ console.log(state.addPlantCategory)
             onChange={dropDownChangeHandler}
             value={state.addPlantName}
             canCreate={true}
+            minInputToFireApi={3}
             required
           />
           <Input
@@ -360,6 +361,7 @@ console.log(state.addPlantCategory)
             disabled={isInhouseOrder}
             canCreate
             required
+            minInputToFireApi={3}
           />
           <Input
             value={state.addVendorContact}

@@ -32,11 +32,18 @@ export const agriVariantsApi = createApi({
             params.search = search;
           }
           if (type) {
-            pageNumber.type = type;
+            params.type = type;
           }
           return {
             url: `/variants`,
             params: params,
+          };
+        },
+      }),
+      getAgriVariant: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/variants/${id}`,
           };
         },
       }),
@@ -59,12 +66,60 @@ export const agriVariantsApi = createApi({
           };
         },
       }),
+      updateAgriOptionValues: builder.mutation({
+        query: ({ id, body }) => {
+          return {
+            url: `/variants/${id}`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      getAgriVariantById: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/variants/${id}`,
+          };
+        },
+      }),
+      deleteAgriVariantById: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/delete-variant/${id}`,
+            method: "GET",
+          };
+        },
+      }),
+      addAgriVariant: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/variants`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      requestAgriOrder: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/request-order`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
     };
   },
 });
 
 export const {
   useGetAgriVariantsQuery,
+  useGetAgriVariantMutation,
   useGetAgriOptionsQuery,
   useGetAgriOptionValuesMutation,
+  useUpdateAgriOptionValuesMutation,
+  useGetAgriVariantByIdMutation,
+  useDeleteAgriVariantByIdMutation,
+  useAddAgriVariantMutation,
+  useRequestAgriOrderMutation,
 } = agriVariantsApi;
