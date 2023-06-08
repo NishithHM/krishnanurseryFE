@@ -15,7 +15,10 @@ import OrderManagement from "./OrderManagement";
 import WasteManagement from "./WasteManagement";
 import UnderMaintainence from "./UnderMaintainence";
 import Payments from "./Payments";
-
+import AgriVariants from "./AgriVariants";
+import AddNewVariants from "./AddNewVariants";
+import AgriRequesrOrder from "./AgriRequestOrder";
+import AgriOrderMgmt from "./AgriOrderManagement";
 export {
   Login,
   Test,
@@ -34,4 +37,8 @@ export {
   WasteManagement,
   UnderMaintainence,
   Payments,
+  AgriVariants,
+  AddNewVariants,
+  AgriRequesrOrder,
+  AgriOrderMgmt,
 };

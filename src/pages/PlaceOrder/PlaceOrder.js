@@ -500,21 +500,7 @@ export const PlaceOrder = () => {
                 minDate={new Date()}
                 clearable={true}
                 isRequired={isInhouseOrder ? !isInhouseOrder : true}
-                // disabled={isInhouseOrder || state.disableExpectedDate}
-                disabled={true}
-              />
-
-              <Input
-                value={state.expectedDeliveryDate}
-                id="expectedDeliveryDate"
-                type="date"
-                onChange={inputChangeHandler}
-                title="Expected Delivery Date"
-                min={dayjs().format("YYYY-MM-DD")}
                 disabled={isInhouseOrder || state.disableExpectedDate}
-                {...(isInhouseOrder
-                  ? { required: !isInhouseOrder }
-                  : { required: true })}
               />
             </div>
           </div>

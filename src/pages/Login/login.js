@@ -84,9 +84,9 @@ const Login = () => {
         </div>
 
         <div className={styles.inputlabel}>
-          <div className={styles.logotitle}>
+          {/* <div className={styles.logotitle}>
             <span>Shree Krishna Nursery</span>
-          </div>
+          </div> */}
           <div className={styles.inputlabel}>
             <div>
               <Input

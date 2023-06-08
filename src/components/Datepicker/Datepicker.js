@@ -13,8 +13,6 @@ const Datepicker = ({
   clearable,
   disabled,
 }) => {
-  const disabledStyles = disabled && { input: { backgroundColor: "#edeceb" } };
-
   const customStyles = {
     label: {
       fontSize: "20px",
@@ -29,8 +27,8 @@ const Datepicker = ({
       fontWeight: 400,
       color: "#302C2C",
       fontFamily: "Montserrat, sans-serif",
+      backgroundColor: `${disabled && "#edeceb"}`,
     },
-    ...disabledStyles,
   };
 
   const appliedStyles = parentStyle ? parentStyle : customStyles;

@@ -103,6 +103,7 @@ const RequestOrder = () => {
               value={state.addPlantName}
               canCreate={true}
               required
+              minInputToFireApi={3}
             />
             <TextArea
               value={state.description}

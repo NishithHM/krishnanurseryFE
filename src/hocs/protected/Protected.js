@@ -17,6 +17,10 @@ import {
   WasteManagement,
   UnderMaintainence,
   Payments,
+  AgriVariants,
+  AddNewVariants,
+  AgriRequesrOrder,
+  AgriOrderMgmt,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -70,7 +74,6 @@ const Protected = () => {
               exact
               element={<ProcurementList />}
             />
-
             <Route path="/dashboard/bills" exact element={<Bills />} />
             <Route path="/dashboard/add-bills" exact element={<AddBills />} />
             <Route
@@ -104,6 +107,26 @@ const Protected = () => {
               element={<WasteList />}
             />
             <Route path="/dashboard/payments" exact element={<Payments />} />
+            <Route
+              path="/dashboard/agri-variants"
+              exact
+              element={<AgriVariants />}
+            />
+            <Route
+              path="/dashboard/agri-add-variants"
+              exact
+              element={<AddNewVariants />}
+            />
+            <Route
+              path="/dashboard/orders-agri/request-order"
+              exact
+              element={<AgriRequesrOrder />}
+            />
+            <Route
+              path="/dashboard/agri-orders"
+              exact
+              element={<AgriOrderMgmt />}
+            />
           </Routes>
         </div>
         <Footer />

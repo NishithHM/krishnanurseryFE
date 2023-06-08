@@ -95,8 +95,29 @@ const Dashboard = () => {
       allowed: [USER_ROLES.admin],
       isDisabled: true,
     },
+    {
+      title: "Agri Variants",
+      tile_img: salesImg,
+      path: "agri-variants",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+    },
+    {
+      title: "Agri Place Order",
+      tile_img: orders,
+      path: "orders-agri/request-order",
+      allowed: [USER_ROLES.sales, USER_ROLES.procurement],
+      isDisabled: false,
+    },
+    {
+      title: "Orders",
+      tile_img: orders,
+      path: "agri-orders",
+      allowed: [USER_ROLES.procurement, USER_ROLES.sales],
+    },
   ];
 
+  // /dashboard/orders-agri/request-order
   const getDashboardData = (role) => {
     return DashboardData.filter((data) => data.allowed.includes(role));
   };
