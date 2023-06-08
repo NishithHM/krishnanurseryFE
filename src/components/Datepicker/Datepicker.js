@@ -11,21 +11,23 @@ const Datepicker = ({
   styles: parentStyle,
   minDate,
   clearable,
+  disabled,
 }) => {
   const customStyles = {
     label: {
-      fontStyle: "'Montserrat', sans-serif",
-      fontSize: "1.1rem",
-      fontWeight: 400,
-      color: "#302C2C",
-      letterSpacing: "0.1rem",
+      fontSize: "20px",
+      marginBottom: "2px",
+      fontFamily: "Montserrat, sans-serif",
     },
     input: {
-      width: "10rem",
-      fontSize: "1.1rem",
+      border: "none",
+      borderBottom: "1.5px solid black",
+      borderRadius: 0,
+      fontSize: "16px",
       fontWeight: 400,
-      textAlign: "center",
+      color: "#302C2C",
       fontFamily: "Montserrat, sans-serif",
+      backgroundColor: `${disabled && "#edeceb"}`,
     },
   };
 
@@ -37,7 +39,7 @@ const Datepicker = ({
       placeholder="dd-mm-yyyy"
       inputFormat="DD-MM-YYYY"
       labelFormat="MMMM - YYYY"
-      maxDate={maxDate ? maxDate : new Date()}
+      maxDate={maxDate}
       size={size}
       withAsterisk={isRequired ? isRequired : false}
       styles={appliedStyles}
@@ -45,6 +47,7 @@ const Datepicker = ({
       onChange={onChange}
       minDate={minDate}
       clearable={clearable}
+      disabled={disabled}
     />
   );
 };
