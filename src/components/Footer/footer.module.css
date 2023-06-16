@@ -63,7 +63,7 @@
 }
 
 @media only screen and (min-width: 320px) and (max-device-width: 425px) {
-  .poweredBy{
+  .poweredBy {
     margin: -16px;
   }
   .poweredBy img {

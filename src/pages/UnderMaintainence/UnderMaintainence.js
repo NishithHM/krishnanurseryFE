@@ -93,6 +93,7 @@ const UnderMaintainence = () => {
   const [plantImages, setPlantImages] = useState([]);
 
   const [values] = useContext(AuthContext);
+  console.log(values);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
@@ -135,6 +136,7 @@ const UnderMaintainence = () => {
     setSearchInput(event.target.value);
     searchHandler(event.target.value);
   };
+
   const tableBody = useMemo(() => {
     return getProcurementListTableBody(getProcurements.data);
   }, [JSON.stringify(getProcurements.data)]);
