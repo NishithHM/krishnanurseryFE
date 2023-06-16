@@ -24,15 +24,12 @@ const ViewDetials = ({ onDetailClick, id }) => {
   );
 };
 export const getProcurementListTableBody = (data, onDetailClick) => {
-  // console.log(data)
   if (_.isEmpty(data)) {
     return [];
   } else {
     const history = data?.map((ele) => {
       console.log(ele);
       const res = requiredData?.map((res) => {
-        // console.log(ele);
-        // console.log(res);
         if (res === "plantName") {
           return { value: ele?.names?.en?.name };
         } else if (res === "underMaintenanceQuantity") {

@@ -139,23 +139,6 @@ const CustomerOnboarding = () => {
               isRequired={true}
               value={formState.dateOfBirth}
               onChange={dateChangeHandler}
-              styles={{
-                label: {
-                  fontSize: "20px",
-                  marginBottom: "2px",
-                  fontFamily: "Montserrat, sans-serif",
-                },
-                input: {
-                  border: "none",
-                  borderBottom: "1.5px solid black",
-                  borderRadius: 0,
-                  fontSize: "16px",
-                  fontWeight: 400,
-                  color: "#302C2C",
-                  fontFamily: "Montserrat, sans-serif",
-                },
-              }}
-              className={styles.dateText}
             />
             {formSubmitted && formState.dateOfBirth === "" && (
               <p style={{ color: "red", lineHeight: 0 }}>Select Date</p>

@@ -4,6 +4,7 @@ import cx from "classnames";
 import sort from "../../assets/images/sort.png";
 
 const Table = ({ data, onSortBy }) => {
+  console.log(data);
   if (data.length === 1) {
     return (
       <span
@@ -28,7 +29,7 @@ const Table = ({ data, onSortBy }) => {
                 styles.tableCommon,
                 { [`${styles.tableHeader}`]: rIndex === 0 },
                 { [`${styles.tableDataCommon}`]: rIndex !== 0 },
-                { [`${styles.tableColorWhite}`]: rIndex % 2 == 0 }
+                { [`${styles.tableColorWhite}`]: rIndex % 2 === 0 }
               )}
             >
               {rows.map((dataVal, dIndex) => (
