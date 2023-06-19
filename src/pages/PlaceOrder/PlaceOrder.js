@@ -13,19 +13,19 @@ import styles from "./AddProcurement.module.css";
 import {
   useGetProcurementMutation,
   usePlaceOrderMutation,
-  useGetOrderIdMutation
+  useGetOrderIdMutation,
 } from "../../services/procurement.services";
 import _ from "lodash";
 import { isEmpty } from "lodash";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { getTableBody } from "./helper";
 import { toast } from "react-toastify";
-import { useGetAllCategoriesQuery} from "../../services/categories.services";
+import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import dayjs from "dayjs";
 import { useGetInvoiceMutation } from "../../services/procurement.services";
 
 /* /api/procurements/vendor-orders/:id GET --> [1235353, 345345455, 34534354]  ---> [{label:1235353, value: 1235353}]
-*/
+ */
 
 export const PlaceOrder = () => {
   const initialState = {
@@ -48,7 +48,7 @@ export const PlaceOrder = () => {
     orderId: {},
     orderDropdownValues: [],
     orderDetails: {},
-    disableExpectedDate: false
+    disableExpectedDate: false,
   };
 
   const navigate = useNavigate();
@@ -60,10 +60,10 @@ export const PlaceOrder = () => {
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
-  const [getInvoice] = useGetInvoiceMutation()
+  const [getInvoice] = useGetInvoiceMutation();
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
-  const [getOrderId] = useGetOrderIdMutation()
+  const [getOrderId] = useGetOrderIdMutation();
 
   const [PlaceOrder, { isLoading: isOrderLoading }] = usePlaceOrderMutation();
 
@@ -114,7 +114,7 @@ export const PlaceOrder = () => {
   };
 
   const dropDownChangeHandler = (event, id) => {
-    console.log(event)
+    console.log(event);
     setState((prev) => {
       return {
         ...prev,
@@ -160,35 +160,37 @@ export const PlaceOrder = () => {
             )} `,
       disabledVendorContact: state.addVendorName?.__isNew__ ? false : true,
     }));
-    
-    if(state.addVendorName?.value){
-    getOrderId({id:state.addVendorName?.value})
-    .then((res) => {
-      if(state.addVendorName?.value){
-      const data = res?.data;
-      const orderMap = data.map((ele, index)=>{
-        const isLast = index === data.length -1 ? '(new)' : ''
-        return {
-          label: `${ele} ${isLast}`,
-          value: ele
-        }
-      })
-      setState((prev) => ({
-        ...prev,
-        orderDropdownValues: orderMap,
-      }))} else{
-        return {}
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
+
+    if (state.addVendorName?.value) {
+      getOrderId({ id: state.addVendorName?.value })
+        .then((res) => {
+          if (state.addVendorName?.value) {
+            const data = res?.data;
+            const orderMap = data.map((ele, index) => {
+              const isLast = index === data.length - 1 ? "(new)" : "";
+              return {
+                label: `${ele} ${isLast}`,
+                value: ele,
+              };
+            });
+            setState((prev) => ({
+              ...prev,
+              orderDropdownValues: orderMap,
+            }));
+          } else {
+            return {};
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [state.addVendorName?.value]);
 
   const onError = (error) => {
     toast.error(error);
   };
-console.log(state.addPlantCategory)
+  console.log(state.addPlantCategory);
   const onSubmitHandler = async () => {
     // console.log(state);
 
@@ -204,9 +206,9 @@ console.log(state.addPlantCategory)
       categories: state.addPlantCategory,
       expectedDeliveryDate: state.expectedDeliveryDate,
       currentPaidAmount: state.currentPaidAmount,
-      orderId: state.orderId?.value
+      orderId: state.orderId?.value,
     };
-    console.log(body,'body')
+    console.log(body, "body");
     if (search.get("orderId")) {
       body.id = search.get("orderId");
     }
@@ -261,7 +263,6 @@ console.log(state.addPlantCategory)
     });
   }, [requestedQuantity]);
 
-
   const isInhouseOrder =
     state.addVendorContact && state.addVendorContact === "9999999999";
 
@@ -287,22 +288,27 @@ console.log(state.addPlantCategory)
       }));
   }, [isInhouseOrder]);
 
-  useEffect(()=>{
-    const getOrderDetails = async ()=>{
-      if(state.orderId?.value){
-      const {data} = await getInvoice({id:state.orderId?.value, page:'placeOrder'});
-      console.log(data)
-      setState((prev)=>({
-        ...prev,
-        orderDetails: data,
-        expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format('YYYY-MM-DD'),
-        disableExpectedDate: data?.expectedDeliveryDate ? true : false
-      }))
-    }
-    }
-    getOrderDetails()
-  }, [state.orderId?.value])
-  console.log(state.addPlantCategory)
+  useEffect(() => {
+    const getOrderDetails = async () => {
+      if (state.orderId?.value) {
+        const { data } = await getInvoice({
+          id: state.orderId?.value,
+          page: "placeOrder",
+        });
+        console.log(data);
+        setState((prev) => ({
+          ...prev,
+          orderDetails: data,
+          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format(
+            "YYYY-MM-DD"
+          ),
+          disableExpectedDate: data?.expectedDeliveryDate ? true : false,
+        }));
+      }
+    };
+    getOrderDetails();
+  }, [state.orderId?.value]);
+  console.log(state.addPlantCategory);
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -395,17 +401,26 @@ console.log(state.addPlantCategory)
             value={state.orderId}
             required
           />
-          {state.orderDetails?.items?.length > 0 &&
-          <div>
-            <span className={styles.orderLabel}>Previous Order Details:</span>
-            {state.orderDetails.items.map((ele, ind)=>{
-              return(<div className={styles.orderItems}>
-                {`${ind+1}) ${ele?.names?.en?.name}    X   ${ele.orderedQuantity}   =   ${ele.totalPrice}`}   
-              </div>)
-            })}
-            <div className={styles.orderItems}>Total Advance amount: {state.orderDetails.advanceAmount}</div>
-            <div className={styles.orderItems}>Total amount: {state.orderDetails.totalAmount}</div>
-          </div>}
+          {state.orderDetails?.items?.length > 0 && (
+            <div>
+              <span className={styles.orderLabel}>Previous Order Details:</span>
+              {state.orderDetails.items.map((ele, ind) => {
+                return (
+                  <div className={styles.orderItems}>
+                    {`${ind + 1}) ${ele?.names?.en?.name}    X   ${
+                      ele.orderedQuantity
+                    }   =   ${ele.totalPrice}`}
+                  </div>
+                );
+              })}
+              <div className={styles.orderItems}>
+                Total Advance amount: {state.orderDetails.advanceAmount}
+              </div>
+              <div className={styles.orderItems}>
+                Total amount: {state.orderDetails.totalAmount}
+              </div>
+            </div>
+          )}
           <div className={styles.inputWrapper}>
             <div className={styles.inputdiv}>
               <Input
