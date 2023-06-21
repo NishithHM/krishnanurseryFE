@@ -71,6 +71,8 @@ const AgriRequesrOrder = () => {
     delete order.isNewVendor;
     delete order.vendorName;
     order.vendorName = state.vendorName.label;
+    console.log(location.state);
+    order.orderId = location.state.data._id;
 
     const res = await placeOrder(order);
     toast.success(res.data.message);

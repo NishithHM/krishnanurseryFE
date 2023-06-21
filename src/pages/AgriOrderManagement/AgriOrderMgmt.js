@@ -64,14 +64,6 @@ const AgriOrderMgmt = () => {
     endData: "",
   });
 
-  // const [RejectOrder, { isLoading: isRejectLoading }] =
-  //   useRejectOrderMutation();
-  // const [VerifyOrder, { isLoading: isVerifyLoading }] =
-  //   useVerifyOrderMutation();
-
-  // const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
-  //   useAddOrderInvoiceMutation();
-
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
   const onAction = ({ id, action, data }) => {
     const functionObj = {
