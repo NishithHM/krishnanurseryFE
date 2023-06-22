@@ -110,7 +110,7 @@ const AgriRequesrOrder = () => {
         {isPlaceOrder && (
           <div>
             <Dropdown
-              url="/api/vendors/getAll"
+              url="/api/vendors/getAll?type=AGRI"
               id="vendorName"
               apiDataPath={{ label: "name", value: "_id" }}
               title="Vendor Name"
