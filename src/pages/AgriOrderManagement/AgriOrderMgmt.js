@@ -18,12 +18,12 @@ import {
   Filters,
 } from "../../components";
 
-import {
-  useAddOrderInvoiceMutation,
-  useGetOrdersMutation,
-  useRejectOrderMutation,
-  useVerifyOrderMutation,
-} from "../../services/procurement.services";
+// import {
+//   useAddOrderInvoiceMutation,
+//   useGetOrdersMutation,
+//   useRejectOrderMutation,
+//   useVerifyOrderMutation,
+// } from "../../services/procurement.services";
 
 import { ImSearch } from "react-icons/im";
 import { AuthContext } from "../../context";
@@ -40,33 +40,23 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
+import { useGetOrdersMutation } from "../../services/agrivariants.services";
 const AgriOrderMgmt = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [user] = useContext(AuthContext);
   const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
-  const [plantImages, setPlantImages] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [ordersCount, setOrdersCount] = useState(0);
   const [search, setSearch] = useState("");
-  const [rejectOrder, setRejectOrder] = useState({
-    isActive: false,
-    id: null,
-    reason: "",
-  });
-  const [verifyOrder, setVerifyOrder] = useState({
-    isActive: false,
-    id: null,
-    data: null,
-    quantity: 0,
-  });
+
   const [addInvoice, setAddInvoice] = useState({
     isActive: false,
     id: null,
     data: null,
   });
-  console.log(addInvoice, "in");
+  // console.log(addInvoice, "in");
   const [filters, setFilters] = useState({
     status: [],
     vendors: [],
@@ -74,43 +64,15 @@ const AgriOrderMgmt = () => {
     endData: "",
   });
 
-  const [RejectOrder, { isLoading: isRejectLoading }] =
-    useRejectOrderMutation();
-  const [VerifyOrder, { isLoading: isVerifyLoading }] =
-    useVerifyOrderMutation();
-
-  const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
-    useAddOrderInvoiceMutation();
-
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
-  const onAction = ({ id, action, data, orderId }) => {
+  const onAction = ({ id, action, data }) => {
     const functionObj = {
-      reject: () => {
-        setRejectOrder({ isActive: true, id: id, reason: "" });
-      },
-      accept: () => {
-        console.log(data);
-        console.log("accept", id, data);
-        navigate(
-          `./place-order?id=${id}&orderId=${orderId}&requestedQuantity=${
-            data?.requestedQuantity || 0
-          }`,
-          {
-            state: {
-              label: data?.vendorName,
-              vendorContact: data.vendorContact,
-              value: data.vendorId,
-            },
-          }
-        );
-      },
-      verify: () => {
-        setVerifyOrder({ isActive: true, id, data, quantity: 0 });
-      },
-      addInvoice: () => {
+      placeOrder: () => {
         console.log("add invoice", id);
         console.log(data);
-        setAddInvoice({ isActive: true, id, data });
+        navigate("../dashboard/orders-agri/request-order", {
+          state: { placeOrder: true, data },
+        });
       },
     };
     functionObj[action]();
@@ -120,13 +82,13 @@ const AgriOrderMgmt = () => {
       isCount: true,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
-      ...formatFilter(filters),
+      // ...formatFilter(filters),
     };
     const listBody = {
       pageNumber: page,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
-      ...formatFilter(filters),
+      // ...formatFilter(filters),
     };
     if (page === 1) {
       const counts = await getOrders({ body: { ...countBody } });
@@ -138,7 +100,7 @@ const AgriOrderMgmt = () => {
       role: user.role,
       onAction,
     });
-    console.log(formattedData);
+    // console.log(formattedData);
     setData(formattedData);
   };
 
@@ -199,27 +161,6 @@ const AgriOrderMgmt = () => {
       onAction,
     });
     setData(list);
-  };
-
-  const handlePlantimageSelect = (file) => {
-    setPlantImages((prev) => {
-      let updated = [...prev, ...file];
-
-      const uniqueArr = Array.from(new Set(updated.map((a) => a.path))).map(
-        (path) => {
-          return updated.find((a) => a.path === path);
-        }
-      );
-      return uniqueArr;
-    });
-  };
-
-  const handlePlantImageRemove = (index) => {
-    setPlantImages((prev) => {
-      let updated = [...prev];
-      updated.splice(index, 1);
-      return updated;
-    });
   };
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
@@ -298,7 +239,7 @@ const AgriOrderMgmt = () => {
       </div>
 
       {/* reject order modal */}
-      <Modal isOpen={rejectOrder.isActive} contentLabel="Reject Order">
+      {/* <Modal isOpen={rejectOrder.isActive} contentLabel="Reject Order">
         <Alert
           message={`Are you sure to cancel this order?`}
           subMessage={""}
@@ -336,10 +277,10 @@ const AgriOrderMgmt = () => {
             }}
           />
         </Alert>
-      </Modal>
+      </Modal> */}
 
       {/* verify order modal */}
-      <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
+      {/* <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
         <AlertMessage
           message={`Verify the order of ${
             verifyOrder?.data?.names?.en?.name || "Plants"
@@ -452,10 +393,10 @@ const AgriOrderMgmt = () => {
             />
           </div>
         </AlertMessage>
-      </Modal>
+      </Modal> */}
 
       {/* Add Invoice modal */}
-      {addInvoice.isActive && (
+      {/* {addInvoice.isActive && (
         <AddInvoiceModal
           addInvoice={addInvoice}
           setAddInvoice={setAddInvoice}
@@ -466,7 +407,7 @@ const AgriOrderMgmt = () => {
           toast={toast}
           orderId={addInvoice?.data?.orderId}
         />
-      )}
+      )} */}
     </>
   );
 };

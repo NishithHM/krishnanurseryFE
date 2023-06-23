@@ -108,6 +108,22 @@ export const agriVariantsApi = createApi({
           };
         },
       }),
+      placeAgriOrder: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/place-order`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      getOrders: builder.mutation({
+        query: ({ body }) => ({
+          url: `/order-list`,
+          method: "POST",
+          body,
+        }),
+      }),
     };
   },
 });
@@ -122,4 +138,6 @@ export const {
   useDeleteAgriVariantByIdMutation,
   useAddAgriVariantMutation,
   useRequestAgriOrderMutation,
+  usePlaceAgriOrderMutation,
+  useGetOrdersMutation,
 } = agriVariantsApi;

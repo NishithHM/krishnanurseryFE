@@ -8,14 +8,47 @@ import { formatDropOptions } from "../../pages/AddNewVariants/helper";
 import Input from "../Input";
 import Button from "../Button";
 import { BiTrash } from "react-icons/bi";
+import { useLocation } from "react-router-dom";
 const initialState = {
-  variants: [{ type: {}, name: {}, options: [], totalQuantity: "" }],
+  variants: [
+    {
+      type: {},
+      name: {},
+      options: [],
+      totalQuantity: 0,
+      price: 0,
+    },
+  ],
 };
 const AgriVarinatsAddition = ({
   onChange = () => null,
   isFormValid = () => null,
 }) => {
   const [{ variants }, setState] = useState(initialState);
+  const location = useLocation();
+  const isPlaceOrder = location?.state?.placeOrder || false;
+
+  useEffect(() => {
+    if (isPlaceOrder) {
+      const variant = location.state.data;
+
+      const transformedData = {
+        type: { label: variant.type, value: variant.type },
+        name: { label: variant.names, value: variant.names },
+        options: variant.variant.map((option) => {
+          return {
+            optionName: option.optionName,
+            optionValues: [option.value],
+            value: { label: option.optionValue, value: option.optionValue },
+          };
+        }),
+        totalQuantity: variant.requestedQuantity,
+        price: 0,
+      };
+      onChange({ variants: [transformedData] });
+      setState({ variants: [transformedData] });
+    }
+  }, []);
   const [getAgriVariantById] = useGetAgriVariantByIdMutation();
   const dropDownChangeHandler = async (event, id, index, optIndex) => {
     const variant = cloneDeep(variants[index]);
@@ -46,7 +79,15 @@ const AgriVarinatsAddition = ({
   useEffect(() => {
     onChange(variants);
     isFormValid(
-      variants.some((ele) => !ele.totalQuantity || ele.totalQuantity <= 0)
+      isPlaceOrder
+        ? variants.some(
+            (ele) =>
+              !ele.totalQuantity ||
+              ele.totalQuantity <= 0 ||
+              !ele.price ||
+              ele.price <= 0
+          )
+        : variants.some((ele) => !ele.totalQuantity || ele.totalQuantity <= 0)
     );
   }, [JSON.stringify(variants)]);
 
@@ -69,25 +110,29 @@ const AgriVarinatsAddition = ({
     }));
   };
 
+  console.log(isPlaceOrder);
   return (
     <div className={styles.variantsAddWrapper}>
-      <div className={styles.buttonWrapper}>
-        <div className={styles.dropDownWrapper}>
-          <Button
-            onClick={onAddVariant}
-            title="Add Variant"
-            disabled={variants.some(
-              (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
-            )}
-          />
+      {!isPlaceOrder && (
+        <div className={styles.buttonWrapper}>
+          <div className={styles.dropDownWrapper}>
+            <Button
+              onClick={onAddVariant}
+              title="Add Variant"
+              disabled={variants.some(
+                (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
+              )}
+            />
+          </div>
         </div>
-      </div>
+      )}
       {variants.map((ele, index) => {
         return (
           <div key={index} className={styles.wrapper}>
             <div className={styles.variantsRow}>
               <div className={styles.dropDownWrapper}>
                 <Dropdown
+                  disabled={isPlaceOrder}
                   url="/api/agri/type-options?type=type"
                   id="type"
                   apiDataPath={{ label: "", value: "" }}
@@ -100,6 +145,7 @@ const AgriVarinatsAddition = ({
               {Boolean(ele?.type?.label) && (
                 <div className={styles.dropDownWrapper}>
                   <Dropdown
+                    disabled={isPlaceOrder}
                     url={`/api/agri/variants?type=${ele?.type?.label}`}
                     id="name"
                     apiDataPath={{ label: "name", value: "_id" }}
@@ -121,6 +167,7 @@ const AgriVarinatsAddition = ({
                         onChange={(e, id) =>
                           dropDownChangeHandler(e, id, index, jIndex)
                         }
+                        disabled={isPlaceOrder}
                         title={opt.optionName}
                         id={opt.optionName}
                         data={formatDropOptions(opt.optionValues)}
@@ -131,21 +178,66 @@ const AgriVarinatsAddition = ({
                 })}
               {ele.options.length > 0 &&
                 ele?.options.every((opt) => !!opt.value) && (
-                  <div
-                    className={cx(styles.dropDownWrapper, styles.inputDropDown)}
-                  >
-                    <Input
-                      value={ele.totalQuantity}
-                      id="totalQuantity"
-                      type="number"
-                      onChange={(e, id) =>
-                        dropDownChangeHandler(e?.target?.value, id, index)
-                      }
-                      title="Total Quantity"
-                      required
-                      min={0}
-                    />
-                  </div>
+                  <>
+                    <div
+                      className={cx(
+                        styles.dropDownWrapper,
+                        styles.inputDropDown
+                      )}
+                    >
+                      <Input
+                        value={ele.totalQuantity}
+                        id="totalQuantity"
+                        type="number"
+                        onChange={(e, id) =>
+                          dropDownChangeHandler(e?.target?.value, id, index)
+                        }
+                        title="Total Quantity"
+                        required
+                        min={0}
+                      />
+                    </div>
+
+                    {isPlaceOrder && (
+                      <>
+                        <div
+                          className={cx(
+                            styles.dropDownWrapper,
+                            styles.inputDropDown
+                          )}
+                        >
+                          <Input
+                            value={ele.price}
+                            id="price"
+                            type="number"
+                            onChange={(e, id) =>
+                              dropDownChangeHandler(e?.target?.value, id, index)
+                            }
+                            title="Price"
+                            required
+                            min={0}
+                          />
+                        </div>
+                        <div
+                          className={cx(
+                            styles.dropDownWrapper,
+                            styles.inputDropDown
+                          )}
+                        >
+                          <Input
+                            value={ele.totalQuantity * ele.price}
+                            disabled
+                            id="subTotal"
+                            type="number"
+                            onChange={(e, id) => {}}
+                            title="Sub Total"
+                            required
+                            min={0}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
                 )}
             </div>
             <div>
