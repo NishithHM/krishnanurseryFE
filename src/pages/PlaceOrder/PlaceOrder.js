@@ -358,7 +358,7 @@ export const PlaceOrder = () => {
             />
           </div>
           <Dropdown
-            url="/api/vendors/getAll"
+            url="/api/vendors/getAll?type=NURSERY"
             id="addVendorName"
             apiDataPath={{ label: "name", value: "_id" }}
             title="Vendor Name"
