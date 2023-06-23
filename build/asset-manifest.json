@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.dc13273f.css",
-    "main.js": "/static/js/main.d119083d.js",
+    "main.css": "/static/css/main.c3467bc4.css",
+    "main.js": "/static/js/main.f36b713e.js",
     "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/wasteManagementIcon.png": "/static/media/wasteManagementIcon.e6e5d0fdb7c9a775b773.png",
     "static/media/access.png": "/static/media/access.482e0792f3566096f906.png",
     "static/media/access_management.png": "/static/media/access_management.8a4f8f749e86daf83a97.png",
     "static/media/categories.png": "/static/media/categories.f0b95b989cf408382455.png",
     "static/media/logo.png": "/static/media/logo.2e80816afa07ac944da2.png",
+    "static/media/logo2.png": "/static/media/logo2.91f7bf4f9c449a35dc78.png",
     "static/media/sales.png": "/static/media/sales.43b7c0fd010cdf7a15ae.png",
     "static/media/payments.png": "/static/media/payments.b236b60e743bc85d9208.png",
     "static/media/procurement.png": "/static/media/procurement.f3f5ef6369f20bafe3cd.png",
@@ -16,12 +17,12 @@
     "static/media/maintenance.png": "/static/media/maintenance.143e3063613ac409f6f0.png",
     "static/media/billBook.png": "/static/media/billBook.942098d32268e4a23413.png",
     "index.html": "/index.html",
-    "main.dc13273f.css.map": "/static/css/main.dc13273f.css.map",
-    "main.d119083d.js.map": "/static/js/main.d119083d.js.map",
+    "main.c3467bc4.css.map": "/static/css/main.c3467bc4.css.map",
+    "main.f36b713e.js.map": "/static/js/main.f36b713e.js.map",
     "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.dc13273f.css",
-    "static/js/main.d119083d.js"
+    "static/css/main.c3467bc4.css",
+    "static/js/main.f36b713e.js"
   ]
 }
