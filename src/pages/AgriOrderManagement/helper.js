@@ -7,7 +7,7 @@ export const addTitle = {
 };
 
 export const addLink = {
-  procurement: "place-order",
+  procurement: "../dashboard/orders-agri/request-order",
   sales: "../dashboard/orders-agri/request-order",
 };
 

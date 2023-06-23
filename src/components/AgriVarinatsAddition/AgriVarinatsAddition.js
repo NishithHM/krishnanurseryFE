@@ -79,7 +79,15 @@ const AgriVarinatsAddition = ({
   useEffect(() => {
     onChange(variants);
     isFormValid(
-      variants.some((ele) => !ele.totalQuantity || ele.totalQuantity <= 0)
+      isPlaceOrder
+        ? variants.some(
+            (ele) =>
+              !ele.totalQuantity ||
+              ele.totalQuantity <= 0 ||
+              !ele.price ||
+              ele.price <= 0
+          )
+        : variants.some((ele) => !ele.totalQuantity || ele.totalQuantity <= 0)
     );
   }, [JSON.stringify(variants)]);
 
