@@ -93,7 +93,7 @@ const AgriRequesrOrder = () => {
         ...prev,
         [id]: event,
         vendorContact: event?.meta?.contact || "",
-        isNewVendor: event?.isNew || false,
+        isNewVendor: event?.__isNew__ || false,
       };
     });
   };
@@ -169,6 +169,7 @@ const AgriRequesrOrder = () => {
               value={state.vendorName}
               required
               minInputToFireApi={3}
+              canCreate
             />
 
             <Input
