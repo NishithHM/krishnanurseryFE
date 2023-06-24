@@ -17,8 +17,9 @@ import UnderMaintainence from "./UnderMaintainence";
 import Payments from "./Payments";
 import AgriVariants from "./AgriVariants";
 import AddNewVariants from "./AddNewVariants";
-import AgriPlaceOrder from "./AgriPlaceOrder";
 import AgriProcurement from "./AgriProcurement";
+import AgriRequesrOrder from "./AgriRequestOrder";
+import AgriOrderMgmt from "./AgriOrderManagement";
 export {
   Login,
   Test,
@@ -39,6 +40,7 @@ export {
   Payments,
   AgriVariants,
   AddNewVariants,
-  AgriPlaceOrder,
-  AgriProcurement
+  AgriProcurement,
+  AgriOrderMgmt,
+  AgriRequesrOrder
 };

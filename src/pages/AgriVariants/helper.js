@@ -43,7 +43,8 @@ export const getVariantsBody = (data, onDeleteClick, onEditClick) => {
           return {
             value: (
               <span>
-                <Delete onDeleteClick={onDeleteClick} id={ele._id} /> &nbsp;/ &nbsp;
+                <Delete onDeleteClick={onDeleteClick} id={ele._id} /> &nbsp;/
+                &nbsp;
                 <Edit onEditClick={onEditClick} id={ele._id} />
               </span>
             ),

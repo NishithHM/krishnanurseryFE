@@ -42,13 +42,14 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                     />
                     {config.isVendor &&
                         <Dropdown
-                            url="/api/vendors/getAll"
+                            url={`/api/vendors/getAll?type=${config?.vendorType}`}
                             id="vendors"
                             apiDataPath={{ label: "name", value: "_id" }}
                             title="Vendor Name"
                             onChange={dropDownChangeHandler}
                             value={filters.vendors}
                             isMultiEnabled
+                            minInputToFireApi={3}
                         />
                     }
                     {config.orderStatus && <Dropdown

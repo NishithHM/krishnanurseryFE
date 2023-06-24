@@ -19,8 +19,9 @@ import {
   Payments,
   AgriVariants,
   AddNewVariants,
-  AgriPlaceOrder,
   AgriProcurement,
+  AgriRequesrOrder,
+  AgriOrderMgmt,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -74,7 +75,6 @@ const Protected = () => {
               exact
               element={<ProcurementList />}
             />
-
             <Route path="/dashboard/bills" exact element={<Bills />} />
             <Route path="/dashboard/add-bills" exact element={<AddBills />} />
             <Route
@@ -118,10 +118,15 @@ const Protected = () => {
               exact
               element={<AddNewVariants />}
             />
-             <Route
-              path="/dashboard/orders-agri/place-order"
+            <Route
+              path="/dashboard/orders-agri/request-order"
               exact
-              element={<AgriPlaceOrder />}
+              element={<AgriRequesrOrder />}
+            />
+            <Route
+              path="/dashboard/agri-orders"
+              exact
+              element={<AgriOrderMgmt />}
             />
             <Route
               path="/dashboard/agri-add-procurements"

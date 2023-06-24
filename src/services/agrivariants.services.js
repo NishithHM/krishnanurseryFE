@@ -32,11 +32,18 @@ export const agriVariantsApi = createApi({
             params.search = search;
           }
           if (type) {
-            pageNumber.type = type;
+            params.type = type;
           }
           return {
             url: `/variants`,
             params: params,
+          };
+        },
+      }),
+      getAgriVariant: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/variants/${id}`,
           };
         },
       }),
@@ -93,15 +100,84 @@ export const agriVariantsApi = createApi({
         method: 'POST',
         body,
       })
-     })
+     }),
+      updateAgriOptionValues: builder.mutation({
+        query: ({ id, body }) => {
+          return {
+            url: `/variants/${id}`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      getAgriVariantById: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/variants/${id}`,
+          };
+        },
+      }),
+      deleteAgriVariantById: builder.mutation({
+        query: ({ id }) => {
+          return {
+            url: `/delete-variant/${id}`,
+            method: "GET",
+          };
+        },
+      }),
+      addAgriVariant: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/variants`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      requestAgriOrder: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/request-order`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      placeAgriOrder: builder.mutation({
+        query: (body) => {
+          return {
+            url: `/place-order`,
+            method: "POST",
+            body,
+          };
+        },
+      }),
+      getOrders: builder.mutation({
+        query: ({ body }) => ({
+          url: `/order-list`,
+          method: "POST",
+          body,
+        }),
+      }),
     };
   },
 });
 
 export const {
   useGetAgriVariantsQuery,
+  useGetAgriVariantMutation,
   useGetAgriOptionsQuery,
   useGetAgriOptionValuesMutation,
+<<<<<<< HEAD
   useGetAgriProcurementQuery,
   useSetAmountMutation
+=======
+  useUpdateAgriOptionValuesMutation,
+  useGetAgriVariantByIdMutation,
+  useDeleteAgriVariantByIdMutation,
+  useAddAgriVariantMutation,
+  useRequestAgriOrderMutation,
+  usePlaceAgriOrderMutation,
+  useGetOrdersMutation,
+>>>>>>> bca7f59fd4cd3a337e3005719e3b4b9fa837fbf5
 } = agriVariantsApi;

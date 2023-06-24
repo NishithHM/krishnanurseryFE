@@ -18,7 +18,6 @@ const AddNewVariantsSelect = ({
         display: "flex",
         alignItems: "center",
         gap: "20px",
-        maxWidth: "60rem",
         justifyContent: "stretch",
         margin: "10px 0",
       }}
