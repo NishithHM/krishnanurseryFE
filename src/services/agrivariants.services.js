@@ -168,10 +168,8 @@ export const {
   useGetAgriVariantMutation,
   useGetAgriOptionsQuery,
   useGetAgriOptionValuesMutation,
-<<<<<<< HEAD
   useGetAgriProcurementQuery,
-  useSetAmountMutation
-=======
+  useSetAmountMutation,
   useUpdateAgriOptionValuesMutation,
   useGetAgriVariantByIdMutation,
   useDeleteAgriVariantByIdMutation,
@@ -179,5 +177,4 @@ export const {
   useRequestAgriOrderMutation,
   usePlaceAgriOrderMutation,
   useGetOrdersMutation,
->>>>>>> bca7f59fd4cd3a337e3005719e3b4b9fa837fbf5
 } = agriVariantsApi;
