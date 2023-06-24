@@ -19,6 +19,7 @@ import {
   Payments,
   AgriVariants,
   AddNewVariants,
+  AgriProcurement,
   AgriRequesrOrder,
   AgriOrderMgmt,
 } from "../../pages";
@@ -126,6 +127,11 @@ const Protected = () => {
               path="/dashboard/agri-orders"
               exact
               element={<AgriOrderMgmt />}
+            />
+            <Route
+              path="/dashboard/agri-add-procurements"
+              exact
+              element={<AgriProcurement />}
             />
           </Routes>
         </div>
