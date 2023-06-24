@@ -159,6 +159,26 @@ export const agriVariantsApi = createApi({
           body,
         }),
       }),
+      addOrderInvoice: builder.mutation({
+        query: ({ id, body }) => ({
+          url: `/add-invoice/${id}`,
+          method: "POST",
+          body,
+        }),
+        invalidatesTags: ["procurements"],
+      }),
+      getInvoice:builder.mutation({
+        query:({id, page})=>({
+          url: `/order/${id}?page=${page}`,
+          method:'GET'
+        })
+      }),
+      getOrderId:builder.mutation({
+        query: ({id})=>({
+          url:`/vendor-orders/${id}`,
+          method:'GET'
+        })
+      }),
     };
   },
 });
@@ -177,4 +197,7 @@ export const {
   useRequestAgriOrderMutation,
   usePlaceAgriOrderMutation,
   useGetOrdersMutation,
+  useAddOrderInvoiceMutation,
+  useGetInvoiceMutation,
+  useGetOrderIdMutation
 } = agriVariantsApi;

@@ -17,13 +17,13 @@ const AddInvoiceModal = ({
   loadInitialOrders,
   sort,
   toast,
-  orderId
+  orderId,
+  getInvoice
 }) => {
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
 
   const [getVendor] = useGetVendorMutation();
-  const [getInvoice] = useGetInvoiceMutation();
 
   const [state, setState] = useState({
     advanceAmount: 0,
@@ -233,7 +233,7 @@ const AddInvoiceModal = ({
                {state.orderVal?.items.map((ele) => {
                   return (
                     <div className={styles.invoiceItem}>
-                       <span>{`${ele?.names?.en?.name} x ${ele?.orderedQuantity}`}</span>
+                       <span>{`${ele?.names?.en?.name || ele?.names } x ${ele?.orderedQuantity}`}</span>
                        <div style={{width:'100px'}}>
                       <Input type="number" onChange={e=> onItemChange(e, ele._id)} style={{width:'100px'}} value={ele?.totalPrice}/>
                       </div>

@@ -18,12 +18,6 @@ import {
   Filters,
 } from "../../components";
 
-// import {
-//   useAddOrderInvoiceMutation,
-//   useGetOrdersMutation,
-//   useRejectOrderMutation,
-//   useVerifyOrderMutation,
-// } from "../../services/procurement.services";
 
 import { ImSearch } from "react-icons/im";
 import { AuthContext } from "../../context";
@@ -40,7 +34,8 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
-import { useGetOrdersMutation } from "../../services/agrivariants.services";
+import { useGetOrdersMutation, useAddOrderInvoiceMutation, useGetInvoiceMutation } from "../../services/agrivariants.services";
+
 const AgriOrderMgmt = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -64,8 +59,11 @@ const AgriOrderMgmt = () => {
     startData: "",
     endData: "",
   });
- console.log(selectedOrder)
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
+  const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
+        useAddOrderInvoiceMutation();
+  const [getInvoice] = useGetInvoiceMutation()      
+
   const onAction = ({ id, action, data, isChecked }) => {
     const functionObj = {
       placeOrder: () => {
@@ -79,6 +77,11 @@ const AgriOrderMgmt = () => {
         }
         
       },
+      addInvoice: () => {
+        console.log("add invoice", id);
+        console.log(data);
+        setAddInvoice({ isActive: true, id, data });
+    },
     };
     functionObj[action]();
   };
@@ -87,13 +90,13 @@ const AgriOrderMgmt = () => {
       isCount: true,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
-      // ...formatFilter(filters),
+      ...formatFilter(filters),
     };
     const listBody = {
       pageNumber: page,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
-      // ...formatFilter(filters),
+      ...formatFilter(filters),
     };
     if (page === 1) {
       const counts = await getOrders({ body: { ...countBody } });
@@ -172,7 +175,7 @@ const AgriOrderMgmt = () => {
 
   const onPlaceOrder = ()=>{
     navigate(addLink[user.role], {
-      state: { placeOrder: selectedOrder.length > 0, data: selectedOrder },
+      state: { placeOrder: true, data: selectedOrder },
     });
   }
 
@@ -405,7 +408,7 @@ const AgriOrderMgmt = () => {
       </Modal> */}
 
       {/* Add Invoice modal */}
-      {/* {addInvoice.isActive && (
+      {addInvoice.isActive && (
         <AddInvoiceModal
           addInvoice={addInvoice}
           setAddInvoice={setAddInvoice}
@@ -415,8 +418,10 @@ const AgriOrderMgmt = () => {
           sort={sort}
           toast={toast}
           orderId={addInvoice?.data?.orderId}
+          getInvoice={getInvoice}
+          type="AGRI"
         />
-      )} */}
+      )}
     </>
   );
 };

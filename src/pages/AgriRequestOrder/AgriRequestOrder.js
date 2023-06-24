@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   AgriVarinatsAddition,
+  BackButton,
   Button,
   Dropdown,
   Input,
@@ -9,11 +10,14 @@ import TextArea from "../../components/TextArea";
 import {
   usePlaceAgriOrderMutation,
   useRequestAgriOrderMutation,
+  useGetOrderIdMutation,
+  useGetInvoiceMutation
 } from "../../services/agrivariants.services";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { useGetOrderIdMutation } from "../../services/procurement.services";
+import styles from './AgriRequestOrder.css'
+
 
 const AgriRequesrOrder = () => {
   const [orderData, setOrderData] = useState([]);
@@ -27,6 +31,8 @@ const AgriRequesrOrder = () => {
     isNewVendor: false,
     orderDropdownValues: [],
     orderId: "",
+    orderDetails:[],
+    disableExpectedDate: false
   });
   const navigate = useNavigate();
 
@@ -36,24 +42,25 @@ const AgriRequesrOrder = () => {
 
   const [requestOrder] = useRequestAgriOrderMutation();
   const [placeOrder] = usePlaceAgriOrderMutation();
-  const placeOrderVariantsData = useMemo(()=>{
+  const [getInvoice] = useGetInvoiceMutation()
+  const placeOrderVariantsData = useMemo(() => {
 
     // hardcoding 0 temporarily ( need to conver to array)
     const variants = location?.state?.data;
     console.log(variants)
-    return variants?.map(variant=>({
-    type: { label: variant.type, value: variant.type },
-    name: { label: variant.names, value: variant.names },
-    options: variant.variant.map((option) => {
-      return {
-        optionName: option.optionName,
-        optionValues: [option.value],
-        value: { label: option.optionValue, value: option.optionValue },
-      };
-    }),
-    totalQuantity: variant.requestedQuantity,
-    price: 0,
-  }))
+    return variants?.map(variant => ({
+      type: { label: variant.type, value: variant.type },
+      name: { label: variant.names, value: variant.names },
+      options: variant.variant.map((option) => {
+        return {
+          optionName: option.optionName,
+          optionValues: [option.value],
+          value: { label: option.optionValue, value: option.optionValue },
+        };
+      }),
+      totalQuantity: variant.requestedQuantity,
+      price: 0,
+    }))
   }, [JSON.stringify(location?.state?.data)]);
   const handleRequestOrder = async () => {
     const transformedData = orderData.map((item) => {
@@ -75,6 +82,27 @@ const AgriRequesrOrder = () => {
     toast.success(res.data.message);
     navigate("../dashboard");
   };
+
+  useEffect(() => {
+    const getOrderDetails = async () => {
+      if (state.orderId?.value) {
+        const { data } = await getInvoice({
+          id: state.orderId?.value,
+          page: "placeOrder",
+        });
+        console.log(data);
+        setState((prev) => ({
+          ...prev,
+          orderDetails: data,
+          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format(
+            "YYYY-MM-DD"
+          ),
+          disableExpectedDate: data?.expectedDeliveryDate ? true : false,
+        }));
+      }
+    };
+    getOrderDetails();
+  }, [state.orderId?.value]);
   const handleCreateOrder = async () => {
     const transformedData = orderData.map((item, index) => {
       const variant = item.options.map((option) => ({
@@ -96,10 +124,14 @@ const AgriRequesrOrder = () => {
     delete order.orderId;
     delete order.orderDropdownValues;
     delete order.vendorName;
+    delete order.orderDetails
+    delete order.disableExpectedDate
     order.vendorName = state.vendorName.label;
     ;
     order.orderId = state.orderId.value;
-
+    if (!state.isNewVendor) {
+      order.vendorId = state.vendorName?.value
+    }
     console.log(order)
 
     const res = await placeOrder(order);
@@ -131,7 +163,7 @@ const AgriRequesrOrder = () => {
   };
   useEffect(() => {
     if (state?.vendorName?.label) {
-      getOrderId({ id: state?.vendorName?.label })
+      getOrderId({ id: state?.vendorName?.value })
         .then((res) => {
           if (state?.vendorName?.label) {
             const data = res?.data;
@@ -157,6 +189,9 @@ const AgriRequesrOrder = () => {
   }, [state.vendorName.label]);
   return (
     <div>
+      <div>
+        <BackButton navigateTo={"/authorised/dashboard/agri-orders"} />
+      </div>
       <AgriVarinatsAddition
         isPlaceOrder={(location?.state && location?.state?.placeOrder) || false}
         onChange={(e) => {
@@ -219,7 +254,25 @@ const AgriRequesrOrder = () => {
               value={state.orderId}
               required
             />
-
+            {state.orderDetails?.items?.length > 0 && (
+              <div>
+                <span className={styles.orderLabel}>Previous Order Details:</span>
+                {state.orderDetails.items.map((ele, ind) => {
+                  return (
+                    <div className={styles.orderItems}>
+                      {`${ind + 1}) ${ele?.names}    X   ${ele.orderedQuantity
+                        }   =   ${ele.totalPrice}`}
+                    </div>
+                  );
+                })}
+                <div className={styles.orderItems}>
+                  Total Advance amount: {state.orderDetails.advanceAmount}
+                </div>
+                <div className={styles.orderItems}>
+                  Total amount: {state.orderDetails.totalAmount}
+                </div>
+              </div>
+            )}
             <Input
               value={state.currentPaidAmount}
               id="currentPaidAmount"
@@ -243,6 +296,7 @@ const AgriRequesrOrder = () => {
               value={state.expectedDeliveryDate}
               id="expectedDeliveryDate"
               type="date"
+              disabled={state.disableExpectedDate}
               onChange={(e) => {
                 console.log(e);
                 setState((prev) => ({
@@ -270,13 +324,13 @@ const AgriRequesrOrder = () => {
             disabled={
               isPlaceOrder
                 ? !isFormValid ||
-                  description === "" ||
-                  !state.vendorName ||
-                  state.vendorContact === "" ||
-                  !state.orderId ||
-                  !state.currentPaidAmount ||
-                  state.currentPaidAmount <= 0 ||
-                  !state.expectedDeliveryDate
+                description === "" ||
+                !state.vendorName ||
+                state.vendorContact === "" ||
+                !state.orderId ||
+                !state.currentPaidAmount ||
+                state.currentPaidAmount <= 0 ||
+                !state.expectedDeliveryDate
                 : !isFormValid || description === ""
             }
             onClick={isPlaceOrder ? handleCreateOrder : handleRequestOrder}

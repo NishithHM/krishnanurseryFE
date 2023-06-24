@@ -99,7 +99,6 @@ const AgriVarinatsAddition = ({
   console.log(isPlaceOrder);
   return (
     <div className={styles.variantsAddWrapper}>
-      {!isPlaceOrder && (
         <div className={styles.buttonWrapper}>
           <div className={styles.dropDownWrapper}>
             <Button
@@ -111,7 +110,6 @@ const AgriVarinatsAddition = ({
             />
           </div>
         </div>
-      )}
       {variants.map((ele, index) => {
         return (
           <div key={index} className={styles.wrapper}>
