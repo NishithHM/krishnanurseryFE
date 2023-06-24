@@ -39,9 +39,9 @@ const AgriRequesrOrder = () => {
   const placeOrderVariantsData = useMemo(()=>{
 
     // hardcoding 0 temporarily ( need to conver to array)
-    const variants = location.state.data;
+    const variants = location?.state?.data;
     console.log(variants)
-    return variants.map(variant=>({
+    return variants?.map(variant=>({
     type: { label: variant.type, value: variant.type },
     name: { label: variant.names, value: variant.names },
     options: variant.variant.map((option) => {

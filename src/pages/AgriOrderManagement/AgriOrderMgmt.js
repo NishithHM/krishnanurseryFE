@@ -172,7 +172,7 @@ const AgriOrderMgmt = () => {
 
   const onPlaceOrder = ()=>{
     navigate(addLink[user.role], {
-      state: { placeOrder: true, data: selectedOrder },
+      state: { placeOrder: selectedOrder.length > 0, data: selectedOrder },
     });
   }
 
