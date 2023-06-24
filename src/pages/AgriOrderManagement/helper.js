@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { get, isEmpty } from "lodash";
+import { Checkbox } from "../../components";
 
 export const addTitle = {
   procurement: "Place Order",
@@ -228,76 +229,56 @@ export const formatOrdersData = ({ data, role, onAction }) => {
       return { value };
     });
 
-    // if (role === "procurement") {
-    //   if (order.status === "REQUESTED") {
-    //     const rejectOrder = {
-    //       value: (
-    //         <>
-    //           <span
-    //             style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
-    //             onClick={() => {
-    //               onAction({ id: order._id, action: "reject", data: order });
-    //             }}
-    //           >
-    //             Reject
-    //           </span>
-    //           /&nbsp;
-    //           <span
-    //             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
-    //             onClick={() => {
-    //               onAction({
-    //                 id: order.procurementId,
-    //                 action: "accept",
-    //                 data: order,
-    //                 orderId: order._id,
-    //               });
-    //             }}
-    //           >
-    //             Accept
-    //           </span>
-    //         </>
-    //       ),
-    //     };
-
-    //     rowData.push(rejectOrder);
-    //   } else if (
-    //     order.invoice === "" &&
-    //     ["PLACED", "VERIFIED"].includes(order.status) &&
-    //     order.vendorContact !== "9999999999"
-    //   ) {
-    //     const AddInvoice = {
-    //       value: (
-    //         <span
-    //           style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
-    //           onClick={() => {
-    //             onAction({ id: order._id, action: "addInvoice", data: order });
-    //           }}
-    //         >
-    //           Add Invoice
-    //         </span>
-    //       ),
-    //     };
-    //     rowData.push(AddInvoice);
-    //   } else {
-    //     rowData.push({ value: "---" });
-    //   }
-    // }
-
     if (role === "procurement") {
       if (order.status === "REQUESTED") {
-        const verifyOrder = {
+        const rejectOrder = {
+          value: (
+            <>
+              <span
+                style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
+                onClick={() => {
+                  onAction({ id: order._id, action: "reject", data: order });
+                }}
+              >
+                Reject
+              </span>
+              /&nbsp;
+              <Checkbox
+                label={"Accept"}
+                onChange={(e) => {
+                  onAction({
+                    id: order._id,
+                    action: "placeOrder",
+                    data: order,
+                    isChecked: e
+                  });
+                }}
+              >
+                Accept
+              </Checkbox>
+            </>
+          ),
+        };
+
+        rowData.push(rejectOrder);
+      } else if (
+        order.invoice === "" &&
+        ["PLACED", "VERIFIED"].includes(order.status) &&
+        order.vendorContact !== "9999999999"
+      ) {
+        const AddInvoice = {
           value: (
             <span
-              style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
+              style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
               onClick={() => {
-                onAction({ id: order._id, action: "placeOrder", data: order });
+                onAction({ id: order._id, action: "addInvoice", data: order });
               }}
             >
-              Place Order
+              Add Invoice
             </span>
           ),
         };
-        rowData.push(verifyOrder);
+        rowData.push(AddInvoice);
       } else {
         rowData.push({ value: "---" });
       }

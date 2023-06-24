@@ -1,0 +1,207 @@
+.paginationContainer {
+    font-weight: 500;
+    letter-spacing: 1;
+    text-align: end;
+    color: #302c2c;
+  }
+  .paginationInner {
+    display: flex;
+    flex: 4;
+    justify-content: end;
+    margin-top: 5px;
+    align-items: center;
+    color: #302c2c;
+  }
+  .paginationControls {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #539c64;
+    padding: 0 10px;
+    cursor: pointer;
+  }
+  
+  .paginationControls:disabled {
+    color: #919191;
+    cursor: not-allowed;
+  }
+  
+  .btnControls {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #539c64;
+    padding: 0 10px;
+    cursor: pointer;
+  }
+  
+  .btnControls:disabled {
+    color: #919191;
+    cursor: not-allowed;
+  }
+  
+  .tablewrapper {
+    margin: 10px;
+    width: 100%;
+    padding: 10px;
+    flex: 4;
+  }
+  
+  .tableProcurementListData {
+    margin: 10px;
+    padding: 10px 10px 10px 30px;
+    flex: 2;
+  }
+  
+  .container {
+    display: flex;
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .innerContainer {
+    flex: 2;
+  }
+  
+  .paginationContainerFilter {
+    font-weight: 500;
+    letter-spacing: 1;
+    text-align: end;
+    /* padding: 1rem; */
+  }
+  
+  .paginationInnerFilter {
+    display: flex;
+    flex: 2;
+    justify-content: end;
+    margin-top: 5px;
+    align-items: center;
+    top: 300px;
+  }
+  
+  .noDataDisplayText {
+    color: #539c64;
+    text-align: center;
+    font-size: 20px;
+  }
+  
+  .tableVariants {
+    width: 100%;
+    color: #539c64;
+    font-weight: 300;
+  }
+  
+  .addButton {
+    border: 1px solid white;
+    float: right;
+    width: 30px;
+    height: 30px;
+    border-radius: 16px;
+    text-align: center;
+    background-color: #539c64;
+  }
+  
+  .addButton {
+    cursor: pointer;
+  }
+  
+  .plusIcon {
+    font-weight: 500;
+    color: white;
+    font-weight: 500;
+    color: white;
+    margin: 5px 0 0 0;
+  }
+  
+  .submitBtn {
+    padding: 32px 0 0 0;
+  }
+  
+  .quantityWrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 0 0 0;
+  }
+  
+  .submitWrapper {
+    display: flex;
+    justify-content: end;
+  }
+  
+  .submitQuantity {
+    height: 40px;
+  }
+  
+  .tableInput {
+    height: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #edeceb;
+  }
+  
+  .tableInput:focus {
+    border: 1px solid #edeceb;
+  }
+  
+  .procurementListHeader {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    color: #539c64;
+  }
+  
+  .delIcon {
+    background-color: #539c64;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    border: 0px;
+    color: #ffffff;
+    cursor: pointer;
+    float: right;
+  }
+  
+  .errorText {
+    color: #ff2400;
+    display: flex;
+    font-size: 15px;
+    padding-top: 10px;
+  }
+  
+  .borderTable {
+    border: 1px solid #539c64;
+  }
+  
+  .immediateButton{
+      height: 44px;
+      margin: 20px 0 0 0;
+  }
+  
+  .searchContainer{
+      flex-direction: row;
+      display: flex;
+      justify-content: space-between;
+  }
+
+  .inputField{
+    margin-right: 12px;
+  }
+
+  .errorText{
+    margin-top: 20px;
+    text-align: center;
+    color: #ff2400;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 800;
+  }
+  
+  @media screen 
+    and (min-device-width: 900px) 
+    and (max-device-width: 1400px) 
+    and (-webkit-min-device-pixel-ratio: 1) { 
+     .procurementListHeader{
+      font-size: 20px;
+     }
+  }
+  

@@ -18,12 +18,6 @@ import {
   Filters,
 } from "../../components";
 
-// import {
-//   useAddOrderInvoiceMutation,
-//   useGetOrdersMutation,
-//   useRejectOrderMutation,
-//   useVerifyOrderMutation,
-// } from "../../services/procurement.services";
 
 import { ImSearch } from "react-icons/im";
 import { AuthContext } from "../../context";
@@ -34,13 +28,14 @@ import {
   formatOrdersData,
   ROLE_TABLE_HEADER,
 } from "./helper";
-import { get } from "lodash";
+import { get, cloneDeep } from "lodash";
 import { Textarea } from "@mantine/core";
 import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
-import { useGetOrdersMutation } from "../../services/agrivariants.services";
+import { useGetOrdersMutation, useAddOrderInvoiceMutation, useGetInvoiceMutation } from "../../services/agrivariants.services";
+
 const AgriOrderMgmt = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -50,6 +45,7 @@ const AgriOrderMgmt = () => {
   const [searchInput, setSearchInput] = useState("");
   const [ordersCount, setOrdersCount] = useState(0);
   const [search, setSearch] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState([])
 
   const [addInvoice, setAddInvoice] = useState({
     isActive: false,
@@ -63,17 +59,29 @@ const AgriOrderMgmt = () => {
     startData: "",
     endData: "",
   });
-
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
-  const onAction = ({ id, action, data }) => {
+  const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
+        useAddOrderInvoiceMutation();
+  const [getInvoice] = useGetInvoiceMutation()      
+
+  const onAction = ({ id, action, data, isChecked }) => {
     const functionObj = {
       placeOrder: () => {
+        if(isChecked){
+          const order = selectedOrder
+          order.push(data)
+          setSelectedOrder(order)
+        }else{
+          const newData = cloneDeep(selectedOrder).filter(ele=> ele._id!==id)
+          setSelectedOrder(newData)
+        }
+        
+      },
+      addInvoice: () => {
         console.log("add invoice", id);
         console.log(data);
-        navigate("../dashboard/orders-agri/request-order", {
-          state: { placeOrder: true, data },
-        });
-      },
+        setAddInvoice({ isActive: true, id, data });
+    },
     };
     functionObj[action]();
   };
@@ -82,13 +90,13 @@ const AgriOrderMgmt = () => {
       isCount: true,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
-      // ...formatFilter(filters),
+      ...formatFilter(filters),
     };
     const listBody = {
       pageNumber: page,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
-      // ...formatFilter(filters),
+      ...formatFilter(filters),
     };
     if (page === 1) {
       const counts = await getOrders({ body: { ...countBody } });
@@ -165,6 +173,12 @@ const AgriOrderMgmt = () => {
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
+  const onPlaceOrder = ()=>{
+    navigate(addLink[user.role], {
+      state: { placeOrder: true, data: selectedOrder },
+    });
+  }
+
   return (
     <>
       <div>
@@ -189,11 +203,9 @@ const AgriOrderMgmt = () => {
           {/* pagination */}
           <div className={styles.paginationContainer}>
             {["procurement", "sales"].includes(user.role) && (
-              <Link to={addLink[user.role]}>
                 <div>
-                  <Button title={addTitle[user.role]} />
+                  <Button title={addTitle[user.role]} onClick={onPlaceOrder} />
                 </div>
-              </Link>
             )}
             <div className={styles.paginationInner}>
               {/* count */}
@@ -396,7 +408,7 @@ const AgriOrderMgmt = () => {
       </Modal> */}
 
       {/* Add Invoice modal */}
-      {/* {addInvoice.isActive && (
+      {addInvoice.isActive && (
         <AddInvoiceModal
           addInvoice={addInvoice}
           setAddInvoice={setAddInvoice}
@@ -406,8 +418,10 @@ const AgriOrderMgmt = () => {
           sort={sort}
           toast={toast}
           orderId={addInvoice?.data?.orderId}
+          getInvoice={getInvoice}
+          type="AGRI"
         />
-      )} */}
+      )}
     </>
   );
 };

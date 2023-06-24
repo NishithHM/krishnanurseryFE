@@ -20,6 +20,7 @@ import {
 
 import {
     useAddOrderInvoiceMutation,
+    useGetInvoiceMutation,
     useGetOrdersMutation,
     useRejectOrderMutation,
     useVerifyOrderMutation,
@@ -75,6 +76,8 @@ const OrderMgmt = () => {
 
     const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
         useAddOrderInvoiceMutation();
+    const [getInvoice] = useGetInvoiceMutation();
+
 
     const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
     const onAction = ({ id, action, data, orderId }) => {
@@ -446,6 +449,8 @@ const OrderMgmt = () => {
                     sort={sort}
                     toast={toast}
                     orderId={addInvoice?.data?.orderId}
+                    getInvoice={getInvoice}
+                    type="NUR"
                 />
             )}
         </>
