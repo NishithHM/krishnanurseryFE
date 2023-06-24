@@ -15,6 +15,7 @@ import paymentsIcon from "../../assets/images/dashboard/payments.png";
 import { Link, Route, Routes } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
+import agriprocurements from "../../assets/images/dashboard/agriprocurements.png"
 
 const Dashboard = () => {
   const [values] = useContext(AuthContext);
@@ -106,6 +107,13 @@ const Dashboard = () => {
       title: "Add New Variants",
       tile_img: salesImg,
       path: "agri-add-variants",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+    },
+    {
+      title: "Agri Procurements",
+      tile_img: agriprocurements,
+      path: "agri-add-procurements",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
       isDisabled: false,
     },

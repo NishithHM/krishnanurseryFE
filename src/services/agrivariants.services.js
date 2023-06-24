@@ -59,6 +59,41 @@ export const agriVariantsApi = createApi({
           };
         },
       }),
+      getAgriProcurement: builder.query({
+        query:({search,isCount, sortBy, pageNumber, sortType, isMinimumSelected
+        })=>{
+          const params = {sortType};
+          if (search) {
+            params.search = search;
+          }
+          if(isCount){
+            params.isCount = isCount;
+          }
+          if(sortBy){
+            params.sortBy = sortBy;
+          }
+          if(pageNumber){
+            params.pageNumber = pageNumber
+          }
+          if(sortType){
+            params.sortType = sortType
+          }
+          if(isMinimumSelected){
+            params.onlyLow = isMinimumSelected
+          }
+          return {
+            url: `/getAll`,
+            params:params
+          }
+        }
+      }),
+      setAmount:builder.mutation({
+      query: ({id, body}) => ({
+        url: `/set-amounts/${id}`,
+        method: 'POST',
+        body,
+      })
+     })
     };
   },
 });
@@ -67,4 +102,6 @@ export const {
   useGetAgriVariantsQuery,
   useGetAgriOptionsQuery,
   useGetAgriOptionValuesMutation,
+  useGetAgriProcurementQuery,
+  useSetAmountMutation
 } = agriVariantsApi;
