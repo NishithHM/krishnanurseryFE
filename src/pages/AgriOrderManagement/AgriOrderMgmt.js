@@ -34,7 +34,7 @@ import {
   formatOrdersData,
   ROLE_TABLE_HEADER,
 } from "./helper";
-import { get } from "lodash";
+import { get, cloneDeep } from "lodash";
 import { Textarea } from "@mantine/core";
 import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
@@ -50,6 +50,7 @@ const AgriOrderMgmt = () => {
   const [searchInput, setSearchInput] = useState("");
   const [ordersCount, setOrdersCount] = useState(0);
   const [search, setSearch] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState([])
 
   const [addInvoice, setAddInvoice] = useState({
     isActive: false,
@@ -63,16 +64,20 @@ const AgriOrderMgmt = () => {
     startData: "",
     endData: "",
   });
-
+ console.log(selectedOrder)
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
-  const onAction = ({ id, action, data }) => {
+  const onAction = ({ id, action, data, isChecked }) => {
     const functionObj = {
       placeOrder: () => {
-        console.log("add invoice", id);
-        console.log(data);
-        navigate("../dashboard/orders-agri/request-order", {
-          state: { placeOrder: true, data },
-        });
+        if(isChecked){
+          const order = selectedOrder
+          order.push(data)
+          setSelectedOrder(order)
+        }else{
+          const newData = cloneDeep(selectedOrder).filter(ele=> ele._id!==id)
+          setSelectedOrder(newData)
+        }
+        
       },
     };
     functionObj[action]();
@@ -165,6 +170,12 @@ const AgriOrderMgmt = () => {
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
+  const onPlaceOrder = ()=>{
+    navigate(addLink[user.role], {
+      state: { placeOrder: true, data: selectedOrder },
+    });
+  }
+
   return (
     <>
       <div>
@@ -189,11 +200,9 @@ const AgriOrderMgmt = () => {
           {/* pagination */}
           <div className={styles.paginationContainer}>
             {["procurement", "sales"].includes(user.role) && (
-              <Link to={addLink[user.role]}>
                 <div>
-                  <Button title={addTitle[user.role]} />
+                  <Button title={addTitle[user.role]} onClick={onPlaceOrder} />
                 </div>
-              </Link>
             )}
             <div className={styles.paginationInner}>
               {/* count */}

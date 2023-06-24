@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   AgriVarinatsAddition,
   Button,
@@ -36,6 +36,25 @@ const AgriRequesrOrder = () => {
 
   const [requestOrder] = useRequestAgriOrderMutation();
   const [placeOrder] = usePlaceAgriOrderMutation();
+  const placeOrderVariantsData = useMemo(()=>{
+
+    // hardcoding 0 temporarily ( need to conver to array)
+    const variants = location.state.data;
+    console.log(variants)
+    return variants.map(variant=>({
+    type: { label: variant.type, value: variant.type },
+    name: { label: variant.names, value: variant.names },
+    options: variant.variant.map((option) => {
+      return {
+        optionName: option.optionName,
+        optionValues: [option.value],
+        value: { label: option.optionValue, value: option.optionValue },
+      };
+    }),
+    totalQuantity: variant.requestedQuantity,
+    price: 0,
+  }))
+  }, [JSON.stringify(location?.state?.data)]);
   const handleRequestOrder = async () => {
     const transformedData = orderData.map((item) => {
       const variant = item.options.map((option) => ({
@@ -57,7 +76,7 @@ const AgriRequesrOrder = () => {
     navigate("../dashboard");
   };
   const handleCreateOrder = async () => {
-    const transformedData = orderData.map((item) => {
+    const transformedData = orderData.map((item, index) => {
       const variant = item.options.map((option) => ({
         optionName: option.optionName,
         optionValue: option.value.value,
@@ -69,6 +88,7 @@ const AgriRequesrOrder = () => {
         name: item.name.label,
         variant: variant,
         totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
+        id: location?.state?.data?.[index]?._id
       };
     });
     const order = { orders: transformedData, description, ...state };
@@ -77,12 +97,14 @@ const AgriRequesrOrder = () => {
     delete order.orderDropdownValues;
     delete order.vendorName;
     order.vendorName = state.vendorName.label;
-    console.log(location.state);
+    ;
     order.orderId = state.orderId.value;
+
+    console.log(order)
 
     const res = await placeOrder(order);
     toast.success(res.data.message);
-    navigate("../dashboard");
+    navigate("../dashboard/agri-orders");
   };
 
   const vendorChangeHandler = (event, id) => {
@@ -141,6 +163,7 @@ const AgriRequesrOrder = () => {
           console.log(e);
           setOrderData(e);
         }}
+        value={placeOrderVariantsData}
         isFormValid={(e) => setIsFormValid(!e)}
       />
       <div

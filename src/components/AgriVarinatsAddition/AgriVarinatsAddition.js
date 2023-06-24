@@ -23,6 +23,7 @@ const initialState = {
 const AgriVarinatsAddition = ({
   onChange = () => null,
   isFormValid = () => null,
+  value
 }) => {
   const [{ variants }, setState] = useState(initialState);
   const location = useLocation();
@@ -30,23 +31,8 @@ const AgriVarinatsAddition = ({
 
   useEffect(() => {
     if (isPlaceOrder) {
-      const variant = location.state.data;
-
-      const transformedData = {
-        type: { label: variant.type, value: variant.type },
-        name: { label: variant.names, value: variant.names },
-        options: variant.variant.map((option) => {
-          return {
-            optionName: option.optionName,
-            optionValues: [option.value],
-            value: { label: option.optionValue, value: option.optionValue },
-          };
-        }),
-        totalQuantity: variant.requestedQuantity,
-        price: 0,
-      };
-      onChange({ variants: [transformedData] });
-      setState({ variants: [transformedData] });
+      onChange({ variants: [...value] });
+      setState({ variants: [...value] });
     }
   }, []);
   const [getAgriVariantById] = useGetAgriVariantByIdMutation();
