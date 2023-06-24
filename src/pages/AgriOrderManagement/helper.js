@@ -250,7 +250,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                     id: order._id,
                     action: "placeOrder",
                     data: order,
-                    isChecked: e
+                    isChecked: e,
                   });
                 }}
               >
@@ -279,6 +279,29 @@ export const formatOrdersData = ({ data, role, onAction }) => {
           ),
         };
         rowData.push(AddInvoice);
+      } else {
+        rowData.push({ value: "---" });
+      }
+    }
+    if (role === "sales") {
+      console.log(order);
+      if (order.status === "PLACED") {
+        const verifyOrder = {
+          value: (
+            <>
+              <span
+                style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
+                onClick={() => {
+                  onAction({ id: order._id, action: "verify", data: order });
+                }}
+              >
+                Verify Order
+              </span>
+            </>
+          ),
+        };
+
+        rowData.push(verifyOrder);
       } else {
         rowData.push({ value: "---" });
       }

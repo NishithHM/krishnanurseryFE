@@ -67,40 +67,46 @@ export const agriVariantsApi = createApi({
         },
       }),
       getAgriProcurement: builder.query({
-        query:({search,isCount, sortBy, pageNumber, sortType, isMinimumSelected
-        })=>{
-          const params = {sortType};
+        query: ({
+          search,
+          isCount,
+          sortBy,
+          pageNumber,
+          sortType,
+          isMinimumSelected,
+        }) => {
+          const params = { sortType };
           if (search) {
             params.search = search;
           }
-          if(isCount){
+          if (isCount) {
             params.isCount = isCount;
           }
-          if(sortBy){
+          if (sortBy) {
             params.sortBy = sortBy;
           }
-          if(pageNumber){
-            params.pageNumber = pageNumber
+          if (pageNumber) {
+            params.pageNumber = pageNumber;
           }
-          if(sortType){
-            params.sortType = sortType
+          if (sortType) {
+            params.sortType = sortType;
           }
-          if(isMinimumSelected){
-            params.onlyLow = isMinimumSelected
+          if (isMinimumSelected) {
+            params.onlyLow = isMinimumSelected;
           }
           return {
             url: `/getAll`,
-            params:params
-          }
-        }
+            params: params,
+          };
+        },
       }),
-      setAmount:builder.mutation({
-      query: ({id, body}) => ({
-        url: `/set-amounts/${id}`,
-        method: 'POST',
-        body,
-      })
-     }),
+      setAmount: builder.mutation({
+        query: ({ id, body }) => ({
+          url: `/set-amounts/${id}`,
+          method: "POST",
+          body,
+        }),
+      }),
       updateAgriOptionValues: builder.mutation({
         query: ({ id, body }) => {
           return {
@@ -167,17 +173,34 @@ export const agriVariantsApi = createApi({
         }),
         invalidatesTags: ["procurements"],
       }),
-      getInvoice:builder.mutation({
-        query:({id, page})=>({
+      getInvoice: builder.mutation({
+        query: ({ id, page }) => ({
           url: `/order/${id}?page=${page}`,
-          method:'GET'
-        })
+          method: "GET",
+        }),
       }),
-      getOrderId:builder.mutation({
-        query: ({id})=>({
-          url:`/vendor-orders/${id}`,
-          method:'GET'
-        })
+      getOrderId: builder.mutation({
+        query: ({ id }) => ({
+          url: `/vendor-orders/${id}`,
+          method: "GET",
+        }),
+      }),
+      rejectOrder: builder.mutation({
+        query: ({ body, id }) => ({
+          url: `/reject-order/${id}`,
+          method: "GET",
+          Headers: { "content-type": "application/json" },
+          body,
+        }),
+        // invalidatesTags: ["procurements"],
+      }),
+      verifyOrder: builder.mutation({
+        query: ({ body, id }) => ({
+          url: `/verify-order/${id}`,
+          method: "POST",
+          body,
+        }),
+        // invalidatesTags: ["procurements"],
       }),
     };
   },
@@ -199,5 +222,7 @@ export const {
   useGetOrdersMutation,
   useAddOrderInvoiceMutation,
   useGetInvoiceMutation,
-  useGetOrderIdMutation
+  useGetOrderIdMutation,
+  useRejectOrderMutation,
+  useVerifyOrderMutation,
 } = agriVariantsApi;
