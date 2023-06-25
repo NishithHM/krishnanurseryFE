@@ -128,7 +128,7 @@ const AgriVarinatsAddition = ({
               {Boolean(ele?.type?.label) && (
                 <div className={styles.dropDownWrapper}>
                   <Dropdown
-                    disabled={isPlaceOrder}
+                    disabled={!allowNew}
                     url={`/api/agri/variants?type=${ele?.type?.label}`}
                     id="name"
                     apiDataPath={{ label: "name", value: "_id" }}
