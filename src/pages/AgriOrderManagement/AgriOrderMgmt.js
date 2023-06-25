@@ -18,7 +18,6 @@ import {
   Filters,
 } from "../../components";
 
-
 import { ImSearch } from "react-icons/im";
 import { AuthContext } from "../../context";
 import {
@@ -34,7 +33,14 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
-import { useGetOrdersMutation, useAddOrderInvoiceMutation, useGetInvoiceMutation } from "../../services/agrivariants.services";
+import {
+  useGetOrdersMutation,
+  useAddOrderInvoiceMutation,
+  useGetInvoiceMutation,
+  useVerifyOrderMutation,
+  useRejectOrderMutation,
+} from "../../services/agrivariants.services";
+// import { useRejectOrderMutation, useVerifyOrderMutation } from "../../services/procurement.services";
 
 const AgriOrderMgmt = () => {
   const navigate = useNavigate();
@@ -45,12 +51,17 @@ const AgriOrderMgmt = () => {
   const [searchInput, setSearchInput] = useState("");
   const [ordersCount, setOrdersCount] = useState(0);
   const [search, setSearch] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState([])
+  const [selectedOrder, setSelectedOrder] = useState([]);
 
   const [addInvoice, setAddInvoice] = useState({
     isActive: false,
     id: null,
     data: null,
+  });
+  const [rejectOrder, setRejectOrder] = useState({
+    isActive: false,
+    id: null,
+    reason: "",
   });
   // console.log(addInvoice, "in");
   const [filters, setFilters] = useState({
@@ -59,29 +70,51 @@ const AgriOrderMgmt = () => {
     startData: "",
     endData: "",
   });
+
+  const [plantImages, setPlantImages] = useState([]);
+
+  const [verifyOrder, setVerifyOrder] = useState({
+    isActive: false,
+    id: null,
+    data: null,
+    quantity: 0,
+  });
+
   const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
   const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
-        useAddOrderInvoiceMutation();
-  const [getInvoice] = useGetInvoiceMutation()      
+    useAddOrderInvoiceMutation();
+  const [getInvoice] = useGetInvoiceMutation();
+
+  const [RejectOrder, { isLoading: isRejectLoading }] =
+    useRejectOrderMutation();
+  const [VerifyOrder, { isLoading: isVerifyLoading }] =
+    useVerifyOrderMutation();
 
   const onAction = ({ id, action, data, isChecked }) => {
     const functionObj = {
       placeOrder: () => {
-        if(isChecked){
-          const order = selectedOrder
-          order.push(data)
-          setSelectedOrder(order)
-        }else{
-          const newData = cloneDeep(selectedOrder).filter(ele=> ele._id!==id)
-          setSelectedOrder(newData)
+        if (isChecked) {
+          const order = selectedOrder;
+          order.push(data);
+          setSelectedOrder(order);
+        } else {
+          const newData = cloneDeep(selectedOrder).filter(
+            (ele) => ele._id !== id
+          );
+          setSelectedOrder(newData);
         }
-        
       },
       addInvoice: () => {
         console.log("add invoice", id);
         console.log(data);
         setAddInvoice({ isActive: true, id, data });
-    },
+      },
+      verify: () => {
+        setVerifyOrder({ isActive: true, id, data, quantity: 0 });
+      },
+      reject: () => {
+        setRejectOrder({ isActive: true, id: id, reason: "" });
+      },
     };
     functionObj[action]();
   };
@@ -173,11 +206,32 @@ const AgriOrderMgmt = () => {
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
-  const onPlaceOrder = ()=>{
+  const onPlaceOrder = () => {
     navigate(addLink[user.role], {
       state: { placeOrder: true, data: selectedOrder },
     });
-  }
+  };
+
+  const handlePlantimageSelect = (file) => {
+    setPlantImages((prev) => {
+      let updated = [...prev, ...file];
+
+      const uniqueArr = Array.from(new Set(updated.map((a) => a.path))).map(
+        (path) => {
+          return updated.find((a) => a.path === path);
+        }
+      );
+      return uniqueArr;
+    });
+  };
+
+  const handlePlantImageRemove = (index) => {
+    setPlantImages((prev) => {
+      let updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
+  };
 
   return (
     <>
@@ -203,9 +257,9 @@ const AgriOrderMgmt = () => {
           {/* pagination */}
           <div className={styles.paginationContainer}>
             {["procurement", "sales"].includes(user.role) && (
-                <div>
-                  <Button title={addTitle[user.role]} onClick={onPlaceOrder} />
-                </div>
+              <div>
+                <Button title={addTitle[user.role]} onClick={onPlaceOrder} />
+              </div>
             )}
             <div className={styles.paginationInner}>
               {/* count */}
@@ -251,7 +305,7 @@ const AgriOrderMgmt = () => {
       </div>
 
       {/* reject order modal */}
-      {/* <Modal isOpen={rejectOrder.isActive} contentLabel="Reject Order">
+      <Modal isOpen={rejectOrder.isActive} contentLabel="Reject Order">
         <Alert
           message={`Are you sure to cancel this order?`}
           subMessage={""}
@@ -269,7 +323,7 @@ const AgriOrderMgmt = () => {
               id: rejectOrder.id,
             };
             // return console.log(data);
-            const res = await RejectOrder(data);
+            const res = await RejectOrder({ body: data, id: rejectOrder.id });
             toast.success("Order Updated!");
             setRejectOrder({ isActive: false, id: null, reason: "" });
             loadInitialOrders(1, sort);
@@ -289,10 +343,10 @@ const AgriOrderMgmt = () => {
             }}
           />
         </Alert>
-      </Modal> */}
+      </Modal>
 
       {/* verify order modal */}
-      {/* <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
+      <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
         <AlertMessage
           message={`Verify the order of ${
             verifyOrder?.data?.names?.en?.name || "Plants"
@@ -324,13 +378,13 @@ const AgriOrderMgmt = () => {
 
             data.append(
               "body",
-              JSON.stringify({
-                id: verifyOrder.data._id,
-                quantity: verifyOrder.quantity,
-              })
+              JSON.stringify({ quantity: verifyOrder.quantity })
             );
 
-            const res = await VerifyOrder(data);
+            const res = await VerifyOrder({
+              id: verifyOrder.data._id,
+              body: data,
+            });
             toast.success("Order Verify Success!");
             setVerifyOrder({
               data: null,
@@ -405,7 +459,7 @@ const AgriOrderMgmt = () => {
             />
           </div>
         </AlertMessage>
-      </Modal> */}
+      </Modal>
 
       {/* Add Invoice modal */}
       {addInvoice.isActive && (
