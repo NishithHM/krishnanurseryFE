@@ -70,7 +70,6 @@ const handleDownload = (fileUrl) => {
       const url = window.URL.createObjectURL(blob);
       a.href = url;
       a.download = name;
-      console.log(name);
       a.click();
       window.URL.revokeObjectURL(url);
     })
@@ -83,7 +82,6 @@ const handleImageOpen = (data) => {
   else console.log(images);
 };
 export const getTableBody = (data, imagesHandler) => {
-  console.log(data);
   const result = data?.map((ele) => {
     const data = requiredDataHistory.map((data) => {
       if (data === "procuredOn") {

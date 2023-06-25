@@ -284,7 +284,6 @@ export const formatOrdersData = ({ data, role, onAction }) => {
       }
     }
     if (role === "sales") {
-      console.log(order);
       if (order.status === "PLACED") {
         const verifyOrder = {
           value: (

@@ -38,13 +38,7 @@ const Dashboard = () => {
       title: "Procurement",
       tile_img: produrementImg,
       path: "procurement-list",
-      allowed: [USER_ROLES.admin],
-    },
-    {
-      title: "Procurement List",
-      tile_img: billsImg,
-      path: "procurement-list",
-      allowed: [USER_ROLES.procurement],
+      allowed: [USER_ROLES.admin,USER_ROLES.procurement],
     },
     {
       title: "Categories",
@@ -104,15 +98,8 @@ const Dashboard = () => {
       isDisabled: false,
     },
     {
-      title: "Agri Place Order",
-      tile_img: orders,
-      path: "orders-agri/request-order",
-      allowed: [USER_ROLES.sales],
-      isDisabled: false,
-    },
-    {
       title: "Agri Procurements",
-      tile_img: agriprocurements,
+      tile_img: produrementImg,
       path: "agri-add-procurements",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
       isDisabled: false,
@@ -121,7 +108,7 @@ const Dashboard = () => {
       title: "Agri Orders",
       tile_img: orders,
       path: "agri-orders",
-      allowed: [USER_ROLES.procurement, USER_ROLES.sales],
+      allowed: [USER_ROLES.procurement, USER_ROLES.sales, USER_ROLES.admin],
     },
   ];
 

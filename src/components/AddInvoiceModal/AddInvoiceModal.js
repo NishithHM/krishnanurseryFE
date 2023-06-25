@@ -41,7 +41,6 @@ const AddInvoiceModal = ({
     async function get(id) {
       const res = await getVendor({ id });
       const invoiceRes = await getInvoice({id:orderId, page:'orders'});
-      console.log(invoiceRes, 'invoice')
       setState((prev) => ({ ...prev, 
         deviation: res.data.deviation,
         orderVal: invoiceRes?.data, 

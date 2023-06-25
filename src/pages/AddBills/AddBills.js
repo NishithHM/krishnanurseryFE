@@ -424,7 +424,6 @@ export default function AddBills() {
       cartRoundOff: payload,
     });
 
-    console.log(confirmCart);
     if (confirmCart.error) {
       setState((prev) => ({
         ...prev,

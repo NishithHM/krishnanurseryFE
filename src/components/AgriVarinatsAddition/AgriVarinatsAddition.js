@@ -23,7 +23,8 @@ const initialState = {
 const AgriVarinatsAddition = ({
   onChange = () => null,
   isFormValid = () => null,
-  value
+  value,
+  allowNew
 }) => {
   const [{ variants }, setState] = useState(initialState);
   const location = useLocation();
@@ -87,7 +88,6 @@ const AgriVarinatsAddition = ({
   };
 
   const onDeleteVariant = (indexToRemove) => {
-    console.log(variants);
     setState((prev) => ({
       ...prev,
       variants: prev.variants.filter(
@@ -96,7 +96,6 @@ const AgriVarinatsAddition = ({
     }));
   };
 
-  console.log(isPlaceOrder);
   return (
     <div className={styles.variantsAddWrapper}>
         <div className={styles.buttonWrapper}>
@@ -116,7 +115,7 @@ const AgriVarinatsAddition = ({
             <div className={styles.variantsRow}>
               <div className={styles.dropDownWrapper}>
                 <Dropdown
-                  disabled={isPlaceOrder}
+                  disabled={!allowNew}
                   url="/api/agri/type-options?type=type"
                   id="type"
                   apiDataPath={{ label: "", value: "" }}

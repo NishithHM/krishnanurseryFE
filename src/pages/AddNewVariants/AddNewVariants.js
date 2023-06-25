@@ -59,7 +59,6 @@ const AddNewVariants = () => {
   }, []);
 
   useEffect(() => {
-    console.log(variantTypeOptions);
   }, [variantTypeOptions]);
 
   useEffect(() => {
@@ -67,7 +66,6 @@ const AddNewVariants = () => {
       const res = await agriVariantData({
         id: editId,
       });
-      console.log(res.data);
       setJsonData(res.data);
       setSelectedVariant({ label: res.data.type, value: res.data.type });
       setVariantName(res.data.name);
@@ -150,7 +148,6 @@ const AddNewVariants = () => {
 
   const onTypeChange = ({ index, value, isNew, category }) => {
     const newOption = cloneDeep(options[index]);
-    console.log(newOption);
     if (category === "type") {
       newOption.optionName = value;
       if (isNew) {
@@ -218,11 +215,9 @@ const AddNewVariants = () => {
                     data={variantTypeOptions}
                     value={selectedVariant}
                     onChange={(e) => {
-                      console.log(e)
                       setSelectedVariant({label:e.label, value: e.value});
                     }}
                     onCreateOption={(e) =>{
-                      console.log(e)
                       setSelectedVariant({label: e, value: e})
                     }
                     }

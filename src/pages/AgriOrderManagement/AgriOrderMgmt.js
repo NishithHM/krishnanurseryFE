@@ -105,8 +105,6 @@ const AgriOrderMgmt = () => {
         }
       },
       addInvoice: () => {
-        console.log("add invoice", id);
-        console.log(data);
         setAddInvoice({ isActive: true, id, data });
       },
       verify: () => {
@@ -208,7 +206,7 @@ const AgriOrderMgmt = () => {
 
   const onPlaceOrder = () => {
     navigate(addLink[user.role], {
-      state: { placeOrder: true, data: selectedOrder },
+      state: { placeOrder: user.role === 'procurement', data: selectedOrder },
     });
   };
 
@@ -322,7 +320,6 @@ const AgriOrderMgmt = () => {
               description: rejectOrder.reason,
               id: rejectOrder.id,
             };
-            // return console.log(data);
             const res = await RejectOrder({ body: data, id: rejectOrder.id });
             toast.success("Order Updated!");
             setRejectOrder({ isActive: false, id: null, reason: "" });
