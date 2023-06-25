@@ -150,7 +150,7 @@ const AgriVarinatsAddition = ({
                         onChange={(e, id) =>
                           dropDownChangeHandler(e, id, index, jIndex)
                         }
-                        disabled={isPlaceOrder}
+                        disabled={!allowNew}
                         title={opt.optionName}
                         id={opt.optionName}
                         data={formatDropOptions(opt.optionValues)}
