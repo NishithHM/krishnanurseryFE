@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import styles from './AgriRequestOrder.css'
+import { isEmpty } from "lodash";
 
 
 const AgriRequesrOrder = () => {
@@ -47,7 +48,6 @@ const AgriRequesrOrder = () => {
 
     // hardcoding 0 temporarily ( need to conver to array)
     const variants = location?.state?.data;
-    console.log(variants)
     return variants?.map(variant => ({
       type: { label: variant.type, value: variant.type },
       name: { label: variant.names, value: variant.names },
@@ -80,7 +80,7 @@ const AgriRequesrOrder = () => {
     const data = { orders: transformedData, description };
     const res = await requestOrder(data);
     toast.success(res.data.message);
-    navigate("../dashboard");
+    navigate("../dashboard/agri-orders");
   };
 
   useEffect(() => {
@@ -90,7 +90,6 @@ const AgriRequesrOrder = () => {
           id: state.orderId?.value,
           page: "placeOrder",
         });
-        console.log(data);
         setState((prev) => ({
           ...prev,
           orderDetails: data,
@@ -132,7 +131,6 @@ const AgriRequesrOrder = () => {
     if (!state.isNewVendor) {
       order.vendorId = state.vendorName?.value
     }
-    console.log(order)
 
     const res = await placeOrder(order);
     toast.success(res.data.message);
@@ -140,7 +138,6 @@ const AgriRequesrOrder = () => {
   };
 
   const vendorChangeHandler = (event, id) => {
-    console.log(event);
 
     setState((prev) => {
       return {
@@ -152,7 +149,6 @@ const AgriRequesrOrder = () => {
     });
   };
   const orderIdChangeHandler = (event, id) => {
-    console.log(event);
 
     setState((prev) => {
       return {
@@ -195,9 +191,9 @@ const AgriRequesrOrder = () => {
       <AgriVarinatsAddition
         isPlaceOrder={(location?.state && location?.state?.placeOrder) || false}
         onChange={(e) => {
-          console.log(e);
           setOrderData(e);
         }}
+        allowNew={isEmpty(placeOrderVariantsData)}
         value={placeOrderVariantsData}
         isFormValid={(e) => setIsFormValid(!e)}
       />
@@ -298,7 +294,6 @@ const AgriRequesrOrder = () => {
               type="date"
               disabled={state.disableExpectedDate}
               onChange={(e) => {
-                console.log(e);
                 setState((prev) => ({
                   ...prev,
                   expectedDeliveryDate: e.target.value,

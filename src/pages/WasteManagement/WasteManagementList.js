@@ -48,7 +48,6 @@ const WasteList = () => {
     const fetchAndDisplayImages = (urls) => {
         const promises = [];
         const images = [];
-        console.log(urls);
         if (urls.length === 0) return toast.error("No Images Found!");
         urls.forEach((url) => {
           const promise = fetch(
@@ -70,7 +69,6 @@ const WasteList = () => {
           promises.push(promise);
         });
         Promise.all(promises).then(() => {
-          console.log(images);
           setPlantImages(images);
         });
       };
@@ -79,7 +77,6 @@ const WasteList = () => {
 
 
     const formatDamageData = ({ data, }) => {
-        console.log(data);
         const formatted = data.map((ele) => {
             const name = { value: ele.names?.en?.name };
             const createdAt = { value: dayjs(ele.createdAt).format("DD-MM-YYYY") };
@@ -114,7 +111,6 @@ const WasteList = () => {
 
 
     const searchHandler = debounce(async (query) => {
-        console.log("search triggered", query);
         if (query.length >= 3) {
             const res = await getDamages({ search: query });
             const counts = await getDamages(

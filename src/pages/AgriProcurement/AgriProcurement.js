@@ -106,13 +106,11 @@ const AgriProcurement = () => {
     sortType: sort.sortType === "asc" ? 1 : -1,
     isMinimumSelected,
   });
-  console.log(getProcurements, "th");
 
   useEffect(() => {
     if (getProcurements.status === "fulfilled" && firstLoad) {
       const data = getProcurements.data;
       if (data.length > 0) {
-        console.log(data[0]);
         onDetailClick(data[0]._id);
       }
     }
@@ -152,7 +150,6 @@ const AgriProcurement = () => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
-    console.log(procurementData);
     setQuantity(procurementData?.minimumQuantity);
     setMinimumPrice(procurementData?.minPrice);
     setMaximumPrice(procurementData?.maxPrice);
@@ -221,7 +218,6 @@ const AgriProcurement = () => {
   };
 
   const onSubmitHandler = async (e) => {
-    console.log(e);
     const res = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
@@ -292,7 +288,6 @@ const AgriProcurement = () => {
   const fetchAndDisplayImages = (urls) => {
     const promises = [];
     const images = [];
-    console.log(urls);
     if (urls.length === 0) return toast.error("No Images Found!");
     urls.forEach((url) => {
       const promise = fetch(
@@ -314,7 +309,6 @@ const AgriProcurement = () => {
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      console.log(images);
       setPlantImages(images);
     });
   };
