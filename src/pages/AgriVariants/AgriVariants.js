@@ -61,7 +61,7 @@ const AgriVariants = () => {
     const res = await getOptionValues({ type: "type" });
     const options = res.data.map((e) => ({ label: e, value: e }));
     setTypeOptions(options);
-    setSelectedTypeOption(options[0]);
+    // setSelectedTypeOption(options[0]);
   };
   useEffect(() => {
     getValues();
