@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "../../components";
 import { Divider, Modal } from "@mantine/core";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEmpty } from "lodash";
 import {
   useAddAgriVariantMutation,
   useGetAgriOptionValuesMutation,
@@ -49,7 +49,7 @@ const AddNewVariants = () => {
     async function getVariantOptions() {
       const res = await getOptionValues({ type: "type" });
       setVariantTypeOptions(
-        res.data.map((option) => ({
+        res.data?.map((option) => ({
           label: option,
           value: option,
         }))
@@ -104,7 +104,7 @@ const AddNewVariants = () => {
     );
     // console.log(newtypeOptions);
     setTypeOptions(newtypeOptions);
-  }, [options, optionsType]);
+  }, [JSON.stringify(options), JSON.stringify(optionsType)]);
 
   // comes from backend types api
 
@@ -132,6 +132,8 @@ const AddNewVariants = () => {
         body: { options: data },
       });
       toast.success("Variant Options Updated");
+      navigate("../dashboard/agri-variants");
+
     } else {
       const data = { type: selectedVariant.value, name: variantName, options };
       const res = await AddNewAgriVariant(data);
@@ -216,8 +218,15 @@ const AddNewVariants = () => {
                     data={variantTypeOptions}
                     value={selectedVariant}
                     onChange={(e) => {
-                      setSelectedVariant(e);
+                      console.log(e)
+                      setSelectedVariant({label:e.label, value: e.value});
                     }}
+                    onCreateOption={(e) =>{
+                      console.log(e)
+                      setSelectedVariant({label: e, value: e})
+                    }
+                    }
+                    canCreate
                   />
                 </div>
 
@@ -264,7 +273,7 @@ const AddNewVariants = () => {
             </div>
           </div>
           <div style={{ display: "flex", width: "fit-content" }}>
-            <Button title="Save" onClick={handleButtonClick} />
+            <Button title="Save" onClick={handleButtonClick} disabled={ isEmpty(selectedVariant) || isEmpty(variantName) || isEmpty(options) || options.some(ele=> isEmpty(ele?.optionName) || isEmpty(ele?.optionValues)) } />
           </div>
         </div>
       </div>
