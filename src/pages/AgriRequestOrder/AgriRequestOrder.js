@@ -324,7 +324,6 @@ const AgriRequesrOrder = () => {
                 state.vendorContact === "" ||
                 !state.orderId ||
                 !state.currentPaidAmount ||
-                state.currentPaidAmount <= 0 ||
                 !state.expectedDeliveryDate
                 : !isFormValid || description === ""
             }
