@@ -33,7 +33,8 @@ const AgriRequesrOrder = () => {
     orderDropdownValues: [],
     orderId: "",
     orderDetails:[],
-    disableExpectedDate: false
+    disableExpectedDate: false,
+    vendorDeviation:""
   });
   const navigate = useNavigate();
 
@@ -136,6 +137,18 @@ const AgriRequesrOrder = () => {
     toast.success(res.data.message);
     navigate("../dashboard/agri-orders");
   };
+  const getDevitaionAmount = (event)=>{
+    if(event?.meta?.deviation < 0){
+      return `${event.label || ""} owes you ${Math.abs(
+        event?.meta?.deviation
+      )}`
+    }else if(event?.meta?.deviation > 0){
+      return `You owe ${event.label || ""} ${Math.abs(
+        event?.meta?.deviation
+      )} `
+    }
+    return ""
+  }
 
   const vendorChangeHandler = (event, id) => {
 
@@ -145,6 +158,7 @@ const AgriRequesrOrder = () => {
         [id]: event,
         vendorContact: event?.meta?.contact || "",
         isNewVendor: event?.__isNew__ || false,
+        vendorDeviation: getDevitaionAmount(event),
       };
     });
   };
@@ -241,6 +255,16 @@ const AgriRequesrOrder = () => {
               disabled={!state.isNewVendor}
               errorMessage="Please Enter a Valid Number"
             />
+            {state.vendorDeviation !== "" && (
+            <Input
+              value={state.vendorDeviation || ""}
+              id="vendorDeviation"
+              onChange={() => {}}
+              title="Vendor Deviation Amount"
+              required
+              disabled={true}
+            />
+          )}
 
             <Dropdown
               id="orderId"
@@ -323,7 +347,6 @@ const AgriRequesrOrder = () => {
                 !state.vendorName ||
                 state.vendorContact === "" ||
                 !state.orderId ||
-                !state.currentPaidAmount ||
                 !state.expectedDeliveryDate
                 : !isFormValid || description === ""
             }
