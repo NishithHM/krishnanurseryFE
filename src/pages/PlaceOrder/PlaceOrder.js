@@ -104,7 +104,6 @@ export const PlaceOrder = () => {
       };
     });
   };
-
   const dateChangeHandler = (event) => {
     setState((prev) => {
       return {
@@ -282,7 +281,7 @@ export const PlaceOrder = () => {
     isEmpty(state.totalPrice.toString()) ||
     isEmpty(state.totalQuantity.toString()) ||
     isEmpty(state.description) ||
-    isEmpty(state.expectedDeliveryDate);
+    isEmpty(state.expectedDeliveryDate?.toString());
 
   const isSubmitDisabledWithInHouse =
     isEmpty(state.addPlantName) ||
@@ -294,7 +293,7 @@ export const PlaceOrder = () => {
     if (isInhouseOrder)
       setState((prev) => ({
         ...prev,
-        expectedDeliveryDate: dayjs().format("YYYY-MM-DD"),
+        expectedDeliveryDate: dayjs().format("DD-MM-YYYY"),
       }));
   }, [isInhouseOrder]);
 
@@ -305,13 +304,10 @@ export const PlaceOrder = () => {
           id: state.orderId?.value,
           page: "placeOrder",
         });
-        console.log(data);
         setState((prev) => ({
           ...prev,
           orderDetails: data,
-          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format(
-            "YYYY-MM-DD"
-          ),
+          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).toDate(),
           disableExpectedDate: data?.expectedDeliveryDate ? true : false,
         }));
       }
