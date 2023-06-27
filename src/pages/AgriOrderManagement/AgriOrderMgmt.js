@@ -238,7 +238,7 @@ const AgriOrderMgmt = () => {
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <Filters
-          config={{ isVendor: true, orderStatus: true }}
+          config={{ isVendor: true, orderStatus: true, vendorType:'AGRI' }}
           onSubmit={handleFilterChange}
         />
         <div className={styles.wrapper}>
