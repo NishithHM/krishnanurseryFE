@@ -103,7 +103,6 @@ export const InvoiceSection = (props) => {
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
 
-  console.log(invoiceNumber);
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />

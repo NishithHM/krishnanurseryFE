@@ -15,6 +15,7 @@ import paymentsIcon from "../../assets/images/dashboard/payments.png";
 import { Link, Route, Routes } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
+import agriprocurements from "../../assets/images/dashboard/agriprocurements.png"
 
 const Dashboard = () => {
   const [values] = useContext(AuthContext);
@@ -37,13 +38,7 @@ const Dashboard = () => {
       title: "Procurement",
       tile_img: produrementImg,
       path: "procurement-list",
-      allowed: [USER_ROLES.admin],
-    },
-    {
-      title: "Procurement List",
-      tile_img: billsImg,
-      path: "procurement-list",
-      allowed: [USER_ROLES.procurement],
+      allowed: [USER_ROLES.admin,USER_ROLES.procurement],
     },
     {
       title: "Categories",
@@ -95,8 +90,29 @@ const Dashboard = () => {
       allowed: [USER_ROLES.admin],
       isDisabled: true,
     },
+    {
+      title: "Agri Variants",
+      tile_img: salesImg,
+      path: "agri-variants",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+    },
+    {
+      title: "Agri Procurements",
+      tile_img: produrementImg,
+      path: "agri-add-procurements",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+    },
+    {
+      title: "Agri Orders",
+      tile_img: orders,
+      path: "agri-orders",
+      allowed: [USER_ROLES.procurement, USER_ROLES.sales, USER_ROLES.admin],
+    },
   ];
 
+  // /dashboard/orders-agri/request-order
   const getDashboardData = (role) => {
     return DashboardData.filter((data) => data.allowed.includes(role));
   };

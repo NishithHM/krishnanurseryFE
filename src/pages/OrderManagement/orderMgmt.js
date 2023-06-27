@@ -20,6 +20,7 @@ import {
 
 import {
     useAddOrderInvoiceMutation,
+    useGetInvoiceMutation,
     useGetOrdersMutation,
     useRejectOrderMutation,
     useVerifyOrderMutation,
@@ -66,7 +67,6 @@ const OrderMgmt = () => {
         id: null,
         data: null,
     });
-    console.log(addInvoice,'in')
     const [filters, setFilters] = useState({ status: [], vendors: [], startData: '', endData: '' })
 
     const [RejectOrder, { isLoading: isRejectLoading }] =
@@ -76,6 +76,8 @@ const OrderMgmt = () => {
 
     const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
         useAddOrderInvoiceMutation();
+    const [getInvoice] = useGetInvoiceMutation();
+
 
     const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
     const onAction = ({ id, action, data, orderId }) => {
@@ -218,7 +220,7 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: true, orderStatus: true }} onSubmit={handleFilterChange} />
+                <Filters config={{ isVendor: true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
@@ -447,6 +449,8 @@ const OrderMgmt = () => {
                     sort={sort}
                     toast={toast}
                     orderId={addInvoice?.data?.orderId}
+                    getInvoice={getInvoice}
+                    type="NUR"
                 />
             )}
         </>
