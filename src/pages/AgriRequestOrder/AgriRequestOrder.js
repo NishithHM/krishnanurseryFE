@@ -126,6 +126,7 @@ const AgriRequesrOrder = () => {
     delete order.vendorName;
     delete order.orderDetails
     delete order.disableExpectedDate
+    delete order.vendorDeviation
     order.vendorName = state.vendorName.label;
     ;
     order.orderId = state.orderId.value;
