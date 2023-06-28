@@ -24,12 +24,12 @@ const AgriVarinatsAddition = ({
   onChange = () => null,
   isFormValid = () => null,
   value,
-  allowNew
+  allowNew,
+  setIsVariantAdded
 }) => {
   const [{ variants }, setState] = useState(initialState);
   const location = useLocation();
   const isPlaceOrder = location?.state?.placeOrder || false;
-
   useEffect(() => {
     if (isPlaceOrder) {
       onChange({ variants: [...value] });
@@ -68,17 +68,18 @@ const AgriVarinatsAddition = ({
     isFormValid(
       isPlaceOrder
         ? variants.some(
-            (ele) =>
-              !ele.totalQuantity ||
-              ele.totalQuantity <= 0 ||
-              !ele.price ||
-              ele.price <= 0
-          )
+          (ele) =>
+            !ele.totalQuantity ||
+            ele.totalQuantity <= 0 ||
+            !ele.price ||
+            ele.price <= 0
+        )
         : variants.some((ele) => !ele.totalQuantity || ele.totalQuantity <= 0)
     );
   }, [JSON.stringify(variants)]);
 
   const onAddVariant = () => {
+    setIsVariantAdded(true)
     const newVariants = cloneDeep(variants);
     newVariants.push(...cloneDeep(initialState.variants));
     setState((prev) => ({
@@ -88,6 +89,7 @@ const AgriVarinatsAddition = ({
   };
 
   const onDeleteVariant = (indexToRemove) => {
+    setIsVariantAdded(false)
     setState((prev) => ({
       ...prev,
       variants: prev.variants.filter(
@@ -98,17 +100,17 @@ const AgriVarinatsAddition = ({
 
   return (
     <div className={styles.variantsAddWrapper}>
-        <div className={styles.buttonWrapper}>
-          <div className={styles.dropDownWrapper}>
-            <Button
-              onClick={onAddVariant}
-              title="Add Variant"
-              disabled={variants.some(
-                (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
-              )}
-            />
-          </div>
+      <div className={styles.buttonWrapper}>
+        <div className={styles.dropDownWrapper}>
+          <Button
+            onClick={onAddVariant}
+            title="Add Variant"
+            disabled={variants.some(
+              (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
+            )}
+          />
         </div>
+      </div>
       {variants.map((ele, index) => {
         return (
           <div key={index} className={styles.wrapper}>
@@ -212,7 +214,7 @@ const AgriVarinatsAddition = ({
                             disabled
                             id="subTotal"
                             type="number"
-                            onChange={(e, id) => {}}
+                            onChange={(e, id) => { }}
                             title="Sub Total"
                             required
                             min={0}
