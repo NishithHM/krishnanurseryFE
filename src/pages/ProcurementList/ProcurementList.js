@@ -114,6 +114,7 @@ const ProcurementList = () => {
       if (data.length > 0) {
         console.log(data[0]);
         onDetailClick(data[0]._id);
+        setFirstLoad(false)
       }
     }
   }, [getProcurements]);
@@ -389,7 +390,7 @@ const ProcurementList = () => {
               </button>
               <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
                 page * 10 > finalCount ? finalCount : page * 10
-              } of ${finalCount}`}</span>
+                } of ${finalCount}`}</span>
               <button
                 disabled={
                   (page * 10 > finalCount ? finalCount : page * 10) >=
@@ -427,7 +428,7 @@ const ProcurementList = () => {
                     pageFilter * 10 > historyCount
                       ? historyCount
                       : pageFilter * 10
-                  } of ${historyCount}`}</span>
+                    } of ${historyCount}`}</span>
                   <button
                     disabled={
                       (pageFilter * 10 > historyCount
