@@ -91,7 +91,7 @@ export const InvoiceSection = (props) => {
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
-      val.push({ value: `${el.procurementLabel} ( ${el.variantLabel} )` });
+      val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.mrp });
       if (discounted) {
         val.push({ value: el.price });
