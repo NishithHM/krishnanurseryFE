@@ -24,6 +24,7 @@ const AgriRequesrOrder = () => {
   const [orderData, setOrderData] = useState([]);
   const [isFormValid, setIsFormValid] = useState(false);
   const [description, setDescription] = useState("");
+  const [isVariantAdded, setIsVariantAdded] = useState(false)
   const [state, setState] = useState({
     vendorName: "",
     vendorContact: "",
@@ -32,9 +33,9 @@ const AgriRequesrOrder = () => {
     isNewVendor: false,
     orderDropdownValues: [],
     orderId: "",
-    orderDetails:[],
+    orderDetails: [],
     disableExpectedDate: false,
-    vendorDeviation:""
+    vendorDeviation: ""
   });
   const navigate = useNavigate();
 
@@ -64,24 +65,31 @@ const AgriRequesrOrder = () => {
     }))
   }, [JSON.stringify(location?.state?.data)]);
   const handleRequestOrder = async () => {
-    const transformedData = orderData.map((item) => {
-      const variant = item.options.map((option) => ({
-        optionName: option.optionName,
-        optionValue: option.value.value,
-      }));
+    try {
+      const transformedData = orderData.map((item) => {
+        const variant = item.options.map((option) => ({
+          optionName: option.optionName,
+          optionValue: option.value.value,
+        }));
 
-      return {
-        totalQuantity: parseInt(item.totalQuantity),
-        type: item.type.label,
-        name: item.name.label,
-        variant: variant,
-      };
-    });
-
-    const data = { orders: transformedData, description };
-    const res = await requestOrder(data);
-    toast.success(res.data.message);
-    navigate("../dashboard/agri-orders");
+        return {
+          totalQuantity: parseInt(item.totalQuantity),
+          type: item.type.label,
+          name: item.name.label,
+          variant: variant,
+        };
+      });
+      const data = { orders: transformedData, description };
+      const res = await requestOrder(data);
+      if (res.error !== undefined && res.error.data.error !== "") {
+        toast.error(res.error?.data?.error)
+      } else {
+        toast.success(res.data.message);
+        navigate("../dashboard/agri-orders");
+      }
+    } catch (error) {
+      console.log("Agri product request error", error)
+    }
   };
 
   useEffect(() => {
@@ -104,46 +112,53 @@ const AgriRequesrOrder = () => {
     getOrderDetails();
   }, [state.orderId?.value]);
   const handleCreateOrder = async () => {
-    const transformedData = orderData.map((item, index) => {
-      const variant = item.options.map((option) => ({
-        optionName: option.optionName,
-        optionValue: option.value.value,
-      }));
+    try {
+      const transformedData = orderData.map((item, index) => {
+        const variant = item.options.map((option) => ({
+          optionName: option.optionName,
+          optionValue: option.value.value,
+        }));
 
-      return {
-        totalQuantity: parseInt(item.totalQuantity),
-        type: item.type.label,
-        name: item.name.label,
-        variant: variant,
-        totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
-        id: location?.state?.data?.[index]?._id
-      };
-    });
-    const order = { orders: transformedData, description, ...state };
-    delete order.isNewVendor;
-    delete order.orderId;
-    delete order.orderDropdownValues;
-    delete order.vendorName;
-    delete order.orderDetails
-    delete order.disableExpectedDate
-    delete order.vendorDeviation
-    order.vendorName = state.vendorName.label;
-    ;
-    order.orderId = state.orderId.value;
-    if (!state.isNewVendor) {
-      order.vendorId = state.vendorName?.value
+        return {
+          totalQuantity: parseInt(item.totalQuantity),
+          type: item.type.label,
+          name: item.name.label,
+          variant: variant,
+          totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
+          id: location?.state?.data?.[index]?._id
+        };
+      });
+      const order = { orders: transformedData, description, ...state };
+      delete order.isNewVendor;
+      delete order.orderId;
+      delete order.orderDropdownValues;
+      delete order.vendorName;
+      delete order.orderDetails
+      delete order.disableExpectedDate
+      delete order.vendorDeviation
+      order.vendorName = state.vendorName.label;
+      ;
+      order.orderId = state.orderId.value;
+      if (!state.isNewVendor) {
+        order.vendorId = state.vendorName?.value
+      }
+      const res = await placeOrder(order);
+      if (res.error !== undefined && res.error.data.error !== "") {
+        toast.error(res.error?.data?.error)
+      } else {
+        toast.success(res.data.message);
+        navigate("../dashboard/agri-orders");
+      }
+    } catch (error) {
+      console.log("Agri product place order error", error)
     }
-
-    const res = await placeOrder(order);
-    toast.success(res.data.message);
-    navigate("../dashboard/agri-orders");
   };
-  const getDevitaionAmount = (event)=>{
-    if(event?.meta?.deviation < 0){
+  const getDevitaionAmount = (event) => {
+    if (event?.meta?.deviation < 0) {
       return `${event.label || ""} owes you ${Math.abs(
         event?.meta?.deviation
       )}`
-    }else if(event?.meta?.deviation > 0){
+    } else if (event?.meta?.deviation > 0) {
       return `You owe ${event.label || ""} ${Math.abs(
         event?.meta?.deviation
       )} `
@@ -211,6 +226,7 @@ const AgriRequesrOrder = () => {
         allowNew={isEmpty(placeOrderVariantsData)}
         value={placeOrderVariantsData}
         isFormValid={(e) => setIsFormValid(!e)}
+        setIsVariantAdded={setIsVariantAdded}
       />
       <div
         style={{
@@ -257,15 +273,15 @@ const AgriRequesrOrder = () => {
               errorMessage="Please Enter a Valid Number"
             />
             {state.vendorDeviation !== "" && (
-            <Input
-              value={state.vendorDeviation || ""}
-              id="vendorDeviation"
-              onChange={() => {}}
-              title="Vendor Deviation Amount"
-              required
-              disabled={true}
-            />
-          )}
+              <Input
+                value={state.vendorDeviation || ""}
+                id="vendorDeviation"
+                onChange={() => { }}
+                title="Vendor Deviation Amount"
+                required
+                disabled={true}
+              />
+            )}
 
             <Dropdown
               id="orderId"
@@ -343,7 +359,7 @@ const AgriRequesrOrder = () => {
             title="Place Order"
             disabled={
               isPlaceOrder
-                ? !isFormValid ||
+                ? !isVariantAdded || !isFormValid ||
                 description === "" ||
                 !state.vendorName ||
                 state.vendorContact === "" ||
