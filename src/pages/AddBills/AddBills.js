@@ -576,7 +576,7 @@ export default function AddBills() {
               <>
                 {state.showDOB && (
                   <DatePicker
-                    placeholder="dd-mm-yyyy"
+                    placeholder="01-01-1960"
                     label="Date Of Birth"
                     inputFormat="DD/MM/YYYY"
                     labelFormat="MMMM - YYYY"
