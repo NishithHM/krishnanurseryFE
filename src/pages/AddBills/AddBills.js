@@ -41,13 +41,16 @@ export default function AddBills() {
     { value: "Quantity", width: "25%" },
   ];
 
+  const defaultDate = new Date(1960,0,1)
+
+
   const initialState = {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
     nameDisabled: true,
     showDOB: false,
-    dateOfBirth: "",
+    dateOfBirth: defaultDate,
     newCustomer: false,
     billingHistory: [],
     errorFields: [],
@@ -108,7 +111,7 @@ export default function AddBills() {
     setState((prev) => {
       return {
         ...prev,
-        dateOfBirth: event.value,
+        dateOfBirth: event,
       };
     });
   };
@@ -576,7 +579,8 @@ export default function AddBills() {
               <>
                 {state.showDOB && (
                   <DatePicker
-                    placeholder="01-01-1960"
+                    defaultValue={defaultDate}
+                    placeholder="dd-mm-yyyy"
                     label="Date Of Birth"
                     inputFormat="DD/MM/YYYY"
                     labelFormat="MMMM - YYYY"
