@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementsQuery,
@@ -189,7 +190,6 @@ const ProcurementList = () => {
   const tableBody = useMemo(() => {
     return getProcurementListTableBody(getProcurements.data, onDetailClick);
   }, [JSON.stringify(getProcurements.data)]);
-
   const onIncrementPage = () => {
     setPage(page + 1);
   };
@@ -403,10 +403,16 @@ const ProcurementList = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table
-              data={[...tableHeader, ...tableBody]}
-              onSortBy={onSortClickHandler}
-            />
+            {
+              (tableBody.length === 0) ? (
+                <Spinner />
+              ) : (
+                <Table
+                 data={[...tableHeader, ...tableBody]}
+                 onSortBy={onSortClickHandler}
+                />
+              )
+            }
           </div>
         </div>
         {id && (

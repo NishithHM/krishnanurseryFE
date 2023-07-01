@@ -6,6 +6,7 @@ import {
   Input,
   Modal,
   Search,
+  Spinner,
   Table,
   Toaster,
 } from "../../components";
@@ -192,7 +193,13 @@ const Categories = () => {
           </div>
         </div>
         <div className={styles.categoryTableWrapper}>
-          <Table data={[...tableHeader, ...tableBody]} onSortBy={onSortClick} />
+         {
+          (tableBody.length === 0) ? (
+            <Spinner />
+          ) : (
+            <Table data={[...tableHeader, ...tableBody]} onSortBy={onSortClick} />
+          )
+         }
         </div>
         <Modal isOpen={deleteCategory} contentLabel="Delete User">
           <Alert
