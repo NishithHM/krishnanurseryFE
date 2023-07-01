@@ -576,9 +576,13 @@ export default function AddBills() {
               </>
               <>
                 {state.showDOB && (
-                  <Datepicker
-                    label={"Date Of Birth"}
-                    size={"sm"}
+                  <DatePicker
+                    placeholder="01-01-1960"
+                    label="Date Of Birth"
+                    inputFormat="DD/MM/YYYY"
+                    labelFormat="MMMM - YYYY"
+                    size="sm"
+                    withAsterisk={false}
                     value={state.dateOfBirth}
                     onChange={dateChangeHandler}
                     maxDate={new Date(today.setDate(today.getDate() - 1))}
