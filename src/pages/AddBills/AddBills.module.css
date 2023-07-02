@@ -315,7 +315,7 @@
 
 @media print {
   .modalContent {
-    padding: 10px;
+    padding: 16px;
     margin: 20px 0px;
   }
 }
