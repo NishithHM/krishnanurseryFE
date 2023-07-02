@@ -48,6 +48,7 @@ const OrderMgmt = () => {
     const [user] = useContext(AuthContext);
     const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
     const [plantImages, setPlantImages] = useState([]);
+    const [isVerifyOrderBtnEnabled,setIsVerifyOrderBtnEnabled] = useState(false)
     const [searchInput, setSearchInput] = useState("");
     const [ordersCount, setOrdersCount] = useState(0);
     const [search, setSearch] = useState("")
@@ -190,6 +191,14 @@ const OrderMgmt = () => {
         setData(list);
     }
 
+    useEffect(() => {
+        if(plantImages.length > 0 && verifyOrder.quantity > 0) {
+            setIsVerifyOrderBtnEnabled(true)
+        }else {
+            setIsVerifyOrderBtnEnabled(false)
+        }
+    }, [plantImages, verifyOrder])
+ 
     const handlePlantimageSelect = (file) => {
         setPlantImages((prev) => {
           let updated = [...prev, ...file];
@@ -331,6 +340,7 @@ const OrderMgmt = () => {
                         }.`}
                     confirmBtnType="primary"
                     subMessage={""}
+                    confirmBtnEnable={isVerifyOrderBtnEnabled}
                     cancelBtnLabel={"Close"}
                     confirmBtnLabel={"Verify Order"}
                     successLoading={isVerifyLoading}

@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementsQuery,
@@ -220,7 +221,13 @@ const UnderMaintainence = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table data={[...tableHeader, ...tableBody]} />
+            {
+              (tableBody.length === 0) ? (
+                <Spinner />
+              ) : (
+                <Table data={[...tableHeader, ...tableBody]} />
+              )
+            }
           </div>
         </div>
       </div>
