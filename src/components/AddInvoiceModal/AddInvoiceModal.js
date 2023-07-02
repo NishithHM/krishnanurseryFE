@@ -229,9 +229,13 @@ const AddInvoiceModal = ({
                 marginTop: "3rem",
               }}
             >
+              <div className={styles.invoiceItem}>
+                <span>Plant Name x Quantity</span>
+                <span>Subtotal</span>
+              </div>
                {state.orderVal?.items.map((ele) => {
                   return (
-                    <div className={styles.invoiceItem}>
+                    <div className={`${styles.invoiceItem} ${styles.plantItem}`}>
                        <span>{`${ele?.names?.en?.name || ele?.names } x ${ele?.orderedQuantity}`}</span>
                        <div style={{width:'100px'}}>
                       <Input type="number" onChange={e=> onItemChange(e, ele._id)} style={{width:'100px'}} value={ele?.totalPrice}/>
