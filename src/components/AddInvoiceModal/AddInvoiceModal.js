@@ -112,6 +112,9 @@ const AddInvoiceModal = ({
             id: addInvoice?.data?.orderId,
             body: data,
           });
+          if(res.error) {
+            return toast.error(res.error?.data?.error)
+          }
           toast.success("Invoice Updated!");
           setAddInvoice({ isActive: false, id: null });
           setOrderInvoiceFile(null);
