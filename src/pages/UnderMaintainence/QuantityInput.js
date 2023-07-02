@@ -10,9 +10,12 @@ const QuantityInput = ({ id, val = 12, maxValue = 100 }) => {
 
   const submitHandler = async () => {
     if (value.updated > maxValue || value.updated < 0)
-      return toast.error("Under Maintainence Value should not exceed ");
+       return toast.error("Under Maintainence Value should not exceed ");
 
-    await reportMaintainence({ id, count: value.updated });
+    const res =  await reportMaintainence({ id, count: value.updated });
+    if(res.error) {
+      return toast.error(res.error?.data?.error)
+    }
     toast.success("Updated Successfully!");
     setValue((prev) => ({ ...prev, initial: prev.updated }));
   };
