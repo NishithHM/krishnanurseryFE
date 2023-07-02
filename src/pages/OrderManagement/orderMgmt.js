@@ -372,6 +372,9 @@ const OrderMgmt = () => {
                         );
 
                         const res = await VerifyOrder(data);
+                        if(res.error){
+                            return toast.error(res.error?.data?.error)
+                        }
                         toast.success("Order Verify Success!");
                         setVerifyOrder({
                             data: null,
