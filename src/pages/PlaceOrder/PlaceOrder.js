@@ -61,6 +61,7 @@ export const PlaceOrder = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
   const [getInvoice] = useGetInvoiceMutation();
+  const [isFromAccept,setIsFromAccept] = useState(false)
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
   const [getOrderId] = useGetOrderIdMutation();
@@ -91,7 +92,9 @@ export const PlaceOrder = () => {
           value: location.state?.value,
           meta: { contact: location?.state?.vendorContact },
         },
+       
       }));
+      setIsFromAccept(true)
     }
   }, [location.state]);
 
@@ -329,6 +332,7 @@ export const PlaceOrder = () => {
             canCreate={true}
             minInputToFireApi={3}
             required
+            disabled={isFromAccept}
           />
           <Input
             value={
@@ -343,7 +347,7 @@ export const PlaceOrder = () => {
             onError={onError}
             validation={(text) => text.length > 0}
             errorMessage="Please Enter new Plant in Kannada"
-            disabled={state?.addPlantName?.meta?.names?.ka?.name}
+            disabled={state?.addPlantName?.meta?.names?.ka?.name || isFromAccept}
           />
 
           <div>
