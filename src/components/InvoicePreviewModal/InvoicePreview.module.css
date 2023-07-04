@@ -197,7 +197,8 @@
 }
 
 .modalContent {
-  min-width: 856px;
+  min-width: 780px;
+  padding: 48px;
 }
 
 .clientDetailsWrapper {
@@ -313,7 +314,7 @@
 
 @media print {
   .modalContent {
-    padding: 16px;
+    padding: 48px;
     margin: 20px 0px;
   }
 }
