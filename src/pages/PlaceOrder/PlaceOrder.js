@@ -416,10 +416,10 @@ export const PlaceOrder = () => {
                   </div>
                 );
               })}
-              <div className={styles.orderItems}>
+              <div className={styles.orderLabel}>
                 Total Advance amount: {state.orderDetails.advanceAmount}
               </div>
-              <div className={styles.orderItems}>
+              <div className={styles.orderLabel}>
                 Total amount: {state.orderDetails.totalAmount}
               </div>
             </div>
