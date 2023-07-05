@@ -177,10 +177,11 @@ const OrderMgmt = () => {
             body: {
                 search: search, ...formattedFilter, sortBy: sort.sortBy,
                 sortType: sort.sortType,
+                pageNumber: page
             }
         });
         const counts = await getOrders({
-            body: { search: search, isCount: true, ...formattedFilter },
+            body: {  search: search, isCount: true, ...formattedFilter },
         });
         setOrdersCount(get(counts, "data[0].count", 0));
         const list = formatOrdersData({
