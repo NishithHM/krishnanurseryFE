@@ -229,7 +229,7 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
+                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
