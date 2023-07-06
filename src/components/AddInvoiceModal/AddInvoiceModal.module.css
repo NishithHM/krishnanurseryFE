@@ -5,6 +5,9 @@
   line-height: 30px;
   font-weight: 600;
 }
+.plantItem  {
+  font-weight: normal;
+}
 
 .fileNameStyle{
   word-wrap: break-word;

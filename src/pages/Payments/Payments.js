@@ -57,7 +57,7 @@ const Payments = () => {
       };
       const action = {
         value:
-          item.invoiceId && item.type === "BROKER" ? (
+          item.invoiceId && item.type === "BROKER" && user_role !== "procurement" ? (
             <Link
               to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
               style={{

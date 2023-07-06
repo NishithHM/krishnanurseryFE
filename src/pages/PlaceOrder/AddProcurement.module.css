@@ -63,9 +63,11 @@
   color: #302c2c;
   font-size: 20px;
   text-align: left;
+  font-weight: bold;
 }
 .orderItems{
   margin: 5px 0;
+  font-weight: 500;
 }
 @media screen and (min-device-width: 1024px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
   .header .historyheader {
