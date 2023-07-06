@@ -432,6 +432,7 @@ export default function AddBills() {
         ...prev,
         submitError: { isExist: true, error: confirmCart.error.data.error },
       }));
+      toast.error(confirmCart.error.data.error)
     }
 
     if (confirmCart.data) {

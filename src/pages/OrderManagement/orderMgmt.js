@@ -177,10 +177,11 @@ const OrderMgmt = () => {
             body: {
                 search: search, ...formattedFilter, sortBy: sort.sortBy,
                 sortType: sort.sortType,
+                pageNumber: page
             }
         });
         const counts = await getOrders({
-            body: { search: search, isCount: true, ...formattedFilter },
+            body: {  search: search, isCount: true, ...formattedFilter },
         });
         setOrdersCount(get(counts, "data[0].count", 0));
         const list = formatOrdersData({
@@ -229,7 +230,7 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
+                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
@@ -372,6 +373,9 @@ const OrderMgmt = () => {
                         );
 
                         const res = await VerifyOrder(data);
+                        if(res.error){
+                            return toast.error(res.error?.data?.error)
+                        }
                         toast.success("Order Verify Success!");
                         setVerifyOrder({
                             data: null,
