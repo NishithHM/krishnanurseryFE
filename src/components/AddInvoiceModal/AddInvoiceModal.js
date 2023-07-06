@@ -85,6 +85,7 @@ const AddInvoiceModal = ({
         subMessage={""}
         cancelBtnLabel={"Close"}
         confirmBtnLabel={"Submit"}
+        confirmBtnEnable={(!orderInvoiceFile || !state.totalToPay || state.totalToPay <= 0) ? true : false}
         successLoading={isAddInvoiceLoading}
         handleCancel={() => {
           setAddInvoice({ isActive: false, id: null });
