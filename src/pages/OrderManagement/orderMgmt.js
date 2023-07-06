@@ -48,6 +48,7 @@ const OrderMgmt = () => {
     const [user] = useContext(AuthContext);
     const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
     const [plantImages, setPlantImages] = useState([]);
+    const [isVerifyOrderBtnEnabled,setIsVerifyOrderBtnEnabled] = useState(false)
     const [searchInput, setSearchInput] = useState("");
     const [ordersCount, setOrdersCount] = useState(0);
     const [search, setSearch] = useState("")
@@ -176,10 +177,11 @@ const OrderMgmt = () => {
             body: {
                 search: search, ...formattedFilter, sortBy: sort.sortBy,
                 sortType: sort.sortType,
+                pageNumber: page
             }
         });
         const counts = await getOrders({
-            body: { search: search, isCount: true, ...formattedFilter },
+            body: {  search: search, isCount: true, ...formattedFilter },
         });
         setOrdersCount(get(counts, "data[0].count", 0));
         const list = formatOrdersData({
@@ -190,6 +192,14 @@ const OrderMgmt = () => {
         setData(list);
     }
 
+    useEffect(() => {
+        if(plantImages.length > 0 && verifyOrder.quantity > 0) {
+            setIsVerifyOrderBtnEnabled(true)
+        }else {
+            setIsVerifyOrderBtnEnabled(false)
+        }
+    }, [plantImages, verifyOrder])
+ 
     const handlePlantimageSelect = (file) => {
         setPlantImages((prev) => {
           let updated = [...prev, ...file];
@@ -220,7 +230,7 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
+                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
@@ -331,6 +341,7 @@ const OrderMgmt = () => {
                         }.`}
                     confirmBtnType="primary"
                     subMessage={""}
+                    confirmBtnEnable={!isVerifyOrderBtnEnabled}
                     cancelBtnLabel={"Close"}
                     confirmBtnLabel={"Verify Order"}
                     successLoading={isVerifyLoading}
@@ -362,6 +373,9 @@ const OrderMgmt = () => {
                         );
 
                         const res = await VerifyOrder(data);
+                        if(res.error){
+                            return toast.error(res.error?.data?.error)
+                        }
                         toast.success("Order Verify Success!");
                         setVerifyOrder({
                             data: null,

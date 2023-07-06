@@ -30,7 +30,7 @@ const AlertMessage = ({
               type={confirmBtnType ? confirmBtnType : "alert"}
               title={confirmBtnLabel ? confirmBtnLabel : "Delete"}
               onClick={handleConfirm}
-              disabled={confirmBtnEnable || false}
+              disabled={!confirmBtnEnable}
               loading={successLoading || false}
             />
           </div>
