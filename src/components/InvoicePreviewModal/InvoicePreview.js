@@ -127,7 +127,7 @@ export const InvoiceSection = (props) => {
             <br></br>
             Shivamogga - 577222
           </div>
-          <div><strong>Phone Number</strong> : 8147096444</div>
+          <div><strong>Phone Number</strong> : 81051-73777</div>
           <div><strong>Email </strong>: shreekrishnanurserysmg@gmail.com</div>
         </div>
 
