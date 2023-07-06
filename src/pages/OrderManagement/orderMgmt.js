@@ -341,7 +341,7 @@ const OrderMgmt = () => {
                         }.`}
                     confirmBtnType="primary"
                     subMessage={""}
-                    confirmBtnEnable={isVerifyOrderBtnEnabled}
+                    confirmBtnEnable={!isVerifyOrderBtnEnabled}
                     cancelBtnLabel={"Close"}
                     confirmBtnLabel={"Verify Order"}
                     successLoading={isVerifyLoading}
