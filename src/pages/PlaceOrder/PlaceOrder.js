@@ -351,7 +351,7 @@ export const PlaceOrder = () => {
             onError={onError}
             validation={(text) => text.length > 0}
             errorMessage="Please Enter new Plant in Kannada"
-            disabled={state?.addPlantName?.meta?.names?.ka?.name || isFromAccept}
+            disabled={state?.addPlantName?.meta?.names?.ka?.name && isFromAccept}
           />
 
           <div>
