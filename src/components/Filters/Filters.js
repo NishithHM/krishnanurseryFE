@@ -41,7 +41,8 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                         onChange={(date => setFilterDates(date))}
                     />
                     {config.isVendor &&
-                        <Dropdown
+                      <div style={{width : "200px"}}>
+                      <Dropdown
                             url={`/api/vendors/getAll?type=${config?.vendorType}`}
                             id="vendors"
                             apiDataPath={{ label: "name", value: "_id" }}
@@ -51,6 +52,7 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                             isMultiEnabled
                             minInputToFireApi={3}
                         />
+                      </div>
                     }
                     {config.orderStatus && <Dropdown
                         id="status"
