@@ -149,7 +149,7 @@ const AgriOrderMgmt = () => {
 
   const searchHandler = debounce(async (query) => {
     setSearch(query);
-    if (query.length >= 3) {
+    if (query.length >= 2) {
       const res = await getOrders({ body: { search: query } });
       const counts = await getOrders({});
       setOrdersCount(get(counts, "data[0].count", 0));
