@@ -11,14 +11,13 @@ import {
   usePlaceAgriOrderMutation,
   useRequestAgriOrderMutation,
   useGetOrderIdMutation,
-  useGetInvoiceMutation
+  useGetInvoiceMutation,
 } from "../../services/agrivariants.services";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import styles from './AgriRequestOrder.css'
+import styles from "./AgriRequestOrder.css";
 import { isEmpty } from "lodash";
-
 
 const AgriRequesrOrder = () => {
   const [orderData, setOrderData] = useState([]);
@@ -28,13 +27,13 @@ const AgriRequesrOrder = () => {
     vendorName: "",
     vendorContact: "",
     expectedDeliveryDate: "",
-    currentPaidAmount: "",
+    currentPaidAmount: 0,
     isNewVendor: false,
     orderDropdownValues: [],
     orderId: "",
-    orderDetails:[],
+    orderDetails: [],
     disableExpectedDate: false,
-    vendorDeviation:""
+    vendorDeviation: "",
   });
   const navigate = useNavigate();
 
@@ -44,12 +43,11 @@ const AgriRequesrOrder = () => {
 
   const [requestOrder] = useRequestAgriOrderMutation();
   const [placeOrder] = usePlaceAgriOrderMutation();
-  const [getInvoice] = useGetInvoiceMutation()
+  const [getInvoice] = useGetInvoiceMutation();
   const placeOrderVariantsData = useMemo(() => {
-
     // hardcoding 0 temporarily ( need to conver to array)
     const variants = location?.state?.data;
-    return variants?.map(variant => ({
+    return variants?.map((variant) => ({
       type: { label: variant.type, value: variant.type },
       name: { label: variant.names, value: variant.names },
       options: variant.variant.map((option) => {
@@ -61,7 +59,7 @@ const AgriRequesrOrder = () => {
       }),
       totalQuantity: variant.requestedQuantity,
       price: 0,
-    }))
+    }));
   }, [JSON.stringify(location?.state?.data)]);
   const handleRequestOrder = async () => {
     const transformedData = orderData.map((item) => {
@@ -116,7 +114,7 @@ const AgriRequesrOrder = () => {
         name: item.name.label,
         variant: variant,
         totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
-        id: location?.state?.data?.[index]?._id
+        id: location?.state?.data?.[index]?._id,
       };
     });
     const order = { orders: transformedData, description, ...state };
@@ -124,35 +122,33 @@ const AgriRequesrOrder = () => {
     delete order.orderId;
     delete order.orderDropdownValues;
     delete order.vendorName;
-    delete order.orderDetails
-    delete order.disableExpectedDate
-    delete order.vendorDeviation
+    delete order.orderDetails;
+    delete order.disableExpectedDate;
+    delete order.vendorDeviation;
     order.vendorName = state.vendorName.label;
-    ;
     order.orderId = state.orderId.value;
     if (!state.isNewVendor) {
-      order.vendorId = state.vendorName?.value
+      order.vendorId = state.vendorName?.value;
     }
 
     const res = await placeOrder(order);
     toast.success(res.data.message);
     navigate("../dashboard/agri-orders");
   };
-  const getDevitaionAmount = (event)=>{
-    if(event?.meta?.deviation < 0){
+  const getDevitaionAmount = (event) => {
+    if (event?.meta?.deviation < 0) {
       return `${event.label || ""} owes you ${Math.abs(
         event?.meta?.deviation
-      )}`
-    }else if(event?.meta?.deviation > 0){
+      )}`;
+    } else if (event?.meta?.deviation > 0) {
       return `You owe ${event.label || ""} ${Math.abs(
         event?.meta?.deviation
-      )} `
+      )} `;
     }
-    return ""
-  }
+    return "";
+  };
 
   const vendorChangeHandler = (event, id) => {
-
     setState((prev) => {
       return {
         ...prev,
@@ -164,7 +160,6 @@ const AgriRequesrOrder = () => {
     });
   };
   const orderIdChangeHandler = (event, id) => {
-
     setState((prev) => {
       return {
         ...prev,
@@ -257,15 +252,15 @@ const AgriRequesrOrder = () => {
               errorMessage="Please Enter a Valid Number"
             />
             {state.vendorDeviation !== "" && (
-            <Input
-              value={state.vendorDeviation || ""}
-              id="vendorDeviation"
-              onChange={() => {}}
-              title="Vendor Deviation Amount"
-              required
-              disabled={true}
-            />
-          )}
+              <Input
+                value={state.vendorDeviation || ""}
+                id="vendorDeviation"
+                onChange={() => {}}
+                title="Vendor Deviation Amount"
+                required
+                disabled={true}
+              />
+            )}
 
             <Dropdown
               id="orderId"
@@ -277,12 +272,15 @@ const AgriRequesrOrder = () => {
             />
             {state.orderDetails?.items?.length > 0 && (
               <div>
-                <span className={styles.orderLabel}>Previous Order Details:</span>
+                <span className={styles.orderLabel}>
+                  Previous Order Details:
+                </span>
                 {state.orderDetails.items.map((ele, ind) => {
                   return (
                     <div className={styles.orderItems}>
-                      {`${ind + 1}) ${ele?.names}    X   ${ele.orderedQuantity
-                        }   =   ${ele.totalPrice}`}
+                      {`${ind + 1}) ${ele?.names}    X   ${
+                        ele.orderedQuantity
+                      }   =   ${ele.totalPrice}`}
                     </div>
                   );
                 })}
@@ -298,6 +296,7 @@ const AgriRequesrOrder = () => {
               value={state.currentPaidAmount}
               id="currentPaidAmount"
               type="number"
+              min="0"
               onChange={(e) => {
                 setState((prev) => ({
                   ...prev,
@@ -344,14 +343,19 @@ const AgriRequesrOrder = () => {
             disabled={
               isPlaceOrder
                 ? !isFormValid ||
-                description === "" ||
-                !state.vendorName ||
-                state.vendorContact === "" ||
-                !state.orderId ||
-                !state.expectedDeliveryDate
+                  description === "" ||
+                  !state.vendorName ||
+                  state.vendorContact === "" ||
+                  !state.orderId ||
+                  !state.expectedDeliveryDate ||
+                  !state.expectedDeliveryDate ||
+                  isNaN(state.currentPaidAmount) ||
+                  state.currentPaidAmount <= -1
                 : !isFormValid || description === ""
             }
-            onClick={isPlaceOrder ? handleCreateOrder : handleRequestOrder}
+            onClick={() => {
+              console.log(state);
+            }}
           />
         </div>
       </div>

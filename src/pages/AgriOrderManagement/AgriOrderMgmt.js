@@ -94,14 +94,18 @@ const AgriOrderMgmt = () => {
     const functionObj = {
       placeOrder: () => {
         if (isChecked) {
-          const order = selectedOrder;
-          order.push(data);
-          setSelectedOrder(order);
+          setSelectedOrder((prev) => {
+            const updatedData = [...prev];
+            updatedData.push(data);
+            console.log(updatedData);
+            return updatedData;
+          });
         } else {
-          const newData = cloneDeep(selectedOrder).filter(
-            (ele) => ele._id !== id
-          );
-          setSelectedOrder(newData);
+          setSelectedOrder((prev) => {
+            const updatedData = prev.filter((ele) => ele._id !== id);
+            console.log(updatedData);
+            return updatedData;
+          });
         }
       },
       addInvoice: () => {
@@ -206,7 +210,7 @@ const AgriOrderMgmt = () => {
 
   const onPlaceOrder = () => {
     navigate(addLink[user.role], {
-      state: { placeOrder: user.role === 'procurement', data: selectedOrder },
+      state: { placeOrder: user.role === "procurement", data: selectedOrder },
     });
   };
 
@@ -238,7 +242,7 @@ const AgriOrderMgmt = () => {
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <Filters
-          config={{ isVendor: true, orderStatus: true, vendorType:'AGRI' }}
+          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI" }}
           onSubmit={handleFilterChange}
         />
         <div className={styles.wrapper}>
