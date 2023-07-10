@@ -94,11 +94,14 @@
 .addButton {
   border: 1px solid white;
   float: right;
-  width: 30px;
-  height: 30px;
-  border-radius: 16px;
+  width: 45px;
+  height: 45px;
+  border-radius: 24px;
   text-align: center;
   background-color: #539c64;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .addButton {
@@ -108,9 +111,7 @@
 .plusIcon {
   font-weight: 500;
   color: white;
-  font-weight: 500;
-  color: white;
-  margin: 5px 0 0 0;
+  font-size: 40px;
 }
 
 .submitBtn {

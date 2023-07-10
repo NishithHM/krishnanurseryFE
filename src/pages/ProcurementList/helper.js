@@ -141,15 +141,15 @@ export const getTableBody = (data, imagesHandler) => {
 export const variantHeaders = [
   "Variant's Name (English)",
   "Variant's Name (Kannada)",
-  "Max Price",
   "Min Price",
+  "Max Price",
 ];
 
 export const rowInitState = [
   { id: "variantNameInEnglish", type: "text", value: "" },
   { id: "variantNameInKannada", type: "text", value: "" },
-  { id: "maxPrice", type: "number", value: "" },
   { id: "minPrice", type: "number", value: "" },
+  { id: "maxPrice", type: "number", value: "" },
 ];
 
 export const InputCell = ({ id, onInputChange, value, type }) => {
@@ -165,3 +165,21 @@ export const InputCell = ({ id, onInputChange, value, type }) => {
     </>
   );
 };
+
+
+export function validateMinMaxPrices(data) {
+  let isValid = true;
+
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    const minPrice = parseFloat(item.find((row) => row.id === "minPrice").value);
+    const maxPrice = parseFloat(item.find((row) => row.id === "maxPrice").value);
+
+    if (minPrice > maxPrice) {
+      isValid = false;
+      break;
+    }
+  }
+
+  return isValid;
+}
