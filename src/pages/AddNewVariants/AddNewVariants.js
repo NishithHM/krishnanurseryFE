@@ -196,7 +196,7 @@ const AddNewVariants = () => {
       <div className={Styles.agriContainer}>
         <div className={Styles.innerAgriContainer}>
           <div>
-            <BackButton navigateTo={"/authorised/dashboard"} />
+            <BackButton navigateTo={"../dashboard/agri-variants"} />
           </div>
 
           <div>
