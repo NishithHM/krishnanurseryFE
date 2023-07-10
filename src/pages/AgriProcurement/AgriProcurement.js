@@ -112,6 +112,7 @@ const AgriProcurement = () => {
       const data = getProcurements.data;
       if (data.length > 0) {
         onDetailClick(data[0]._id);
+        setFirstLoad(false)
       }
     }
   }, [getProcurements]);
