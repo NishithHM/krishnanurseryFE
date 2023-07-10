@@ -71,7 +71,7 @@ const AgriProcurement = () => {
         sortBy: "lastProcuredOn",
       },
       {
-        value: "Plant Name",
+        value: "Product Name",
         isSortable: isMinimumSelected ? false : true,
         sortBy: "plantName",
       },
