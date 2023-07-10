@@ -65,31 +65,31 @@ const AgriRequesrOrder = () => {
     }))
   }, [JSON.stringify(location?.state?.data)]);
   const handleRequestOrder = async () => {
-    try {
-      const transformedData = orderData.map((item) => {
-        const variant = item.options.map((option) => ({
-          optionName: option.optionName,
-          optionValue: option.value.value,
-        }));
+    const transformedData = orderData.map((item) => {
+      const variant = item.options.map((option) => ({
+        optionName: option.optionName,
+        optionValue: option.value.value,
+      }));
 
-        return {
-          totalQuantity: parseInt(item.totalQuantity),
-          type: item.type.label,
-          name: item.name.label,
-          variant: variant,
-        };
-      });
-      const data = { orders: transformedData, description };
-      const res = await requestOrder(data);
-      if (res.error !== undefined && res.error.data.error !== "") {
-        toast.error(res.error?.data?.error)
-      } else {
-        toast.success(res.data.message);
-        navigate("../dashboard/agri-orders");
+      return {
+        totalQuantity: parseInt(item.totalQuantity),
+        type: item.type.label,
+        name: item.name.label,
+        variant: variant,
+      };
+    });
+
+    const data = { orders: transformedData, description };
+    const res = await requestOrder(data);
+    if(res.error?.data?.error) {
+      if(res.error?.data?.error === "") {
+        return toast.error("Something went wrong, Please try again")
+      }else {
+        return toast.error(res.error?.data?.error)
       }
-    } catch (error) {
-      console.log("Agri product request error", error)
     }
+    toast.success(res.data.message);
+    navigate("../dashboard/agri-orders");
   };
 
   useEffect(() => {
@@ -111,54 +111,55 @@ const AgriRequesrOrder = () => {
     };
     getOrderDetails();
   }, [state.orderId?.value]);
-  const handleCreateOrder = async () => {
-    try {
-      const transformedData = orderData.map((item, index) => {
-        const variant = item.options.map((option) => ({
-          optionName: option.optionName,
-          optionValue: option.value.value,
-        }));
 
-        return {
-          totalQuantity: parseInt(item.totalQuantity),
-          type: item.type.label,
-          name: item.name.label,
-          variant: variant,
-          totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
-          id: location?.state?.data?.[index]?._id
-        };
-      });
-      const order = { orders: transformedData, description, ...state };
-      delete order.isNewVendor;
-      delete order.orderId;
-      delete order.orderDropdownValues;
-      delete order.vendorName;
-      delete order.orderDetails
-      delete order.disableExpectedDate
-      delete order.vendorDeviation
-      order.vendorName = state.vendorName.label;
-      ;
-      order.orderId = state.orderId.value;
-      if (!state.isNewVendor) {
-        order.vendorId = state.vendorName?.value
-      }
-      const res = await placeOrder(order);
-      if (res.error !== undefined && res.error.data.error !== "") {
-        toast.error(res.error?.data?.error)
-      } else {
-        toast.success(res.data.message);
-        navigate("../dashboard/agri-orders");
-      }
-    } catch (error) {
-      console.log("Agri product place order error", error)
+  const handleCreateOrder = async () => {
+    const transformedData = orderData.map((item, index) => {
+      const variant = item.options.map((option) => ({
+        optionName: option.optionName,
+        optionValue: option.value.value,
+      }));
+
+      return {
+        totalQuantity: parseInt(item.totalQuantity),
+        type: item.type.label,
+        name: item.name.label,
+        variant: variant,
+        totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
+        id: location?.state?.data?.[index]?._id
+      };
+    });
+    const order = { orders: transformedData, description, ...state };
+    delete order.isNewVendor;
+    delete order.orderId;
+    delete order.orderDropdownValues;
+    delete order.vendorName;
+    delete order.orderDetails
+    delete order.disableExpectedDate
+    delete order.vendorDeviation
+    order.vendorName = state.vendorName.label;
+    ;
+    order.orderId = state.orderId.value;
+    if (!state.isNewVendor) {
+      order.vendorId = state.vendorName?.value
     }
+
+    const res = await placeOrder(order);
+    if(res.error?.data?.error) {
+        if(res.error?.data?.error === "") {
+          return toast.error("Something went wrong, Please try again")
+        }else {
+          return toast.error(res.error?.data?.error)
+        }
+    } 
+    toast.success(res.data.message);
+    navigate("../dashboard/agri-orders");
   };
-  const getDevitaionAmount = (event) => {
-    if (event?.meta?.deviation < 0) {
+  const getDevitaionAmount = (event)=>{
+    if(event?.meta?.deviation < 0){
       return `${event.label || ""} owes you ${Math.abs(
         event?.meta?.deviation
       )}`
-    } else if (event?.meta?.deviation > 0) {
+    }else if(event?.meta?.deviation > 0){
       return `You owe ${event.label || ""} ${Math.abs(
         event?.meta?.deviation
       )} `
@@ -270,7 +271,13 @@ const AgriRequesrOrder = () => {
               title="Contact Number"
               required
               disabled={!state.isNewVendor}
-              errorMessage="Please Enter a Valid Number"
+              validation={(number) => {
+                return number.length === 10;
+              }}
+              onError={({id, isError}) => {
+                console.log("ID & ISERROR",id + " " + isError)
+              }}
+              errorMessage= {"Please Enter a Valid Number"}
             />
             {state.vendorDeviation !== "" && (
               <Input
@@ -350,6 +357,7 @@ const AgriRequesrOrder = () => {
             title="Description"
             rows={4}
             value={description}
+            required
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
