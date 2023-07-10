@@ -99,6 +99,7 @@ const ProcurementList = () => {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const [plantImages, setPlantImages] = useState([]);
+  const [imageLoader,setImageLoader] = useState(false)
 
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -335,6 +336,7 @@ const ProcurementList = () => {
     const images = [];
     console.log(urls);
     if (urls.length === 0) return toast.error("No Images Found!");
+    setImageLoader(true)
     urls.forEach((url) => {
       const promise = fetch(
         `${process.env.REACT_APP_BASE_URL}/api/download?path=${url}`,
@@ -351,12 +353,16 @@ const ProcurementList = () => {
           img.src = imageUrl;
           images.push(imageUrl);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+           console.error(error)
+           setImageLoader(false)
+        });
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      console.log(images);
+      console.log("images", images);
       setPlantImages(images);
+      setImageLoader(false)
     });
   };
 
@@ -600,7 +606,12 @@ const ProcurementList = () => {
           </div>
         )}
       </div>
-      <Modal isOpen={plantImages.length > 0}>
+     {
+      imageLoader ? 
+         <div style={{position : "absolute", top : "50%", left : "49%"}}>
+            <Spinner />
+         </div> : 
+          <Modal isOpen={plantImages.length > 0}>
         <div
           style={{
             border: "1px solid #e2e2e2",
@@ -641,16 +652,24 @@ const ProcurementList = () => {
               flexWrap: "wrap",
             }}
           >
-            {plantImages.map((img) => {
+          {
+           plantImages.map((img) => {
               return (
                 <>
-                  <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
+                  {
+                    imageLoader ? <Spinner /> :  (
+                      <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
+                    )
+                  }
                 </>
               );
-            })}
+            })
+          }
           </div>
         </div>
       </Modal>
+      
+     }
     </>
   );
 };
