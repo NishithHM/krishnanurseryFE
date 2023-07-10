@@ -112,6 +112,7 @@ const AgriRequesrOrder = () => {
     };
     getOrderDetails();
   }, [state.orderId?.value]);
+
   const handleCreateOrder = async () => {
     const transformedData = orderData.map((item, index) => {
       const variant = item.options.map((option) => ({
@@ -154,12 +155,12 @@ const AgriRequesrOrder = () => {
     toast.success(res.data.message);
     navigate("../dashboard/agri-orders");
   };
-  const getDevitaionAmount = (event) => {
-    if (event?.meta?.deviation < 0) {
+  const getDevitaionAmount = (event)=>{
+    if(event?.meta?.deviation < 0){
       return `${event.label || ""} owes you ${Math.abs(
         event?.meta?.deviation
       )}`
-    } else if (event?.meta?.deviation > 0) {
+    }else if(event?.meta?.deviation > 0){
       return `You owe ${event.label || ""} ${Math.abs(
         event?.meta?.deviation
       )} `
