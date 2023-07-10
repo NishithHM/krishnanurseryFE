@@ -192,7 +192,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
         const rowData = roleRows[role].map((ele) => {
             let value;
             if (ele.value === "createdAt" || ele.value === "expectedDeliveryDate") {
-                value = dayjs(get(order, `${ele.value}`, "")).format("YYYY-MM-DD");
+                value = dayjs(get(order, `${ele.value}`, "")).format("DD-MM-YYYY");
                 value = value === "Invalid Date" ? "---" : value;
             } else if (ele.value === "status") {
                 value = (
