@@ -25,7 +25,7 @@ export const CartTableRow = ({
 
   return (
     <tr>
-      <td>
+      <td style={{width : "20%"}}>
         <Dropdown
           onChange={(value) => onChangeHandler(value, "procurementId")}
           value={selectedProcurement}
@@ -35,7 +35,7 @@ export const CartTableRow = ({
           minInputToFireApi={3}
         />
       </td>
-      <td>
+      <td style={{width : "30%"}}>
         <Dropdown
           canCreate={false}
           value={selectedVariant}
@@ -44,10 +44,10 @@ export const CartTableRow = ({
           id={`variant_${item.id}`}
         />
       </td>
-      <td>
+      <td style={{width : "10%"}}>
         <div>{Number(item.mrp)}</div>
       </td>
-      <td>
+      <td style={{width : "10%"}}>
         <input
           value={item.price}
           name="price"
@@ -57,7 +57,7 @@ export const CartTableRow = ({
           onBlur={(e) => onBlur(e, "price")}
         />
       </td>
-      <td>
+      <td style={{width : "10%"}}>
         <input
           value={item.quantity}
           name="quantity"
@@ -68,7 +68,7 @@ export const CartTableRow = ({
           onBlur={(e) => onBlur(e, "quantity")}
         />
       </td>
-      <td>
+      <td style={{width  : "10%"}}>
         <div>{isNaN(total) ? "" : total}</div>
       </td>
       <td align="center">

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { get, isEmpty } from "lodash";
+import warning from "../../assets/images/warning.png"
 
 export const addTitle = {
     procurement: "Place Order",
@@ -206,6 +207,8 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                     </span>
                 );
             } else if (ele.value === "quantities") {
+                console.log("Order quat", order.quantity)
+                console.log("Arrived Quant", order.orderedQuantity)
                 value =
                     <>
                         <span>{`${order.requestedQuantity} (Req)`}
@@ -214,7 +217,18 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                         <span>{`${order.orderedQuantity} (Ord)`}
                         </span>
                         <br />
-                        <span>{`${order.quantity} (Arr)`}
+                        <span style={{
+                            color : order.quantity !== order.orderedQuantity && "red",
+                            display : "flex",
+                            justifyContent : "center",
+                            alignItems  : "center",
+                        }} >
+                        <span>{`${order.quantity} (Arr)`}</span>
+                        {order.quantity !== order.orderedQuantity && <img src={warning} style={{
+                            width : "20px",
+                            height : "20px",
+                            
+                        }} alt="warning" /> }
                         </span>
                     </>
 

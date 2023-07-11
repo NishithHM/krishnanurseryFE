@@ -91,7 +91,7 @@ export const InvoiceSection = (props) => {
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
-      val.push({ value: `${el.procurementLabel} ( ${el.variantLabel} )` });
+      val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.mrp });
       if (discounted) {
         val.push({ value: el.price });
@@ -116,12 +116,12 @@ export const InvoiceSection = (props) => {
           <div className={styles.addressDetails}>
             <b>Shree Krishna Nursery</b>
             <br></br>
-            Santhekadur Post
+            No.188, Near airport, Santhekadur post, 
             <br></br>
-            Shivmogga 577222
+            Shivamogga - 577222
           </div>
-          <div><strong>Phone Number</strong> : {process.env.REACT_APP_PHONE_NUMBER}</div>
-          <div><strong>Email </strong>: {process.env.REACT_APP_EMAIL_ID}</div>
+          <div><strong>Phone Number</strong> : 81051-73777</div>
+          <div><strong>Email </strong>: shreekrishnanurserysmg@gmail.com</div>
         </div>
 
         <div className={styles.clientDetails}>

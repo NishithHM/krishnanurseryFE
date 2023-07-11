@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementsQuery,
@@ -93,6 +94,7 @@ const UnderMaintainence = () => {
   const [plantImages, setPlantImages] = useState([]);
 
   const [values] = useContext(AuthContext);
+  console.log(values);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
@@ -135,6 +137,7 @@ const UnderMaintainence = () => {
     setSearchInput(event.target.value);
     searchHandler(event.target.value);
   };
+
   const tableBody = useMemo(() => {
     return getProcurementListTableBody(getProcurements.data);
   }, [JSON.stringify(getProcurements.data)]);
@@ -218,7 +221,13 @@ const UnderMaintainence = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table data={[...tableHeader, ...tableBody]} />
+            {
+              (tableBody.length === 0) ? (
+                <Spinner />
+              ) : (
+                <Table data={[...tableHeader, ...tableBody]} />
+              )
+            }
           </div>
         </div>
       </div>

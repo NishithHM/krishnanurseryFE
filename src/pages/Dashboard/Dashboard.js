@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./dashboard.module.css";
 import { toUpper } from "lodash";
 
@@ -19,6 +19,7 @@ import agriprocurements from "../../assets/images/dashboard/agriprocurements.png
 
 const Dashboard = () => {
   const [values] = useContext(AuthContext);
+  const [selectedTab, setSelectedTab] = useState("Nursery")
 
   // console.log(values);
   const USER_ROLES = {
@@ -33,30 +34,35 @@ const Dashboard = () => {
       tile_img: access_managementImg,
       path: "access-management",
       allowed: [USER_ROLES.admin],
+      tabType : "Nursery"
     },
     {
       title: "Procurement",
       tile_img: produrementImg,
       path: "procurement-list",
       allowed: [USER_ROLES.admin,USER_ROLES.procurement],
+      tabType : "Nursery"
     },
     {
       title: "Categories",
       tile_img: categoriesImg,
       path: "categories",
       allowed: [USER_ROLES.admin],
+      tabType : "Nursery"
     },
     {
       title: "Bill History",
       tile_img: billBook,
       path: "bills",
       allowed: [USER_ROLES.admin, USER_ROLES.sales],
+      tabType : "Nursery"
     },
     {
       title: "Add Bills",
       tile_img: billsImg,
       path: "add-bills",
       allowed: [USER_ROLES.sales, USER_ROLES.preSales],
+      tabType : "Nursery"
     },
 
     {
@@ -64,24 +70,28 @@ const Dashboard = () => {
       tile_img: orders,
       path: "orders",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement, USER_ROLES.sales],
+      tabType : "Nursery"
     },
     {
       title: "Waste Management",
       tile_img: waste,
       path: "waste-management",
       allowed: [USER_ROLES.admin, USER_ROLES.sales],
+      tabType : "Nursery"
     },
     {
       title: "Under Maintainence",
       tile_img: maintenanceImg,
       path: "under-maintainence",
       allowed: [USER_ROLES.sales, USER_ROLES.admin],
+      tabType : "Nursery"
     },
     {
       title: "Payments",
       tile_img: paymentsIcon,
       path: "payments",
       allowed: [USER_ROLES.admin, USER_ROLES.sales, USER_ROLES.procurement],
+      tabType : "Nursery"
     },
     {
       title: "Sales",
@@ -89,6 +99,7 @@ const Dashboard = () => {
       path: "sales",
       allowed: [USER_ROLES.admin],
       isDisabled: true,
+      tabType : "Nursery"
     },
     {
       title: "Agri Variants",
@@ -96,6 +107,7 @@ const Dashboard = () => {
       path: "agri-variants",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
       isDisabled: false,
+      tabType : "Agri"
     },
     {
       title: "Agri Procurements",
@@ -103,12 +115,14 @@ const Dashboard = () => {
       path: "agri-add-procurements",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
       isDisabled: false,
+      tabType : "Agri"
     },
     {
       title: "Agri Orders",
       tile_img: orders,
       path: "agri-orders",
       allowed: [USER_ROLES.procurement, USER_ROLES.sales, USER_ROLES.admin],
+      tabType : "Agri"
     },
   ];
 
@@ -120,9 +134,21 @@ const Dashboard = () => {
   // const data = getDashboardData(toUpper(userContext[0].role));
   const data = getDashboardData(values.role);
   return (
-    <div className={styles.gridContainer}>
-      {data.map((e) => (
-        <div className={e.isDisabled && styles.cardDisabled}>
+    <div>
+      <div className={styles.tabContainer}>
+        <div style={{width: "300px"}}>
+        <div className={styles.tabItem} style={{color : selectedTab === "Nursery" && "#008000"}} onClick={() => setSelectedTab("Nursery")}>Nursery</div>
+        {selectedTab === "Nursery" && <div className={styles.tabBottomBar} ></div>}
+        </div>
+        <div style={{width : "300px"}}>
+        <div style={{color :  selectedTab === "Agri" && "#008000"}} className={styles.tabItem}   onClick={() => setSelectedTab("Agri")}>Agri</div>
+        {selectedTab === "Agri" && <div className={styles.tabBottomBar} ></div>}
+        </div>
+      </div>
+      <div className={styles.gridContainer}>
+      {data.map((e) => {
+        if(e.tabType === selectedTab) {
+         return <div className={e.isDisabled && styles.cardDisabled}>
           <Link to={e.path} key={e.path}>
             <LandingTile
               image={e.tile_img}
@@ -131,7 +157,11 @@ const Dashboard = () => {
             />
           </Link>
         </div>
-      ))}
+       }else {
+        return []
+       }
+      })}
+    </div>
     </div>
   );
 };

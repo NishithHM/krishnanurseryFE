@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementsQuery,
@@ -21,6 +22,7 @@ import {
   getTableBody,
   InputCell,
   rowInitState,
+  validateMinMaxPrices,
   variantHeaders,
 } from "./helper";
 import styles from "./ProcurementList.module.css";
@@ -62,7 +64,7 @@ const ProcurementList = () => {
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [isMinimumSelected, setMinimumMode] = useState(false);
-
+  
   const tableHeader = [
     [
       {
@@ -114,6 +116,7 @@ const ProcurementList = () => {
       if (data.length > 0) {
         console.log(data[0]);
         onDetailClick(data[0]._id);
+        setFirstLoad(false)
       }
     }
   }, [getProcurements]);
@@ -166,8 +169,8 @@ const ProcurementList = () => {
           id: "variantNameInKannada",
           type: "text",
         });
-        row.push({ value: ele.maxPrice, id: "maxPrice", type: "number" });
         row.push({ value: ele.minPrice, id: "minPrice", type: "number" });
+        row.push({ value: ele.maxPrice, id: "maxPrice", type: "number" });
         return row;
       });
       setVariantRows(mappedVariants);
@@ -189,7 +192,6 @@ const ProcurementList = () => {
   const tableBody = useMemo(() => {
     return getProcurementListTableBody(getProcurements.data, onDetailClick);
   }, [JSON.stringify(getProcurements.data)]);
-
   const onIncrementPage = () => {
     setPage(page + 1);
   };
@@ -259,14 +261,23 @@ const ProcurementList = () => {
     setVariantRows(oldRow);
   };
 
+
   const onVariantSubmitHandler = async () => {
     setLoaders(true);
+    
+    const isValid = validateMinMaxPrices(variantRows);
+    if(!isValid) {
+      setLoaders(false)
+      return toast.error("Max Price value must be greater than Min Price value")
+    }
+    
     const variants = variantRows.map((ele) => {
       return ele.reduce((acc, val) => {
         const obj = { [val.id]: val.value };
         return { ...acc, ...obj };
       }, {});
     });
+    
     console.log(variants, "here");
     console.log(variantRows, "here");
     const res = await addProcurementVariants({
@@ -389,7 +400,7 @@ const ProcurementList = () => {
               </button>
               <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
                 page * 10 > finalCount ? finalCount : page * 10
-              } of ${finalCount}`}</span>
+                } of ${finalCount}`}</span>
               <button
                 disabled={
                   (page * 10 > finalCount ? finalCount : page * 10) >=
@@ -403,10 +414,16 @@ const ProcurementList = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table
-              data={[...tableHeader, ...tableBody]}
-              onSortBy={onSortClickHandler}
-            />
+            {
+              (tableBody.length === 0) ? (
+                <Spinner />
+              ) : (
+                <Table
+                 data={[...tableHeader, ...tableBody]}
+                 onSortBy={onSortClickHandler}
+                />
+              )
+            }
           </div>
         </div>
         {id && (
@@ -427,7 +444,7 @@ const ProcurementList = () => {
                     pageFilter * 10 > historyCount
                       ? historyCount
                       : pageFilter * 10
-                  } of ${historyCount}`}</span>
+                    } of ${historyCount}`}</span>
                   <button
                     disabled={
                       (pageFilter * 10 > historyCount

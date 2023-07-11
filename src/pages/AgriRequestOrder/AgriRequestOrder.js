@@ -23,6 +23,7 @@ const AgriRequesrOrder = () => {
   const [orderData, setOrderData] = useState([]);
   const [isFormValid, setIsFormValid] = useState(false);
   const [description, setDescription] = useState("");
+  const [isVariantAdded, setIsVariantAdded] = useState(false)
   const [state, setState] = useState({
     vendorName: "",
     vendorContact: "",
@@ -33,7 +34,7 @@ const AgriRequesrOrder = () => {
     orderId: "",
     orderDetails: [],
     disableExpectedDate: false,
-    vendorDeviation: "",
+    vendorDeviation: ""
   });
   const navigate = useNavigate();
 
@@ -78,6 +79,13 @@ const AgriRequesrOrder = () => {
 
     const data = { orders: transformedData, description };
     const res = await requestOrder(data);
+    if(res.error?.data?.error) {
+      if(res.error?.data?.error === "") {
+        return toast.error("Something went wrong, Please try again")
+      }else {
+        return toast.error(res.error?.data?.error)
+      }
+    }
     toast.success(res.data.message);
     navigate("../dashboard/agri-orders");
   };
@@ -101,6 +109,7 @@ const AgriRequesrOrder = () => {
     };
     getOrderDetails();
   }, [state.orderId?.value]);
+
   const handleCreateOrder = async () => {
     const transformedData = orderData.map((item, index) => {
       const variant = item.options.map((option) => ({
@@ -132,6 +141,13 @@ const AgriRequesrOrder = () => {
     }
 
     const res = await placeOrder(order);
+    if(res.error?.data?.error) {
+        if(res.error?.data?.error === "") {
+          return toast.error("Something went wrong, Please try again")
+        }else {
+          return toast.error(res.error?.data?.error)
+        }
+    } 
     toast.success(res.data.message);
     navigate("../dashboard/agri-orders");
   };
@@ -206,6 +222,7 @@ const AgriRequesrOrder = () => {
         allowNew={isEmpty(placeOrderVariantsData)}
         value={placeOrderVariantsData}
         isFormValid={(e) => setIsFormValid(!e)}
+        setIsVariantAdded={setIsVariantAdded}
       />
       <div
         style={{
@@ -249,13 +266,19 @@ const AgriRequesrOrder = () => {
               title="Contact Number"
               required
               disabled={!state.isNewVendor}
-              errorMessage="Please Enter a Valid Number"
+              validation={(number) => {
+                return number.length === 10;
+              }}
+              onError={({id, isError}) => {
+                console.log("ID & ISERROR",id + " " + isError)
+              }}
+              errorMessage= {"Please Enter a Valid Number"}
             />
             {state.vendorDeviation !== "" && (
               <Input
                 value={state.vendorDeviation || ""}
                 id="vendorDeviation"
-                onChange={() => {}}
+                onChange={() => { }}
                 title="Vendor Deviation Amount"
                 required
                 disabled={true}
@@ -333,6 +356,7 @@ const AgriRequesrOrder = () => {
             title="Description"
             rows={4}
             value={description}
+            required
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>

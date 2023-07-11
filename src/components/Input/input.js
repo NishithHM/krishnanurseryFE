@@ -26,6 +26,7 @@ const Input = (props) => {
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
 
+  console.log(value);
   let options = {};
 
   if (type === "number") {

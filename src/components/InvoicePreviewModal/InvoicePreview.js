@@ -123,12 +123,12 @@ export const InvoiceSection = (props) => {
           <div className={styles.addressDetails}>
             <b>Shree Krishna Nursery</b>
             <br></br>
-            Santhekadur post
+            No.188, Near airport, Santhekadur post, 
             <br></br>
-            Shivamogga, 577222
+            Shivamogga - 577222
           </div>
-          <div><strong>Phone Number</strong> : {process.env.REACT_APP_PHONE_NUMBER}</div>
-          <div><strong>Email </strong>: {process.env.REACT_APP_EMAIL_ID}</div>
+          <div><strong>Phone Number</strong> : 81051-73777</div>
+          <div><strong>Email </strong>: shreekrishnanurserysmg@gmail.com</div>
         </div>
 
         <div className={styles.clientDetails}>
