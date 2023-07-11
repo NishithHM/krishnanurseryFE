@@ -376,37 +376,6 @@ const AgriProcurement = () => {
         </div>
         {id && (
           <div className={styles.tableProcurementListData}>
-            {procurementListHistory?.length !== 0 && (
-              <div className={styles.paginationContainerFilter}>
-                <div className={styles.paginationInnerFilter}>
-                  <button
-                    disabled={page === 1}
-                    className={styles.btnControls}
-                    onClick={() => onHistoryPageChange(false)}
-                  >
-                    <FaChevronLeft size={16} />
-                  </button>
-                  <span>{`${
-                    pageFilter === 1 ? "1" : (pageFilter - 1) * 10 + 1
-                  }-${
-                    pageFilter * 10 > historyCount
-                      ? historyCount
-                      : pageFilter * 10
-                  } of ${historyCount}`}</span>
-                  <button
-                    disabled={
-                      (pageFilter * 10 > historyCount
-                        ? historyCount
-                        : pageFilter * 10) >= historyCount
-                    }
-                    className={styles.btnControls}
-                    onClick={() => onHistoryPageChange(true)}
-                  >
-                    <FaChevronRight size={16} />
-                  </button>
-                </div>
-              </div>
-            )}
             <div>
               {id && (
                 <>
