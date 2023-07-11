@@ -170,6 +170,7 @@ const OrderMgmt = () => {
 
 
     const handleFilterChange = async (filters) => {
+        setPage(() => 1)
         const formattedFilter = formatFilter(filters)
 
         setFilters(filters)
