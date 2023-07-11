@@ -71,7 +71,7 @@ const AgriProcurement = () => {
         sortBy: "lastProcuredOn",
       },
       {
-        value: "Plant Name",
+        value: "Product Name",
         isSortable: isMinimumSelected ? false : true,
         sortBy: "plantName",
       },
@@ -112,6 +112,7 @@ const AgriProcurement = () => {
       const data = getProcurements.data;
       if (data.length > 0) {
         onDetailClick(data[0]._id);
+        setFirstLoad(false)
       }
     }
   }, [getProcurements]);

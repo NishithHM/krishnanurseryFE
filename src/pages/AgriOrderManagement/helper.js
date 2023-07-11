@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { get, isEmpty } from "lodash";
 import { Checkbox } from "../../components";
+import warning from "../../assets/images/warning.png"
 
 export const addTitle = {
   procurement: "Place Order",
@@ -189,7 +190,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
     const rowData = roleRows[role].map((ele) => {
       let value;
       if (ele.value === "createdAt" || ele.value === "expectedDeliveryDate") {
-        value = dayjs(get(order, `${ele.value}`, "")).format("YYYY-MM-DD");
+        value = dayjs(get(order, `${ele.value}`, "")).format("DD-MM-YYYY");
         value = value === "Invalid Date" ? "---" : value;
       } else if (ele.value === "status") {
         value = (
@@ -205,13 +206,36 @@ export const formatOrdersData = ({ data, role, onAction }) => {
         );
       } else if (ele.value === "quantities") {
         value = (
-          <>
-            <span>{`${order.requestedQuantity} (Req)`}</span>
-            <br />
-            <span>{`${order.orderedQuantity} (Ord)`}</span>
-            <br />
-            <span>{`${order.quantity} (Arr)`}</span>
-          </>
+          <div style={{ display : "flex", flexDirection : "column" , justifyContent : "space-between"}}>
+                        <span>{`${order.requestedQuantity} (Req)`}
+                        </span>
+                        <br />
+                        <span style={{
+                            color : (order.requestedQuantity !== order.orderedQuantity && order.status === "PLACED") && "red",
+                            display : "flex",
+                            justifyContent : "center",
+                            alignItems  : "center"
+                        }} >
+                        <span> {`${order.orderedQuantity} (Ord)`} </span>
+                        { (order.requestedQuantity !== order.orderedQuantity && order.status === "PLACED") && <img src={warning} style={{
+                            width : "15px",
+                            height : "15px",
+                        }} alt="warning" /> }  
+                        </span>
+                        <br />
+                        <span style={{
+                            color : (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") && "red",
+                            display : "flex",
+                            justifyContent : "center",
+                            alignItems  : "center"
+                        }} >
+                        <span>{`${order.quantity} (Arr)`}</span>
+                        { (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") && <img src={warning} style={{
+                            width : "15px",
+                            height : "15px",
+                        }} alt="warning" /> }
+                        </span>
+                    </div>
         );
       } else if (
         ele.value === "descriptionProc" ||

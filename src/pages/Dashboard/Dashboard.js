@@ -9,6 +9,7 @@ import billBook from "../../assets/images/dashboard/billBook.png";
 import categoriesImg from "../../assets/images/dashboard/categories.png";
 import billsImg from "../../assets/images/dashboard/bills.png";
 import salesImg from "../../assets/images/dashboard/sales.png";
+import agriVariantsImg from "../../assets/images/dashboard/agri_variants.jpeg"
 import orders from "../../assets/images/dashboard/orders.png";
 import waste from "../../assets/images/dashboard/wasteManagementIcon.png";
 import paymentsIcon from "../../assets/images/dashboard/payments.png";
@@ -103,7 +104,7 @@ const Dashboard = () => {
     },
     {
       title: "Agri Variants",
-      tile_img: salesImg,
+      tile_img: agriVariantsImg,
       path: "agri-variants",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
       isDisabled: false,
