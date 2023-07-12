@@ -337,7 +337,7 @@ const AgriProcurement = () => {
           <div className={styles.searchContainer}>
             <Search
               value={searchInput}
-              title="Search for a Plant..."
+              title="Search for a Product..."
               onChange={handleSearchInputChange}
             />
             {countLow > 0 && (
