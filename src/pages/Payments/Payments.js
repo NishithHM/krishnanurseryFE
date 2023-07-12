@@ -53,11 +53,13 @@ const Payments = () => {
         value: item.amount,
       };
       const invoiceId = {
-        value: item.invoiceId || '---',
+        value: item.invoiceId || "---",
       };
       const action = {
         value:
-          item.invoiceId && item.type === "BROKER" && user_role !== "procurement" ? (
+          item.invoiceId &&
+          item.type === "BROKER" &&
+          user_role !== "procurement" ? (
             <Link
               to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
               style={{
@@ -73,7 +75,7 @@ const Payments = () => {
           ),
       };
 
-      const data = [name, createdAt, amount,invoiceId, action, ];
+      const data = [name, createdAt, amount, invoiceId, action];
       return data;
     });
 
@@ -125,9 +127,9 @@ const Payments = () => {
       isSortable: false,
     },
     {
-        value: "Bill Number",
-        isSortable: false,
-      },
+      value: "Bill Number",
+      isSortable: false,
+    },
     {
       value: "Action",
       isSortable: false,
@@ -175,11 +177,9 @@ const Payments = () => {
         invoiceId: data.invoiceId,
         brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
-        brokerId: data.broker.value
+        brokerId: data.broker.value || null,
       };
-      if(data?.broker?.__isNew__){
-        delete res.brokerId
-      }
+
       const resp = await mutate(res);
       if (resp["error"] !== undefined) {
         return toast.error(resp.error.data.message);
@@ -302,7 +302,7 @@ const Payments = () => {
             value={newPayment.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
-            {console.log(newPayment)}
+          {console.log(newPayment)}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
