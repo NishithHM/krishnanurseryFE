@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementHistoryMutation,
@@ -375,10 +376,14 @@ const AgriProcurement = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table
-              data={[...tableHeader, ...tableBody]}
-              onSortBy={onSortClickHandler}
-            />
+            {
+              tableBody.length === 0 ? <Spinner /> : (
+                <Table
+                  data={[...tableHeader, ...tableBody]}
+                  onSortBy={onSortClickHandler}
+                />
+              )
+            }
           </div>
         </div>
         {id && (
@@ -403,10 +408,16 @@ const AgriProcurement = () => {
               )}
               {procurementListHistory?.length !== 0 ? (
                 <div>
-                  <ScrollTable
-                    thead={billingHistoryHeader}
-                    tbody={procurementListHistory}
-                  />
+                  {
+                    procurementListHistory.length === 0 ? (
+                      <Spinner />
+                    ) : (
+                      <ScrollTable
+                       thead={billingHistoryHeader}
+                       tbody={procurementListHistory}
+                      />
+                    )
+                  }
                 </div>
               ) : (
                 id && (

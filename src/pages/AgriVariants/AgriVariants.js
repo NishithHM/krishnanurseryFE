@@ -7,6 +7,7 @@ import {
   Dropdown,
   Modal,
   Search,
+  Spinner,
   Table,
 } from "../../components";
 import { getVariantsBody, initialCategory } from "./helper";
@@ -161,7 +162,11 @@ const AgriVariants = () => {
             </div>
           </div>
           <div className={Styles.variantsTableWrapper}>
-            <Table data={[...tableHeader, ...tableBody]} />
+            {
+              tableBody.length === 0 ? <Spinner /> : (
+                <Table data={[...tableHeader, ...tableBody]} />
+              )
+            }
           </div>
         </div>
       </div>
