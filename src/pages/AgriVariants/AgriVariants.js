@@ -74,7 +74,7 @@ const AgriVariants = () => {
   const count = _.get(getCategoryCount, "data[0].count", 0);
 
   const searchHandler = debounce(async (query) => {
-    if (query.length >= 3) {
+    if (query.length >= 2) {
       setSearch(query);
     } else {
       setSearch("");
