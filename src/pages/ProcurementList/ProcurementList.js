@@ -225,13 +225,15 @@ const ProcurementList = () => {
   };
 
   const onSubmitHandler = async (e) => {
-    console.log(e);
+    console.log("submit",e);
+    if(e.start_date !== null && e.end_date !== null) {
     const res = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
       id: id,
       pageNumber: 1,
     });
+    console.log("res",res)
     const resCount = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
@@ -249,6 +251,13 @@ const ProcurementList = () => {
       toast.error("Unable to Add...");
       setError(res?.error?.data.error);
     }
+   }
+    else {
+      const procurementData = getProcurements.data.find((ele) => ele._id === id);
+      const history = procurementData?.procurementHistory;
+      const body = getTableBody(history, setImageurlsHandler);
+      setProcurementListHistory(body);
+   }
   };
 
   const onVariantInputChange = ({ val, cIndex, rIndex }) => {
