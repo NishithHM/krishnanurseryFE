@@ -184,6 +184,7 @@ const AgriOrderMgmt = () => {
 
   const handleFilterChange = async (filters) => {
     const formattedFilter = formatFilter(filters);
+    setPage(() => 1)
 
     setFilters(filters);
     const res = await getOrders({
