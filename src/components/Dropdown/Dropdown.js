@@ -187,6 +187,7 @@ const Dropdown = ({
           )}
         </div>
         <Select
+          maxMenuHeight={150}
           value={selectedOption}
           onChange={handleChange}
           options={options}
