@@ -378,9 +378,7 @@ const AgriRequesrOrder = () => {
                   state.currentPaidAmount <= -1
                 : !isFormValid || description === ""
             }
-            onClick={() => {
-              console.log(state);
-            }}
+            onClick={isPlaceOrder ? handleCreateOrder : handleRequestOrder}
           />
         </div>
       </div>
