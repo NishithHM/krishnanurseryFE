@@ -7,6 +7,7 @@ import {
   Dropdown,
   Modal,
   Search,
+  Spinner,
   Table,
 } from "../../components";
 import { getVariantsBody, initialCategory } from "./helper";
@@ -74,7 +75,7 @@ const AgriVariants = () => {
   const count = _.get(getCategoryCount, "data[0].count", 0);
 
   const searchHandler = debounce(async (query) => {
-    if (query.length >= 3) {
+    if (query.length >= 2) {
       setSearch(query);
     } else {
       setSearch("");
@@ -161,7 +162,11 @@ const AgriVariants = () => {
             </div>
           </div>
           <div className={Styles.variantsTableWrapper}>
-            <Table data={[...tableHeader, ...tableBody]} />
+            {
+              tableBody.length === 0 ? <Spinner /> : (
+                <Table data={[...tableHeader, ...tableBody]} />
+              )
+            }
           </div>
         </div>
       </div>

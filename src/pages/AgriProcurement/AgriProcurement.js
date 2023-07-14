@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementHistoryMutation,
@@ -219,6 +220,7 @@ const AgriProcurement = () => {
   };
 
   const onSubmitHandler = async (e) => {
+    if(e.start_date !== null && e.end_date  !== null) {
     const res = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
@@ -242,6 +244,12 @@ const AgriProcurement = () => {
       toast.error("Unable to Add...");
       setError(res?.error?.data.error);
     }
+   }else {
+    const procurementData = getProcurements.data.find((ele) => ele._id === id);
+    const history = procurementData?.procurementHistory;
+    const body = getTableBody(history, setImageurlsHandler);
+    setProcurementListHistory(body);
+   } 
   };
 
   const onQuantityChangeHandler = (e) => {
@@ -330,7 +338,7 @@ const AgriProcurement = () => {
           <div className={styles.searchContainer}>
             <Search
               value={searchInput}
-              title="Search for a Plant..."
+              title="Search for a Product..."
               onChange={handleSearchInputChange}
             />
             {countLow > 0 && (
@@ -368,10 +376,14 @@ const AgriProcurement = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table
-              data={[...tableHeader, ...tableBody]}
-              onSortBy={onSortClickHandler}
-            />
+            {
+              tableBody.length === 0 ? <Spinner /> : (
+                <Table
+                  data={[...tableHeader, ...tableBody]}
+                  onSortBy={onSortClickHandler}
+                />
+              )
+            }
           </div>
         </div>
         {id && (
@@ -427,10 +439,16 @@ const AgriProcurement = () => {
               )}
               {procurementListHistory?.length !== 0 ? (
                 <div>
-                  <ScrollTable
-                    thead={billingHistoryHeader}
-                    tbody={procurementListHistory}
-                  />
+                  {
+                    procurementListHistory.length === 0 ? (
+                      <Spinner />
+                    ) : (
+                      <ScrollTable
+                       thead={billingHistoryHeader}
+                       tbody={procurementListHistory}
+                      />
+                    )
+                  }
                 </div>
               ) : (
                 id && (
