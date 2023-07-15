@@ -69,4 +69,13 @@
   .poweredBy img {
     width: 80%;
   }
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 4px 4px 6px 4px #d6d5d2;
+    z-index: 999;
+  }  
 }
