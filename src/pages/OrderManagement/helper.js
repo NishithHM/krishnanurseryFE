@@ -207,8 +207,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                     </span>
                 );
             } else if (ele.value === "quantities") {
-                console.log("Order quat", order.quantity)
-                console.log("Arrived Quant", order.orderedQuantity)
+             
                 value =
                     <div style={{ display : "flex", flexDirection : "column" , justifyContent : "space-between"}}>
                         <span>{`${order.requestedQuantity} (Req)`}

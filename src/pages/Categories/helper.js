@@ -21,7 +21,6 @@ export const getCategoriesTableBody = (data, onDeleteClick) => {
     return [];
   } else {
     const history = data?.map((ele) => {
-      console.log(ele);
       const res = requiredData?.map((res) => {
         if (res === "Name (Ka)") {
           return { value: ele?.names?.ka?.name };

@@ -98,13 +98,11 @@ const AgriVariants = () => {
     navigate("../dashboard/agri-add-variants?editId=" + id);
   };
   const deleteClickHandler = (id) => {
-    console.log(id);
     setDeleteVariant({ opened: true, id });
   };
   const tableBody = useMemo(() => {
     return getVariantsBody(data, deleteClickHandler, editClickHandler);
   }, [JSON.stringify(data)]);
-  console.log(tableBody, "tab");
   return (
     <>
       <div className={Styles.agriContainer}>
@@ -181,7 +179,6 @@ const AgriVariants = () => {
             setDeleteVariant({ opened: false });
           }}
           handleConfirm={async () => {
-            console.log("hello");
             await deleteAgriVariant({ id: deleteVariant.id });
             setDeleteVariant({ opened: false });
             refetch();

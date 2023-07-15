@@ -23,14 +23,11 @@ const ViewDetials = ({ onDetailClick, id }) => {
   );
 };
 export const getProcurementListTableBody = (data, onDetailClick) => {
-  // console.log(data)
   if (_.isEmpty(data)) {
     return [];
   } else {
     const history = data?.map((ele) => {
       const res = requiredData?.map((res) => {
-        // console.log(ele);
-        // console.log(res);
         if (res === "lastProcuredOn") {
           return { value: dayjs(ele[res]).format("DD/MM/YYYY") };
         } else if (res === "plantName") {
@@ -72,20 +69,17 @@ const handleDownload = (fileUrl) => {
       const url = window.URL.createObjectURL(blob);
       a.href = url;
       a.download = name;
-      console.log(name);
       a.click();
       window.URL.revokeObjectURL(url);
     })
-    .catch((error) => console.error("Error downloading file:", error));
+    .catch((error) =>{});
 };
 const handleImageOpen = (data) => {
   const images = data.images;
   if (images.length === 0)
     return toast.error("No Images found for this procurement!");
-  else console.log(images);
 };
 export const getTableBody = (data, imagesHandler) => {
-  console.log(data);
   const result = data?.map((ele) => {
     const data = requiredDataHistory.map((data) => {
       if (data === "procuredOn") {

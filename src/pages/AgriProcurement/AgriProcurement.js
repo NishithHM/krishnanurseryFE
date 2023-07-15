@@ -202,7 +202,6 @@ const AgriProcurement = () => {
       id: id,
       pageNumber: page,
     };
-    // console.log(data);
     const res = await getProcurementHistory(data);
 
     if (res) {

@@ -27,7 +27,6 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
         setFilters(() => ({
             vendors: [], status: []
         }))
-        console.log("called")
        await onSubmit({start_date : null, end_date : null ,vendors:  [], status :[]})
     }    
     

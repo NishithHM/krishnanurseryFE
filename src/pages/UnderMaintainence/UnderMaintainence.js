@@ -94,7 +94,6 @@ const UnderMaintainence = () => {
   const [plantImages, setPlantImages] = useState([]);
 
   const [values] = useContext(AuthContext);
-  console.log(values);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
     pageNumber: page,
@@ -109,7 +108,6 @@ const UnderMaintainence = () => {
     if (getProcurements.status === "fulfilled" && firstLoad) {
       const data = getProcurements.data;
       if (data.length > 0) {
-        console.log(data[0]);
       }
     }
   }, [getProcurements]);
@@ -152,7 +150,6 @@ const UnderMaintainence = () => {
   const fetchAndDisplayImages = (urls) => {
     const promises = [];
     const images = [];
-    console.log(urls);
     if (urls.length === 0) return toast.error("No Images Found!");
     urls.forEach((url) => {
       const promise = fetch(
@@ -170,11 +167,10 @@ const UnderMaintainence = () => {
           img.src = imageUrl;
           images.push(imageUrl);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {});
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      console.log(images);
       setPlantImages(images);
     });
   };
