@@ -76,6 +76,7 @@ const Protected = () => {
               element={<ProcurementList />}
             />
             <Route path="/dashboard/bills" exact element={<Bills />} />
+            <Route path="/dashboard/agri-bills" exact element={<Bills />} />
             <Route path="/dashboard/add-bills" exact element={<AddBills />} />
             <Route
               path="/dashboard/categories"

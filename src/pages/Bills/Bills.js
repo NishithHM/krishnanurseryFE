@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
   Button,
@@ -60,6 +60,7 @@ const getRoundedDates = () => {
 const Bills = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  const location = useLocation();
 
   const [filterDates, setFilterDates] = useState({
     start_date: null,
@@ -95,13 +96,14 @@ const Bills = () => {
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     pageNumber: page,
-
     sortBy: sort.sortBy,
     sortType: sort.sortType === "asc" ? 1 : -1,
+    type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
     ...dates,
   });
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     search: searchQuery,
+    type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
     ...dates,
   });
 
