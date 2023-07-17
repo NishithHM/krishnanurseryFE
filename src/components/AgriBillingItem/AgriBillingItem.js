@@ -17,19 +17,25 @@ const initialState = {
       options: [],
       totalQuantity: 0,
       price: 0,
+      isTouched: false,
+      isFetched: false,
     },
   ],
 };
-const AgriVarinatsAddition = ({
+const AgriBillingItem = ({
   onChange = () => null,
   isFormValid = () => null,
-  value,
+  value = [],
   allowNew,
   setIsVariantAdded,
+  placeOrder = false,
+  state = {},
+  setState = () => {},
 }) => {
-  const [{ variants }, setState] = useState(initialState);
+  const { variants } = state;
+  // const [{ variants }, setState] = useState(initialState);
   const location = useLocation();
-  const isPlaceOrder = location?.state?.placeOrder || false;
+  const isPlaceOrder = location?.state?.placeOrder || placeOrder;
   useEffect(() => {
     if (isPlaceOrder) {
       onChange({ variants: [...value] });
@@ -51,6 +57,11 @@ const AgriVarinatsAddition = ({
         value: event,
       };
       variant.options = newVariantOptions;
+      variant.isTouched = true;
+      if (variant.isTouched && variant.isFetched) {
+        variant.isFetched = false;
+      }
+      console.log("toucheds");
     }
     const newOptions = [
       ...variants.slice(0, index),
@@ -200,7 +211,8 @@ const AgriVarinatsAddition = ({
                             }
                             title="Price"
                             required
-                            min={0}
+                            min={ele?.minPrice || 0}
+                            max={ele?.maxPrice || 0}
                           />
                         </div>
                         <div
@@ -218,6 +230,7 @@ const AgriVarinatsAddition = ({
                             title="Sub Total"
                             required
                             min={0}
+                            max={ele?.remainingQuantity || 0}
                           />
                         </div>
                       </>
@@ -239,4 +252,4 @@ const AgriVarinatsAddition = ({
   );
 };
 
-export default AgriVarinatsAddition;
+export default AgriBillingItem;
