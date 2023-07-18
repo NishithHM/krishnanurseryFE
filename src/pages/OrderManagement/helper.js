@@ -214,25 +214,24 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                         </span>
                         <br />
                         <span style={{
-                            color : (order.requestedQuantity !== order.orderedQuantity && order.status === "PLACED") && "#fc7617",
+                            color : (order.requestedQuantity !== order.orderedQuantity && (order.status === "PLACED" || order.status === "VERIFIED")) && "#fc7617",
                             display : "flex",
                             justifyContent : "center",
                             alignItems  : "center",
-                            fontWeight : "bold"
+                            fontWeight : (order.requestedQuantity !== order.orderedQuantity && (order.status === "PLACED" || order.status === "VERIFIED")) ? "bold" : "normal",
                         }} >
                         <span> {`${order.orderedQuantity} (Ord)`} </span>
-                        { (order.requestedQuantity !== order.orderedQuantity && order.status === "PLACED") && <img src={warning} style={{
+                        { (order.requestedQuantity !== order.orderedQuantity && (order.status === "PLACED" || order.status === "VERIFIED")) && <img src={warning} style={{
                             width : "15px",
                             height : "15px",
                         }} alt="warning" /> }  
-                        </span>
-                        <br />
+                        </span>                        <br />
                         <span style={{
                             color : (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") && "#fc7617",
                             display : "flex",
                             justifyContent : "center",
                             alignItems  : "center",
-                            fontWeight : "bold"
+                            fontWeight : (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") ? "bold" : "normal",
                         }} >
                         <span>{`${order.quantity} (Arr)`}</span>
                         { (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") && <img src={warning} style={{
