@@ -472,7 +472,7 @@ const AgriProcurement = () => {
                       />
                     </div>
                   </div>
-                  {minimumPrice > maximumPrice && (
+                  {Number(minimumPrice) > Number(maximumPrice) && (
                         <span className={styles.errorText}>
                           Minimum price cannot be greater than maximum price.
                         </span>
