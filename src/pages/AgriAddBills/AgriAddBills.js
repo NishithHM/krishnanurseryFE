@@ -258,7 +258,9 @@ export default function AgriAddBills() {
         customerName: customerDetails.name,
       }));
 
-      // const customerCart = await getCustomerCart(customerDetails.data._id);
+      const customerCart = await getCustomerCart(customerDetails.data._id);
+
+      console.log(customerCart);
 
       // if (customerCart.data) {
       // let cartRows = [];
@@ -304,20 +306,20 @@ export default function AgriAddBills() {
       //   }));
       //   return;
       // }
-      setTableRowData([tableRowBlank]);
-      setState((prev) => ({
-        ...prev,
-        customerDetails: customerDetails.data,
-        billingHistory: [...billingData],
-        nameDisabled: true,
-        showDOB: false,
-        newCustomer: false,
-        roundOff: 0,
-        checkOutDone: false,
-        cartResponse: {},
-      }));
+      // setTableRowData([tableRowBlank]);
+      // setState((prev) => ({
+      //   ...prev,
+      //   customerDetails: customerDetails.data,
+      //   billingHistory: [...billingData],
+      //   nameDisabled: true,
+      //   showDOB: false,
+      //   newCustomer: false,
+      //   roundOff: 0,
+      //   checkOutDone: false,
+      //   cartResponse: {},
+      // }));
     } else {
-      setTableRowData([tableRowBlank]);
+      // setTableRowData([tableRowBlank]);
       setState((prev) => ({
         ...prev,
         customerDetails: {},
@@ -451,10 +453,14 @@ export default function AgriAddBills() {
     console.log(cartData);
     cartData.variants.forEach((el) => {
       const { procurementId, totalQuantity, price } = el;
-      items.push({ procurementId, quantity: totalQuantity, price });
+      items.push({
+        procurementId,
+        quantity: parseInt(totalQuantity),
+        price,
+      });
     });
 
-    // console.log(items);
+    console.log(items);
     // return;
 
     const cartPayload = {
@@ -564,6 +570,7 @@ export default function AgriAddBills() {
     }
 
     let roundOff = e.target.value;
+
     const roundOffLimit = Math.min(500, state.cartResponse.totalPrice * 0.1);
 
     const correctValue = roundOff <= roundOffLimit;
@@ -589,33 +596,13 @@ export default function AgriAddBills() {
     setState((prev) => ({ ...prev, roundOff: e.target.value }));
   };
 
-  const isRowValid = (row) => {
-    const price = row.price >= row.minPrice && row.price <= row.mrp;
-
-    if (row.procurementId && row.variantId && price && row.quantity >= 1) {
-      return true;
-    }
-    return false;
-  };
-
-  const isTableValid = () => {
-    let output = true;
-
-    for (let i = 0; i < tableRowData.length; i++) {
-      if (!isRowValid(tableRowData[i])) {
-        output = false;
-        break;
-      }
-    }
-
-    return output;
-  };
-
   const shouldCheckoutDisable = () => {
     if (
-      state.errorFields.length > 0 ||
-      !isTableValid() ||
-      tableRowData.length === 0
+      state.errorFields.length < 0 ||
+      cartData.variants.some(
+        (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
+      ) ||
+      cartData.variants.length <= 0
     ) {
       return true;
     }
@@ -867,10 +854,17 @@ export default function AgriAddBills() {
       </div>
 
       <InvoicePreview
+        billAddress={{
+          companyName: "Shree Krishna Nursery 01",
+          companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
+          phoneNumber: "81051-73777",
+          email: "shreekrishnanurserysmg@gmail.com",
+        }}
+        type="agri"
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}
         clientDetails={state.customerDetails}
-        cartData={tableRowData}
+        cartData={state?.cartResponse?.items || []}
         cartResponse={state?.cartResponse}
         invoiceNumber={state?.submitResponse?.invoiceId}
         roundOff={state.roundOff}

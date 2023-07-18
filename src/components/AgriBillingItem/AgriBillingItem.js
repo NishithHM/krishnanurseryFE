@@ -112,16 +112,23 @@ const AgriBillingItem = ({
   return (
     <div className={styles.variantsAddWrapper}>
       <div className={styles.buttonWrapper}>
+        <h3>Items List</h3>
         <div className={styles.dropDownWrapper}>
           <Button
             onClick={onAddVariant}
-            title="Add Variant"
+            title="New Item"
             disabled={variants.some(
               (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
             )}
+            small={true}
           />
         </div>
       </div>
+      {variants.length === 0 && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <h2>No Items</h2>
+        </div>
+      )}
       {variants.map((ele, index) => {
         return (
           <div key={index} className={styles.wrapper}>

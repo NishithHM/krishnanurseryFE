@@ -47,8 +47,11 @@ export const InvoiceSection = (props) => {
     roundOff,
     billedBy,
     data = {},
+    billAddress,
+    type,
   } = props;
-
+  console.log(cartData);
+  console.log(type);
   const [cartList, setCartList] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
@@ -91,13 +94,17 @@ export const InvoiceSection = (props) => {
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
-      val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
+      if (type === "agri") {
+        val.push({ value: `${el.procurementName.en.name}` });
+      } else val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.mrp });
       if (discounted) {
         val.push({ value: el.price });
       }
       val.push({ value: el.quantity });
-      val.push({ value: el.price * el.quantity });
+      if (type === "agri") {
+        val.push({ value: el.rate * el.quantity });
+      } else val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
     setCartList(newCartList);
@@ -114,14 +121,18 @@ export const InvoiceSection = (props) => {
         <div className={styles.companyDetails}>
           <div>Sold By</div>
           <div className={styles.addressDetails}>
-            <b>Shree Krishna Nursery</b>
+            <b>{billAddress?.companyName}</b>
             <br></br>
-            No.188, Near airport, Santhekadur post, 
-            <br></br>
-            Shivamogga - 577222
+            <span style={{ whiteSpace: "pre-line" }}>
+              {billAddress?.companyAddress}
+            </span>
           </div>
-          <div><strong>Phone Number</strong> : 81051-73777</div>
-          <div><strong>Email </strong>: shreekrishnanurserysmg@gmail.com</div>
+          <div>
+            <strong>Phone Number</strong> : {billAddress?.phoneNumber}
+          </div>
+          <div>
+            <strong>Email </strong>: {billAddress?.email}{" "}
+          </div>
         </div>
 
         <div className={styles.clientDetails}>

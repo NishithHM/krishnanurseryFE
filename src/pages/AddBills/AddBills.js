@@ -41,8 +41,7 @@ export default function AddBills() {
     { value: "Quantity", width: "25%" },
   ];
 
-  const defaultDate = new Date(1960,0,1)
-
+  const defaultDate = new Date(1960, 0, 1);
 
   const initialState = {
     customerNumber: "",
@@ -431,7 +430,7 @@ export default function AddBills() {
         ...prev,
         submitError: { isExist: true, error: confirmCart.error.data.error },
       }));
-      toast.error(confirmCart.error.data.error)
+      toast.error(confirmCart.error.data.error);
     }
 
     if (confirmCart.data) {
@@ -742,6 +741,12 @@ export default function AddBills() {
       </div>
 
       <InvoicePreview
+        billAddress={{
+          companyName: "Shree Krishna Nursery",
+          companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
+          phoneNumber: "81051-73777",
+          email: "shreekrishnanurserysmg@gmail.com",
+        }}
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}
         clientDetails={state.customerDetails}
