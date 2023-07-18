@@ -120,11 +120,12 @@ const AgriVariants = () => {
             <div className={Styles.wrapper}>
               <Search
                 value={searchInput}
-                title="Search for Agri Variants..."
+                title="Search Variant Name..."
                 onChange={onSearchInputHandler}
               />
               <div className={Styles.dropdownContainer}>
                 <Dropdown
+                  placeholder="Select Variant Type"
                   data={typeOptions}
                   value={selectedTypeOption}
                   onChange={(e) => setSelectedTypeOption(e)}
