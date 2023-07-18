@@ -49,17 +49,17 @@ export const billsApi = createApi({
       }),
       // bills page endpoints
       getAllPurchases: builder.query({
-        query: ({ pageNumber = 1, startDate, endDate, sortBy, sortType }) => {
+        query: ({ pageNumber = 1, startDate, endDate, sortBy, sortType, type }) => {
           return {
             url: "/history",
             method: "GET",
-            params: { pageNumber, startDate, endDate, sortBy, sortType },
+            params: { pageNumber, startDate, endDate, sortBy, sortType, type },
           };
         },
         invalidatesTags: ["purchaseHistory"],
       }),
       getAllPurchasesCount: builder.query({
-        query: ({ search = null, startDate, endDate }) => {
+        query: ({ search = null, startDate, endDate, type }) => {
           const options = {};
           if (search) {
             options["search"] = search;
@@ -67,7 +67,7 @@ export const billsApi = createApi({
           return {
             url: "/history",
             method: "GET",
-            params: { isCount: true, startDate, endDate, ...options },
+            params: { isCount: true, startDate, endDate, type,  ...options },
           };
         },
         providesTags: ["purchaseHistory"],
