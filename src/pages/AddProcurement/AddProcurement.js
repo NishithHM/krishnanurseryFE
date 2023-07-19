@@ -525,7 +525,7 @@ const AddProcurement = () => {
             <span className={styles.historyheader}>Procurement history</span>
             <Table
               data={[...tableHeader, ...tableBody]}
-              onSortBy={(sort) => console.log(sort)}
+              onSortBy={(sort) => {}}
             />
           </>
         )}

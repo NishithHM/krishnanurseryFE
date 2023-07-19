@@ -126,7 +126,6 @@ export const PlaceOrder = () => {
   };
 
   const dropDownChangeHandler = (event, id) => {
-    console.log(event);
     setState((prev) => {
       return {
         ...prev,
@@ -194,7 +193,7 @@ export const PlaceOrder = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
   }, [state.addVendorName?.value]);
@@ -202,9 +201,7 @@ export const PlaceOrder = () => {
   const onError = (error) => {
     toast.error(error);
   };
-  console.log(state.addPlantCategory);
   const onSubmitHandler = async () => {
-    // console.log(state);
 
     const body = {
       nameInEnglish: state.addPlantName?.label,
@@ -220,7 +217,6 @@ export const PlaceOrder = () => {
       currentPaidAmount: state.currentPaidAmount,
       orderId: state.orderId?.value,
     };
-    console.log(body, "body");
     if (search.get("orderId")) {
       body.id = search.get("orderId");
     }
@@ -238,7 +234,6 @@ export const PlaceOrder = () => {
 
     const response = await PlaceOrder({ body });
     if (response["error"] !== undefined) {
-      console.log(response);
       return toast.error(response.error.data.error);
     }
     toast.success(response.data.message);
@@ -252,7 +247,6 @@ export const PlaceOrder = () => {
       getProcurement({ id: procId })
         .then((res) => {
           const data = res.data;
-          console.log(data);
           const plantData = {
             label: data?.names?.en?.name,
             value: data?._id,
@@ -264,7 +258,6 @@ export const PlaceOrder = () => {
           }));
         })
         .catch((err) => {
-          console.log(err);
         });
     }
   }, [procId]);

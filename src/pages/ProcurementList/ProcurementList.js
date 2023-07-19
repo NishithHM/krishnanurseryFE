@@ -115,7 +115,6 @@ const ProcurementList = () => {
     if (getProcurements.status === "fulfilled" && firstLoad) {
       const data = getProcurements.data;
       if (data.length > 0) {
-        console.log(data[0]);
         onDetailClick(data[0]._id);
         setFirstLoad(false)
       }
@@ -155,7 +154,6 @@ const ProcurementList = () => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
-    console.log(procurementData);
     setQuantity(procurementData?.minimumQuantity);
     if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
@@ -207,7 +205,6 @@ const ProcurementList = () => {
       id: id,
       pageNumber: page,
     };
-    // console.log(data);
     const res = await getProcurementHistory(data);
 
     if (res) {
@@ -225,7 +222,6 @@ const ProcurementList = () => {
   };
 
   const onSubmitHandler = async (e) => {
-    console.log("submit",e);
     if(e.start_date !== null && e.end_date !== null) {
     const res = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
@@ -233,7 +229,6 @@ const ProcurementList = () => {
       id: id,
       pageNumber: 1,
     });
-    console.log("res",res)
     const resCount = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
@@ -288,8 +283,6 @@ const ProcurementList = () => {
       }, {});
     });
     
-    console.log(variants, "here");
-    console.log(variantRows, "here");
     const res = await addProcurementVariants({
       id: id,
       body: { variants },
@@ -343,7 +336,6 @@ const ProcurementList = () => {
   const fetchAndDisplayImages = (urls) => {
     const promises = [];
     const images = [];
-    console.log(urls);
     if (urls.length === 0) return toast.error("No Images Found!");
     setImageLoader(true)
     urls.forEach((url) => {
@@ -363,13 +355,11 @@ const ProcurementList = () => {
           images.push(imageUrl);
         })
         .catch((error) => {
-           console.error(error)
            setImageLoader(false)
         });
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      console.log("images", images);
       setPlantImages(images);
       setImageLoader(false)
     });

@@ -22,7 +22,6 @@ const Dashboard = () => {
   const [values] = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState("Nursery")
 
-  // console.log(values);
   const USER_ROLES = {
     admin: "admin",
     procurement: "procurement",

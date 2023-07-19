@@ -206,7 +206,6 @@ const AgriRequesrOrder = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
         });
     }
   }, [state.vendorName.label]);
@@ -271,7 +270,6 @@ const AgriRequesrOrder = () => {
                 return number.length === 10;
               }}
               onError={({id, isError}) => {
-                console.log("ID & ISERROR",id + " " + isError)
               }}
               errorMessage= {"Please Enter a Valid Number"}
             />

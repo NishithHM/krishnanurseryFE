@@ -43,10 +43,10 @@ const WasteManagement = () => {
                     ...prev,
                     addPlantName: plantData
                 }))
-                console.log(damageRef)
+               
                 // damageRef.current
              }).catch(err=>{
-                console.log(err)
+               
              })
         }
     }, [procId])

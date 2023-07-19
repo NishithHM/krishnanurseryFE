@@ -202,7 +202,6 @@ const AgriProcurement = () => {
       id: id,
       pageNumber: page,
     };
-    // console.log(data);
     const res = await getProcurementHistory(data);
 
     if (res) {
@@ -504,7 +503,7 @@ const AgriProcurement = () => {
                       />
                     </div>
                   </div>
-                  {minimumPrice > maximumPrice && (
+                  {Number(minimumPrice) > Number(maximumPrice) && (
                         <span className={styles.errorText}>
                           Minimum price cannot be greater than maximum price.
                         </span>

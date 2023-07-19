@@ -4,7 +4,6 @@ import cx from "classnames";
 import sort from "../../assets/images/sort.png";
 
 const Table = ({ data, onSortBy }) => {
-  console.log(data);
   if (data.length === 1) {
     return (
       <span

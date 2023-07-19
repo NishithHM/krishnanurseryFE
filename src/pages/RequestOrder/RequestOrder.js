@@ -52,7 +52,6 @@ const RequestOrder = () => {
   };
 
   const onSubmitHandler = async () => {
-    console.log(state?.addPlantName?.meta?.remainingQuantity);
     if (!state.addPlantName)
       return toast.error("Something Went Wrong! Please try again");
 

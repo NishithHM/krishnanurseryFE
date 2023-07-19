@@ -41,11 +41,10 @@ const Payments = () => {
   const [mutate] = useCreatePaymentMutation();
 
   const handleViewBill = (id) => {
-    console.log(id);
+  
   };
 
   const formatPaymentsData = (data) => {
-    console.log(data);
     const formatted = data.map((item) => {
       const name = { value: item.name };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
@@ -83,7 +82,6 @@ const Payments = () => {
   };
 
   const searchHandler = debounce(async (query) => {
-    console.log("search triggered", query);
     if (query.length >= 3) {
       const res = await searchPayment(query);
       const payments = formatPaymentsData(res.data);
@@ -98,12 +96,10 @@ const Payments = () => {
 
   useEffect(() => {
     if (paymentsCountReq.status !== "fulfilled") return;
-    console.log(paymentsCountReq);
     setUsersCount(paymentsCountReq.data[0].count || 0);
   }, [paymentsCountReq]);
 
   useEffect(() => {
-    console.log(paymentsData);
     if (paymentsData.status === "fulfilled") {
       const payments = formatPaymentsData(paymentsData.data);
       setData(payments);
@@ -154,10 +150,8 @@ const Payments = () => {
     filtered_payment_types = [PAYMENT_TYPES[1], PAYMENT_TYPES[2]];
   }
 
-  // console.log(values);
 
   const handleCreatePayment = async () => {
-    console.log(newPayment);
     const data = newPayment;
 
     if (newPayment.type.value === "BROKER") {
@@ -302,7 +296,6 @@ const Payments = () => {
             value={newPayment.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
-          {console.log(newPayment)}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
@@ -312,7 +305,6 @@ const Payments = () => {
                 apiDataPath={{ label: "name", value: "_id" }}
                 title="Broker Name"
                 onChange={(e) => {
-                  console.log(e);
                   if (e?.meta?.contact) {
                     setNewPayment((prev) => ({
                       ...prev,

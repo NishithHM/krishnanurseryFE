@@ -77,7 +77,6 @@ const Bills = () => {
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
   useEffect(() => {
-    console.log(filterDates);
   }, [filterDates]);
 
   const [searchParams] = useSearchParams();
@@ -119,7 +118,6 @@ const Bills = () => {
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
               setShowPreview(true);
-              console.log(purchase);
               setInvoiceDetail(purchase);
             }}
           >
@@ -152,7 +150,6 @@ const Bills = () => {
         ...dates,
       });
       setSearchQuery(query);
-      console.log(res);
       const purchases = formatPurchasesData(res.data);
       setData(purchases);
     } else {
@@ -203,7 +200,6 @@ const Bills = () => {
   ];
 
   const handleFilterChange = (filterDates) => {
-    console.log(filterDates);
     setFilterDates(filterDates);
   };
 
@@ -216,7 +212,6 @@ const Bills = () => {
   });
 
   const sortData = (sortVal) => {
-    console.log(sortVal);
     setSort((prev) => ({
       sortBy: sortVal,
       sortType: prev.sortType === "asc" ? "desc" : "asc",

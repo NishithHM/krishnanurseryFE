@@ -15,7 +15,7 @@
 }
 
 .formButton {
-  width: 20%;
+  width: 100%;
   margin-top: 16px;
 }
 .categoryText {
@@ -30,6 +30,7 @@
   justify-content: left;
 }
 
+
 @media only screen and (min-width: 320px) and (max-device-width: 425px) {
   .wrapper {
     margin: auto;
@@ -42,7 +43,7 @@
   }
 
   .formButton {
-    width: 40%;
+    width: 100%;
   }
 }
 

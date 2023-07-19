@@ -63,7 +63,6 @@ const AgriOrderMgmt = () => {
     id: null,
     reason: "",
   });
-  // console.log(addInvoice, "in");
   const [filters, setFilters] = useState({
     status: [],
     vendors: [],
@@ -143,7 +142,6 @@ const AgriOrderMgmt = () => {
       role: user.role,
       onAction,
     });
-    // console.log(formattedData);
     setData(formattedData);
   };
 

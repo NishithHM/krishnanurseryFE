@@ -32,9 +32,7 @@ export const getVariantsBody = (data, onDeleteClick, onEditClick) => {
     return [];
   } else {
     const history = data?.map((ele) => {
-      console.log(ele);
       const res = requiredData?.map((res) => {
-        console.log(res, "res");
         if (res === "Variant Name") {
           return { value: ele?.name };
         } else if (res === "Variant Type") {
@@ -55,7 +53,6 @@ export const getVariantsBody = (data, onDeleteClick, onEditClick) => {
       });
       return res;
     });
-    console.log(history, "his");
     return history;
   }
 };
