@@ -220,6 +220,33 @@ export default function AgriAddBills() {
     }
   };
 
+  const formatCartData = (data) => {
+    let newData = data.map((item) => {
+      let temp = {};
+      temp.type = { label: item.type, value: item.type };
+      temp.name = { label: item.typeName, value: "649a64a1ab65b0e736013c32" }; // Assuming value is static
+      temp.options = item.variant.map((variant) => {
+        temp[variant.optionName] = {
+          label: variant.optionValue,
+          value: variant.optionValue,
+        };
+        return {
+          optionName: variant.optionName,
+          value: { label: variant.optionValue, value: variant.optionValue },
+        };
+      });
+      temp.totalQuantity = item.quantity; // Assuming this value is static
+      temp.price = item.mrp;
+      temp.isTouched = false;
+      temp.isFetched = false;
+      temp.minPrice = item.mrp; // Assuming this value is static
+      temp.procurementId = item.procurementId;
+      temp.remainingQuantity = item.quantity; // Assuming this value is static
+      return temp;
+    });
+    return newData;
+  };
+
   const fetchCustomerInfo = async () => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
 
@@ -261,7 +288,42 @@ export default function AgriAddBills() {
       const customerCart = await getCustomerCart(customerDetails.data._id);
 
       console.log(customerCart);
+      console.log(cartData);
 
+      if (customerCart.data) {
+        if (customerCart.data.items.length > 0) {
+          const data = formatCartData(customerCart.data.items);
+          console.log(data);
+          setCartData((prev) => ({ ...prev, variants: data }));
+          setState((prev) => ({
+            ...prev,
+            cartResponse: customerCart.data,
+            customerDetails: customerDetails.data,
+            billingHistory: [...billingData],
+            nameDisabled: true,
+            showDOB: false,
+            newCustomer: false,
+            checkOutDone: false,
+            roundOff: 0,
+            customerName: customerDetails.name,
+          }));
+          return;
+        } else {
+          setCartData((prev) => ({ ...prev, variants: [] }));
+
+          setState((prev) => ({
+            ...prev,
+            customerDetails: customerDetails.data,
+            billingHistory: [...billingData],
+            nameDisabled: true,
+            showDOB: false,
+            newCustomer: false,
+            roundOff: 0,
+            checkOutDone: false,
+            cartResponse: {},
+          }));
+        }
+      }
       // if (customerCart.data) {
       // let cartRows = [];
       // customerCart.data.items.forEach((item) => {

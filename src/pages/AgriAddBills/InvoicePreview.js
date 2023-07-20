@@ -50,8 +50,7 @@ export const InvoiceSection = (props) => {
     billAddress,
     type,
   } = props;
-  console.log(cartData);
-  console.log(type);
+
   const [cartList, setCartList] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 

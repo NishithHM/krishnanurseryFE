@@ -173,7 +173,7 @@ const AgriBillingItem = ({
                         disabled={!allowNew}
                         title={opt.optionName}
                         id={opt.optionName}
-                        data={formatDropOptions(opt.optionValues)}
+                        data={formatDropOptions(opt?.optionValues || [])}
                         value={opt.value}
                       />
                     </div>
