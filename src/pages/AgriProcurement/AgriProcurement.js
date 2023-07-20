@@ -332,7 +332,7 @@ const AgriProcurement = () => {
       <div className={styles.container}>
         <div className={styles.innerContainer}>
           <div>
-            <BackButton navigateTo={"/authorised/dashboard"} />
+            <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
           </div>
           <div className={styles.searchContainer}>
             <Search

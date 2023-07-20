@@ -108,7 +108,7 @@ const AgriVariants = () => {
       <div className={Styles.agriContainer}>
         <div className={Styles.innerAgriContainer}>
           <div>
-            <BackButton navigateTo={"/authorised/dashboard"} />
+            <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
           </div>
           <div
             style={{

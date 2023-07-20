@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
 import { toUpper } from "lodash";
 
@@ -13,7 +13,7 @@ import agriVariantsImg from "../../assets/images/dashboard/agri_variants.jpeg"
 import orders from "../../assets/images/dashboard/orders.png";
 import waste from "../../assets/images/dashboard/wasteManagementIcon.png";
 import paymentsIcon from "../../assets/images/dashboard/payments.png";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
 import agriprocurements from "../../assets/images/dashboard/agriprocurements.png"
@@ -126,6 +126,13 @@ const Dashboard = () => {
     },
   ];
 
+  const {state} = useLocation()
+  useEffect(() => {
+    if(state !== null && state.tabType !== undefined) {
+      setSelectedTab("Agri")
+    }
+  }, [state])
+  
   // /dashboard/orders-agri/request-order
   const getDashboardData = (role) => {
     return DashboardData.filter((data) => data.allowed.includes(role));

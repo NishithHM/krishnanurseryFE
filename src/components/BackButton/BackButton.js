@@ -3,11 +3,15 @@ import { FaArrowLeft } from "react-icons/fa";
 import styles from "./BackButton.module.css";
 import { useNavigate } from "react-router-dom";
 
-const BackButton = ({navigateTo}) => {
+const BackButton = ({navigateTo, tabType}) => {
   const navigate = useNavigate();
 
   const onNavigate = ()=>{
-    navigate(navigateTo)
+    navigate(navigateTo, {
+      state : {
+        tabType
+      }
+    })
   }
   return (
     <div className={styles.backButton}>
