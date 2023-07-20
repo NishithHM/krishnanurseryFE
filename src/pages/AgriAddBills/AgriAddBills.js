@@ -263,9 +263,16 @@ export default function AgriAddBills() {
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
           let val = [];
-          val.push({
-            value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
-          });
+          if(item.procurementName?.ka?.name){
+            val.push({
+              value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+            });
+          }else{
+            val.push({
+              value: `${item.procurementName.en.name}`,
+            });
+          }
+         
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
               year: "numeric",
@@ -283,6 +290,7 @@ export default function AgriAddBills() {
         ...prev,
         customerDetails: customerDetails.data,
         customerName: customerDetails.name,
+        billingHistory: billingData
       }));
 
       const customerCart = await getCustomerCart(customerDetails.data._id);
@@ -299,7 +307,6 @@ export default function AgriAddBills() {
             ...prev,
             cartResponse: customerCart.data,
             customerDetails: customerDetails.data,
-            billingHistory: [...billingData],
             nameDisabled: true,
             showDOB: false,
             newCustomer: false,
@@ -314,7 +321,6 @@ export default function AgriAddBills() {
           setState((prev) => ({
             ...prev,
             customerDetails: customerDetails.data,
-            billingHistory: [...billingData],
             nameDisabled: true,
             showDOB: false,
             newCustomer: false,
@@ -324,62 +330,6 @@ export default function AgriAddBills() {
           }));
         }
       }
-      // if (customerCart.data) {
-      // let cartRows = [];
-      // customerCart.data.items.forEach((item) => {
-      //   cartRows.push({
-      //     id: new Date().toISOString() + Math.random(),
-      //     procurementId: item.procurementId,
-      //     procurementLabel: `${item.procurementName.en.name}(${item.procurementName.ka.name}) `,
-      //     variants: [
-      //       {
-      //         label: `${item.variant.en.name}(${item.variant.ka.name})`,
-      //         value: item.variant.variantId,
-      //         maxPrice: item.mrp,
-      //         minPrice: item.mrp,
-      //       },
-      //     ],
-      //     variantId: item.variant.variantId,
-      //     variantLabel: `${item.variant.en.name}(${item.variant.ka.name})`,
-      //     mrp: item.mrp,
-      //     price: item.rate,
-      //     quantity: item.quantity,
-      //     minPrice: item.minPrice,
-      //   });
-      // });
-
-      // if (cartRows.length === 0) {
-      //   setTableRowData([tableRowBlank]);
-      // } else {
-      //   setTableRowData(cartRows);
-      // }
-
-      //   setState((prev) => ({
-      //     ...prev,
-      //     cartResponse: customerCart.data,
-      //     customerDetails: customerDetails.data,
-      //     billingHistory: [...billingData],
-      //     nameDisabled: true,
-      //     showDOB: false,
-      //     newCustomer: false,
-      //     checkOutDone: false,
-      //     roundOff: 0,
-      //     customerName: customerDetails.name,
-      //   }));
-      //   return;
-      // }
-      // setTableRowData([tableRowBlank]);
-      // setState((prev) => ({
-      //   ...prev,
-      //   customerDetails: customerDetails.data,
-      //   billingHistory: [...billingData],
-      //   nameDisabled: true,
-      //   showDOB: false,
-      //   newCustomer: false,
-      //   roundOff: 0,
-      //   checkOutDone: false,
-      //   cartResponse: {},
-      // }));
     } else {
       // setTableRowData([tableRowBlank]);
       setState((prev) => ({
