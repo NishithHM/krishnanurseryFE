@@ -603,7 +603,8 @@ export default function AddBills() {
                         borderBottom: "1.5px solid black",
                         borderRadius: 0,
                         fontSize: "18px",
-                        fontWeight: 400,
+                        // fontWeight: 400,
+                        color : "#332b2b"
                       },
                     }}
                   />
@@ -691,6 +692,9 @@ export default function AddBills() {
           </div>
         </div>
         <div className={styles.billHistory}>
+         <div className={styles.purchaseListHeader}>
+          <span>Purchase History</span>
+         </div>
           <ScrollTable
             thead={billingHistoryHeader}
             tbody={state.billingHistory}
