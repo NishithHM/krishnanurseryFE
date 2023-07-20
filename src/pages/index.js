@@ -20,6 +20,7 @@ import AddNewVariants from "./AddNewVariants";
 import AgriProcurement from "./AgriProcurement";
 import AgriRequesrOrder from "./AgriRequestOrder";
 import AgriOrderMgmt from "./AgriOrderManagement";
+import AgriAddBills from "./AgriAddBills/AgriAddBills";
 export {
   Login,
   Test,
@@ -42,5 +43,6 @@ export {
   AddNewVariants,
   AgriProcurement,
   AgriOrderMgmt,
-  AgriRequesrOrder
+  AgriRequesrOrder,
+  AgriAddBills,
 };
