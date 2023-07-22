@@ -61,7 +61,6 @@ const AgriBillingItem = ({
       if (variant.isTouched && variant.isFetched) {
         variant.isFetched = false;
       }
-      console.log("toucheds");
     }
     const newOptions = [
       ...variants.slice(0, index),
