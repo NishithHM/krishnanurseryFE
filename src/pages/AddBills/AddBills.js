@@ -148,7 +148,9 @@ export default function AddBills() {
         history.items.forEach((item) => {
           let val = [];
           val.push({
-            value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+            value: `${item.procurementName.en.name} (${
+              item?.procurementName?.ka?.name || ""
+            })`,
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -170,17 +172,23 @@ export default function AddBills() {
           cartRows.push({
             id: new Date().toISOString() + Math.random(),
             procurementId: item.procurementId,
-            procurementLabel: `${item.procurementName.en.name}(${item.procurementName.ka.name}) `,
+            procurementLabel: `${item.procurementName.en.name}(${
+              item?.procurementName?.ka?.name || ""
+            }) `,
             variants: [
               {
-                label: `${item.variant.en.name}(${item.variant.ka.name})`,
+                label: `${item.variant.en.name}(${
+                  item?.variant?.ka?.name || ""
+                })`,
                 value: item.variant.variantId,
                 maxPrice: item.mrp,
                 minPrice: item.mrp,
               },
             ],
             variantId: item.variant.variantId,
-            variantLabel: `${item.variant.en.name}(${item.variant.ka.name})`,
+            variantLabel: `${item.variant.en.name}(${
+              item?.variant?.ka?.name || ""
+            })`,
             mrp: item.mrp,
             price: item.rate,
             quantity: item.quantity,
@@ -251,11 +259,13 @@ export default function AddBills() {
     }));
     if (name === "procurementId") {
       tableRowClone.procurementId = value.value;
-      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${value.meta.names.ka.name})`;
+      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${
+        value?.meta?.names?.ka?.name || ""
+      })`;
       let tempVariant = [];
       value.meta.variants.forEach((el) => {
         tempVariant.push({
-          label: `${el.names.en.name} (${el.names.ka.name})`,
+          label: `${el.names.en.name} (${el?.names?.ka?.name || ""})`,
           value: el._id,
           maxPrice: el.maxPrice,
           minPrice: el.minPrice,

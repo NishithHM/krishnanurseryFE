@@ -138,14 +138,19 @@ export default function AgriAddBills() {
           const productDetail = await getProductDetail({ productData });
 
           if (productDetail.error) {
-            return toast.error("Invalid Product Search");
+            setState((prev) => ({
+              ...prev,
+              errorFields: ["Invalid Product Details"],
+            }));
+            return;
           }
           if (!productDetail.data) {
-            return toast.error("Invalid Product Search");
+            setState((prev) => ({
+              ...prev,
+              errorFields: ["Invalid Product Details"],
+            }));
+            return;
           }
-
-          console.log("fetcheddd");
-          console.log(productDetail.data);
 
           item.price = productDetail?.data?.maxPrice || 0;
           item.minPrice = productDetail?.data?.minPrice || 0;
@@ -167,25 +172,7 @@ export default function AgriAddBills() {
       setCartData((prev) => ({ ...prev, variants: updatedItems }));
       setNeedsUpdate(false);
     }
-
-    console.log(cartData);
   }, [cartData, needsUpdate]);
-
-  const handleAddItem = () => {
-    setTableRowData([...tableRowData, tableRowBlank]);
-    setState((prev) => ({
-      ...prev,
-      checkOutDone: false,
-    }));
-  };
-
-  const handleRemoveItem = (index) => {
-    setTableRowData((prev) => prev.filter((v, i) => i !== index));
-    setState((prev) => ({
-      ...prev,
-      checkOutDone: false,
-    }));
-  };
 
   const inputChangeHanlder = (event, id) => {
     setState((prev) => {
@@ -263,16 +250,16 @@ export default function AgriAddBills() {
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
           let val = [];
-          if(item.procurementName?.ka?.name){
+          if (item.procurementName?.ka?.name) {
             val.push({
               value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
             });
-          }else{
+          } else {
             val.push({
               value: `${item.procurementName.en.name}`,
             });
           }
-         
+
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
               year: "numeric",
@@ -285,23 +272,18 @@ export default function AgriAddBills() {
         });
       });
 
-      console.log(customerDetails.data);
       setState((prev) => ({
         ...prev,
         customerDetails: customerDetails.data,
         customerName: customerDetails.name,
-        billingHistory: billingData
+        billingHistory: billingData,
       }));
 
       const customerCart = await getCustomerCart(customerDetails.data._id);
 
-      console.log(customerCart);
-      console.log(cartData);
-
       if (customerCart.data) {
         if (customerCart.data.items.length > 0) {
           const data = formatCartData(customerCart.data.items);
-          console.log(data);
           setCartData((prev) => ({ ...prev, variants: data }));
           setState((prev) => ({
             ...prev,
