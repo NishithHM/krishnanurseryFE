@@ -132,6 +132,12 @@ export const InvoiceSection = (props) => {
           <div>
             <strong>Email </strong>: {billAddress?.email}{" "}
           </div>
+          {billAddress?.GSTIN &&
+            -(
+              <div>
+                <strong>GSTIN </strong>: {billAddress?.GSTIN}{" "}
+              </div>
+            )}
         </div>
 
         <div className={styles.clientDetails}>

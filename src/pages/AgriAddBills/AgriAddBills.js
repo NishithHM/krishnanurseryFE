@@ -74,6 +74,13 @@ export default function AgriAddBills() {
     submitDisable: false,
     invoiceNumber: "",
   };
+  const agriBillingAddress = {
+    companyName: "Shree Krishna Nursery",
+    companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
+    phoneNumber: "81471-92555",
+    email: "agrishopee@gmail.com",
+    GSTIN: "29ACCFA0434C1Z0",
+  };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
@@ -517,6 +524,7 @@ export default function AgriAddBills() {
 
   const handleReset = () => {
     setTableRowData([tableRowBlank]);
+    setCartData({ variants: [] });
     setState(initialState);
     setShowPreview(false);
   };
@@ -835,8 +843,10 @@ export default function AgriAddBills() {
       <div style={{ display: "none" }}>
         <div ref={printRef}>
           <InvoiceSection
+            billAddress={agriBillingAddress}
+            type="agri"
             clientDetails={state.customerDetails}
-            cartData={tableRowData}
+            cartData={state?.cartResponse?.items || []}
             cartResponse={state.cartResponse}
             invoiceNumber={state?.submitResponse?.invoiceId}
             printEnabled={printEnabled}
@@ -848,12 +858,7 @@ export default function AgriAddBills() {
       </div>
 
       <InvoicePreview
-        billAddress={{
-          companyName: "Shree Krishna Nursery 01",
-          companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
-          phoneNumber: "81051-73777",
-          email: "shreekrishnanurserysmg@gmail.com",
-        }}
+        billAddress={agriBillingAddress}
         type="agri"
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}

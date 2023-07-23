@@ -34,6 +34,7 @@ const AgriVarinatsAddition = ({
     if (isPlaceOrder) {
       onChange({ variants: [...value] });
       setState({ variants: [...value] });
+      setIsVariantAdded(true);
     }
   }, []);
   const [getAgriVariantById] = useGetAgriVariantByIdMutation();
