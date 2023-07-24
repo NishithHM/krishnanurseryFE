@@ -15,7 +15,7 @@ const initialState = {
       type: {},
       name: {},
       options: [],
-      totalQuantity: 0,
+      totalQuantity: 1,
       price: 0,
       isTouched: false,
       isFetched: false,
@@ -191,9 +191,12 @@ const AgriBillingItem = ({
                         value={ele.totalQuantity}
                         id="totalQuantity"
                         type="number"
-                        onChange={(e, id) =>
-                          dropDownChangeHandler(e?.target?.value, id, index)
-                        }
+                        onChange={(e, id) => {
+                          if (e.target.value <= 0) {
+                            return dropDownChangeHandler(1, id, index);
+                          }
+                          dropDownChangeHandler(e?.target?.value, id, index);
+                        }}
                         title="Total Quantity"
                         required
                         min={0}

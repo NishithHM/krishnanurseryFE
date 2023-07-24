@@ -23,7 +23,7 @@ const AgriRequesrOrder = () => {
   const [orderData, setOrderData] = useState([]);
   const [isFormValid, setIsFormValid] = useState(false);
   const [description, setDescription] = useState("");
-  const [isVariantAdded, setIsVariantAdded] = useState(false)
+  const [isVariantAdded, setIsVariantAdded] = useState(false);
   const [state, setState] = useState({
     vendorName: "",
     vendorContact: "",
@@ -34,7 +34,7 @@ const AgriRequesrOrder = () => {
     orderId: "",
     orderDetails: [],
     disableExpectedDate: false,
-    vendorDeviation: ""
+    vendorDeviation: "",
   });
   const navigate = useNavigate();
 
@@ -79,11 +79,11 @@ const AgriRequesrOrder = () => {
 
     const data = { orders: transformedData, description };
     const res = await requestOrder(data);
-    if(res.error?.data?.error) {
-      if(res.error?.data?.error === "") {
-        return toast.error("Something went wrong, Please try again")
-      }else {
-        return toast.error(res.error?.data?.error)
+    if (res.error?.data?.error) {
+      if (res.error?.data?.error === "") {
+        return toast.error("Something went wrong, Please try again");
+      } else {
+        return toast.error(res.error?.data?.error);
       }
     }
     toast.success(res.data.message);
@@ -142,18 +142,18 @@ const AgriRequesrOrder = () => {
     }
 
     const res = await placeOrder(order);
-    if(res.error?.data?.error) {
-        if(res.error?.data?.error === "") {
-          return toast.error("Something went wrong, Please try again")
-        }else {
-          return toast.error(res.error?.data?.error)
-        }
-    } 
+    if (res.error?.data?.error) {
+      if (res.error?.data?.error === "") {
+        return toast.error("Something went wrong, Please try again");
+      } else {
+        return toast.error(res.error?.data?.error);
+      }
+    }
     toast.success(res.data.message);
     navigate("../dashboard/agri-orders");
   };
-  const getDevitaionAmount = (event)=>{
-    if(event?.meta?.deviation < 0){
+  const getDevitaionAmount = (event) => {
+    if (event?.meta?.deviation < 0) {
       return `${event.label || ""} owes you ${Math.abs(
         event?.meta?.deviation
       )}`;
@@ -209,6 +209,7 @@ const AgriRequesrOrder = () => {
         });
     }
   }, [state.vendorName.label]);
+
   return (
     <div>
       <div>
@@ -271,13 +272,13 @@ const AgriRequesrOrder = () => {
               }}
               onError={({id, isError}) => {
               }}
-              errorMessage= {"Please Enter a Valid Number"}
+              errorMessage={"Please Enter a Valid Number"}
             />
             {state.vendorDeviation !== "" && (
               <Input
                 value={state.vendorDeviation || ""}
                 id="vendorDeviation"
-                onChange={() => { }}
+                onChange={() => {}}
                 title="Vendor Deviation Amount"
                 required
                 disabled={true}
