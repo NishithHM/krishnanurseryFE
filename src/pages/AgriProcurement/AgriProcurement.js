@@ -40,7 +40,7 @@ const billingHistoryHeader = [
   { value: "Total Quantity", width: "10%" },
   { value: "Vendor Name", width: "15%" },
   { value: "Vendor Contact", width: "15%" },
-  { value: "Price Per Plant ₹", width: "15%" },
+  { value: "Price Per Product ₹", width: "15%" },
   { value: "Images", width: "10%" },
   { value: "Invoice", width: "10%" },
 ];
@@ -332,7 +332,7 @@ const AgriProcurement = () => {
       <div className={styles.container}>
         <div className={styles.innerContainer}>
           <div>
-            <BackButton navigateTo={"/authorised/dashboard"} />
+            <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
           </div>
           <div className={styles.searchContainer}>
             <Search

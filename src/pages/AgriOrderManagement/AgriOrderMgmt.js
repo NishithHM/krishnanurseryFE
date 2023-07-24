@@ -238,7 +238,7 @@ const AgriOrderMgmt = () => {
     <>
       <div>
         <div>
-          <BackButton navigateTo={"/authorised/dashboard"} />
+          <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
         </div>
         <Filters
           config={{ isVendor: true, orderStatus: true, vendorType: "AGRI" }}

@@ -11,6 +11,13 @@
   justify-content: center;
 }
 
+.purchaseListHeader {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  color: #539c64;
+}
+
 .billWrapper {
   display: flex;
   flex-direction: row;
