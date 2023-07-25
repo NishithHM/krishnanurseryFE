@@ -1,24 +1,32 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { Input, Button, Toaster, BackButton } from "../../components";
+import {
+  Input,
+  Button,
+  Toaster,
+  BackButton,
+  AgriVarinatsAddition,
+} from "../../components";
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { BillDetails, CartTableHeader, CartTableRow } from "./CartTableRow";
 import _ from "lodash";
 import { useLazyGetCustomerByPhoneQuery } from "../../services/customer.service";
-import {
-  useCheckoutCartMutation,
-  useSubmitCartMutation,
-  useUpdateCartMutation,
-  useLazyGetCustomerCartQuery,
-} from "../../services/bills.service";
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
 import ScrollTable from "../../components/Table/ScrollTable";
 import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
-export default function AddBills() {
+import {
+  useCheckoutAgriCartMutation,
+  useGetProductDetailsMutation,
+  useLazyGetCustomerAgriCartQuery,
+  useSubmitAgriCartMutation,
+  useUpdateAgriCartMutation,
+} from "../../services/agribilling.services";
+import AgriBillingItem from "../../components/AgriBillingItem/AgriBillingItem";
+export default function AgriAddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
 
   const tableRowBlank = {
@@ -66,6 +74,13 @@ export default function AddBills() {
     submitDisable: false,
     invoiceNumber: "",
   };
+  const agriBillingAddress = {
+    companyName: "Agri Shopee",
+    companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
+    phoneNumber: "81471-92555",
+    email: "agrishopee@gmail.com",
+    GSTIN: "29ACCFA0434C1Z0",
+  };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
@@ -75,27 +90,93 @@ export default function AddBills() {
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] =
-    useCheckoutCartMutation();
-  const [updateCart] = useUpdateCartMutation();
-  const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
-  const [getCustomerCart] = useLazyGetCustomerCartQuery();
+    useCheckoutAgriCartMutation();
+  const [updateCart] = useUpdateAgriCartMutation();
+  const [submitCart, { isLoading: submitLoading }] =
+    useSubmitAgriCartMutation();
+  const [getCustomerCart] = useLazyGetCustomerAgriCartQuery();
+  const [getProductDetail, { isLoading: getProductLoading }] =
+    useGetProductDetailsMutation();
   const [auth] = useContext(AuthContext);
 
-  const handleAddItem = () => {
-    setTableRowData([...tableRowData, tableRowBlank]);
-    setState((prev) => ({
-      ...prev,
-      checkOutDone: false,
-    }));
+  // cart data
+  const initialCartState = {
+    variants: [
+      {
+        type: {},
+        name: {},
+        options: [],
+        totalQuantity: 0,
+        price: 0,
+        isTouched: false,
+        isFetched: false,
+      },
+    ],
   };
+  const [cartData, setCartData] = useState(initialCartState);
+  const [needsUpdate, setNeedsUpdate] = useState(false);
 
-  const handleRemoveItem = (index) => {
-    setTableRowData((prev) => prev.filter((v, i) => i !== index));
-    setState((prev) => ({
-      ...prev,
-      checkOutDone: false,
-    }));
-  };
+  useEffect(() => {
+    if (!needsUpdate) return;
+
+    console.log("render");
+
+    const cartItems = cartData.variants;
+    const updatedItems = [];
+
+    cartItems.map(async (item, index) => {
+      if (
+        item.options.length > 0 &&
+        item?.options.every((opt) => !!opt.value)
+      ) {
+        // fetch price here
+
+        if (item.isTouched && !item.isFetched) {
+          const productData = {
+            variant: item.options.map((option) => ({
+              optionName: option.optionName,
+              optionValue: option.value.label,
+            })),
+            name: item.name.label,
+            type: item.type.label,
+          };
+          const productDetail = await getProductDetail({ productData });
+          if (productDetail.error) {
+            setState((prev) => ({
+              ...prev,
+              errorFields: ["Invalid Product Details"],
+            }));
+            return;
+          }
+          if (!productDetail.data) {
+            setState((prev) => ({
+              ...prev,
+              errorFields: ["Invalid Product Details"],
+            }));
+            return;
+          }
+
+          item.price = productDetail?.data?.maxPrice || 0;
+          item.minPrice = productDetail?.data?.minPrice || 0;
+
+          item.procurementId = productDetail?.data?._id || "";
+
+          item.remainingQuantity = productDetail?.data?.remainingQuantity || 0;
+
+          item.isFetched = true;
+          item.isTouched = false;
+          const data = { ...item, ...productDetail.data };
+          updatedItems.push(data);
+        }
+      } else {
+        updatedItems.push(item);
+      }
+    });
+    if (updatedItems.length === cartItems.length) {
+      setCartData((prev) => ({ ...prev, variants: updatedItems }));
+      setNeedsUpdate(false);
+    }
+  }, [cartData, needsUpdate]);
 
   const inputChangeHanlder = (event, id) => {
     setState((prev) => {
@@ -130,6 +211,33 @@ export default function AddBills() {
     }
   };
 
+  const formatCartData = (data) => {
+    let newData = data.map((item) => {
+      let temp = {};
+      temp.type = { label: item.type, value: item.type };
+      temp.name = { label: item.typeName, value: "649a64a1ab65b0e736013c32" }; // Assuming value is static
+      temp.options = item.variant.map((variant) => {
+        temp[variant.optionName] = {
+          label: variant.optionValue,
+          value: variant.optionValue,
+        };
+        return {
+          optionName: variant.optionName,
+          value: { label: variant.optionValue, value: variant.optionValue },
+        };
+      });
+      temp.totalQuantity = item.quantity; // Assuming this value is static
+      temp.price = item.mrp;
+      temp.isTouched = false;
+      temp.isFetched = false;
+      temp.minPrice = item.mrp; // Assuming this value is static
+      temp.procurementId = item.procurementId;
+      temp.remainingQuantity = item.quantity; // Assuming this value is static
+      return temp;
+    });
+    return newData;
+  };
+
   const fetchCustomerInfo = async () => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
 
@@ -146,11 +254,16 @@ export default function AddBills() {
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
           let val = [];
-          val.push({
-            value: `${item.procurementName.en.name} (${
-              item?.procurementName?.ka?.name || ""
-            })`,
-          });
+          if (item.procurementName?.ka?.name) {
+            val.push({
+              value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+            });
+          } else {
+            val.push({
+              value: `${item.procurementName.en.name}`,
+            });
+          }
+
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
               year: "numeric",
@@ -163,71 +276,48 @@ export default function AddBills() {
         });
       });
 
-      const customerCart = await getCustomerCart(customerDetails.data._id);
-
-      if (customerCart.data) {
-        let cartRows = [];
-        customerCart.data.items.forEach((item) => {
-          cartRows.push({
-            id: new Date().toISOString() + Math.random(),
-            procurementId: item.procurementId,
-            procurementLabel: `${item.procurementName.en.name}(${
-              item?.procurementName?.ka?.name || ""
-            }) `,
-            variants: [
-              {
-                label: `${item.variant.en.name}(${
-                  item?.variant?.ka?.name || ""
-                })`,
-                value: item.variant.variantId,
-                maxPrice: item.mrp,
-                minPrice: item.mrp,
-              },
-            ],
-            variantId: item.variant.variantId,
-            variantLabel: `${item.variant.en.name}(${
-              item?.variant?.ka?.name || ""
-            })`,
-            mrp: item.mrp,
-            price: item.rate,
-            quantity: item.quantity,
-            minPrice: item.minPrice,
-          });
-        });
-
-        if (cartRows.length === 0) {
-          setTableRowData([tableRowBlank]);
-        } else {
-          setTableRowData(cartRows);
-        }
-
-        setState((prev) => ({
-          ...prev,
-          cartResponse: customerCart.data,
-          customerDetails: customerDetails.data,
-          billingHistory: [...billingData],
-          nameDisabled: true,
-          showDOB: false,
-          newCustomer: false,
-          checkOutDone: false,
-          roundOff: 0,
-        }));
-        return;
-      }
-      setTableRowData([tableRowBlank]);
       setState((prev) => ({
         ...prev,
         customerDetails: customerDetails.data,
-        billingHistory: [...billingData],
-        nameDisabled: true,
-        showDOB: false,
-        newCustomer: false,
-        roundOff: 0,
-        checkOutDone: false,
-        cartResponse: {},
+        customerName: customerDetails.name,
+        billingHistory: billingData,
       }));
+
+      const customerCart = await getCustomerCart(customerDetails.data._id);
+
+      if (customerCart.data) {
+        if (customerCart.data.items.length > 0) {
+          const data = formatCartData(customerCart.data.items);
+          setCartData((prev) => ({ ...prev, variants: data }));
+          setState((prev) => ({
+            ...prev,
+            cartResponse: customerCart.data,
+            customerDetails: customerDetails.data,
+            nameDisabled: true,
+            showDOB: false,
+            newCustomer: false,
+            checkOutDone: false,
+            roundOff: 0,
+            customerName: customerDetails.name,
+          }));
+          return;
+        } else {
+          setCartData((prev) => ({ ...prev, variants: [] }));
+
+          setState((prev) => ({
+            ...prev,
+            customerDetails: customerDetails.data,
+            nameDisabled: true,
+            showDOB: false,
+            newCustomer: false,
+            roundOff: 0,
+            checkOutDone: false,
+            cartResponse: {},
+          }));
+        }
+      }
     } else {
-      setTableRowData([tableRowBlank]);
+      // setTableRowData([tableRowBlank]);
       setState((prev) => ({
         ...prev,
         customerDetails: {},
@@ -258,13 +348,11 @@ export default function AddBills() {
     }));
     if (name === "procurementId") {
       tableRowClone.procurementId = value.value;
-      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${
-        value?.meta?.names?.ka?.name || ""
-      })`;
+      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${value.meta.names.ka.name})`;
       let tempVariant = [];
       value.meta.variants.forEach((el) => {
         tempVariant.push({
-          label: `${el.names.en.name} (${el?.names?.ka?.name || ""})`,
+          label: `${el.names.en.name} (${el.names.ka.name})`,
           value: el._id,
           maxPrice: el.maxPrice,
           minPrice: el.minPrice,
@@ -360,10 +448,18 @@ export default function AddBills() {
   const handleCheckout = async () => {
     const items = [];
 
-    tableRowData.forEach((el) => {
-      const { procurementId, variantId, quantity, price } = el;
-      items.push({ procurementId, variantId, quantity, price });
+    console.log(cartData);
+    cartData.variants.forEach((el) => {
+      const { procurementId, totalQuantity, price } = el;
+      items.push({
+        procurementId,
+        quantity: parseInt(totalQuantity),
+        price,
+      });
     });
+
+    console.log(items);
+    // return;
 
     const cartPayload = {
       customerNumber: state.newCustomer
@@ -391,7 +487,11 @@ export default function AddBills() {
       checkout = await checkoutCart(cartPayload);
     }
 
+    if (!checkout) {
+      return toast.error("Error Checkout");
+    }
     if (checkout.error) {
+      if (!checkout.error.data) return toast.error("Error Checkout");
       setState((prev) => ({
         ...prev,
         priceError: { isExist: true, error: checkout.error.data.error },
@@ -421,6 +521,7 @@ export default function AddBills() {
 
   const handleReset = () => {
     setTableRowData([tableRowBlank]);
+    setCartData({ variants: [] });
     setState(initialState);
     setShowPreview(false);
   };
@@ -468,6 +569,7 @@ export default function AddBills() {
     }
 
     let roundOff = e.target.value;
+
     const roundOffLimit = Math.min(500, state.cartResponse.totalPrice * 0.1);
 
     const correctValue = roundOff <= roundOffLimit;
@@ -493,33 +595,13 @@ export default function AddBills() {
     setState((prev) => ({ ...prev, roundOff: e.target.value }));
   };
 
-  const isRowValid = (row) => {
-    const price = row.price >= row.minPrice && row.price <= row.mrp;
-
-    if (row.procurementId && row.variantId && price && row.quantity >= 1) {
-      return true;
-    }
-    return false;
-  };
-
-  const isTableValid = () => {
-    let output = true;
-
-    for (let i = 0; i < tableRowData.length; i++) {
-      if (!isRowValid(tableRowData[i])) {
-        output = false;
-        break;
-      }
-    }
-
-    return output;
-  };
-
   const shouldCheckoutDisable = () => {
     if (
-      state.errorFields.length > 0 ||
-      !isTableValid() ||
-      tableRowData.length === 0
+      state.errorFields.length < 0 ||
+      cartData.variants.some(
+        (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
+      ) ||
+      cartData.variants.length <= 0
     ) {
       return true;
     }
@@ -548,15 +630,6 @@ export default function AddBills() {
     state.customerDetails && state.customerDetails.name
       ? state.customerDetails.name
       : state.customerName;
-
-  const handleKeyPress = async (e) => {
-      console.log(e.key)
-      if(e.key === "Enter") {
-       await handleCheckout();
-      }else if(e.key === "Tab") {
-       await handleAddItem()
-      }
-  }
 
   return (
     <div className={styles.addBillsWrapper}>
@@ -621,8 +694,7 @@ export default function AddBills() {
                         borderBottom: "1.5px solid black",
                         borderRadius: 0,
                         fontSize: "18px",
-                        // fontWeight: 400,
-                        color : "#332b2b"
+                        fontWeight: 400,
                       },
                     }}
                   />
@@ -631,7 +703,7 @@ export default function AddBills() {
             </div>
           </div>
           <div className={styles.itemList}>
-            <div className={styles.itemTitleWrap}>
+            {/* <div className={styles.itemTitleWrap}>
               <h3>Items List</h3>
               <button
                 className={styles.iconButton}
@@ -640,9 +712,24 @@ export default function AddBills() {
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
-            </div>
+            </div> */}
             <div>
-              <div className={styles.cartTableContainer}>
+              <div>
+                <AgriBillingItem
+                  placeOrder={true}
+                  onChange={(e) => {
+                    setNeedsUpdate(true);
+                  }}
+                  allowNew={true}
+                  // value={cartData}
+                  // isFormValid={(e) => setIsFormValid(!e)}
+                  setIsVariantAdded={(e) => console.log(e)}
+                  state={cartData}
+                  setState={setCartData}
+                />
+              </div>
+
+              {/* <div className={styles.cartTableContainer}>
                 <table className={styles.cartTable}>
                   <CartTableHeader />
                   <tbody>
@@ -655,14 +742,13 @@ export default function AddBills() {
                           onInputChange={(value, name) =>
                             tableInputChange(value, name, index)
                           }
-                          handleKeyPress={handleKeyPress}
                           onBlur={(e, name) => onBlur(e, name, index)}
                         />
                       );
                     })}
                   </tbody>
                 </table>
-              </div>
+              </div> */}
               <div className={styles.checkOutWrapper}>
                 <div>
                   {state.priceError.isExist && (
@@ -674,7 +760,11 @@ export default function AddBills() {
                   title="Checkout"
                   buttonType="submit"
                   onClick={handleCheckout}
-                  disabled={shouldCheckoutDisable()}
+                  disabled={
+                    cartData.variants.some(
+                      (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
+                    ) || cartData.variants.length === 0 || state.errorFields.length > 0
+                  }
                   loading={checkOutLoading}
                 />
               </div>
@@ -711,9 +801,6 @@ export default function AddBills() {
           </div>
         </div>
         <div className={styles.billHistory}>
-         <div className={styles.purchaseListHeader}>
-          <span>Purchase History</span>
-         </div>
           <ScrollTable
             thead={billingHistoryHeader}
             tbody={state.billingHistory}
@@ -752,30 +839,32 @@ export default function AddBills() {
       <div style={{ display: "none" }}>
         <div ref={printRef}>
           <InvoiceSection
+            billAddress={agriBillingAddress}
+            type="AGRI"
             clientDetails={state.customerDetails}
-            cartData={tableRowData}
+            cartData={state?.cartResponse?.items || []}
             cartResponse={state.cartResponse}
             invoiceNumber={state?.submitResponse?.invoiceId}
             printEnabled={printEnabled}
             roundOff={state.roundOff}
             data={state}
             billedBy={auth.name}
-            type="NURSERY"
           />
         </div>
       </div>
 
       <InvoicePreview
+        billAddress={agriBillingAddress}
+        type="AGRI"
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}
         clientDetails={state.customerDetails}
-        cartData={tableRowData}
+        cartData={state?.cartResponse?.items || []}
         cartResponse={state?.cartResponse}
         invoiceNumber={state?.submitResponse?.invoiceId}
         roundOff={state.roundOff}
         handlePrintClick={handleSubmit}
         billedBy={auth.name}
-        type="NURSERY"
       >
         {/* <Button
           type="primary"

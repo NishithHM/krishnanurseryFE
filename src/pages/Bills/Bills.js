@@ -57,7 +57,7 @@ const getRoundedDates = () => {
   return { start_date: formattedRoundedDate, end_date: formattedDate };
 };
 
-const Bills = () => {
+const Bills = ({type}) => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const location = useLocation();
@@ -144,7 +144,7 @@ const Bills = () => {
   };
 
   const searchHandler = debounce(async (query) => {
-    if (query.length >= 3) {
+    if (query?.length >= 3) {
       const res = await searchPurchase({
         search: query,
         ...dates,
@@ -218,8 +218,9 @@ const Bills = () => {
     }));
   };
   const formatInvoiceItems = (data) => {
+    console.log(data)
     return data.map((item) => ({
-      procurementLabel: `${item.procurementName.en.name}(${item.variant.en.name})`,
+      procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.variant?.en?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
     }));
@@ -312,6 +313,7 @@ const Bills = () => {
                 billedBy: invoiceDetail.billedBy.name,
                 soldBy: invoiceDetail.soldBy.name,
               }}
+              type={type}
             />
           </div>
         </div>
@@ -338,6 +340,7 @@ const Bills = () => {
           invoiceNumber={invoiceDetail.invoiceId}
           setInvoiceNumber={() => {}}
           handlePrintClick={handlePrint}
+          type={type}
         />
       )}
     </div>

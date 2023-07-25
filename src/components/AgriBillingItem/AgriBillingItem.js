@@ -15,26 +15,31 @@ const initialState = {
       type: {},
       name: {},
       options: [],
-      totalQuantity: 0,
+      totalQuantity: 1,
       price: 0,
+      isTouched: false,
+      isFetched: false,
     },
   ],
 };
-const AgriVarinatsAddition = ({
+const AgriBillingItem = ({
   onChange = () => null,
   isFormValid = () => null,
-  value,
+  value = [],
   allowNew,
   setIsVariantAdded,
+  placeOrder = false,
+  state = {},
+  setState = () => {},
 }) => {
-  const [{ variants }, setState] = useState(initialState);
+  const { variants } = state;
+  // const [{ variants }, setState] = useState(initialState);
   const location = useLocation();
-  const isPlaceOrder = location?.state?.placeOrder || false;
+  const isPlaceOrder = location?.state?.placeOrder || placeOrder;
   useEffect(() => {
     if (isPlaceOrder) {
       onChange({ variants: [...value] });
       setState({ variants: [...value] });
-      setIsVariantAdded(true);
     }
   }, []);
   const [getAgriVariantById] = useGetAgriVariantByIdMutation();
@@ -52,6 +57,10 @@ const AgriVarinatsAddition = ({
         value: event,
       };
       variant.options = newVariantOptions;
+      variant.isTouched = true;
+      if (variant.isTouched && variant.isFetched) {
+        variant.isFetched = false;
+      }
     }
     const newOptions = [
       ...variants.slice(0, index),
@@ -102,16 +111,23 @@ const AgriVarinatsAddition = ({
   return (
     <div className={styles.variantsAddWrapper}>
       <div className={styles.buttonWrapper}>
+        <h3>Items List</h3>
         <div className={styles.dropDownWrapper}>
           <Button
             onClick={onAddVariant}
-            title="Add Variant"
+            title="New Item"
             disabled={variants.some(
               (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
             )}
+            small={true}
           />
         </div>
       </div>
+      {variants.length === 0 && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <h2>No Items</h2>
+        </div>
+      )}
       {variants.map((ele, index) => {
         return (
           <div key={index} className={styles.wrapper}>
@@ -156,7 +172,7 @@ const AgriVarinatsAddition = ({
                         disabled={!allowNew}
                         title={opt.optionName}
                         id={opt.optionName}
-                        data={formatDropOptions(opt.optionValues)}
+                        data={formatDropOptions(opt?.optionValues || [])}
                         value={opt.value}
                       />
                     </div>
@@ -175,9 +191,12 @@ const AgriVarinatsAddition = ({
                         value={ele.totalQuantity}
                         id="totalQuantity"
                         type="number"
-                        onChange={(e, id) =>
-                          dropDownChangeHandler(e?.target?.value, id, index)
-                        }
+                        onChange={(e, id) => {
+                          if (e.target.value <= 0) {
+                            return dropDownChangeHandler(1, id, index);
+                          }
+                          dropDownChangeHandler(e?.target?.value, id, index);
+                        }}
                         title="Total Quantity"
                         required
                         min={0}
@@ -201,7 +220,8 @@ const AgriVarinatsAddition = ({
                             }
                             title="Price"
                             required
-                            min={0}
+                            min={ele?.minPrice || 0}
+                            max={ele?.maxPrice || 0}
                           />
                         </div>
                         <div
@@ -219,6 +239,7 @@ const AgriVarinatsAddition = ({
                             title="Sub Total"
                             required
                             min={0}
+                            max={ele?.remainingQuantity || 0}
                           />
                         </div>
                       </>
@@ -240,4 +261,4 @@ const AgriVarinatsAddition = ({
   );
 };
 
-export default AgriVarinatsAddition;
+export default AgriBillingItem;

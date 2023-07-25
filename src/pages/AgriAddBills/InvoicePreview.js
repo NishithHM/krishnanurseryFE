@@ -5,20 +5,8 @@ import ScrollTable from "../../components/Table/ScrollTable";
 import { Button } from "../../components";
 import dayjs from "dayjs";
 
-const billConfig = {
-  NURSERY:{
-    name:'Shree Krishna Nursery',
-    email:"shreekrishnanurserysmg@gmail.com"
-  },
-  AGRI:{
-    name:'Agri Shopee',
-    email:'agrishopee@gmail.com',
-    gst:'29ACCFA0434C1Z0'
-  }
-}
-
 export const InvoicePreview = (props) => {
-  const { showPreview, onClose, children, handlePrintClick, cartData, type } = props;
+  const { showPreview, onClose, children, handlePrintClick, cartData } = props;
 
   const printEnabled = false;
 
@@ -59,12 +47,13 @@ export const InvoiceSection = (props) => {
     roundOff,
     billedBy,
     data = {},
-    type
+    billAddress,
+    type,
   } = props;
 
   const [cartList, setCartList] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
-
+  console.log(cartList, 'check')
   const invoiceHeaderWithRate = [
     { value: "S. No.", width: "10%" },
     { value: "Item Purchased", width: "40%" },
@@ -87,9 +76,9 @@ export const InvoiceSection = (props) => {
   useEffect(() => {
     let newCartList = [];
     let discounted = false;
-
+    console.log(cartData)
     for (let index = 0; index < cartData.length; index++) {
-      if (cartData[index].mrp != cartData[index].price) {
+      if (cartData[index].mrp !== cartData[index].rate) {
         discounted = true;
         break;
       }
@@ -104,18 +93,21 @@ export const InvoiceSection = (props) => {
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
-      val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
+      if (type === "AGRI") {
+        val.push({ value: `${el.procurementName.en.name}` });
+      } else val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.mrp });
       if (discounted) {
-        val.push({ value: el.price });
+        val.push({ value: el.rate });
       }
       val.push({ value: el.quantity });
-      val.push({ value: el.price * el.quantity });
+      if (type === "AGRI") {
+        val.push({ value: el.rate * el.quantity });
+      } else val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
-
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
@@ -127,14 +119,21 @@ export const InvoiceSection = (props) => {
         <div className={styles.companyDetails}>
           <div>Sold By</div>
           <div className={styles.addressDetails}>
-            <b>{billConfig[type].name}</b>
+            <b>{billAddress?.companyName}</b>
             <br></br>
-            No.188, Near airport, Santhekadur post, 
-            <br></br>
-            Shivamogga - 577222
+            <span style={{ whiteSpace: "pre-line" }}>
+              {billAddress?.companyAddress}
+            </span>
           </div>
-          <div><strong>Phone Number</strong> : 81051-73777</div>
-          <div><strong>Email </strong>: {billConfig[type].email}</div>
+          <div>
+            <strong>Phone Number</strong> : {billAddress?.phoneNumber}
+          </div>
+          <div>
+            <strong>Email </strong>: {billAddress?.email}{" "}
+          </div>
+            <div>
+              <strong>GSTIN </strong>: {billAddress?.GSTIN}{" "}
+            </div>
         </div>
 
         <div className={styles.clientDetails}>
