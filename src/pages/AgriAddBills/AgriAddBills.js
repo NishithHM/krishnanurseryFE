@@ -635,7 +635,7 @@ export default function AgriAddBills() {
     <div className={styles.addBillsWrapper}>
       <Toaster />
       <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
+        <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
       </div>
 
       <div className={styles.headerWrapper}>

@@ -230,7 +230,7 @@ const Bills = ({type}) => {
   return (
     <div>
       <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
+        <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
       </div>
       <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
       <div className={styles.wrapper}>
