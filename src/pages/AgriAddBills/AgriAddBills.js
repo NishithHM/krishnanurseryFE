@@ -125,8 +125,6 @@ export default function AgriAddBills() {
     const updatedItems = [];
 
     cartItems.map(async (item, index) => {
-      console.log(item);
-
       if (
         item.options.length > 0 &&
         item?.options.every((opt) => !!opt.value)
@@ -143,7 +141,6 @@ export default function AgriAddBills() {
             type: item.type.label,
           };
           const productDetail = await getProductDetail({ productData });
-          console.log(productDetail.error)
           if (productDetail.error) {
             setState((prev) => ({
               ...prev,
