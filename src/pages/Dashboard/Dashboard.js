@@ -117,13 +117,6 @@ const Dashboard = () => {
       tabType : "Agri"
     },
     {
-      title: "Bill History",
-      tile_img: billBook,
-      path: "agri-bills",
-      allowed: [USER_ROLES.admin, USER_ROLES.sales],
-      tabType : "Agri"
-    },
-    {
       title: "Agri Procurements",
       tile_img: produrementImg,
       path: "agri-add-procurements",
