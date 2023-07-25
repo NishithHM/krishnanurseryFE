@@ -93,7 +93,7 @@ export const InvoiceSection = (props) => {
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
-      if (type === "agri") {
+      if (type === "AGRI") {
         val.push({ value: `${el.procurementName.en.name}` });
       } else val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.mrp });
@@ -101,14 +101,13 @@ export const InvoiceSection = (props) => {
         val.push({ value: el.price });
       }
       val.push({ value: el.quantity });
-      if (type === "agri") {
+      if (type === "AGRI") {
         val.push({ value: el.rate * el.quantity });
       } else val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
-
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
@@ -132,12 +131,9 @@ export const InvoiceSection = (props) => {
           <div>
             <strong>Email </strong>: {billAddress?.email}{" "}
           </div>
-          {billAddress?.GSTIN &&
-            -(
-              <div>
-                <strong>GSTIN </strong>: {billAddress?.GSTIN}{" "}
-              </div>
-            )}
+            <div>
+              <strong>GSTIN </strong>: {billAddress?.GSTIN}{" "}
+            </div>
         </div>
 
         <div className={styles.clientDetails}>

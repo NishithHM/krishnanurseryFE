@@ -3,7 +3,6 @@ import styles from "./table.module.css";
 import cx from "classnames";
 
 export default function ScrollTable({ thead, tbody, scroll = true }) {
-  console.log(tbody);
   return (
     <div
       className={cx(styles.scrollTable, styles.scrollTableWrapper, {

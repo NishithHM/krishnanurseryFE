@@ -75,7 +75,7 @@ export default function AgriAddBills() {
     invoiceNumber: "",
   };
   const agriBillingAddress = {
-    companyName: "Shree Krishna Nursery",
+    companyName: "Agri Shopee",
     companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
     phoneNumber: "81471-92555",
     email: "agrishopee@gmail.com",
@@ -143,7 +143,7 @@ export default function AgriAddBills() {
             type: item.type.label,
           };
           const productDetail = await getProductDetail({ productData });
-
+          console.log(productDetail.error)
           if (productDetail.error) {
             setState((prev) => ({
               ...prev,
@@ -721,7 +721,6 @@ export default function AgriAddBills() {
                 <AgriBillingItem
                   placeOrder={true}
                   onChange={(e) => {
-                    console.log("---needs updatee");
                     setNeedsUpdate(true);
                   }}
                   allowNew={true}
@@ -767,7 +766,7 @@ export default function AgriAddBills() {
                   disabled={
                     cartData.variants.some(
                       (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
-                    ) || cartData.variants.length === 0
+                    ) || cartData.variants.length === 0 || state.errorFields.length > 0
                   }
                   loading={checkOutLoading}
                 />
@@ -844,7 +843,7 @@ export default function AgriAddBills() {
         <div ref={printRef}>
           <InvoiceSection
             billAddress={agriBillingAddress}
-            type="agri"
+            type="AGRI"
             clientDetails={state.customerDetails}
             cartData={state?.cartResponse?.items || []}
             cartResponse={state.cartResponse}
@@ -859,7 +858,7 @@ export default function AgriAddBills() {
 
       <InvoicePreview
         billAddress={agriBillingAddress}
-        type="agri"
+        type="AGRI"
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}
         clientDetails={state.customerDetails}
