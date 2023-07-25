@@ -52,7 +52,9 @@ const Input = (props) => {
   return (
     <div>
       <div className={styles.label}>
-        <label>{title}</label>
+        <label style={{
+          fontSize : "15px"
+        }}>{title}</label>
         {required && (
           <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
         )}

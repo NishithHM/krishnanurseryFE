@@ -635,6 +635,11 @@ export default function AddBills() {
               <h3>Items List</h3>
               <button
                 className={styles.iconButton}
+                style={{
+                  display : "flex",
+                  justifyContent : "center",
+                  alignItems : "center"
+                }}
                 disabled={!isTableValid()}
                 onClick={handleAddItem}
               >
