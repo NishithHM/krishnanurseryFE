@@ -5,8 +5,20 @@ import ScrollTable from "../../components/Table/ScrollTable";
 import { Button } from "../../components";
 import dayjs from "dayjs";
 
+const billConfig = {
+  NURSERY:{
+    name:'Shree Krishna Nursery',
+    email:"shreekrishnanurserysmg@gmail.com"
+  },
+  AGRI:{
+    name:'Agri Shopee',
+    email:'agrishopee@gmail.com',
+    gst:'29ACCFA0434C1Z0'
+  }
+}
+
 export const InvoicePreview = (props) => {
-  const { showPreview, onClose, children, handlePrintClick, cartData } = props;
+  const { showPreview, onClose, children, handlePrintClick, cartData, type } = props;
 
   const printEnabled = false;
 
@@ -47,6 +59,7 @@ export const InvoiceSection = (props) => {
     roundOff,
     billedBy,
     data = {},
+    type
   } = props;
 
   const [cartList, setCartList] = useState([]);
@@ -114,14 +127,14 @@ export const InvoiceSection = (props) => {
         <div className={styles.companyDetails}>
           <div>Sold By</div>
           <div className={styles.addressDetails}>
-            <b>Shree Krishna Nursery</b>
+            <b>{billConfig[type].name}</b>
             <br></br>
             No.188, Near airport, Santhekadur post, 
             <br></br>
             Shivamogga - 577222
           </div>
           <div><strong>Phone Number</strong> : 81051-73777</div>
-          <div><strong>Email </strong>: shreekrishnanurserysmg@gmail.com</div>
+          <div><strong>Email </strong>: {billConfig[type].email}</div>
         </div>
 
         <div className={styles.clientDetails}>
