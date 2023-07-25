@@ -751,17 +751,12 @@ export default function AddBills() {
             roundOff={state.roundOff}
             data={state}
             billedBy={auth.name}
+            type="NURSERY"
           />
         </div>
       </div>
 
       <InvoicePreview
-        billAddress={{
-          companyName: "Shree Krishna Nursery",
-          companyAddress: `No.188, Near airport, Santhekadur post, \n Shivamogga - 577222`,
-          phoneNumber: "81051-73777",
-          email: "shreekrishnanurserysmg@gmail.com",
-        }}
         showPreview={showPreview}
         onClose={() => setShowPreview(!showPreview)}
         clientDetails={state.customerDetails}
@@ -771,6 +766,7 @@ export default function AddBills() {
         roundOff={state.roundOff}
         handlePrintClick={handleSubmit}
         billedBy={auth.name}
+        type="NURSERY"
       >
         {/* <Button
           type="primary"

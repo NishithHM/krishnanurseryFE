@@ -53,7 +53,7 @@ export const InvoiceSection = (props) => {
 
   const [cartList, setCartList] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
-
+  console.log(cartList, 'check')
   const invoiceHeaderWithRate = [
     { value: "S. No.", width: "10%" },
     { value: "Item Purchased", width: "40%" },
@@ -76,9 +76,9 @@ export const InvoiceSection = (props) => {
   useEffect(() => {
     let newCartList = [];
     let discounted = false;
-
+    console.log(cartData)
     for (let index = 0; index < cartData.length; index++) {
-      if (cartData[index].mrp != cartData[index].price) {
+      if (cartData[index].mrp !== cartData[index].rate) {
         discounted = true;
         break;
       }
@@ -93,22 +93,21 @@ export const InvoiceSection = (props) => {
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
-      if (type === "agri") {
+      if (type === "AGRI") {
         val.push({ value: `${el.procurementName.en.name}` });
       } else val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.mrp });
       if (discounted) {
-        val.push({ value: el.price });
+        val.push({ value: el.rate });
       }
       val.push({ value: el.quantity });
-      if (type === "agri") {
+      if (type === "AGRI") {
         val.push({ value: el.rate * el.quantity });
       } else val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
-
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
@@ -132,12 +131,9 @@ export const InvoiceSection = (props) => {
           <div>
             <strong>Email </strong>: {billAddress?.email}{" "}
           </div>
-          {billAddress?.GSTIN &&
-            -(
-              <div>
-                <strong>GSTIN </strong>: {billAddress?.GSTIN}{" "}
-              </div>
-            )}
+            <div>
+              <strong>GSTIN </strong>: {billAddress?.GSTIN}{" "}
+            </div>
         </div>
 
         <div className={styles.clientDetails}>
