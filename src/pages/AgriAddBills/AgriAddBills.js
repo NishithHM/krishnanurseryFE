@@ -634,12 +634,23 @@ export default function AgriAddBills() {
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
-      <div>
+     <div style={{
+        display : "flex",
+        alignItems : "center",
+        justifyContent : "space-between",
+        width : "80%",
+     }}>
+        <div style={{
+          display : "flex",
+          alignSelf: "flex-end",
+          marginTop : "3%",
+        }}>
         <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
-      </div>
-
-      <div className={styles.headerWrapper}>
+        </div>
         <h1 className={styles.header}>Generate Bill</h1>
+        <h1 className={styles.header} style={{
+          marginRight : "-100px"
+        }}>Purchase History</h1>
       </div>
 
       <div className={styles.billWrapper}>
