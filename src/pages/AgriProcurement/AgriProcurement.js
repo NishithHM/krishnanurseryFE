@@ -466,7 +466,7 @@ const AgriProcurement = () => {
                           !quantity ||
                           !minimumPrice ||
                           !maximumPrice ||
-                          minimumPrice > maximumPrice
+                          Number(minimumPrice) > Number(maximumPrice)
                         }
                         loading={quanityLoaders}
                       />
