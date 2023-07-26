@@ -10,6 +10,7 @@ export const CartTableRow = ({
   handleRemoveItem,
   item,
   onBlur,
+  handleKeyPress
 }) => {
   const onChangeHandler = (value, name) => {
     onInputChange(value, name);
@@ -64,6 +65,7 @@ export const CartTableRow = ({
           type="number"
           className={styles.cartInput}
           min="1"
+          onKeyDown={handleKeyPress}
           onChange={(e) => onChangeHandler(e.target.value, "quantity")}
           onBlur={(e) => onBlur(e, "quantity")}
         />

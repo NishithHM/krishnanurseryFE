@@ -2,20 +2,22 @@
   color: #539c64;
   font-size: 20px;
   font-weight: 500;
-  margin-top: 3rem;
   line-height: 1rem;
 }
 
 .headerWrapper {
   display: flex;
   justify-content: center;
+  width: 50%;
 }
 
 .purchaseListHeader {
   text-align: center;
-  font-size: 24px;
-  font-weight: 500;
   color: #539c64;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1rem;
+  margin-top: -1.5rem;
 }
 
 .billWrapper {
@@ -59,6 +61,7 @@
 
 .billHistory {
   width: 40%;
+
 }
 
 .iconButton {
@@ -83,6 +86,21 @@
   margin: 0 10px;
   padding: 10px 0 10px 0;
   padding-bottom: 10rem;
+  height:25vh;
+  overflow: auto;
+}
+
+.cartTableContainer::-webkit-scrollbar {
+  width: 10px; 
+}
+
+.cartTableContainer::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 10px;
+}
+
+.cartTableContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #555; 
 }
 
 .cartTable {

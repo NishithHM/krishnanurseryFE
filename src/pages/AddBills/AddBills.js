@@ -550,6 +550,15 @@ export default function AddBills() {
       ? state.customerDetails.name
       : state.customerName;
 
+  const handleKeyPress = async (e) => {
+      console.log(e.key)
+      if(e.key === "Enter") {
+       await handleCheckout();
+      }else if(e.key === "Tab") {
+       await handleAddItem()
+      }
+  }
+
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -627,6 +636,11 @@ export default function AddBills() {
               <h3>Items List</h3>
               <button
                 className={styles.iconButton}
+                style={{
+                  display : "flex",
+                  justifyContent : "center",
+                  alignItems : "center"
+                }}
                 disabled={!isTableValid()}
                 onClick={handleAddItem}
               >
@@ -647,6 +661,7 @@ export default function AddBills() {
                           onInputChange={(value, name) =>
                             tableInputChange(value, name, index)
                           }
+                          handleKeyPress={handleKeyPress}
                           onBlur={(e, name) => onBlur(e, name, index)}
                         />
                       );
