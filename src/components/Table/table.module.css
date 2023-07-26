@@ -47,7 +47,7 @@
 }
 
 .scrollTable::-webkit-scrollbar {
-  width: 10px; 
+  width: 5px; 
 }
 
 .scrollTable::-webkit-scrollbar-thumb {

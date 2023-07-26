@@ -89,6 +89,10 @@ const Dropdown = ({
         boxShadow: "0px 0px 1px #539c64",
       },
     }),
+    menu: (provided, state) => ({
+      ...provided,
+      zIndex: 999999999,
+    }),
     indicatorSeparator: (baseStyles, state) => ({
       display: "none",
     }),
