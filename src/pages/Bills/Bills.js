@@ -70,7 +70,7 @@ const Bills = ({type}) => {
   const [searchInput, setSearchInput] = useState("");
   const [purchaseCount, setPurchaseCount] = useState(0);
 
-  const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "desc" });
+  const [sort, setSort] = useState({ sortBy: "billedDate", sortType: "desc" });
   const printRef = useRef();
   // billing modal
   const [showPreview, setShowPreview] = useState(false);
@@ -110,7 +110,7 @@ const Bills = ({type}) => {
 
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
-      const date = { value: dayjs(purchase.createdAt).format("DD-MM-YYYY") };
+      const date = { value: dayjs(purchase.billedDate).format("DD-MM-YYYY") };
 
       const openModal = {
         value: (
@@ -177,7 +177,7 @@ const Bills = ({type}) => {
     {
       value: "Date",
       isSortable: true,
-      sortBy: "updatedAt",
+      sortBy: "billedDate",
     },
 
     {
@@ -305,7 +305,7 @@ const Bills = ({type}) => {
               printEnabled={true}
               roundOff={invoiceDetail?.roundOff}
               invoiceDetails={{
-                invoiceDate: invoiceDetail.createdAt,
+                invoiceDate: invoiceDetail.billedDate,
                 billedBy: invoiceDetail.billedBy.name,
                 soldBy: invoiceDetail.soldBy.name,
               }}
@@ -323,7 +323,7 @@ const Bills = ({type}) => {
             phoneNumber: invoiceDetail.customerNumber,
           }}
           invoiceDetails={{
-            invoiceDate: invoiceDetail.createdAt,
+            invoiceDate: invoiceDetail.billedDate,
             billedBy: invoiceDetail.billedBy.name,
             soldBy: invoiceDetail.soldBy.name,
           }}
