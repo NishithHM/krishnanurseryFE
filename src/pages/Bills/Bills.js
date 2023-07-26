@@ -69,7 +69,7 @@ const Bills = () => {
   const [searchInput, setSearchInput] = useState("");
   const [purchaseCount, setPurchaseCount] = useState(0);
 
-  const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "desc" });
+  const [sort, setSort] = useState({ sortBy: "updatedAt", sortType: "desc" });
   const printRef = useRef();
   // billing modal
   const [showPreview, setShowPreview] = useState(false);
@@ -178,7 +178,7 @@ const Bills = () => {
     {
       value: "Date",
       isSortable: true,
-      sortBy: "createdAt",
+      sortBy: "updatedAt",
     },
 
     {
@@ -225,6 +225,7 @@ const Bills = () => {
       procurementLabel: `${item.procurementName.en.name}(${item.variant.en.name})`,
       price: item.rate,
       quantity: item.quantity,
+      mrp: item.mrp
     }));
     // return data;
   };
@@ -287,12 +288,7 @@ const Bills = () => {
         <p className={styles.errorMessage}>Unable to load Users Data</p>
       )}
 
-      {/* <Modal isOpen={deleteUser} contentLabel="Delete User">
-        <Alert
-          handleCancel={closeDeleteModalHandler}
-          handleConfirm={() => deleteUserHandler(deleteUserUid)}
-        />
-      </Modal> */}
+     
       {showPreview && invoiceDetail && (
         <div style={{ display: "none" }}>
           <div ref={printRef}>
