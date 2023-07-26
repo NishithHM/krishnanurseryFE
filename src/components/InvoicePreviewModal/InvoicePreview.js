@@ -92,7 +92,6 @@ export const InvoiceSection = (props) => {
   ];
 
   const scroll = false;
-
   useEffect(() => {
     let newCartList = [];
     let showMRPTemp = false;
@@ -105,16 +104,16 @@ export const InvoiceSection = (props) => {
     }
 
     if (showMRPTemp) {
-      setInvoiceHeader(invoiceHeaderWithOutMRP);
-    } else {
       setInvoiceHeader(invoiceHeaderWithMRP);
+    } else {
+      setInvoiceHeader(invoiceHeaderWithOutMRP);
     }
 
     cartData.forEach((el, index) => {
       let val = [];
       val.push({ value: index + 1 });
       val.push({ value: el.procurementLabel });
-      if (!showMRPTemp) {
+      if (showMRPTemp) {
         val.push({ value: el.mrp });
       }
       val.push({ value: el.price });
