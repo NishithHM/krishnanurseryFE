@@ -345,7 +345,7 @@ const AgriOrderMgmt = () => {
       <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
         <AlertMessage
           message={`Verify the order of ${
-            verifyOrder?.data?.names?.en?.name || "Plants"
+            verifyOrder?.data?.names?.en?.name || "Agri's"
           }.`}
           confirmBtnType="primary"
           subMessage={""}
