@@ -214,9 +214,12 @@ const AgriBillingItem = ({
                           <Input
                             value={ele.price}
                             id="price"
-                            type="number"
-                            onChange={(e, id) =>
-                              dropDownChangeHandler(e?.target?.value, id, index)
+                            type="number"  
+                            onChange={(e, id) =>{
+                              if(Number(e.target.value) > 0 || e.target.value === "") {
+                                dropDownChangeHandler(e?.target?.value, id, index)
+                              }
+                            }
                             }
                             title="Price"
                             required
