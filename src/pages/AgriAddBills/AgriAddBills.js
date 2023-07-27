@@ -724,8 +724,8 @@ export default function AgriAddBills() {
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </div> */}
-            <div>
-              <div>
+            <div >
+              <div className={styles.agriAddBillWrapper}>
                 <AgriBillingItem
                   placeOrder={true}
                   onChange={(e) => {
@@ -811,7 +811,7 @@ export default function AgriAddBills() {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory}>
+        <div className={styles.billHistory} style={{marginRight : "10px"}}>
           <ScrollTable
             thead={billingHistoryHeader}
             tbody={state.billingHistory}
