@@ -102,22 +102,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
-      title: "Agri Variants",
-      tile_img: agriVariantsImg,
-      path: "agri-variants",
-      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
-      isDisabled: false,
-      tabType: "Agri",
-    },
-    {
-      title: "Bill History",
-      tile_img: billBook,
-      path: "agri-bills",
-      allowed: [USER_ROLES.admin, USER_ROLES.sales],
-      tabType : "Agri"
-    },
-    {
-      title: "Agri Procurements",
+      title: "Procurements",
       tile_img: produrementImg,
       path: "agri-add-procurements",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
@@ -131,12 +116,26 @@ const Dashboard = () => {
       allowed: [USER_ROLES.procurement, USER_ROLES.sales, USER_ROLES.admin],
       tabType: "Agri",
     },
-
+    {
+      title: "Bill History",
+      tile_img: billBook,
+      path: "agri-bills",
+      allowed: [USER_ROLES.admin, USER_ROLES.sales],
+      tabType : "Agri"
+    },
     {
       title: "Add Bills",
       tile_img: billsImg,
       path: "agri-add-bills",
       allowed: [USER_ROLES.preSales, USER_ROLES.sales],
+      tabType: "Agri",
+    },
+    {
+      title: "Agri Variants",
+      tile_img: agriVariantsImg,
+      path: "agri-variants",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
       tabType: "Agri",
     },
   ];
@@ -150,11 +149,15 @@ const Dashboard = () => {
   
   // /dashboard/orders-agri/request-order
   const getDashboardData = (role) => {
-    return DashboardData.filter((data) => data.allowed.includes(role));
+    return DashboardData.filter((data) => data.allowed.includes(role) && data.tabType === selectedTab);
   };
 
   // const data = getDashboardData(toUpper(userContext[0].role));
   const data = getDashboardData(values.role);
+  if(selectedTab === "Agri" && values.role === "sales") {
+    const first = data.shift()
+    data.push(first)
+  }
   return (
     <div>
       <div className={styles.tabContainer}>
@@ -185,7 +188,6 @@ const Dashboard = () => {
       </div>
       <div className={styles.gridContainer}>
         {data.map((e) => {
-          if (e.tabType === selectedTab) {
             return (
               <div className={e.isDisabled && styles.cardDisabled}>
                 <Link to={e.path} key={e.path}>
@@ -197,9 +199,6 @@ const Dashboard = () => {
                 </Link>
               </div>
             );
-          } else {
-            return [];
-          }
         })}
       </div>
     </div>

@@ -634,12 +634,23 @@ export default function AgriAddBills() {
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
-      <div>
+     <div style={{
+        display : "flex",
+        alignItems : "center",
+        justifyContent : "space-between",
+        width : "80%",
+     }}>
+        <div style={{
+          display : "flex",
+          alignSelf: "flex-end",
+          marginTop : "3%",
+        }}>
         <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
-      </div>
-
-      <div className={styles.headerWrapper}>
+        </div>
         <h1 className={styles.header}>Generate Bill</h1>
+        <h1 className={styles.header} style={{
+          marginRight : "-100px"
+        }}>Purchase History</h1>
       </div>
 
       <div className={styles.billWrapper}>
@@ -713,8 +724,8 @@ export default function AgriAddBills() {
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </div> */}
-            <div>
-              <div>
+            <div >
+              <div className={styles.agriAddBillWrapper}>
                 <AgriBillingItem
                   placeOrder={true}
                   onChange={(e) => {
@@ -800,7 +811,7 @@ export default function AgriAddBills() {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory}>
+        <div className={styles.billHistory} style={{marginRight : "10px"}}>
           <ScrollTable
             thead={billingHistoryHeader}
             tbody={state.billingHistory}

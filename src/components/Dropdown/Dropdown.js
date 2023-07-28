@@ -89,6 +89,10 @@ const Dropdown = ({
         boxShadow: "0px 0px 1px #539c64",
       },
     }),
+    menu: (provided, state) => ({
+      ...provided,
+      zIndex: 999
+    }),
     indicatorSeparator: (baseStyles, state) => ({
       display: "none",
     }),
@@ -115,6 +119,7 @@ const Dropdown = ({
           isMulti={isMultiEnabled}
           isLoading={loading}
           styles={DropdownStyles}
+          menuPosition="fixed"
         />
         {error && (
           <div className={styles.errortext}>
@@ -196,6 +201,7 @@ const Dropdown = ({
           placeholder={placeholder}
           styles={DropdownStyles}
           isDisabled={disabled}
+          menuPosition="fixed"
         />
         {error && (
           <div className={styles.errortext}>

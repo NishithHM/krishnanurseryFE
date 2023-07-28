@@ -562,12 +562,15 @@ export default function AddBills() {
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
-      <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
-      </div>
 
       <div className={styles.headerWrapper}>
+        <div>
+        <BackButton navigateTo={"/authorised/dashboard"} />
+        </div>
         <h1 className={styles.header}>Generate Bill</h1>
+        <h1 className={styles.header} style={{
+          marginRight : "-100px"
+        }}>Purchase History</h1>
       </div>
 
       <div className={styles.billWrapper}>
@@ -639,12 +642,12 @@ export default function AddBills() {
                 style={{
                   display : "flex",
                   justifyContent : "center",
-                  alignItems : "center"
+                  alignItems : "center",
                 }}
                 disabled={!isTableValid()}
                 onClick={handleAddItem}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <FontAwesomeIcon icon={faPlus} style={{marginLeft : "0.8px"}} />
               </button>
             </div>
             <div>
@@ -716,10 +719,8 @@ export default function AddBills() {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory}>
-         <div className={styles.purchaseListHeader}>
-          <span>Purchase History</span>
-         </div>
+        <div className={styles.billHistory} style={{ marginRight : "15px"}}>
+         
           <ScrollTable
             thead={billingHistoryHeader}
             tbody={state.billingHistory}
