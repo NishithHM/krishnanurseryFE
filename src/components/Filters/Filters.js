@@ -19,6 +19,18 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
         onSubmit({ ...filterDates, ...filters });
     };
 
+    const handleClearFilters = async () => {
+        setFilterDates(() => ({
+            start_date: null,
+            end_date: null,
+        }))   
+        setFilters(() => ({
+            vendors: [], status: []
+        }))
+       await onSubmit({start_date : null, end_date : null ,vendors:  [], status :[]})
+    }    
+    
+
     const dropDownChangeHandler = (e, id) => {
         const newFilter = cloneDeep(filters)
         newFilter[id] = e
@@ -39,6 +51,8 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                     <Datefilter
                         closeFilters={() => setIsOpen(false)}
                         onChange={(date => setFilterDates(date))}
+                        startDateInput={filterDates.start_date}
+                        endDateInput={filterDates.end_date}  
                     />
                     {config.isVendor &&
                       <div style={{width : "200px"}}>
@@ -67,6 +81,14 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                             <Button
                                 title="Submit"
                                 onClick={handleSubmitFilter}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.buttonWrapper}>
+                        <div className={styles.btnSubWrapper}>
+                            <Button
+                                title="Clear"
+                                onClick={handleClearFilters}
                             />
                         </div>
                     </div>

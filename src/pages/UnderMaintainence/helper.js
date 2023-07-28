@@ -28,7 +28,6 @@ export const getProcurementListTableBody = (data, onDetailClick) => {
     return [];
   } else {
     const history = data?.map((ele) => {
-      console.log(ele);
       const res = requiredData?.map((res) => {
         if (res === "plantName") {
           return { value: ele?.names?.en?.name };
@@ -75,7 +74,6 @@ const handleDownload = (fileUrl) => {
       const url = window.URL.createObjectURL(blob);
       a.href = url;
       a.download = name;
-      console.log(name);
       a.click();
       window.URL.revokeObjectURL(url);
     })
@@ -85,10 +83,8 @@ const handleImageOpen = (data) => {
   const images = data.images;
   if (images.length === 0)
     return toast.error("No Images found for this procurement!");
-  else console.log(images);
 };
 export const getTableBody = (data, imagesHandler) => {
-  console.log(data);
   const result = data?.map((ele) => {
     const data = requiredDataHistory.map((data) => {
       if (data === "procuredOn") {

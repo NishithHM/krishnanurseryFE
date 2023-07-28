@@ -63,7 +63,6 @@ const AgriOrderMgmt = () => {
     id: null,
     reason: "",
   });
-  // console.log(addInvoice, "in");
   const [filters, setFilters] = useState({
     status: [],
     vendors: [],
@@ -94,14 +93,18 @@ const AgriOrderMgmt = () => {
     const functionObj = {
       placeOrder: () => {
         if (isChecked) {
-          const order = selectedOrder;
-          order.push(data);
-          setSelectedOrder(order);
+          setSelectedOrder((prev) => {
+            const updatedData = [...prev];
+            updatedData.push(data);
+            console.log(updatedData);
+            return updatedData;
+          });
         } else {
-          const newData = cloneDeep(selectedOrder).filter(
-            (ele) => ele._id !== id
-          );
-          setSelectedOrder(newData);
+          setSelectedOrder((prev) => {
+            const updatedData = prev.filter((ele) => ele._id !== id);
+            console.log(updatedData);
+            return updatedData;
+          });
         }
       },
       addInvoice: () => {
@@ -139,7 +142,6 @@ const AgriOrderMgmt = () => {
       role: user.role,
       onAction,
     });
-    // console.log(formattedData);
     setData(formattedData);
   };
 
@@ -149,7 +151,7 @@ const AgriOrderMgmt = () => {
 
   const searchHandler = debounce(async (query) => {
     setSearch(query);
-    if (query.length >= 3) {
+    if (query.length >= 2) {
       const res = await getOrders({ body: { search: query } });
       const counts = await getOrders({});
       setOrdersCount(get(counts, "data[0].count", 0));
@@ -180,6 +182,7 @@ const AgriOrderMgmt = () => {
 
   const handleFilterChange = async (filters) => {
     const formattedFilter = formatFilter(filters);
+    setPage(() => 1)
 
     setFilters(filters);
     const res = await getOrders({
@@ -206,7 +209,7 @@ const AgriOrderMgmt = () => {
 
   const onPlaceOrder = () => {
     navigate(addLink[user.role], {
-      state: { placeOrder: user.role === 'procurement', data: selectedOrder },
+      state: { placeOrder: user.role === "procurement", data: selectedOrder },
     });
   };
 
@@ -235,10 +238,10 @@ const AgriOrderMgmt = () => {
     <>
       <div>
         <div>
-          <BackButton navigateTo={"/authorised/dashboard"} />
+          <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
         </div>
         <Filters
-          config={{ isVendor: true, orderStatus: true, vendorType:'AGRI' }}
+          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI" }}
           onSubmit={handleFilterChange}
         />
         <div className={styles.wrapper}>
@@ -346,7 +349,7 @@ const AgriOrderMgmt = () => {
       <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
         <AlertMessage
           message={`Verify the order of ${
-            verifyOrder?.data?.names?.en?.name || "Plants"
+            verifyOrder?.data?.names?.en?.name || "Agri's"
           }.`}
           confirmBtnType="primary"
           subMessage={""}

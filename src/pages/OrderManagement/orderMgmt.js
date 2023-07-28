@@ -87,8 +87,6 @@ const OrderMgmt = () => {
                 setRejectOrder({ isActive: true, id: id, reason: "" });
             },
             accept: () => {
-                console.log(data);
-                console.log("accept", id, data);
                 navigate(
                     `./place-order?id=${id}&orderId=${orderId}&requestedQuantity=${data?.requestedQuantity || 0
                     }`
@@ -98,8 +96,7 @@ const OrderMgmt = () => {
                 setVerifyOrder({ isActive: true, id, data, quantity: 0 });
             },
             addInvoice: () => {
-                console.log("add invoice", id);
-                console.log(data);
+                
                 setAddInvoice({ isActive: true, id, data });
             },
         };
@@ -127,8 +124,7 @@ const OrderMgmt = () => {
             data: list.data,
             role: user.role,
             onAction,
-        });
-        console.log(formattedData);
+        })
         setData(formattedData);
     };
 
@@ -170,6 +166,7 @@ const OrderMgmt = () => {
 
 
     const handleFilterChange = async (filters) => {
+        setPage(() => 1)
         const formattedFilter = formatFilter(filters)
 
         setFilters(filters)
@@ -311,7 +308,7 @@ const OrderMgmt = () => {
                             description: rejectOrder.reason,
                             id: rejectOrder.id,
                         };
-                        // return console.log(data);
+                        
                         const res = await RejectOrder(data);
                         toast.success("Order Updated!");
                         setRejectOrder({ isActive: false, id: null, reason: "" });

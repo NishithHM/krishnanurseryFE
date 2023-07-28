@@ -18,6 +18,7 @@ import ScrollTable from "../../components/Table/ScrollTable";
 import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
+import Datepicker from "../../components/Datepicker/Datepicker";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
 
@@ -41,8 +42,7 @@ export default function AddBills() {
     { value: "Quantity", width: "25%" },
   ];
 
-  const defaultDate = new Date(1960,0,1)
-
+  const defaultDate = new Date(1960, 0, 1);
 
   const initialState = {
     customerNumber: "",
@@ -148,7 +148,9 @@ export default function AddBills() {
         history.items.forEach((item) => {
           let val = [];
           val.push({
-            value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+            value: `${item.procurementName.en.name} (${
+              item?.procurementName?.ka?.name || ""
+            })`,
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -170,17 +172,23 @@ export default function AddBills() {
           cartRows.push({
             id: new Date().toISOString() + Math.random(),
             procurementId: item.procurementId,
-            procurementLabel: `${item.procurementName.en.name}(${item.procurementName.ka.name}) `,
+            procurementLabel: `${item.procurementName.en.name}(${
+              item?.procurementName?.ka?.name || ""
+            }) `,
             variants: [
               {
-                label: `${item.variant.en.name}(${item.variant.ka.name})`,
+                label: `${item.variant.en.name}(${
+                  item?.variant?.ka?.name || ""
+                })`,
                 value: item.variant.variantId,
                 maxPrice: item.mrp,
                 minPrice: item.mrp,
               },
             ],
             variantId: item.variant.variantId,
-            variantLabel: `${item.variant.en.name}(${item.variant.ka.name})`,
+            variantLabel: `${item.variant.en.name}(${
+              item?.variant?.ka?.name || ""
+            })`,
             mrp: item.mrp,
             price: item.rate,
             quantity: item.quantity,
@@ -251,11 +259,13 @@ export default function AddBills() {
     }));
     if (name === "procurementId") {
       tableRowClone.procurementId = value.value;
-      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${value.meta.names.ka.name})`;
+      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${
+        value?.meta?.names?.ka?.name || ""
+      })`;
       let tempVariant = [];
       value.meta.variants.forEach((el) => {
         tempVariant.push({
-          label: `${el.names.en.name} (${el.names.ka.name})`,
+          label: `${el.names.en.name} (${el?.names?.ka?.name || ""})`,
           value: el._id,
           maxPrice: el.maxPrice,
           minPrice: el.minPrice,
@@ -431,7 +441,7 @@ export default function AddBills() {
         ...prev,
         submitError: { isExist: true, error: confirmCart.error.data.error },
       }));
-      toast.error(confirmCart.error.data.error)
+      toast.error(confirmCart.error.data.error);
     }
 
     if (confirmCart.data) {
@@ -540,15 +550,27 @@ export default function AddBills() {
       ? state.customerDetails.name
       : state.customerName;
 
+  const handleKeyPress = async (e) => {
+      console.log(e.key)
+      if(e.key === "Enter") {
+       await handleCheckout();
+      }else if(e.key === "Tab") {
+       await handleAddItem()
+      }
+  }
+
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
-      <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
-      </div>
 
       <div className={styles.headerWrapper}>
+        <div>
+        <BackButton navigateTo={"/authorised/dashboard"} />
+        </div>
         <h1 className={styles.header}>Generate Bill</h1>
+        <h1 className={styles.header} style={{
+          marginRight : "-100px"
+        }}>Purchase History</h1>
       </div>
 
       <div className={styles.billWrapper}>
@@ -589,8 +611,8 @@ export default function AddBills() {
                     withAsterisk={false}
                     value={state.dateOfBirth}
                     onChange={dateChangeHandler}
-                    clearable={false}
                     maxDate={new Date(today.setDate(today.getDate() - 1))}
+                    clearable={false}
                     styles={{
                       label: {
                         fontSize: "18px",
@@ -603,7 +625,8 @@ export default function AddBills() {
                         borderBottom: "1.5px solid black",
                         borderRadius: 0,
                         fontSize: "18px",
-                        fontWeight: 400,
+                        // fontWeight: 400,
+                        color : "#332b2b"
                       },
                     }}
                   />
@@ -616,10 +639,15 @@ export default function AddBills() {
               <h3>Items List</h3>
               <button
                 className={styles.iconButton}
+                style={{
+                  display : "flex",
+                  justifyContent : "center",
+                  alignItems : "center",
+                }}
                 disabled={!isTableValid()}
                 onClick={handleAddItem}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <FontAwesomeIcon icon={faPlus} style={{marginLeft : "0.8px"}} />
               </button>
             </div>
             <div>
@@ -636,6 +664,7 @@ export default function AddBills() {
                           onInputChange={(value, name) =>
                             tableInputChange(value, name, index)
                           }
+                          handleKeyPress={handleKeyPress}
                           onBlur={(e, name) => onBlur(e, name, index)}
                         />
                       );
@@ -690,7 +719,8 @@ export default function AddBills() {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory}>
+        <div className={styles.billHistory} style={{ marginRight : "15px"}}>
+         
           <ScrollTable
             thead={billingHistoryHeader}
             tbody={state.billingHistory}
@@ -737,6 +767,7 @@ export default function AddBills() {
             roundOff={state.roundOff}
             data={state}
             billedBy={auth.name}
+            type="NURSERY"
           />
         </div>
       </div>
@@ -751,6 +782,7 @@ export default function AddBills() {
         roundOff={state.roundOff}
         handlePrintClick={handleSubmit}
         billedBy={auth.name}
+        type="NURSERY"
       >
         {/* <Button
           type="primary"

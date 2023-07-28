@@ -192,7 +192,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
         const rowData = roleRows[role].map((ele) => {
             let value;
             if (ele.value === "createdAt" || ele.value === "expectedDeliveryDate") {
-                value = dayjs(get(order, `${ele.value}`, "")).format("YYYY-MM-DD");
+                value = dayjs(get(order, `${ele.value}`, "")).format("DD-MM-YYYY");
                 value = value === "Invalid Date" ? "---" : value;
             } else if (ele.value === "status") {
                 value = (
@@ -207,30 +207,39 @@ export const formatOrdersData = ({ data, role, onAction }) => {
                     </span>
                 );
             } else if (ele.value === "quantities") {
-                console.log("Order quat", order.quantity)
-                console.log("Arrived Quant", order.orderedQuantity)
+             
                 value =
-                    <>
+                    <div style={{ display : "flex", flexDirection : "column" , justifyContent : "space-between"}}>
                         <span>{`${order.requestedQuantity} (Req)`}
                         </span>
                         <br />
-                        <span>{`${order.orderedQuantity} (Ord)`}
-                        </span>
-                        <br />
                         <span style={{
-                            color : order.quantity !== order.orderedQuantity && "red",
+                            color : (order.requestedQuantity !== order.orderedQuantity && (order.status === "PLACED" || order.status === "VERIFIED")) && "#fc7617",
                             display : "flex",
                             justifyContent : "center",
                             alignItems  : "center",
+                            fontWeight : (order.requestedQuantity !== order.orderedQuantity && (order.status === "PLACED" || order.status === "VERIFIED")) ? "bold" : "normal",
+                        }} >
+                        <span> {`${order.orderedQuantity} (Ord)`} </span>
+                        { (order.requestedQuantity !== order.orderedQuantity && (order.status === "PLACED" || order.status === "VERIFIED")) && <img src={warning} style={{
+                            width : "15px",
+                            height : "15px",
+                        }} alt="warning" /> }  
+                        </span>                        <br />
+                        <span style={{
+                            color : (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") && "#fc7617",
+                            display : "flex",
+                            justifyContent : "center",
+                            alignItems  : "center",
+                            fontWeight : (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") ? "bold" : "normal",
                         }} >
                         <span>{`${order.quantity} (Arr)`}</span>
-                        {order.quantity !== order.orderedQuantity && <img src={warning} style={{
-                            width : "20px",
-                            height : "20px",
-                            
+                        { (order.quantity !== order.orderedQuantity && order.status === "VERIFIED") && <img src={warning} style={{
+                            width : "15px",
+                            height : "15px",
                         }} alt="warning" /> }
                         </span>
-                    </>
+                    </div>
 
 
             } else if (ele.value === "descriptionProc" || ele.value === "descriptionSales") {

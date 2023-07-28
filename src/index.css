@@ -1,21 +1,20 @@
 body {
- display: flex;
- min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 html {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 code {
-    font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
-input{
-    font-family: 'Montserrat', sans-serif;
-
+input {
+  font-family: "Montserrat", sans-serif;
 }
 a {
   text-decoration: none;

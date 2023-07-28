@@ -7,6 +7,7 @@ import {
   Dropdown,
   Modal,
   Search,
+  Spinner,
   Table,
 } from "../../components";
 import { getVariantsBody, initialCategory } from "./helper";
@@ -74,7 +75,7 @@ const AgriVariants = () => {
   const count = _.get(getCategoryCount, "data[0].count", 0);
 
   const searchHandler = debounce(async (query) => {
-    if (query.length >= 3) {
+    if (query.length >= 2) {
       setSearch(query);
     } else {
       setSearch("");
@@ -97,19 +98,17 @@ const AgriVariants = () => {
     navigate("../dashboard/agri-add-variants?editId=" + id);
   };
   const deleteClickHandler = (id) => {
-    console.log(id);
     setDeleteVariant({ opened: true, id });
   };
   const tableBody = useMemo(() => {
     return getVariantsBody(data, deleteClickHandler, editClickHandler);
   }, [JSON.stringify(data)]);
-  console.log(tableBody, "tab");
   return (
     <>
       <div className={Styles.agriContainer}>
         <div className={Styles.innerAgriContainer}>
           <div>
-            <BackButton navigateTo={"/authorised/dashboard"} />
+            <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
           </div>
           <div
             style={{
@@ -121,11 +120,12 @@ const AgriVariants = () => {
             <div className={Styles.wrapper}>
               <Search
                 value={searchInput}
-                title="Search for Agri Variants..."
+                title="Search Variant Name..."
                 onChange={onSearchInputHandler}
               />
               <div className={Styles.dropdownContainer}>
                 <Dropdown
+                  placeholder="Select Variant Type"
                   data={typeOptions}
                   value={selectedTypeOption}
                   onChange={(e) => setSelectedTypeOption(e)}
@@ -161,7 +161,11 @@ const AgriVariants = () => {
             </div>
           </div>
           <div className={Styles.variantsTableWrapper}>
-            <Table data={[...tableHeader, ...tableBody]} />
+            {
+              tableBody.length === 0 ? <Spinner /> : (
+                <Table data={[...tableHeader, ...tableBody]} />
+              )
+            }
           </div>
         </div>
       </div>
@@ -176,7 +180,6 @@ const AgriVariants = () => {
             setDeleteVariant({ opened: false });
           }}
           handleConfirm={async () => {
-            console.log("hello");
             await deleteAgriVariant({ id: deleteVariant.id });
             setDeleteVariant({ opened: false });
             refetch();

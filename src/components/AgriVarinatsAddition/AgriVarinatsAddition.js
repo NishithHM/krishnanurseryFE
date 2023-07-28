@@ -25,7 +25,7 @@ const AgriVarinatsAddition = ({
   isFormValid = () => null,
   value,
   allowNew,
-  setIsVariantAdded
+  setIsVariantAdded,
 }) => {
   const [{ variants }, setState] = useState(initialState);
   const location = useLocation();
@@ -34,6 +34,7 @@ const AgriVarinatsAddition = ({
     if (isPlaceOrder) {
       onChange({ variants: [...value] });
       setState({ variants: [...value] });
+      setIsVariantAdded(true);
     }
   }, []);
   const [getAgriVariantById] = useGetAgriVariantByIdMutation();
@@ -68,18 +69,18 @@ const AgriVarinatsAddition = ({
     isFormValid(
       isPlaceOrder
         ? variants.some(
-          (ele) =>
-            !ele.totalQuantity ||
-            ele.totalQuantity <= 0 ||
-            !ele.price ||
-            ele.price <= 0
-        )
+            (ele) =>
+              !ele.totalQuantity ||
+              ele.totalQuantity <= 0 ||
+              !ele.price ||
+              ele.price <= 0
+          )
         : variants.some((ele) => !ele.totalQuantity || ele.totalQuantity <= 0)
     );
   }, [JSON.stringify(variants)]);
 
   const onAddVariant = () => {
-    setIsVariantAdded(true)
+    setIsVariantAdded(true);
     const newVariants = cloneDeep(variants);
     newVariants.push(...cloneDeep(initialState.variants));
     setState((prev) => ({
@@ -89,7 +90,7 @@ const AgriVarinatsAddition = ({
   };
 
   const onDeleteVariant = (indexToRemove) => {
-    setIsVariantAdded(false)
+    setIsVariantAdded(false);
     setState((prev) => ({
       ...prev,
       variants: prev.variants.filter(
@@ -214,7 +215,7 @@ const AgriVarinatsAddition = ({
                             disabled
                             id="subTotal"
                             type="number"
-                            onChange={(e, id) => { }}
+                            onChange={(e, id) => {}}
                             title="Sub Total"
                             required
                             min={0}

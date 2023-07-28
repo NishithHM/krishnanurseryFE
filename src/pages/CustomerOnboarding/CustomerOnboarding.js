@@ -7,6 +7,7 @@ import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import { useGetCustomerOnboardingMutation } from "../../services/customer.service";
 import { Toaster } from "../../components";
 import { toast } from "react-toastify";
+import {MediaQuery, createStyles} from "@mantine/core"
 
 const CustomerOnboarding = () => {
   const defaultFormValues = {
@@ -19,6 +20,7 @@ const CustomerOnboarding = () => {
   const [formState, setFormState] = useState(defaultFormValues);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { data } = useGetAllCategoriesQuery({});
+
 
   const categoryOptions = data?.map((ele) => ele?.names?.en?.name);
   const [customer] = useGetCustomerOnboardingMutation();
@@ -99,7 +101,28 @@ const CustomerOnboarding = () => {
       toast.success("Thank You For Registering!!!");
     }
   };
+
+  const useStyles = createStyles((theme) => ({
+    label : {
+      fontSize: "20px",
+      marginBottom: "2px",
+      fontFamily: "Montserrat, sans-serif",
+
+      [`@media only screen and (min-width: ${320}px) and (max-device-width: ${425}px)`] : {
+         fontSize : "16px"
+      }
+    },
+    input: {
+      border: "none",
+      borderBottom: "1.5px solid black",
+      borderRadius: 0,
+      fontSize: "18px",
+      fontWeight: 400,
+    },
+  }));
+  const { classes } = useStyles();
   return (
+   
     <>
     <Header />
     <div className={styles.wrapper}>
@@ -130,7 +153,10 @@ const CustomerOnboarding = () => {
         />
         <div>
           <DatePicker
-            className={styles.dateText}
+            classNames={{
+              label : classes.label,
+              input : classes.input
+            }}
             placeholder="dd-mm-yyyy"
             label="Date Of Birth"
             inputFormat="DD/MM/YYYY"
@@ -141,20 +167,6 @@ const CustomerOnboarding = () => {
             onChange={dateChangeHandler}
             clearable={false}
             maxDate={new Date()}
-            styles={{
-              label: {
-                fontSize: "16px",
-                marginBottom: "2px",
-                fontFamily: "Montserrat, sans-serif",
-              },
-              input: {
-                border: "none",
-                borderBottom: "1.5px solid black",
-                borderRadius: 0,
-                fontSize: "18px",
-                fontWeight: 400,
-              },
-            }}
           />
           {formSubmitted && formState.dateOfBirth === "" && (
             <p style={{ color: "red", lineHeight: 0 }}>Select Date</p>

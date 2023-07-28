@@ -124,7 +124,6 @@ const Categories = () => {
     const res = await createCategory({
       body: obj,
     });
-    console.log(res);
     if (res.data) {
       toast.success("Category added Successfully!");
       setError("");
@@ -146,7 +145,6 @@ const Categories = () => {
       };
     });
   };
-  console.log(sort);
 
   return (
     <div className={styles.categoriesContainer}>

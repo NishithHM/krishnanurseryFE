@@ -5,6 +5,19 @@ import ScrollTable from "../Table/ScrollTable";
 import Button from "../Button";
 import dayjs from "dayjs";
 
+const billConfig = {
+  NURSERY:{
+    name:'Shree Krishna Nursery',
+    email:"shreekrishnanurserysmg@gmail.com",
+    phoneNumber:"81051-73777"
+  },
+  AGRI:{
+    name:'Agri Shopee',
+    email:'agrishopee@gmail.com',
+    phoneNumber:'81471-92555'
+  }
+}
+
 export const InvoicePreview = (props) => {
   const {
     showPreview,
@@ -13,6 +26,7 @@ export const InvoicePreview = (props) => {
     handlePrintClick,
     cartData,
     setInvoiceNumber,
+    type
   } = props;
 
   useEffect(() => {
@@ -55,6 +69,7 @@ export const InvoiceSection = (props) => {
     invoiceNumber,
     printEnabled,
     invoiceDetails,
+    type
   } = props;
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
@@ -109,6 +124,7 @@ export const InvoiceSection = (props) => {
     setCartList(newCartList);
   }, [cartData]);
 
+
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
@@ -120,14 +136,14 @@ export const InvoiceSection = (props) => {
         <div className={styles.companyDetails}>
           <div>Sold By</div>
           <div className={styles.addressDetails}>
-            <b>Shree Krishna Nursery</b>
+            <b>{billConfig[type].name}</b>
             <br></br>
             No.188, Near airport, Santhekadur post, 
             <br></br>
             Shivamogga - 577222
           </div>
-          <div><strong>Phone Number</strong> : 81051-73777</div>
-          <div><strong>Email </strong>: shreekrishnanurserysmg@gmail.com</div>
+          <div><strong>Phone Number</strong> : {billConfig[type].phoneNumber}</div>
+          <div><strong>Email </strong>: {billConfig[type].email} </div>
         </div>
 
         <div className={styles.clientDetails}>

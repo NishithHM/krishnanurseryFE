@@ -8,6 +8,7 @@ import {
   Input,
   Toaster,
   Modal,
+  Spinner,
 } from "../../components";
 import {
   useGetProcurementHistoryMutation,
@@ -39,7 +40,7 @@ const billingHistoryHeader = [
   { value: "Total Quantity", width: "10%" },
   { value: "Vendor Name", width: "15%" },
   { value: "Vendor Contact", width: "15%" },
-  { value: "Price Per Plant ₹", width: "15%" },
+  { value: "Price Per Product ₹", width: "15%" },
   { value: "Images", width: "10%" },
   { value: "Invoice", width: "10%" },
 ];
@@ -71,7 +72,7 @@ const AgriProcurement = () => {
         sortBy: "lastProcuredOn",
       },
       {
-        value: "Plant Name",
+        value: "Product Name",
         isSortable: isMinimumSelected ? false : true,
         sortBy: "plantName",
       },
@@ -112,6 +113,7 @@ const AgriProcurement = () => {
       const data = getProcurements.data;
       if (data.length > 0) {
         onDetailClick(data[0]._id);
+        setFirstLoad(false)
       }
     }
   }, [getProcurements]);
@@ -200,7 +202,6 @@ const AgriProcurement = () => {
       id: id,
       pageNumber: page,
     };
-    // console.log(data);
     const res = await getProcurementHistory(data);
 
     if (res) {
@@ -218,6 +219,7 @@ const AgriProcurement = () => {
   };
 
   const onSubmitHandler = async (e) => {
+    if(e.start_date !== null && e.end_date  !== null) {
     const res = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
@@ -241,6 +243,12 @@ const AgriProcurement = () => {
       toast.error("Unable to Add...");
       setError(res?.error?.data.error);
     }
+   }else {
+    const procurementData = getProcurements.data.find((ele) => ele._id === id);
+    const history = procurementData?.procurementHistory;
+    const body = getTableBody(history, setImageurlsHandler);
+    setProcurementListHistory(body);
+   } 
   };
 
   const onQuantityChangeHandler = (e) => {
@@ -324,12 +332,12 @@ const AgriProcurement = () => {
       <div className={styles.container}>
         <div className={styles.innerContainer}>
           <div>
-            <BackButton navigateTo={"/authorised/dashboard"} />
+            <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
           </div>
           <div className={styles.searchContainer}>
             <Search
               value={searchInput}
-              title="Search for a Plant..."
+              title="Search for a Product..."
               onChange={handleSearchInputChange}
             />
             {countLow > 0 && (
@@ -367,10 +375,14 @@ const AgriProcurement = () => {
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            <Table
-              data={[...tableHeader, ...tableBody]}
-              onSortBy={onSortClickHandler}
-            />
+            {
+              tableBody.length === 0 ? <Spinner /> : (
+                <Table
+                  data={[...tableHeader, ...tableBody]}
+                  onSortBy={onSortClickHandler}
+                />
+              )
+            }
           </div>
         </div>
         {id && (
@@ -426,10 +438,16 @@ const AgriProcurement = () => {
               )}
               {procurementListHistory?.length !== 0 ? (
                 <div>
-                  <ScrollTable
-                    thead={billingHistoryHeader}
-                    tbody={procurementListHistory}
-                  />
+                  {
+                    procurementListHistory.length === 0 ? (
+                      <Spinner />
+                    ) : (
+                      <ScrollTable
+                       thead={billingHistoryHeader}
+                       tbody={procurementListHistory}
+                      />
+                    )
+                  }
                 </div>
               ) : (
                 id && (
@@ -479,13 +497,13 @@ const AgriProcurement = () => {
                           !quantity ||
                           !minimumPrice ||
                           !maximumPrice ||
-                          minimumPrice > maximumPrice
+                          Number(minimumPrice) > Number(maximumPrice)
                         }
                         loading={quanityLoaders}
                       />
                     </div>
                   </div>
-                  {minimumPrice > maximumPrice && (
+                  {Number(minimumPrice) > Number(maximumPrice) && (
                         <span className={styles.errorText}>
                           Minimum price cannot be greater than maximum price.
                         </span>

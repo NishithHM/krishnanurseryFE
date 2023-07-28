@@ -99,6 +99,7 @@ const ProcurementList = () => {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const [plantImages, setPlantImages] = useState([]);
+  const [imageLoader,setImageLoader] = useState(false)
 
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -114,7 +115,6 @@ const ProcurementList = () => {
     if (getProcurements.status === "fulfilled" && firstLoad) {
       const data = getProcurements.data;
       if (data.length > 0) {
-        console.log(data[0]);
         onDetailClick(data[0]._id);
         setFirstLoad(false)
       }
@@ -154,7 +154,6 @@ const ProcurementList = () => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
-    console.log(procurementData);
     setQuantity(procurementData?.minimumQuantity);
     if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
@@ -206,7 +205,6 @@ const ProcurementList = () => {
       id: id,
       pageNumber: page,
     };
-    // console.log(data);
     const res = await getProcurementHistory(data);
 
     if (res) {
@@ -224,7 +222,7 @@ const ProcurementList = () => {
   };
 
   const onSubmitHandler = async (e) => {
-    console.log(e);
+    if(e.start_date !== null && e.end_date !== null) {
     const res = await getProcurementHistory({
       startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
       endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
@@ -248,6 +246,13 @@ const ProcurementList = () => {
       toast.error("Unable to Add...");
       setError(res?.error?.data.error);
     }
+   }
+    else {
+      const procurementData = getProcurements.data.find((ele) => ele._id === id);
+      const history = procurementData?.procurementHistory;
+      const body = getTableBody(history, setImageurlsHandler);
+      setProcurementListHistory(body);
+   }
   };
 
   const onVariantInputChange = ({ val, cIndex, rIndex }) => {
@@ -278,8 +283,6 @@ const ProcurementList = () => {
       }, {});
     });
     
-    console.log(variants, "here");
-    console.log(variantRows, "here");
     const res = await addProcurementVariants({
       id: id,
       body: { variants },
@@ -333,8 +336,8 @@ const ProcurementList = () => {
   const fetchAndDisplayImages = (urls) => {
     const promises = [];
     const images = [];
-    console.log(urls);
     if (urls.length === 0) return toast.error("No Images Found!");
+    setImageLoader(true)
     urls.forEach((url) => {
       const promise = fetch(
         `${process.env.REACT_APP_BASE_URL}/api/download?path=${url}`,
@@ -351,12 +354,14 @@ const ProcurementList = () => {
           img.src = imageUrl;
           images.push(imageUrl);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+           setImageLoader(false)
+        });
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      console.log(images);
       setPlantImages(images);
+      setImageLoader(false)
     });
   };
 
@@ -600,7 +605,12 @@ const ProcurementList = () => {
           </div>
         )}
       </div>
-      <Modal isOpen={plantImages.length > 0}>
+     {
+      imageLoader ? 
+         <div style={{position : "absolute", top : "50%", left : "49%"}}>
+            <Spinner />
+         </div> : 
+          <Modal isOpen={plantImages.length > 0}>
         <div
           style={{
             border: "1px solid #e2e2e2",
@@ -641,16 +651,24 @@ const ProcurementList = () => {
               flexWrap: "wrap",
             }}
           >
-            {plantImages.map((img) => {
+          {
+           plantImages.map((img) => {
               return (
                 <>
-                  <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
+                  {
+                    imageLoader ? <Spinner /> :  (
+                      <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
+                    )
+                  }
                 </>
               );
-            })}
+            })
+          }
           </div>
         </div>
       </Modal>
+      
+     }
     </>
   );
 };

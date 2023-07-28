@@ -100,7 +100,6 @@ const AddNewVariants = () => {
     const newtypeOptions = optionsType.filter(
       (opt) => options.findIndex((ele) => ele.optionName === opt) === -1
     );
-    // console.log(newtypeOptions);
     setTypeOptions(newtypeOptions);
   }, [JSON.stringify(options), JSON.stringify(optionsType)]);
 

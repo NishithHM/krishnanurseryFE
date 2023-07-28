@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
   Button,
@@ -57,9 +57,10 @@ const getRoundedDates = () => {
   return { start_date: formattedRoundedDate, end_date: formattedDate };
 };
 
-const Bills = () => {
+const Bills = ({type}) => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  const location = useLocation();
 
   const [filterDates, setFilterDates] = useState({
     start_date: null,
@@ -76,7 +77,6 @@ const Bills = () => {
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
   useEffect(() => {
-    console.log(filterDates);
   }, [filterDates]);
 
   const [searchParams] = useSearchParams();
@@ -95,13 +95,14 @@ const Bills = () => {
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     pageNumber: page,
-
     sortBy: sort.sortBy,
     sortType: sort.sortType === "asc" ? 1 : -1,
+    type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
     ...dates,
   });
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     search: searchQuery,
+    type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
     ...dates,
   });
 
@@ -117,7 +118,6 @@ const Bills = () => {
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
               setShowPreview(true);
-              console.log(purchase);
               setInvoiceDetail(purchase);
             }}
           >
@@ -144,13 +144,12 @@ const Bills = () => {
   };
 
   const searchHandler = debounce(async (query) => {
-    if (query.length >= 3) {
+    if (query?.length >= 3) {
       const res = await searchPurchase({
         search: query,
         ...dates,
       });
       setSearchQuery(query);
-      console.log(res);
       const purchases = formatPurchasesData(res.data);
       setData(purchases);
     } else {
@@ -201,7 +200,6 @@ const Bills = () => {
   ];
 
   const handleFilterChange = (filterDates) => {
-    console.log(filterDates);
     setFilterDates(filterDates);
   };
 
@@ -214,15 +212,15 @@ const Bills = () => {
   });
 
   const sortData = (sortVal) => {
-    console.log(sortVal);
     setSort((prev) => ({
       sortBy: sortVal,
       sortType: prev.sortType === "asc" ? "desc" : "asc",
     }));
   };
   const formatInvoiceItems = (data) => {
+    console.log(data)
     return data.map((item) => ({
-      procurementLabel: `${item.procurementName.en.name}(${item.variant.en.name})`,
+      procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.variant?.en?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
       mrp: item.mrp
@@ -233,7 +231,7 @@ const Bills = () => {
   return (
     <div>
       <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
+        <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
       </div>
       <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
       <div className={styles.wrapper}>
@@ -311,6 +309,7 @@ const Bills = () => {
                 billedBy: invoiceDetail.billedBy.name,
                 soldBy: invoiceDetail.soldBy.name,
               }}
+              type={type}
             />
           </div>
         </div>
@@ -337,6 +336,7 @@ const Bills = () => {
           invoiceNumber={invoiceDetail.invoiceId}
           setInvoiceNumber={() => {}}
           handlePrintClick={handlePrint}
+          type={type}
         />
       )}
     </div>

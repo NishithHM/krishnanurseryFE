@@ -58,7 +58,6 @@ const Test = () => {
   ];
   const [isSkip, setSkip] = useState(true);
   const res = useGetAllProcurementsQuery({}, { skip: isSkip });
-  console.log(res);
   const options = [
     { value: "id1", label: "option1" },
     { value: "id2", label: "option2" },
@@ -66,11 +65,9 @@ const Test = () => {
 
   const onChangeHandler = (value) => {
     // update the state as required
-    console.log(value);
   };
   const onSubmitHandler = (value) => {
     // update the state as required
-    console.log(value);
   };
   return (
     <>
@@ -147,7 +144,7 @@ const Test = () => {
         <div></div>
       </div>
       <div>
-        <Table data={tableData} onSortBy={(sort) => console.log(sort)} />
+        <Table data={tableData} onSortBy={(sort) => {}} />
       </div>
     </>
   );

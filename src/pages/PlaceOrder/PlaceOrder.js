@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import dayjs from "dayjs";
 import { useGetInvoiceMutation } from "../../services/procurement.services";
+import Datepicker from "../../components/Datepicker/Datepicker";
 
 /* /api/procurements/vendor-orders/:id GET --> [1235353, 345345455, 34534354]  ---> [{label:1235353, value: 1235353}]
  */
@@ -106,6 +107,14 @@ export const PlaceOrder = () => {
       };
     });
   };
+  const dateChangeHandler = (event) => {
+    setState((prev) => {
+      return {
+        ...prev,
+        expectedDeliveryDate: event,
+      };
+    });
+  };
 
   const inputChangeHandlerNumber = (event, id) => {
     setState((prev) => {
@@ -117,7 +126,6 @@ export const PlaceOrder = () => {
   };
 
   const dropDownChangeHandler = (event, id) => {
-    console.log(event);
     setState((prev) => {
       return {
         ...prev,
@@ -185,7 +193,7 @@ export const PlaceOrder = () => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
   }, [state.addVendorName?.value]);
@@ -193,9 +201,7 @@ export const PlaceOrder = () => {
   const onError = (error) => {
     toast.error(error);
   };
-  console.log(state.addPlantCategory);
   const onSubmitHandler = async () => {
-    // console.log(state);
 
     const body = {
       nameInEnglish: state.addPlantName?.label,
@@ -211,7 +217,6 @@ export const PlaceOrder = () => {
       currentPaidAmount: state.currentPaidAmount,
       orderId: state.orderId?.value,
     };
-    console.log(body, "body");
     if (search.get("orderId")) {
       body.id = search.get("orderId");
     }
@@ -229,7 +234,6 @@ export const PlaceOrder = () => {
 
     const response = await PlaceOrder({ body });
     if (response["error"] !== undefined) {
-      console.log(response);
       return toast.error(response.error.data.error);
     }
     toast.success(response.data.message);
@@ -243,7 +247,6 @@ export const PlaceOrder = () => {
       getProcurement({ id: procId })
         .then((res) => {
           const data = res.data;
-          console.log(data);
           const plantData = {
             label: data?.names?.en?.name,
             value: data?._id,
@@ -255,7 +258,6 @@ export const PlaceOrder = () => {
           }));
         })
         .catch((err) => {
-          console.log(err);
         });
     }
   }, [procId]);
@@ -275,7 +277,7 @@ export const PlaceOrder = () => {
     isEmpty(state.totalPrice.toString()) ||
     isEmpty(state.totalQuantity.toString()) ||
     isEmpty(state.description) ||
-    isEmpty(state.expectedDeliveryDate);
+    isEmpty(state.expectedDeliveryDate?.toString());
 
   const isSubmitDisabledWithInHouse =
     isEmpty(state.addPlantName) ||
@@ -287,7 +289,7 @@ export const PlaceOrder = () => {
     if (isInhouseOrder)
       setState((prev) => ({
         ...prev,
-        expectedDeliveryDate: dayjs().format("YYYY-MM-DD"),
+        expectedDeliveryDate: dayjs().format("DD-MM-YYYY"),
       }));
   }, [isInhouseOrder]);
 
@@ -298,20 +300,16 @@ export const PlaceOrder = () => {
           id: state.orderId?.value,
           page: "placeOrder",
         });
-        console.log(data);
         setState((prev) => ({
           ...prev,
           orderDetails: data,
-          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).format(
-            "YYYY-MM-DD"
-          ),
+          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).toDate(),
           disableExpectedDate: data?.expectedDeliveryDate ? true : false,
         }));
       }
     };
     getOrderDetails();
   }, [state.orderId?.value]);
-  console.log(state.addPlantCategory);
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -330,7 +328,6 @@ export const PlaceOrder = () => {
             onChange={dropDownChangeHandler}
             value={state.addPlantName}
             canCreate={true}
-            minInputToFireApi={3}
             required
             disabled={isFromAccept}
           />
@@ -371,7 +368,6 @@ export const PlaceOrder = () => {
             disabled={isInhouseOrder}
             canCreate
             required
-            minInputToFireApi={3}
           />
           <Input
             value={state.addVendorContact}
@@ -489,17 +485,14 @@ export const PlaceOrder = () => {
               />
             </div>
             <div className={styles.secondinputdiv}>
-              <Input
+              <Datepicker
+                label={"Expected Delivery Date"}
                 value={state.expectedDeliveryDate}
-                id="expectedDeliveryDate"
-                type="date"
-                onChange={inputChangeHandler}
-                title="Expected Delivery Date"
-                min={dayjs().format("YYYY-MM-DD")}
+                onChange={dateChangeHandler}
+                minDate={new Date()}
+                clearable={true}
+                isRequired={isInhouseOrder ? !isInhouseOrder : true}
                 disabled={isInhouseOrder || state.disableExpectedDate}
-                {...(isInhouseOrder
-                  ? { required: !isInhouseOrder }
-                  : { required: true })}
               />
             </div>
           </div>

@@ -41,11 +41,10 @@ const Payments = () => {
   const [mutate] = useCreatePaymentMutation();
 
   const handleViewBill = (id) => {
-    console.log(id);
+  
   };
 
   const formatPaymentsData = (data) => {
-    console.log(data);
     const formatted = data.map((item) => {
       const name = { value: item.name };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
@@ -53,11 +52,13 @@ const Payments = () => {
         value: item.amount,
       };
       const invoiceId = {
-        value: item.invoiceId || '---',
+        value: item.invoiceId || "---",
       };
       const action = {
         value:
-          item.invoiceId && item.type === "BROKER" && user_role !== "procurement" ? (
+          item.invoiceId &&
+          item.type === "BROKER" &&
+          user_role !== "procurement" ? (
             <Link
               to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
               style={{
@@ -73,7 +74,7 @@ const Payments = () => {
           ),
       };
 
-      const data = [name, createdAt, amount,invoiceId, action, ];
+      const data = [name, createdAt, amount, invoiceId, action];
       return data;
     });
 
@@ -81,7 +82,6 @@ const Payments = () => {
   };
 
   const searchHandler = debounce(async (query) => {
-    console.log("search triggered", query);
     if (query.length >= 3) {
       const res = await searchPayment(query);
       const payments = formatPaymentsData(res.data);
@@ -96,12 +96,10 @@ const Payments = () => {
 
   useEffect(() => {
     if (paymentsCountReq.status !== "fulfilled") return;
-    console.log(paymentsCountReq);
     setUsersCount(paymentsCountReq.data[0].count || 0);
   }, [paymentsCountReq]);
 
   useEffect(() => {
-    console.log(paymentsData);
     if (paymentsData.status === "fulfilled") {
       const payments = formatPaymentsData(paymentsData.data);
       setData(payments);
@@ -125,9 +123,9 @@ const Payments = () => {
       isSortable: false,
     },
     {
-        value: "Bill Number",
-        isSortable: false,
-      },
+      value: "Bill Number",
+      isSortable: false,
+    },
     {
       value: "Action",
       isSortable: false,
@@ -152,10 +150,8 @@ const Payments = () => {
     filtered_payment_types = [PAYMENT_TYPES[1], PAYMENT_TYPES[2]];
   }
 
-  // console.log(values);
 
   const handleCreatePayment = async () => {
-    console.log(newPayment);
     const data = newPayment;
 
     if (newPayment.type.value === "BROKER") {
@@ -175,11 +171,9 @@ const Payments = () => {
         invoiceId: data.invoiceId,
         brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
-        brokerId: data.broker.value
+        brokerId: data.broker.value || null,
       };
-      if(data?.broker?.__isNew__){
-        delete res.brokerId
-      }
+
       const resp = await mutate(res);
       if (resp["error"] !== undefined) {
         return toast.error(resp.error.data.message);
@@ -302,7 +296,6 @@ const Payments = () => {
             value={newPayment.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
-            {console.log(newPayment)}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
@@ -312,7 +305,6 @@ const Payments = () => {
                 apiDataPath={{ label: "name", value: "_id" }}
                 title="Broker Name"
                 onChange={(e) => {
-                  console.log(e);
                   if (e?.meta?.contact) {
                     setNewPayment((prev) => ({
                       ...prev,

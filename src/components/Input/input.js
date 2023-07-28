@@ -25,8 +25,6 @@ const Input = (props) => {
   } = props;
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
-
-  console.log(value);
   let options = {};
 
   if (type === "number") {
@@ -53,7 +51,9 @@ const Input = (props) => {
   return (
     <div>
       <div className={styles.label}>
-        <label>{title}</label>
+        <label style={{
+          fontSize : "15px"
+        }}>{title}</label>
         {required && (
           <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
         )}
