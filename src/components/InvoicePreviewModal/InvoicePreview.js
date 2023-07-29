@@ -9,12 +9,14 @@ const billConfig = {
   NURSERY:{
     name:'Shree Krishna Nursery',
     email:"shreekrishnanurserysmg@gmail.com",
-    phoneNumber:"81051-73777"
+    phoneNumber:"81051-73777",
+    GSTIN: "29ACCFA0434C1Z0",
   },
   AGRI:{
     name:'Agri Shopee',
     email:'agrishopee@gmail.com',
-    phoneNumber:'81471-92555'
+    phoneNumber:'81471-92555',
+    GSTIN: "29ACCFA0434C1Z0",
   }
 }
 
@@ -144,6 +146,8 @@ export const InvoiceSection = (props) => {
           </div>
           <div><strong>Phone Number</strong> : {billConfig[type].phoneNumber}</div>
           <div><strong>Email </strong>: {billConfig[type].email} </div>
+          <div><strong>GSTIN </strong>: {billConfig[type].GSTIN} </div>
+          
         </div>
 
         <div className={styles.clientDetails}>
