@@ -172,7 +172,7 @@ const Payments = () => {
       const res = {
         type: data.type.value,
         amount: data.amount,
-        invoiceId: data.invoiceId,
+        invoiceId: String(data.invoiceId).trim(),
         brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
         brokerId: data.broker.value

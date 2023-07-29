@@ -84,6 +84,7 @@ export default function AgriAddBills() {
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
+  const [isCheckoutDone, setIsCheckoutDone] = useState(false);
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -118,8 +119,7 @@ export default function AgriAddBills() {
 
   useEffect(() => {
     if (!needsUpdate) return;
-
-    console.log("render");
+    if (isCheckoutDone) setIsCheckoutDone(false);
 
     const cartItems = cartData.variants;
     const updatedItems = [];
@@ -141,9 +141,14 @@ export default function AgriAddBills() {
             type: item.type.label,
           };
           const productDetail = await getProductDetail({ productData });
+
+          item.isFetched = true;
+          item.isTouched = false;
+
           if (productDetail.error) {
             setState((prev) => ({
               ...prev,
+              priceError: { isExist: true, error: "Product Search Not Found!" },
               errorFields: ["Invalid Product Details"],
             }));
             return;
@@ -151,11 +156,18 @@ export default function AgriAddBills() {
           if (!productDetail.data) {
             setState((prev) => ({
               ...prev,
+              priceError: { isExist: true, error: "Product Search Not Found!" },
               errorFields: ["Invalid Product Details"],
             }));
             return;
           }
-
+          if (state.priceError.isExist) {
+            setState((prev) => ({
+              ...prev,
+              priceError: { isExist: false, error: "" },
+              errorFields: [],
+            }));
+          }
           item.price = productDetail?.data?.maxPrice || 0;
           item.minPrice = productDetail?.data?.minPrice || 0;
 
@@ -163,8 +175,6 @@ export default function AgriAddBills() {
 
           item.remainingQuantity = productDetail?.data?.remainingQuantity || 0;
 
-          item.isFetched = true;
-          item.isTouched = false;
           const data = { ...item, ...productDetail.data };
           updatedItems.push(data);
         }
@@ -516,6 +526,7 @@ export default function AgriAddBills() {
         checkOutDone: true,
       }));
       toast.success("Checkout is successful!");
+      setIsCheckoutDone(true);
     }
   };
 
@@ -610,7 +621,7 @@ export default function AgriAddBills() {
   };
 
   const shouldSubmitDisable = () => {
-    if (state.checkOutDone && !state.submitError.isExist) {
+    if (state.checkOutDone && !state.submitError.isExist && isCheckoutDone) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -763,7 +774,9 @@ export default function AgriAddBills() {
                   disabled={
                     cartData.variants.some(
                       (ele) => !ele.totalQuantity || ele.totalQuantity <= 0
-                    ) || cartData.variants.length === 0 || state.errorFields.length > 0
+                    ) ||
+                    cartData.variants.length === 0 ||
+                    state.errorFields.length > 0
                   }
                   loading={checkOutLoading}
                 />

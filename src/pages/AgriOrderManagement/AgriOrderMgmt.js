@@ -206,7 +206,7 @@ const AgriOrderMgmt = () => {
 
   const onPlaceOrder = () => {
     navigate(addLink[user.role], {
-      state: { placeOrder: user.role === 'procurement', data: selectedOrder },
+      state: { placeOrder: user.role === "procurement", data: selectedOrder },
     });
   };
 
@@ -238,7 +238,7 @@ const AgriOrderMgmt = () => {
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <Filters
-          config={{ isVendor: true, orderStatus: true, vendorType:'AGRI' }}
+          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI" }}
           onSubmit={handleFilterChange}
         />
         <div className={styles.wrapper}>
@@ -363,9 +363,7 @@ const AgriOrderMgmt = () => {
             setPlantImages([]);
           }}
           handleConfirm={async () => {
-            if (plantImages.length === 0)
-              return toast.error("Select Plant Image");
-            if (verifyOrder.quantity <= 0)
+            if (verifyOrder.quantity < 0)
               return toast.error("Quantity cannot be less than one.");
 
             const data = new FormData();
