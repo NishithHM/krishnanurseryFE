@@ -80,7 +80,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
-      title: "Under Maintainence",
+      title: "Under Maintenance",
       tile_img: maintenanceImg,
       path: "under-maintainence",
       allowed: [USER_ROLES.sales, USER_ROLES.admin],
@@ -102,7 +102,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
-      title: "Procurements",
+      title: "Procurment",
       tile_img: produrementImg,
       path: "agri-add-procurements",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],
