@@ -70,6 +70,7 @@ export default function AddBills() {
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedTab,setSelectedTab] = useState("Nursery")
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -133,7 +134,7 @@ export default function AddBills() {
 
   const fetchCustomerInfo = async () => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
-
+    // console.log("by number", customerDetails)
     if (customerDetails.error) {
       setState((prev) => ({
         ...prev,
@@ -559,6 +560,33 @@ export default function AddBills() {
       }
   }
 
+
+const formatedBillHistory = (prev) => {
+  if(selectedTab === "Agri") {
+    const newArray = prev.filter((curr, i) => {
+      let pr = curr[0];
+      if(pr.value.substring(pr.value.length-2) === "()"){
+      return true; 
+      }else {
+        return false;
+      }
+    })
+    return newArray;
+  }else {
+    const newArray = prev.filter((curr, i) => {
+      let pr = curr[0];
+      if(pr.value.substring(pr.value.length-2) !== "()"){
+      return true; 
+      }else {
+        return false;
+      }
+    })
+    return newArray;
+  }
+}
+
+  // console.log("state", state.billingHistory)
+
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -720,10 +748,57 @@ export default function AddBills() {
           </div>
         </div>
         <div className={styles.billHistory} style={{ marginRight : "15px"}}>
-         
+          <div style={{
+            display : "flex",
+            justifyContent : "space-around",
+            alignItems: "center"
+          }}>
+              <div style={{
+                width : "50%",
+                display : "flex",
+                flexDirection : "column",
+                alignItems : "center",
+                justifyContent : "center",
+              }}>
+                <p onClick={() => setSelectedTab("Nursery")}>
+                  Nursery
+                </p>
+                {
+                  selectedTab === "Nursery" && (
+                    <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                  )
+                }
+              </div>
+              <div style={{
+                width : "50%",
+                display : "flex",
+                flexDirection : "column",
+                alignItems : "center",
+                justifyContent : "center",
+              }}>
+                <p onClick={() => setSelectedTab("Agri")}>
+                  Agri
+                </p>
+              {
+                selectedTab === "Agri" && (
+                  <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                )
+              }
+              </div>
+          </div>
           <ScrollTable
             thead={billingHistoryHeader}
-            tbody={state.billingHistory}
+            tbody={formatedBillHistory(state.billingHistory)}
           />
         </div>
       </div>
