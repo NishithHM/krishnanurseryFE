@@ -258,10 +258,12 @@ export default function AgriAddBills() {
           if (item.procurementName?.ka?.name) {
             val.push({
               value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+              type : "Nursery"
             });
           } else {
             val.push({
               value: `${item.procurementName.en.name}`,
+              type:  "Agri"
             });
           }
 
@@ -450,7 +452,7 @@ export default function AgriAddBills() {
     if(selectedTab === "Agri") {
       const newArray = prev.filter((curr, i) => {
         let pr = curr[0];
-        if(pr.value.substring(pr.value.length-2) === "()"){
+        if(pr.type=== "Agri"){
         return true; 
         }else {
           return false;
@@ -837,19 +839,13 @@ export default function AgriAddBills() {
           </div>
         </div>
         <div className={styles.billHistory} style={{marginRight : "10px"}}>
-        <div style={{
-            display : "flex",
-            justifyContent : "space-around",
-            alignItems: "center"
-          }}>
-              <div style={{
-                width : "50%",
-                display : "flex",
-                flexDirection : "column",
-                alignItems : "center",
-                justifyContent : "center",
-              }}>
-               <p onClick={() => setSelectedTab("Agri")}>
+        <div className={styles.historyTabContainer}>
+              <div className={styles.singleTab}>
+               <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Agri")}>
                   Agri
                 </p>
                 {
@@ -863,14 +859,13 @@ export default function AgriAddBills() {
                   )
                 }
               </div>
-              <div style={{
-                width : "50%",
-                display : "flex",
-                flexDirection : "column",
-                alignItems : "center",
-                justifyContent : "center",
-              }}>
-                 <p onClick={() => setSelectedTab("Nursery")}>
+              <div className={styles.singleTab}>
+                 <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }}
+                  onClick={() => setSelectedTab("Nursery")}>
                   Nursery
                 </p>
               {
