@@ -366,9 +366,7 @@ const AgriOrderMgmt = () => {
             setPlantImages([]);
           }}
           handleConfirm={async () => {
-            if (plantImages.length === 0)
-              return toast.error("Select Plant Image");
-            if (verifyOrder.quantity <= 0)
+            if (verifyOrder.quantity < 0)
               return toast.error("Quantity cannot be less than one.");
 
             const data = new FormData();
