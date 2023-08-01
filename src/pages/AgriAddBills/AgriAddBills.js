@@ -87,6 +87,7 @@ export default function AgriAddBills() {
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
+  const [selectedTab,setSelectedTab] = useState("Agri")
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] =
@@ -444,6 +445,30 @@ export default function AgriAddBills() {
       priceError: { error: "", isExist: false },
     }));
   };
+
+  const formatedBillHistory = (prev) => {
+    if(selectedTab === "Agri") {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if(pr.value.substring(pr.value.length-2) === "()"){
+        return true; 
+        }else {
+          return false;
+        }
+      })
+      return newArray;
+    }else {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if(pr.value.substring(pr.value.length-2) !== "()"){
+        return true; 
+        }else {
+          return false;
+        }
+      })
+      return newArray;
+    }
+  }
 
   const handleCheckout = async () => {
     const items = [];
@@ -812,9 +837,57 @@ export default function AgriAddBills() {
           </div>
         </div>
         <div className={styles.billHistory} style={{marginRight : "10px"}}>
+        <div style={{
+            display : "flex",
+            justifyContent : "space-around",
+            alignItems: "center"
+          }}>
+              <div style={{
+                width : "50%",
+                display : "flex",
+                flexDirection : "column",
+                alignItems : "center",
+                justifyContent : "center",
+              }}>
+               <p onClick={() => setSelectedTab("Agri")}>
+                  Agri
+                </p>
+                {
+                  selectedTab === "Agri" && (
+                    <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                  )
+                }
+              </div>
+              <div style={{
+                width : "50%",
+                display : "flex",
+                flexDirection : "column",
+                alignItems : "center",
+                justifyContent : "center",
+              }}>
+                 <p onClick={() => setSelectedTab("Nursery")}>
+                  Nursery
+                </p>
+              {
+                selectedTab === "Nursery" && (
+                  <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                )
+              }
+              </div>
+          </div>
           <ScrollTable
             thead={billingHistoryHeader}
-            tbody={state.billingHistory}
+            tbody={formatedBillHistory(state.billingHistory)}
           />
         </div>
       </div>

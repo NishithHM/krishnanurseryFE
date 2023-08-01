@@ -201,7 +201,7 @@ const Dropdown = ({
           placeholder={placeholder}
           styles={DropdownStyles}
           isDisabled={disabled}
-          menuPosition="fixed"
+          menuPosition={ title === "Payment Type" ? "absolute"  : "fixed"}
         />
         {error && (
           <div className={styles.errortext}>
