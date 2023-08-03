@@ -607,7 +607,6 @@ const formatedBillHistory = (prev) => {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <>
                 <Input
                   value={state.customerNumber}
                   id="customerNumber"
@@ -627,8 +626,19 @@ const formatedBillHistory = (prev) => {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-              </>
-              <>
+               {
+                state.showDOB && (
+                  <Input
+                  value={"sample"}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                )
+               }
+            
                 {state.showDOB && (
                   <DatePicker
                     defaultValue={defaultDate}
@@ -644,6 +654,7 @@ const formatedBillHistory = (prev) => {
                     clearable={false}
                     styles={{
                       label: {
+                        width : "60%",
                         fontSize: "18px",
                         marginBottom: "2px",
                         fontFamily: "sans-serif",
@@ -651,6 +662,7 @@ const formatedBillHistory = (prev) => {
                       },
                       input: {
                         border: "none",
+                        width : "60%",
                         borderBottom: "1.5px solid black",
                         borderRadius: 0,
                         fontSize: "18px",
@@ -660,7 +672,7 @@ const formatedBillHistory = (prev) => {
                     }}
                   />
                 )}
-              </>
+                
             </div>
           </div>
           <div className={styles.itemList}>

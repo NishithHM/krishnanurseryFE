@@ -48,9 +48,9 @@
 .formWrapper {
   display: flex;
   justify-content: flex-start;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   max-width: 100%;
-  gap: 10px;
+  /* gap: 5px; */
   padding: 0 10px;
   /* align-items: flex-end; */
 }
