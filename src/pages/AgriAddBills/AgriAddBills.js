@@ -55,6 +55,7 @@ export default function AgriAddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
+    customerAddress:  "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -685,7 +686,6 @@ export default function AgriAddBills() {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <>
                 <Input
                   value={state.customerNumber}
                   id="customerNumber"
@@ -705,8 +705,20 @@ export default function AgriAddBills() {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-              </>
-              <>
+                {
+                state.showDOB && (
+                  <Input
+                  value={state.customerAddress}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                )
+               }
+              
+              
                 {state.showDOB && (
                   <DatePicker
                     defaultValue={defaultDate}
@@ -737,7 +749,7 @@ export default function AgriAddBills() {
                     }}
                   />
                 )}
-              </>
+              
             </div>
           </div>
           <div className={styles.itemList}>

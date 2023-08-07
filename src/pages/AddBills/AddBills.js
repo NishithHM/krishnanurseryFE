@@ -48,6 +48,7 @@ export default function AddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
+    customerAddress : "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -629,7 +630,7 @@ const formatedBillHistory = (prev) => {
                {
                 state.showDOB && (
                   <Input
-                  value={"sample"}
+                  value={state.customerAddress}
                   id="customerAddress"
                   type="text"
                   title="Customer Address:"
