@@ -73,10 +73,10 @@ export const billsApi = createApi({
         providesTags: ["purchaseHistory"],
       }),
       searchPurchase: builder.mutation({
-        query: ({ search = null, startDate, endDate }) => ({
+        query: ({ search = null, startDate, endDate, type }) => ({
           url: "/history",
           method: "GET",
-          params: { search, startDate, endDate },
+          params: { search, startDate, endDate, type },
         }),
         invalidatesTags: ["purchaseHistory"],
       }),
