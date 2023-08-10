@@ -147,6 +147,7 @@ const Bills = ({type}) => {
     if (query?.length >= 3) {
       const res = await searchPurchase({
         search: query,
+        type,
         ...dates,
       });
       setSearchQuery(query);
