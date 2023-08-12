@@ -16,7 +16,7 @@ import {
   useGetAgriOptionValuesMutation,
   useGetAgriVariantsQuery,
 } from "../../services/agrivariants.services";
-import _, { debounce } from "lodash";
+import _, { debounce, get } from "lodash";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -57,10 +57,15 @@ const AgriVariants = () => {
 
   const [getOptionValues] = useGetAgriOptionValuesMutation();
   const [deleteAgriVariant] = useDeleteAgriVariantByIdMutation();
+  const [totalCount,setTotalCount] = useState(0)
+  
 
   const getValues = async () => {
     const res = await getOptionValues({ type: "type" });
     const options = res.data.map((e) => ({ label: e, value: e }));
+    const count = await getCategoryCount.data.length;
+    setTotalCount(count)
+    console.log("count", count)
     setTypeOptions(options);
     // setSelectedTypeOption(options[0]);
   };
@@ -72,7 +77,10 @@ const AgriVariants = () => {
     refetch();
   }, [selectedTypeOption]);
 
-  const count = _.get(getCategoryCount, "data[0].count", 0);
+  // const count = get(getCategoryCount, "data[0].count", 0);
+  // const count = getCategoryCount
+
+  // console.log("Total count", count)
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 2) {
@@ -148,10 +156,11 @@ const AgriVariants = () => {
                   <FaChevronLeft size={16} />
                 </button>
                 <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
-                  page * 10 > count ? count : page * 10
-                } of ${count}`}</span>
+                  page * 10 > totalCount ? totalCount : page * 10
+                } of ${totalCount}`}</span>
+                
                 <button
-                  disabled={(page * 10 > count ? count : page * 10) >= count}
+                  disabled={(page * 10 > totalCount ? totalCount : page * 10) >= totalCount}
                   onClick={onIncrementHandler}
                   className={Styles.catBtnCtrls}
                 >
