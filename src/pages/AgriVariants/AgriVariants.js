@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Styles from "./AgriVariants.module.css";
 import {
   Alert,
@@ -63,9 +63,7 @@ const AgriVariants = () => {
   const getValues = async () => {
     const res = await getOptionValues({ type: "type" });
     const options = res.data.map((e) => ({ label: e, value: e }));
-    const count = await getCategoryCount.data.length;
-    setTotalCount(count)
-    console.log("count", count)
+    
     setTypeOptions(options);
     // setSelectedTypeOption(options[0]);
   };
@@ -73,9 +71,19 @@ const AgriVariants = () => {
     getValues();
   }, []);
 
+  const getCount = useCallback(async () => {
+    const count = await getCategoryCount.data?.length;
+    setTotalCount(count);
+  }, [getCategoryCount.data]);
+
+ useEffect(() => {
+  getCount()
+ },[getCount,navigate])
+
+
   useEffect(() => {
     refetch();
-  }, [selectedTypeOption]);
+  }, [selectedTypeOption, navigate]);
 
   // const count = get(getCategoryCount, "data[0].count", 0);
   // const count = getCategoryCount
@@ -110,7 +118,9 @@ const AgriVariants = () => {
   };
   const tableBody = useMemo(() => {
     return getVariantsBody(data, deleteClickHandler, editClickHandler);
-  }, [JSON.stringify(data)]);
+  }, [JSON.stringify(data),data]);
+
+  console.log("Table Body" , tableBody)
   return (
     <>
       <div className={Styles.agriContainer}>
