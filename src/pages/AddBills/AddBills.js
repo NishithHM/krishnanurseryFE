@@ -48,6 +48,7 @@ export default function AddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
+    customerAddress : "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -147,11 +148,13 @@ export default function AddBills() {
 
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
+          // console.log("item", item?.procurementName?.ka?.name)
           let val = [];
           val.push({
             value: `${item.procurementName.en.name} (${
               item?.procurementName?.ka?.name || ""
             })`,
+            type : item?.procurementName?.ka?.name === undefined ? "Agri" : "Nurssery"
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -560,12 +563,11 @@ export default function AddBills() {
       }
   }
 
-
 const formatedBillHistory = (prev) => {
   if(selectedTab === "Agri") {
     const newArray = prev.filter((curr, i) => {
       let pr = curr[0];
-      if(pr.value.substring(pr.value.length-2) === "()"){
+      if(pr.type === "Agri"){
       return true; 
       }else {
         return false;
@@ -606,7 +608,6 @@ const formatedBillHistory = (prev) => {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <>
                 <Input
                   value={state.customerNumber}
                   id="customerNumber"
@@ -626,8 +627,19 @@ const formatedBillHistory = (prev) => {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-              </>
-              <>
+               {
+                state.showDOB && (
+                  <Input
+                  value={state.customerAddress}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                )
+               }
+            
                 {state.showDOB && (
                   <DatePicker
                     defaultValue={defaultDate}
@@ -643,6 +655,7 @@ const formatedBillHistory = (prev) => {
                     clearable={false}
                     styles={{
                       label: {
+                        width : "60%",
                         fontSize: "18px",
                         marginBottom: "2px",
                         fontFamily: "sans-serif",
@@ -650,6 +663,7 @@ const formatedBillHistory = (prev) => {
                       },
                       input: {
                         border: "none",
+                        width : "60%",
                         borderBottom: "1.5px solid black",
                         borderRadius: 0,
                         fontSize: "18px",
@@ -659,7 +673,7 @@ const formatedBillHistory = (prev) => {
                     }}
                   />
                 )}
-              </>
+                
             </div>
           </div>
           <div className={styles.itemList}>
@@ -748,40 +762,32 @@ const formatedBillHistory = (prev) => {
           </div>
         </div>
         <div className={styles.billHistory} style={{ marginRight : "15px"}}>
-          <div style={{
-            display : "flex",
-            justifyContent : "space-around",
-            alignItems: "center"
-          }}>
-              <div style={{
-                width : "50%",
-                display : "flex",
-                flexDirection : "column",
-                alignItems : "center",
-                justifyContent : "center",
-              }}>
-                <p onClick={() => setSelectedTab("Nursery")}>
+          <div className={styles.historyTabContainer}>
+              <div className={styles.singleTab}>
+                <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Nursery")}>
                   Nursery
                 </p>
                 {
                   selectedTab === "Nursery" && (
                     <div style={{
-                  height : "4px",
-                  width : "50%",
-                  borderRadius : "10px",
-                  background : "green"
+                       height : "4px",
+                       width : "50%",
+                       borderRadius : "10px",
+                       background : "green"
                 }}></div>
                   )
                 }
               </div>
-              <div style={{
-                width : "50%",
-                display : "flex",
-                flexDirection : "column",
-                alignItems : "center",
-                justifyContent : "center",
-              }}>
-                <p onClick={() => setSelectedTab("Agri")}>
+              <div className={styles.singleTab}>
+                <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Agri")}>
                   Agri
                 </p>
               {

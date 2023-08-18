@@ -134,6 +134,10 @@ const AddNewVariants = () => {
     } else {
       const data = { type: selectedVariant.value, name: variantName, options };
       const res = await AddNewAgriVariant(data);
+      if(!res || res.error) {
+        toast.error(res.error?.data?.message)
+        return;
+      }
       toast.success(res.data.message);
       navigate("../dashboard/agri-variants");
     }

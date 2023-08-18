@@ -102,7 +102,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
-      title: "Procurment",
+      title: "Procurement",
       tile_img: produrementImg,
       path: "agri-add-procurements",
       allowed: [USER_ROLES.admin, USER_ROLES.procurement],

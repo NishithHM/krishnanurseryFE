@@ -108,7 +108,7 @@ const Dropdown = ({
         </div>
         <AsyncSelect
           cacheOptions
-          value={selectedOption}
+          value={(selectedOption === undefined) ? "" : selectedOption}
           defaultOptions={options}
           // onInputChange={handleChange}
 
@@ -193,7 +193,7 @@ const Dropdown = ({
         </div>
         <Select
           maxMenuHeight={150}
-          value={selectedOption}
+          value={selectedOption ===  undefined ? "" : selectedOption}
           onChange={handleChange}
           options={options}
           isClearable={isClearable}

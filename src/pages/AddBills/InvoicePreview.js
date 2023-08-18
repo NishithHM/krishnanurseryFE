@@ -136,7 +136,11 @@ export const InvoiceSection = (props) => {
           </div>
           <div><strong>Phone Number</strong> : 81051-73777</div>
           <div><strong>Email </strong>: {billConfig[type].email}</div>
-          <div><strong>GSTIN </strong>: {billConfig[type].gst}</div>
+          {
+            type !== "NURSERY" && (
+              <div><strong>GSTIN </strong>: {billConfig[type].gst}</div>
+            )
+          }
         </div>
 
         <div className={styles.clientDetails}>

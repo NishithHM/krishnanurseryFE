@@ -55,6 +55,7 @@ export default function AgriAddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
+    customerAddress:  "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -268,10 +269,12 @@ export default function AgriAddBills() {
           if (item.procurementName?.ka?.name) {
             val.push({
               value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+              type : "Nursery"
             });
           } else {
             val.push({
               value: `${item.procurementName.en.name}`,
+              type:  "Agri"
             });
           }
 
@@ -460,7 +463,7 @@ export default function AgriAddBills() {
     if(selectedTab === "Agri") {
       const newArray = prev.filter((curr, i) => {
         let pr = curr[0];
-        if(pr.value.substring(pr.value.length-2) === "()"){
+        if(pr.type=== "Agri"){
         return true; 
         }else {
           return false;
@@ -694,7 +697,6 @@ export default function AgriAddBills() {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <>
                 <Input
                   value={state.customerNumber}
                   id="customerNumber"
@@ -714,8 +716,20 @@ export default function AgriAddBills() {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-              </>
-              <>
+                {
+                state.showDOB && (
+                  <Input
+                  value={state.customerAddress}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                )
+               }
+              
+              
                 {state.showDOB && (
                   <DatePicker
                     defaultValue={defaultDate}
@@ -746,7 +760,7 @@ export default function AgriAddBills() {
                     }}
                   />
                 )}
-              </>
+              
             </div>
           </div>
           <div className={styles.itemList}>
@@ -850,19 +864,13 @@ export default function AgriAddBills() {
           </div>
         </div>
         <div className={styles.billHistory} style={{marginRight : "10px"}}>
-        <div style={{
-            display : "flex",
-            justifyContent : "space-around",
-            alignItems: "center"
-          }}>
-              <div style={{
-                width : "50%",
-                display : "flex",
-                flexDirection : "column",
-                alignItems : "center",
-                justifyContent : "center",
-              }}>
-               <p onClick={() => setSelectedTab("Agri")}>
+        <div className={styles.historyTabContainer}>
+              <div className={styles.singleTab}>
+               <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Agri")}>
                   Agri
                 </p>
                 {
@@ -876,14 +884,13 @@ export default function AgriAddBills() {
                   )
                 }
               </div>
-              <div style={{
-                width : "50%",
-                display : "flex",
-                flexDirection : "column",
-                alignItems : "center",
-                justifyContent : "center",
-              }}>
-                 <p onClick={() => setSelectedTab("Nursery")}>
+              <div className={styles.singleTab}>
+                 <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }}
+                  onClick={() => setSelectedTab("Nursery")}>
                   Nursery
                 </p>
               {

@@ -8,14 +8,16 @@ import { toast } from "react-toastify";
 import { isEmpty } from "lodash";
 import { useGetProcurementMutation, useReportDamageMutation } from "../../services/procurement.services";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import TextArea from "../../components/TextArea";
 const initialState = {
     addPlantName:{},
     plantImages: [],
     damagedQty: '',
+    comments : ""
 }
 const WasteManagement = () => {
     const damageRef = useRef()
-    const [{addPlantName, plantImages, damagedQty }, setState] = useState(initialState);
+    const [{addPlantName, plantImages, damagedQty, comments }, setState] = useState(initialState);
     const navigate = useNavigate()
     const [search] = useSearchParams()
     const procId = search.get('id');
@@ -142,6 +144,15 @@ const WasteManagement = () => {
 
                     <Input title="Expected Remaining Quantity" type="number" disabled value={addPlantName?.meta?.remainingQuantity} />
                     <Input id="damagedQty" title="Damaged Quantity" type="number" value={damagedQty} onChange={inputChangeHandler} />
+                    <TextArea
+                        value={comments}
+                        id="comments"
+                        onChange={inputChangeHandler}
+                        title="Comments"
+                        rows={4}
+                        name="comments"
+                        required
+                     />
                     <p style={{ fontSize: "18px" }}>File Selected</p>
                 {plantImages.map((image, index) => {
                   return (
