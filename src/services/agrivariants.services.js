@@ -188,7 +188,7 @@ export const agriVariantsApi = createApi({
       rejectOrder: builder.mutation({
         query: ({ body, id }) => ({
           url: `/reject-order/${id}`,
-          method: "GET",
+          method: "POST",
           Headers: { "content-type": "application/json" },
           body,
         }),
