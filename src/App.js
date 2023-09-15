@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import { Toaster } from "./components";
 import { toast } from "react-toastify";
+import NFC from "./pages/NFC/nfc";
 
 function App() {
   // dummy data sent to select components
@@ -38,6 +39,11 @@ function App() {
               path="/customer-onboarding"
               exact
               element={<CustomerOnboarding />}
+            />
+            <Route
+              path="/nfc-test"
+              exact
+              element={<NFC />}
             />
           <Route path="/authorised/*" element={<Protected />} />
         </Routes>
