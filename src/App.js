@@ -41,7 +41,7 @@ function App() {
               element={<CustomerOnboarding />}
             />
             <Route
-              path="/nfc-test"
+              path="/nfc-test/:id"
               exact
               element={<NFC />}
             />

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation, useMatch, useParams } from "react-router-dom";
 export function unsecuredCopyToClipboard({review, redirectTo}) {
     const textArea = document.createElement("textarea");
     textArea.value = review;
@@ -15,11 +16,13 @@ export function unsecuredCopyToClipboard({review, redirectTo}) {
     document.body.removeChild(textArea);
 }
 
-const url = 'http://15.207.187.17:3002'
+// const url = 'http://15.207.187.17:3002'
+const url = 'http://localhost:3002'
 const NFC = () => {
     const [status, setStatus] = useState('Generating Review...')
     const [api, setApi] = useState(false)
     const [data, setData] = useState({})
+    const params = useParams()
 
     useEffect(() => {
         setApi(true)
@@ -32,7 +35,7 @@ const NFC = () => {
     }, [api])
 
     const getReview = () => {
-        axios.get(`${url}/add-review`).then((res) => {
+        axios.get(`${url}/add-review/${params.id}`).then((res) => {
             setData(res.data)
             setStatus('Copying review to Clipboard')
             setTimeout(() => {
@@ -41,6 +44,7 @@ const NFC = () => {
             console.log(res.data)
         }).catch(err => {
             console.log(err)
+            setStatus(err?.response?.data || "Something went wrong")
         })
     }
     return (
