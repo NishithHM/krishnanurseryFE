@@ -16,8 +16,8 @@ export function unsecuredCopyToClipboard({review, redirectTo}) {
     document.body.removeChild(textArea);
 }
 
-// const url = 'http://15.207.187.17:3002'
-const url = 'http://localhost:3002'
+const url = 'http://15.207.187.17:3002'
+
 const NFC = () => {
     const [status, setStatus] = useState('Generating Review...')
     const [api, setApi] = useState(false)
