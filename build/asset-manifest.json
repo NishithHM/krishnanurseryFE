@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.806a8ba6.css",
-    "main.js": "/static/js/main.725d9598.js",
+    "main.js": "/static/js/main.da1d8404.js",
     "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/wasteManagementIcon.png": "/static/media/wasteManagementIcon.e6e5d0fdb7c9a775b773.png",
     "static/media/agriprocurements.png": "/static/media/agriprocurements.af7ddc0180240b43eb65.png",
@@ -20,11 +20,11 @@
     "static/media/billBook.png": "/static/media/billBook.942098d32268e4a23413.png",
     "index.html": "/index.html",
     "main.806a8ba6.css.map": "/static/css/main.806a8ba6.css.map",
-    "main.725d9598.js.map": "/static/js/main.725d9598.js.map",
+    "main.da1d8404.js.map": "/static/js/main.da1d8404.js.map",
     "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.806a8ba6.css",
-    "static/js/main.725d9598.js"
+    "static/js/main.da1d8404.js"
   ]
 }
