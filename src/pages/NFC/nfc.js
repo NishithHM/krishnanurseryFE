@@ -25,7 +25,7 @@ const NFC = () => {
     const params = useParams()
 
     useEffect(() => {
-        setApi(true)
+        window.location.href = `$http://15.207.187.17:5002/nfc-test/${params.id}}`
     }, [])
 
     useEffect(() => {
