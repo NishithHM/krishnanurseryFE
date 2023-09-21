@@ -98,7 +98,7 @@ const Dashboard = () => {
       tile_img: salesImg,
       path: "sales",
       allowed: [USER_ROLES.admin],
-      isDisabled: true,
+      isDisabled: false,
       tabType: "Nursery",
     },
     {
@@ -121,7 +121,7 @@ const Dashboard = () => {
       tile_img: billBook,
       path: "agri-bills",
       allowed: [USER_ROLES.admin, USER_ROLES.sales],
-      tabType : "Agri"
+      tabType: "Agri"
     },
     {
       title: "Add Bills",
@@ -140,13 +140,13 @@ const Dashboard = () => {
     },
   ];
 
-  const {state} = useLocation()
+  const { state } = useLocation()
   useEffect(() => {
-    if(state !== null && state.tabType !== undefined) {
+    if (state !== null && state.tabType !== undefined) {
       setSelectedTab("Agri")
     }
   }, [state])
-  
+
   // /dashboard/orders-agri/request-order
   const getDashboardData = (role) => {
     return DashboardData.filter((data) => data.allowed.includes(role) && data.tabType === selectedTab);
@@ -154,7 +154,7 @@ const Dashboard = () => {
 
   // const data = getDashboardData(toUpper(userContext[0].role));
   const data = getDashboardData(values.role);
-  if(selectedTab === "Agri" && values.role === "sales") {
+  if (selectedTab === "Agri" && values.role === "sales") {
     const first = data.shift()
     data.push(first)
   }
@@ -188,17 +188,17 @@ const Dashboard = () => {
       </div>
       <div className={styles.gridContainer}>
         {data.map((e) => {
-            return (
-              <div className={e.isDisabled && styles.cardDisabled}>
-                <Link to={e.path} key={e.path}>
-                  <LandingTile
-                    image={e.tile_img}
-                    title={e.title}
-                    isDisabled={e.isDisabled}
-                  />
-                </Link>
-              </div>
-            );
+          return (
+            <div className={e.isDisabled && styles.cardDisabled}>
+              <Link to={e.path} key={e.path}>
+                <LandingTile
+                  image={e.tile_img}
+                  title={e.title}
+                  isDisabled={e.isDisabled}
+                />
+              </Link>
+            </div>
+          );
         })}
       </div>
     </div>

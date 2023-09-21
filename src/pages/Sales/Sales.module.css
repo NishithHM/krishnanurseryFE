@@ -1,0 +1,6 @@
+.statsContainer {
+  height: "300px";
+  width: "500px";
+  /* display: "gird";
+  grid-template-columns: repeat(3, 240px); */
+}

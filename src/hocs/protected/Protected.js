@@ -27,6 +27,7 @@ import {
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
 import WasteList from "../../pages/WasteManagement/WasteManagementList";
+import SalesDashBoard from "../../pages/Sales";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
@@ -139,6 +140,11 @@ const Protected = () => {
               path="/dashboard/agri-add-bills"
               exact
               element={<AgriAddBills />}
+            />
+            <Route
+              path="/dashboard/sales"
+              exact
+              element={<SalesDashBoard />}
             />
           </Routes>
         </div>
