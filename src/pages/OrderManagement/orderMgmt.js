@@ -293,10 +293,10 @@ const OrderMgmt = () => {
             {/* reject order modal */}
             <Modal isOpen={rejectOrder.isActive} contentLabel="Reject Order">
                 <Alert
-                    message={`Are you sure to cancel this order?`}
+                    message={`Are you sure to reject this order?`}
                     subMessage={""}
                     cancelBtnLabel={"Close"}
-                    confirmBtnLabel={"Cancel Order"}
+                    confirmBtnLabel={"Reject Order"}
                     successLoading={isRejectLoading}
                     handleCancel={() => {
                         setRejectOrder({ isActive: false, id: null });
