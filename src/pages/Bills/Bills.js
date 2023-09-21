@@ -221,13 +221,15 @@ const Bills = ({type}) => {
   const formatInvoiceItems = (data) => {
     console.log(data)
     return data.map((item) => ({
-      procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.variant?.en?.name})` : `${item.procurementName.en.name}`,
+      procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
       mrp: item.mrp
     }));
     // return data;
   };
+
+  console.log("Inv", invoiceDetail)
 
   return (
     <div>

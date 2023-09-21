@@ -55,6 +55,7 @@ export default function AgriAddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
+    customerAddress:  "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -88,6 +89,7 @@ export default function AgriAddBills() {
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
+  const [selectedTab,setSelectedTab] = useState("Agri")
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] =
@@ -267,10 +269,12 @@ export default function AgriAddBills() {
           if (item.procurementName?.ka?.name) {
             val.push({
               value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
+              type : "Nursery"
             });
           } else {
             val.push({
               value: `${item.procurementName.en.name}`,
+              type:  "Agri"
             });
           }
 
@@ -454,6 +458,30 @@ export default function AgriAddBills() {
       priceError: { error: "", isExist: false },
     }));
   };
+
+  const formatedBillHistory = (prev) => {
+    if(selectedTab === "Agri") {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if(pr.type=== "Agri"){
+        return true; 
+        }else {
+          return false;
+        }
+      })
+      return newArray;
+    }else {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if(pr.value.substring(pr.value.length-2) !== "()"){
+        return true; 
+        }else {
+          return false;
+        }
+      })
+      return newArray;
+    }
+  }
 
   const handleCheckout = async () => {
     const items = [];
@@ -669,7 +697,6 @@ export default function AgriAddBills() {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <>
                 <Input
                   value={state.customerNumber}
                   id="customerNumber"
@@ -689,8 +716,20 @@ export default function AgriAddBills() {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-              </>
-              <>
+                {
+                state.showDOB && (
+                  <Input
+                  value={state.customerAddress}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                )
+               }
+              
+              
                 {state.showDOB && (
                   <DatePicker
                     defaultValue={defaultDate}
@@ -721,7 +760,7 @@ export default function AgriAddBills() {
                     }}
                   />
                 )}
-              </>
+              
             </div>
           </div>
           <div className={styles.itemList}>
@@ -825,9 +864,50 @@ export default function AgriAddBills() {
           </div>
         </div>
         <div className={styles.billHistory} style={{marginRight : "10px"}}>
+        <div className={styles.historyTabContainer}>
+              <div className={styles.singleTab}>
+               <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Agri")}>
+                  Agri
+                </p>
+                {
+                  selectedTab === "Agri" && (
+                    <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                  )
+                }
+              </div>
+              <div className={styles.singleTab}>
+                 <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }}
+                  onClick={() => setSelectedTab("Nursery")}>
+                  Nursery
+                </p>
+              {
+                selectedTab === "Nursery" && (
+                  <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                )
+              }
+              </div>
+          </div>
           <ScrollTable
             thead={billingHistoryHeader}
-            tbody={state.billingHistory}
+            tbody={formatedBillHistory(state.billingHistory)}
           />
         </div>
       </div>

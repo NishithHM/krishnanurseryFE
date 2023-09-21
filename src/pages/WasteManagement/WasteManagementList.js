@@ -28,6 +28,7 @@ const WasteList = () => {
     const [plantImages, setPlantImages] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [damageCount, setDamageCount] = useState(0);
+    const [loadImages,setLoadImages] = useState(false)
 
     const loadInitialOrders = async (page) => {
         if (page === 1) {
@@ -48,6 +49,7 @@ const WasteList = () => {
     const fetchAndDisplayImages = (urls) => {
         const promises = [];
         const images = [];
+        setLoadImages(true)
         if (urls.length === 0) return toast.error("No Images Found!");
         urls.forEach((url) => {
           const promise = fetch(
@@ -70,6 +72,7 @@ const WasteList = () => {
         });
         Promise.all(promises).then(() => {
           setPlantImages(images);
+          setLoadImages(false)
         });
       };
 
@@ -211,7 +214,9 @@ const WasteList = () => {
                     </div>
                 </div>
             </div>
-
+            {loadImages && <div style={{position : "absolute", left : "50%", top : "50%"}}>
+                <Spinner />
+            </div>}
             {isLoading ? (
                 <Spinner />
             ) : (

@@ -48,6 +48,7 @@ export default function AddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
+    customerAddress : "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -70,6 +71,7 @@ export default function AddBills() {
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedTab,setSelectedTab] = useState("Nursery")
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -133,7 +135,7 @@ export default function AddBills() {
 
   const fetchCustomerInfo = async () => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
-
+    // console.log("by number", customerDetails)
     if (customerDetails.error) {
       setState((prev) => ({
         ...prev,
@@ -146,11 +148,13 @@ export default function AddBills() {
 
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
+          // console.log("item", item?.procurementName?.ka?.name)
           let val = [];
           val.push({
             value: `${item.procurementName.en.name} (${
               item?.procurementName?.ka?.name || ""
             })`,
+            type : item?.procurementName?.ka?.name === undefined ? "Agri" : "Nurssery"
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -559,6 +563,32 @@ export default function AddBills() {
       }
   }
 
+const formatedBillHistory = (prev) => {
+  if(selectedTab === "Agri") {
+    const newArray = prev.filter((curr, i) => {
+      let pr = curr[0];
+      if(pr.type === "Agri"){
+      return true; 
+      }else {
+        return false;
+      }
+    })
+    return newArray;
+  }else {
+    const newArray = prev.filter((curr, i) => {
+      let pr = curr[0];
+      if(pr.value.substring(pr.value.length-2) !== "()"){
+      return true; 
+      }else {
+        return false;
+      }
+    })
+    return newArray;
+  }
+}
+
+  // console.log("state", state.billingHistory)
+
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -578,7 +608,6 @@ export default function AddBills() {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-              <>
                 <Input
                   value={state.customerNumber}
                   id="customerNumber"
@@ -598,8 +627,19 @@ export default function AddBills() {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-              </>
-              <>
+               {
+                state.showDOB && (
+                  <Input
+                  value={state.customerAddress}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                )
+               }
+            
                 {state.showDOB && (
                   <DatePicker
                     defaultValue={defaultDate}
@@ -615,6 +655,7 @@ export default function AddBills() {
                     clearable={false}
                     styles={{
                       label: {
+                        width : "60%",
                         fontSize: "18px",
                         marginBottom: "2px",
                         fontFamily: "sans-serif",
@@ -622,6 +663,7 @@ export default function AddBills() {
                       },
                       input: {
                         border: "none",
+                        width : "60%",
                         borderBottom: "1.5px solid black",
                         borderRadius: 0,
                         fontSize: "18px",
@@ -631,7 +673,7 @@ export default function AddBills() {
                     }}
                   />
                 )}
-              </>
+                
             </div>
           </div>
           <div className={styles.itemList}>
@@ -720,10 +762,49 @@ export default function AddBills() {
           </div>
         </div>
         <div className={styles.billHistory} style={{ marginRight : "15px"}}>
-         
+          <div className={styles.historyTabContainer}>
+              <div className={styles.singleTab}>
+                <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Nursery")}>
+                  Nursery
+                </p>
+                {
+                  selectedTab === "Nursery" && (
+                    <div style={{
+                       height : "4px",
+                       width : "50%",
+                       borderRadius : "10px",
+                       background : "green"
+                }}></div>
+                  )
+                }
+              </div>
+              <div className={styles.singleTab}>
+                <p style={{
+                     width : "50%",
+                     textAlign : "center",
+                     cursor : "pointer"
+                }} onClick={() => setSelectedTab("Agri")}>
+                  Agri
+                </p>
+              {
+                selectedTab === "Agri" && (
+                  <div style={{
+                  height : "4px",
+                  width : "50%",
+                  borderRadius : "10px",
+                  background : "green"
+                }}></div>
+                )
+              }
+              </div>
+          </div>
           <ScrollTable
             thead={billingHistoryHeader}
-            tbody={state.billingHistory}
+            tbody={formatedBillHistory(state.billingHistory)}
           />
         </div>
       </div>
