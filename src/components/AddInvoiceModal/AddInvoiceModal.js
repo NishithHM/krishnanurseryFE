@@ -18,7 +18,8 @@ const AddInvoiceModal = ({
   sort,
   toast,
   orderId,
-  getInvoice
+  getInvoice,
+  type
 }) => {
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
@@ -234,7 +235,7 @@ const AddInvoiceModal = ({
               }}
             >
               <div className={styles.invoiceItem}>
-                <span>Plant Name x Quantity</span>
+                <span> {type === "AGRI" ? "Products" : "Plant Name"} x Quantity</span>
                 <span>Subtotal</span>
               </div>
                {state.orderVal?.items.map((ele) => {
