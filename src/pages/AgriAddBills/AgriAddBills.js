@@ -294,7 +294,7 @@ export default function AgriAddBills() {
         ...prev,
         customerDetails: customerDetails.data,
         customerName: customerDetails.name,
-        billingHistory: billingData,
+        billingHistory: [...billingData],
       }));
 
       const customerCart = await getCustomerCart(customerDetails.data._id);
@@ -460,27 +460,15 @@ export default function AgriAddBills() {
   };
 
   const formatedBillHistory = (prev) => {
-    if(selectedTab === "Agri") {
       const newArray = prev.filter((curr, i) => {
         let pr = curr[0];
-        if(pr.type=== "Agri"){
+        if(pr.type=== selectedTab){
         return true; 
         }else {
           return false;
         }
       })
       return newArray;
-    }else {
-      const newArray = prev.filter((curr, i) => {
-        let pr = curr[0];
-        if(pr.value.substring(pr.value.length-2) !== "()"){
-        return true; 
-        }else {
-          return false;
-        }
-      })
-      return newArray;
-    }
   }
 
   const handleCheckout = async () => {
