@@ -50,6 +50,10 @@ const AgriBillingItem = ({
       const res = await getAgriVariantById({ id: event.value });
       variant.options = res.data?.options || [];
     }
+    if(id === "type") {
+      variant.options = [];
+      variant.name = ""
+    }
     if (optIndex > -1) {
       const newVariantOptions = cloneDeep(variant.options);
       newVariantOptions[optIndex] = {

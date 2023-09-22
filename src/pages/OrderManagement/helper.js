@@ -61,6 +61,9 @@ export const ROLE_TABLE_HEADER = {
     {
       value: "Status",
     },
+    {
+      value: "Action",
+    },
   ],
   procurement: [
     {
@@ -200,7 +203,6 @@ const handleDownload = (fileUrl) => {
       const url = window.URL.createObjectURL(blob);
       a.href = url;
       a.download = name;
-      console.log(name);
       a.click();
       window.URL.revokeObjectURL(url);
     })
@@ -208,7 +210,9 @@ const handleDownload = (fileUrl) => {
 };
 
 export const formatOrdersData = ({ data, role, onAction }) => {
+
   const formatted = data.map((order) => {
+    console.log("ORDERED INVOICE", order.invoice)
     const rowData = roleRows[role].map((ele) => {
       let value;
       if (ele.value === "createdAt" || ele.value === "expectedDeliveryDate") {
@@ -227,8 +231,6 @@ export const formatOrdersData = ({ data, role, onAction }) => {
           </span>
         );
       } else if (ele.value === "quantities") {
-        console.log("Order quat", order.quantity);
-        console.log("Arrived Quant", order.orderedQuantity);
         value = (
           <>
             <span>{`${order.requestedQuantity} (Req)`}</span>
@@ -273,8 +275,9 @@ export const formatOrdersData = ({ data, role, onAction }) => {
       return { value };
     });
 
-    if (role === "procurement") {
-      if (order.status === "REQUESTED") {
+
+    if (role === "procurement" || role === "admin") {
+      if (order.status === "REQUESTED" && role === "procurement") {
         const rejectOrder = {
           value: (
             <>
@@ -308,7 +311,7 @@ export const formatOrdersData = ({ data, role, onAction }) => {
       } else if (
         order.invoice === "" &&
         ["PLACED", "VERIFIED"].includes(order.status) &&
-        order.vendorContact !== "9999999999"
+        order.vendorContact !== "9999999999" && role === "procurement"
       ) {
         const AddInvoice = {
           value: (
