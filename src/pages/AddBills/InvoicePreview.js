@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 const billConfig = {
   NURSERY:{
     name:'Shree Krishna Nursery',
-    email:"shreekrishnanurserysmg@gmail.com",
+    email:"mailus.skn@gmail.com",
     gst:'29ACCFA0434C1Z0'
   },
   AGRI:{
