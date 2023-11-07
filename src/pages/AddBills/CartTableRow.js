@@ -105,6 +105,15 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
   if (cartResponse.totalPrice) {
     subTotal = cartResponse?.totalPrice - roundOff;
   }
+  let totalQty = 0;
+  if(cartResponse && Array.isArray(cartResponse.items) && cartResponse.items.length > 0){
+    totalQty = cartResponse.items.reduce((acc, item) => {
+      return acc + item.quantity
+    }, totalQty)
+    console.log("Total QTY", totalQty)
+  }
+
+  console.log("CARTRESPONSE", cartResponse)
 
   return (
     <div className={styles.billDetails}>
@@ -136,6 +145,10 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
       <div className={styles.billFigure}>
         <div>Total</div>
         <span>&#x20B9;{isNaN(subTotal) ? "" : subTotal}</span>
+      </div>
+      <div className={styles.billFigure}>
+        <div>Total Quantity</div>
+        <span>&#x20B9;{isNaN(totalQty) ? "" : totalQty}</span>
       </div>
     </div>
   );
