@@ -46,6 +46,7 @@ export const InvoicePreview = (props) => {
       size="auto"
       closeOnClickOutside={false}
       closeOnEscape={true}
+      style={{overflow:'scroll'}}
     >
       {handlePrintClick && (
         <div className={styles.printButton}>

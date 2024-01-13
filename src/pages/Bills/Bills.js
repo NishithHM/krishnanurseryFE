@@ -12,6 +12,7 @@ import {
   Spinner,
   BackButton,
   Filters,
+  Toaster,
 } from "../../components";
 
 import { ImSearch } from "react-icons/im";
@@ -19,12 +20,14 @@ import {
   useGetAllPurchasesCountQuery,
   useGetAllPurchasesQuery,
   useSearchPurchaseMutation,
+  useGetApproveMutation
 } from "../../services/bills.service";
 import {
   InvoicePreview,
   InvoiceSection,
 } from "../../components/InvoicePreviewModal/InvoicePreview";
 import { useReactToPrint } from "react-to-print";
+import { toast } from "react-toastify";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -107,10 +110,15 @@ const Bills = ({type}) => {
   });
 
   const [searchPurchase] = useSearchPurchaseMutation();
+  const [approveButton] = useGetApproveMutation()
+  // const approve = useGetApproveQuery
+  // ({
+  //   customerId:purchaseData?._id
+  // });
 
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
-      const date = { value: dayjs(purchase.billedDate).format("DD-MM-YYYY") };
+      const date = { value: dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY") };
 
       const openModal = {
         value: (
@@ -125,6 +133,24 @@ const Bills = ({type}) => {
           </span>
         ),
       };
+
+      const approve = {
+        value:  purchase.isApproved === false && purchase.status ==='CART' ? (
+          <span
+            style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
+            onClick={async()=>{
+              const res =  await approveButton({
+                billId: purchase?._id
+              });
+              toast.success("Bill Successfully Approved");
+            }}
+            
+          >
+            Approve
+          </span>
+        ): <></>,
+      };
+      
       const data = [
         date,
         { value: purchase.invoiceId },
@@ -136,6 +162,7 @@ const Bills = ({type}) => {
           }).format(purchase.totalPrice),
         },
         openModal,
+        approve
       ];
       return data;
     });
@@ -235,6 +262,7 @@ const Bills = ({type}) => {
     <div>
       <div>
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
+        <Toaster />
       </div>
       <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
       <div className={styles.wrapper}>
@@ -308,9 +336,9 @@ const Bills = ({type}) => {
               printEnabled={true}
               roundOff={invoiceDetail?.roundOff}
               invoiceDetails={{
-                invoiceDate: invoiceDetail.billedDate,
-                billedBy: invoiceDetail.billedBy.name,
-                soldBy: invoiceDetail.soldBy.name,
+                invoiceDate: invoiceDetail?.billedDate,
+                billedBy: invoiceDetail?.billedBy?.name,
+                soldBy: invoiceDetail?.soldBy?.name,
               }}
               type={type}
             />
@@ -326,9 +354,9 @@ const Bills = ({type}) => {
             phoneNumber: invoiceDetail.customerNumber,
           }}
           invoiceDetails={{
-            invoiceDate: invoiceDetail.billedDate,
-            billedBy: invoiceDetail.billedBy.name,
-            soldBy: invoiceDetail.soldBy.name,
+            invoiceDate: invoiceDetail?.billedDate,
+            billedBy: invoiceDetail?.billedBy?.name,
+            soldBy: invoiceDetail?.soldBy?.name,
           }}
           cartData={formatInvoiceItems(invoiceDetail.items)}
           cartResponse={{

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import styles from './checkbox.module.css'
-const Checkbox = ({ id, onChange, label }) => {
+const Checkbox = ({ id, onChange, label, value }) => {
   const handleCheckboxChange = (event) => {
     onChange(event.target.checked, id);
   };
@@ -12,6 +12,7 @@ const Checkbox = ({ id, onChange, label }) => {
         <input
           type="checkbox"
           id={id}
+          checked={value}
           onChange={handleCheckboxChange}
         />
         {label}

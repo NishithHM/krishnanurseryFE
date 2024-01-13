@@ -19,7 +19,7 @@ const billConfig = {
 }
 
 export const InvoicePreview = (props) => {
-  const { showPreview, onClose, children, handlePrintClick, cartData, type } = props;
+  const { showPreview, onClose, children, handlePrintClick, cartResponse, cartData, type, isWholeSale } = props;
 
   const printEnabled = false;
 
@@ -40,9 +40,14 @@ export const InvoicePreview = (props) => {
         <Button
           type="primary"
           title="Print & Submit"
+          loading={!cartResponse.isApproved}
           buttonType="submit"
           onClick={handlePrintClick}
+          disabled={!cartResponse.isApproved}
         />
+        {!cartResponse.isApproved &&<p>
+          Waiting for admin approval
+        </p>}
       </div>
 
       <div className={styles.modalAction}>{children}</div>
@@ -59,8 +64,7 @@ export const InvoiceSection = (props) => {
     printEnabled,
     roundOff,
     billedBy,
-    data = {},
-    type
+    type,
   } = props;
 
   const [cartList, setCartList] = useState([]);

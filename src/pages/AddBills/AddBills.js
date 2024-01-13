@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { Input, Button, Toaster, BackButton } from "../../components";
+import { Input, Button, Toaster, BackButton, Checkbox } from "../../components";
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +21,7 @@ import { AuthContext } from "../../context";
 import Datepicker from "../../components/Datepicker/Datepicker";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
+  const approveRef = useRef()
 
   const tableRowBlank = {
     id: new Date().toISOString(),
@@ -67,6 +68,8 @@ export default function AddBills() {
     checkOutDone: false,
     submitDisable: false,
     invoiceNumber: "",
+    isWholeSale: false,
+    isApproved: false
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
@@ -205,7 +208,9 @@ export default function AddBills() {
         } else {
           setTableRowData(cartRows);
         }
-
+        if(customerCart.data.isApproved && approveRef.current){
+          clearInterval(approveRef.current)
+        }
         setState((prev) => ({
           ...prev,
           cartResponse: customerCart.data,
@@ -216,6 +221,8 @@ export default function AddBills() {
           newCustomer: false,
           checkOutDone: false,
           roundOff: 0,
+          isApproved: customerCart.data.isApproved,
+          isWholeSale: customerCart.data.isWholeSale
         }));
         return;
       }
@@ -311,7 +318,7 @@ export default function AddBills() {
     }));
 
     if (name === "price") {
-      if (value < tableRowClone.minPrice) {
+      if (value < tableRowClone.minPrice && !state.isWholeSale) {
         setState((prev) => ({
           ...prev,
           priceError: {
@@ -382,12 +389,13 @@ export default function AddBills() {
         : state.customerDetails.dob,
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
       items,
+      isWholeSale: state.isWholeSale
     };
 
     let checkout = null;
 
     if (state.cartResponse._id) {
-      const payload = { items: items };
+      const payload = { items: items,isWholeSale: state.isWholeSale };
       checkout = await updateCart({
         cartId: state.cartResponse._id,
         updatedCartData: payload,
@@ -419,6 +427,8 @@ export default function AddBills() {
         priceError: { isExist: false, error: "" },
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
+        isWholeSale: checkout.data.isWholeSale,
+        isApproved: checkout.data.isApproved
       }));
       toast.success("Checkout is successful!");
     }
@@ -499,7 +509,7 @@ export default function AddBills() {
   };
 
   const isRowValid = (row) => {
-    const price = row.price >= row.minPrice && row.price <= row.mrp;
+    const price = (row.price >= row.minPrice || state.isWholeSale) && row.price <= row.mrp;
 
     if (row.procurementId && row.variantId && price && row.quantity >= 1) {
       return true;
@@ -586,6 +596,19 @@ const formatedBillHistory = (prev) => {
     return newArray;
   }
 }
+  const onPreviewClick=()=>{
+    setShowPreview(!showPreview);
+    const int= setInterval(()=>{
+      console.log('calling api')
+      fetchCustomerInfo()
+    }, 5000)
+    approveRef.current = int
+  }
+
+  const onPreviewClose = () => {
+    setShowPreview(!showPreview)
+    clearInterval(approveRef.current)
+  }
 
   // console.log("state", state.billingHistory)
 
@@ -676,6 +699,10 @@ const formatedBillHistory = (prev) => {
                 
             </div>
           </div>
+          <div className={styles.itemList} style={{paddingLeft: '10px'}}>
+            <h3>Select if Wholesaler</h3>
+            <Checkbox value={state.isWholeSale}  label={"wholesale"} onChange={e=>setState(prev=>({...prev, isWholeSale: e}))} />
+          </div>
           <div className={styles.itemList}>
             <div className={styles.itemTitleWrap}>
               <h3>Items List</h3>
@@ -744,16 +771,13 @@ const formatedBillHistory = (prev) => {
                   <div className={styles.error}>{state.submitError.error}</div>
                 )}
               </div>
-
               {userCtx.role === "sales" && (
                 <div className={styles.submitBtnWrapper}>
                   <Button
                     type="primary"
                     title="Preview Invoice"
                     buttonType="submit"
-                    onClick={() => {
-                      setShowPreview(!showPreview);
-                    }}
+                    onClick={onPreviewClick}
                     disabled={shouldSubmitDisable()}
                   />
                 </div>
@@ -829,7 +853,7 @@ const formatedBillHistory = (prev) => {
                 type="primary"
                 title="Preview Invoice"
                 buttonType="submit"
-                onClick={() => setShowPreview(!showPreview)}
+                onClick={onPreviewClick}
                 disabled={shouldSubmitDisable()}
               />
             </div>
@@ -849,13 +873,14 @@ const formatedBillHistory = (prev) => {
             data={state}
             billedBy={auth.name}
             type="NURSERY"
+            isWholeSale={state.isWholeSale}
           />
         </div>
       </div>
-
+        {console.log(state.roundOff, state.cartResponse)}
       <InvoicePreview
         showPreview={showPreview}
-        onClose={() => setShowPreview(!showPreview)}
+        onClose={onPreviewClose}
         clientDetails={state.customerDetails}
         cartData={tableRowData}
         cartResponse={state?.cartResponse}
@@ -863,16 +888,10 @@ const formatedBillHistory = (prev) => {
         roundOff={state.roundOff}
         handlePrintClick={handleSubmit}
         billedBy={auth.name}
+        isWholeSale={state.isWholeSale}
+        isApproved={state.isApproved}
         type="NURSERY"
       >
-        {/* <Button
-          type="primary"
-          title="Submit"
-          buttonType="submit"
-          onClick={handleSubmit}
-          disabled={shouldSubmitDisable()}
-          loading={submitLoading}
-        /> */}
       </InvoicePreview>
     </div>
   );
