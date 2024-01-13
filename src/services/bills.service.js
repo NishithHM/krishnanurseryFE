@@ -57,6 +57,7 @@ export const billsApi = createApi({
           };
         },
         invalidatesTags: ["purchaseHistory"],
+        providesTags: ['billHistory']
       }),
       getAllPurchasesCount: builder.query({
         query: ({ search = null, startDate, endDate, type }) => {
@@ -80,6 +81,13 @@ export const billsApi = createApi({
         }),
         invalidatesTags: ["purchaseHistory"],
       }),
+      getApprove: builder.mutation({
+        query: ({billId}) => ({
+          url: `/approve/${billId}`, // id ??
+          method: "GET",
+        }),
+        invalidatesTags: ["billHistory"],
+      }),
     };
   },
 });
@@ -92,4 +100,5 @@ export const {
   useGetAllPurchasesQuery,
   useGetAllPurchasesCountQuery,
   useSearchPurchaseMutation,
+  useGetApproveMutation
 } = billsApi;

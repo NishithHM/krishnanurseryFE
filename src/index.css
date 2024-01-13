@@ -19,3 +19,8 @@ input {
 a {
   text-decoration: none;
 }
+
+      
+.mantine-Modal-modal{
+  overflow: scroll !important;
+}
