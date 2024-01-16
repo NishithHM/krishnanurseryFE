@@ -220,7 +220,7 @@ export default function AddBills() {
           showDOB: false,
           newCustomer: false,
           checkOutDone: false,
-          roundOff: 0,
+          // roundOff: 0,
           isApproved: customerCart.data.isApproved,
           isWholeSale: customerCart.data.isWholeSale
         }));

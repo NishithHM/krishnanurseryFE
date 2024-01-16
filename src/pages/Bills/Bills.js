@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
@@ -28,6 +28,7 @@ import {
 } from "../../components/InvoicePreviewModal/InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../context";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -64,7 +65,7 @@ const Bills = ({type}) => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const location = useLocation();
-
+  const [user] = useContext(AuthContext);
   const [filterDates, setFilterDates] = useState({
     start_date: null,
     end_date: null,
@@ -135,7 +136,7 @@ const Bills = ({type}) => {
       };
 
       const approve = {
-        value:  purchase.isApproved === false && purchase.status ==='CART' ? (
+        value:  purchase.isApproved === false && purchase.status ==='CART' && user.role==='admin'  ? (
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={async()=>{
@@ -256,7 +257,6 @@ const Bills = ({type}) => {
     // return data;
   };
 
-  console.log("Inv", invoiceDetail)
 
   return (
     <div>
