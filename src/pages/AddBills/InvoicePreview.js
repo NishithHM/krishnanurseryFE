@@ -40,12 +40,12 @@ export const InvoicePreview = (props) => {
         <Button
           type="primary"
           title="Print & Submit"
-          loading={!cartResponse.isApproved}
+          loading={!cartResponse.isApproved && isWholeSale}
           buttonType="submit"
           onClick={handlePrintClick}
-          disabled={!cartResponse.isApproved}
+          disabled={!cartResponse.isApproved  && isWholeSale}
         />
-        {!cartResponse.isApproved &&<p>
+        {!cartResponse.isApproved && isWholeSale &&<p>
           Waiting for admin approval
         </p>}
       </div>
