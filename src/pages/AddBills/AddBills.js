@@ -701,7 +701,7 @@ const formatedBillHistory = (prev) => {
           </div>
           <div className={styles.itemList} style={{paddingLeft: '10px'}}>
             <h3>Select if Wholesaler</h3>
-            <Checkbox value={state.isWholeSale}  label={"wholesale"} onChange={e=>setState(prev=>({...prev, isWholeSale: e}))} />
+            <Checkbox value={state.isWholeSale}  label={"wholesale"} onChange={e=>setState(prev=>({...prev, isWholeSale: e, checkOutDone: false}))} />
           </div>
           <div className={styles.itemList}>
             <div className={styles.itemTitleWrap}>
@@ -877,7 +877,6 @@ const formatedBillHistory = (prev) => {
           />
         </div>
       </div>
-        {console.log(state.roundOff, state.cartResponse)}
       <InvoicePreview
         showPreview={showPreview}
         onClose={onPreviewClose}
