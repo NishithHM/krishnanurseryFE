@@ -222,7 +222,7 @@ export default function AddBills() {
           checkOutDone: false,
           // roundOff: 0,
           isApproved: customerCart.data.isApproved,
-          isWholeSale: customerCart.data.isWholeSale
+          isWholeSale: customerCart.data.isWholeSale || false
         }));
         return;
       }
@@ -427,7 +427,7 @@ export default function AddBills() {
         priceError: { isExist: false, error: "" },
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
-        isWholeSale: checkout.data.isWholeSale,
+        isWholeSale: checkout.data.isWholeSale || false,
         isApproved: checkout.data.isApproved
       }));
       toast.success("Checkout is successful!");
@@ -598,11 +598,14 @@ const formatedBillHistory = (prev) => {
 }
   const onPreviewClick=()=>{
     setShowPreview(!showPreview);
-    const int= setInterval(()=>{
-      console.log('calling api')
-      fetchCustomerInfo()
-    }, 5000)
-    approveRef.current = int
+    if(state.isWholeSale){
+      const int= setInterval(()=>{
+        console.log('calling api')
+        fetchCustomerInfo()
+      }, 5000)
+      approveRef.current = int
+    }
+    
   }
 
   const onPreviewClose = () => {
