@@ -1,0 +1,73 @@
+
+.cols {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.percent {
+  display: flex;
+  padding-top: 20px;
+}
+.col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 0.375rem;
+  padding: 20px;
+  transition: box-shadow 0.3s ease;
+  height: 80px;
+}
+.selectedCard {
+  background: rgba(0, 128, 0, 0.3);
+}
+.variants {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+.var1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+.cardtit {
+  color: #8898aa !important;
+  text-transform: uppercase;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.5;
+  font-size: 0.8125rem;
+}
+.salespr {
+  font-weight: 600 !important;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: #32325d;
+}
+.ratiopercent {
+  color: #2dce89 !important;
+  font-size: 0.875rem !important;
+  font-weight: 300;
+  line-height: 1.7;
+}
+.dater {
+  padding-left: 20px;
+}
+.ranges {
+  white-space: nowrap !important;
+  font-size: 0.875rem !important;
+  color: #8898aa !important;
+  font-weight: 300;
+  line-height: 1.7;
+}
+.chart {
+  position: relative;
+  height: 300px;
+}
+.graphsdataa{
+  padding-top: 50px;
+}

@@ -98,7 +98,7 @@ const Dashboard = () => {
       tile_img: salesImg,
       path: "sales",
       allowed: [USER_ROLES.admin],
-      isDisabled: true,
+      isDisabled: false,
       tabType: "Nursery",
     },
     {

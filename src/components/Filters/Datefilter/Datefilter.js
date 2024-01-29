@@ -25,8 +25,8 @@ const Datefilter = ({
 
   const onChangeHandler = () => {
     const data = {
-      start_date: startDate,
-      end_date: endDate,
+      startDate: startDate,
+      endDate: endDate,
     };
     if (!isParentSet) {
       onChange(data);
@@ -61,6 +61,7 @@ const Datefilter = ({
             maxDate={new Date()}
             styles={datePickerStyles}
             clearable={false}
+          
           />
         </div>
 

@@ -23,6 +23,7 @@ import {
   AgriRequesrOrder,
   AgriOrderMgmt,
   AgriAddBills,
+  Sales,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -139,6 +140,11 @@ const Protected = () => {
               path="/dashboard/agri-add-bills"
               exact
               element={<AgriAddBills />}
+            />
+             <Route
+              path="/dashboard/sales"
+              exact
+              element={<Sales />}
             />
           </Routes>
         </div>
