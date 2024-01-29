@@ -14,6 +14,7 @@ import {
   useGetAgriVariantsQuery,
 } from "../../services/agrivariants.services";
 import { agriBillsApi } from "../../services/agribilling.services";
+import { salesApi } from "../../services/sales.services";
 export const store = configureStore({
   reducer: {
     [loginApi.reducerPath]: loginApi.reducer,
@@ -26,6 +27,7 @@ export const store = configureStore({
     [paymentsApi.reducerPath]: paymentsApi.reducer,
     [agriVariantsApi.reducerPath]: agriVariantsApi.reducer,
     [agriBillsApi.reducerPath]: agriBillsApi.reducer,
+    [salesApi.reducerPath]: salesApi.reducer,
     userSlice: userSlice.reducer,
   },
   middleware: (middlewares) =>
@@ -39,7 +41,8 @@ export const store = configureStore({
       .concat(commonApi.middleware)
       .concat(paymentsApi.middleware)
       .concat(agriVariantsApi.middleware)
-      .concat(agriBillsApi.middleware),
+      .concat(agriBillsApi.middleware)
+      .concat(salesApi.middleware),
 });
 
 setupListeners(store.dispatch);

@@ -1,3 +1,3 @@
-import { SalesDashBoard } from "./SalesDashBoard";
+import Sales from "./Sales";
 
-export default SalesDashBoard;
+export default Sales;
