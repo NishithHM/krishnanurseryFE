@@ -9,7 +9,7 @@ import {
   useMetaDataMutation,
 } from "../../services/sales.services";
 import Datefilter from "../../components/Filters/Datefilter";
-
+import styles from "../../components/Sales/Sales.module.css";
 const Sales = () => {
   const [metaData, { data }] = useMetaDataMutation();
   const [graphData] = useGraphDataMutation();
@@ -79,9 +79,9 @@ const Sales = () => {
   return (
     <div>
       <Container maxWidth="xl" className=" containermax ">
-        <Container>
+        {/* <Container> */}
           <div >
-            <h1>Dash Board</h1>
+            <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
           </div>
           <div>
             <div>
@@ -90,9 +90,9 @@ const Sales = () => {
                 spacing={2}
                 item
                 xs={12}
-                columnSpacing={{ xs: 3, sm: 6, md: 9 }}
+                // columnSpacing={{ xs: 3, sm: 6, md: 9 }}
               >
-                <Grid item xs={3}>
+                <Grid item xs={4} className = " plants ">
                   <Dropdown
                     url="/api/procurements/getAll?isList=true&isAll=true"
                     id="addPlantName"
@@ -106,14 +106,16 @@ const Sales = () => {
                     minInputToFireApi={3}
                   />
                 </Grid>
-                <Grid item xs={3}>
+              
+                <Grid item xs={4} className =" datefilters  ">
                   <Datefilter
+                  
                     onChange={handleDateChange}
                     startDateInput={dateRange.startDate}
                     endDateInput={dateRange.endDate}
                   />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4} className = " plants ">
                   <Dropdown
                     url="/api/category/getAll"
                     id="addCategory"
@@ -133,7 +135,7 @@ const Sales = () => {
               <SalesHeader cardData={cardData} selectedPlants={selectedPlants} graphsData={graphsData} selectedCategory={selectedCategory} />
             </div>
           </div>
-        </Container>
+        {/* </Container> */}
       </Container>
     </div>
   );

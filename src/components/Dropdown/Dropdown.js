@@ -102,9 +102,9 @@ const Dropdown = ({
       <div>
         <div className={styles.label}>
           <label>{title}</label>
-          {required && (
+          {/* {required && (
             <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
-          )}
+          )} */}
         </div>
         <AsyncSelect
           cacheOptions
@@ -133,9 +133,9 @@ const Dropdown = ({
       <div>
         <div className={styles.label}>
           <label>{title}</label>
-          {required && (
+          {/* {required && (
             <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
-          )}
+          )} */}
         </div>
         <AsyncSelectCreatable
           value={selectedOption}
@@ -161,9 +161,9 @@ const Dropdown = ({
       <div>
         <div className={styles.label}>
           <label>{title}</label>
-          {required && (
+          {/* {required && (
             <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
-          )}
+          )} */}
         </div>{" "}
         <Creatable
           value={selectedOption}
@@ -187,9 +187,9 @@ const Dropdown = ({
       <div>
         <div className={styles.label}>
           <label>{title}</label>
-          {required && (
+          {/* {required && (
             <span className={cx({ [`${styles.asterick}`]: required })}>*</span>
-          )}
+          )} */}
         </div>
         <Select
           maxMenuHeight={150}

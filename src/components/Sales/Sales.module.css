@@ -1,4 +1,3 @@
-
 .cols {
   display: flex;
   justify-content: space-between;
@@ -7,6 +6,7 @@
 .percent {
   display: flex;
   padding-top: 20px;
+  align-items: center;
 }
 .col {
   position: relative;
@@ -14,17 +14,22 @@
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #fff;
+  /* background-color: #fff; */
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 0.375rem;
+  border-radius: 10px;
   padding: 20px;
-  transition: box-shadow 0.3s ease;
-  height: 80px;
+  transition: box-shadow 0.3s, filter 0.3s;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* height: 80px; */
 }
 .selectedCard {
-  background: rgba(0, 128, 0, 0.3);
+  background: #4cd964 !important;
+  color: #ffff !important;
+  filter: brightness(1.2);
+  box-shadow: 0 4px 8px rgba(76, 217, 100, 0.3); /* Adjust the shadow color and intensity */
 }
+
 .variants {
   display: flex;
   align-items: center;
@@ -33,15 +38,16 @@
 .var1 {
   font-size: 20px;
   font-weight: 700;
+  color: #4cd964;
 }
 .cardtit {
-  color: #8898aa !important;
   text-transform: uppercase;
-  font-family: inherit;
   font-weight: 600;
   line-height: 1.5;
-  font-size: 0.8125rem;
+  color: #4cd964 !important;
+  font-size: 20px;
 }
+
 .salespr {
   font-weight: 600 !important;
   font-size: 1.25rem;
@@ -49,25 +55,57 @@
   color: #32325d;
 }
 .ratiopercent {
-  color: #2dce89 !important;
-  font-size: 0.875rem !important;
+  /* color: #2dce89 !important; */
+  /* font-size: 0.875rem !important; */
   font-weight: 300;
   line-height: 1.7;
+  color: red;
+  font-size: 15px;
 }
 .dater {
   padding-left: 20px;
 }
 .ranges {
   white-space: nowrap !important;
-  font-size: 0.875rem !important;
-  color: #8898aa !important;
   font-weight: 300;
   line-height: 1.7;
+  color: #ffff !important;
+  font-size: 14px !important;
 }
 .chart {
   position: relative;
   height: 300px;
 }
-.graphsdataa{
+.graphsdataa {
   padding-top: 50px;
+}
+.shadow {
+  border-radius: 12px 12px 12px 12px !important;
+  background-color: #ffffff !important;
+  box-shadow: 4px 4px 8px 1px #d6d5d2;
+}
+.ratesicons {
+  display: flex;
+  align-items: center;
+}
+.dash {
+  color: #000;
+}
+.selectedCardtit {
+  text-transform: uppercase;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #ffff !important;
+  font-size: 20px;
+}
+.iconscolor {
+  /* color: #ffff !important; */
+  fill: #ffff !important;
+  /* background: #ffff !important; */
+}
+.losstext {
+  color: red !important ;
+}
+.inventorycard {
+  height: 67px;
 }
