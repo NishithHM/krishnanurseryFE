@@ -52,20 +52,19 @@ const SalesHeader = ({
     },
     {
       title: "Payments",
-      price: cardData?.damages,
+      price: cardData?.payments,
       percentage: cardData?.payments_perecntage,
       icon: (status) => <PaymentsIcon status={status} />, 
     },
     {
       title: "Inventory",
-      price: cardData?.profit,
+      price: cardData?.inventory,
       // percentage: 10,
       icon: (status) => <InventoryIcon status={status} />, 
     },
   ];
 
   const handleCardClick = (index, item) => {
-    console.log(item, "==item");
     setSelectedCard(item);
     setSelectedTitle(item?.title.toLowerCase());
     if (graphsData.length > 0) {
@@ -159,7 +158,6 @@ const SalesHeader = ({
       { value: item?.underMaintenanceQuantity },
     ]);
   }
-  console.log(variantsTableData, "===variantsTableData");
 
   const chartRef = useRef(null);
   useEffect(() => {
@@ -177,7 +175,6 @@ const SalesHeader = ({
       if (selectedTitle) {
         selectedData = graphsData?.data?.map((item) => item[selectedTitle]);
       }
-
       chartRef.current = new Chart(ctx, {
         type: "line",
         data: {
@@ -231,6 +228,7 @@ const SalesHeader = ({
           >
             {headerData.map((item, index) => (
               <Grid item xs={2} key={index}>
+                {console.log('item', item)}
                 <div
                   className={`${styles.col} ${
                     selectedCard?.title === item?.title ? styles.selectedCard : ""
@@ -256,7 +254,7 @@ const SalesHeader = ({
                     </div>
                     <div>
                     {
-                      item?.price ? <span className={styles.salespr}>{item.price}</span> :""
+                      (item?.price || item.price===0) ? <span className={styles.salespr}>{item.price}</span> :""
                     }
                     
                   </div>
