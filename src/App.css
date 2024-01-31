@@ -1,7 +1,10 @@
+  @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 body::-webkit-scrollbar{ 
   width: 10px;
 }
-
+.poppins{
+  font-family: 'Poppins', sans-serif;
+}
 body::-webkit-scrollbar-thumb {
   background-color: #888; 
   border-radius: 10px;
@@ -79,5 +82,39 @@ input[type="number"] {
   border-color: #bdf2ca;
 }
 .containermax{
-   background: #edeceb;
+  /* background-color: #ffff; */
+     background: #fffefe;
   }
+.grid7> div  >span > p{
+  text-align: center;
+  color: red;
+  font-size: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+.datefilters > div:nth-child(1){
+ margin-top: 10px;
+}
+.datefilters >div > div > div > div > div > div > input {
+  padding: 17px;
+  background-color: #fff !important;
+  width: 150px;
+}
+.plants > div > div >label{
+  color: #000 !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+    line-height: 6px;
+}
+.datefilters > div > div > div > span{
+  color: #000 !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+    line-height: 6px;
+}
+.datefilters{
+  display: flex;
+  justify-content: center;
+}
+.datefilters > div >div >div > div > div > div {
+  margin-top: 5px;
+}

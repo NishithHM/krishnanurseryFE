@@ -49,7 +49,7 @@ const Datefilter = ({
     <div className={styles.wrapper}>
       <div className={styles.innerWrapper}>
         <div>
-          <p className={styles.inputTitle}>Start Date</p>
+          <span className={styles.inputTitle}>Start Date</span>
 
           <Datepicker
             onChange={(e) => {
@@ -66,7 +66,7 @@ const Datefilter = ({
         </div>
 
         <div>
-          <p className={styles.inputTitle}>End Date</p>
+          <span className={styles.inputTitle}>End Date</span>
           <Datepicker
             onChange={(e) => {
               setParentSet(false);
