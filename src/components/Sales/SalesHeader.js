@@ -35,7 +35,7 @@ const SalesHeader = ({
     {
       title: "Sales",
       price: cardData?.sales,
-      percentage: cardData?.totalSales_perecntage,
+      percentage: cardData?.sales_perecntage,
       icon: (status) => <SalesIcon status={status} />, 
     },
     {
