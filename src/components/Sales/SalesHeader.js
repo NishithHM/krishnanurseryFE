@@ -128,7 +128,7 @@ const SalesHeader = ({
   let variantsTableData = [];
   if (variantsData !== undefined) {
     variantsTableData = variantsData?.map((item) => [
-      { value: item?._id?.en?.name },
+      { value: item?._id },
       { value: item?.quantity },
       {
         value: (
