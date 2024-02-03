@@ -41,7 +41,7 @@ const SalesHeader = ({
     {
       title: "Wastages",
       price: cardData?.damages,
-      percentage: cardData?.saleQuantity_perecntage,
+      percentage: cardData?.wastages_perecntage,
       icon: (status) => <WastageIcon status={status} />, 
     },
     {
@@ -72,6 +72,7 @@ const SalesHeader = ({
         (item) => item?.title.toLowerCase() in item
       );
       setFilteredData(clickedData);
+      console.log(clickedData, graphsData, item, "check")
     }
   };
   let variantsData = cardData?.variants;
@@ -175,6 +176,7 @@ const SalesHeader = ({
       if (selectedTitle) {
         selectedData = graphsData?.data?.map((item) => item[selectedTitle]);
       }
+      console.log(graphsData, selectedTitle)
       chartRef.current = new Chart(ctx, {
         type: "line",
         data: {
@@ -228,7 +230,6 @@ const SalesHeader = ({
           >
             {headerData.map((item, index) => (
               <Grid item xs={2} key={index}>
-                {console.log('item', item)}
                 <div
                   className={`${styles.col} ${
                     selectedCard?.title === item?.title ? styles.selectedCard : ""
