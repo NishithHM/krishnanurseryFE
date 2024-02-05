@@ -42,8 +42,8 @@ const SalesHeader = ({
     {
       title: "Wastages",
       price: cardData?.damages,
-      percentage: cardData?.saleQuantity_perecntage,
-      icon: (status) => <WastageIcon status={status} />,
+      percentage: cardData?.wastages_perecntage,
+      icon: (status) => <WastageIcon status={status} />, 
     },
     {
       title: "Profit",
@@ -53,20 +53,19 @@ const SalesHeader = ({
     },
     {
       title: "Payments",
-      price: cardData?.damages,
+      price: cardData?.payments,
       percentage: cardData?.payments_perecntage,
       icon: (status) => <PaymentsIcon status={status} />,
     },
     {
       title: "Inventory",
-      price: cardData?.profit,
+      price: cardData?.inventory,
       // percentage: 10,
       icon: (status) => <InventoryIcon status={status} />,
     },
   ];
 
   const handleCardClick = (index, item) => {
-    console.log(item, "==item");
     setSelectedCard(item);
     setSelectedCardIndex(index);
     setSelectedTitle(item?.title.toLowerCase());
@@ -75,6 +74,7 @@ const SalesHeader = ({
         (item) => item?.title.toLowerCase() in item
       );
       setFilteredData(clickedData);
+      console.log(clickedData, graphsData, item, "check")
     }
   };
   let variantsData = cardData?.variants;
@@ -136,7 +136,7 @@ const SalesHeader = ({
   if (variantsData !== undefined) {
     console.log(totalQuantity,"=====totalQuantity")
     variantsTableData = variantsData?.map((item) => [
-      { value: item?._id?.en?.name },
+      { value: item?._id },
       { value: item?.quantity },
       {
         value: (
@@ -258,7 +258,6 @@ const SalesHeader = ({
     ]);
     
   }
-  console.log(variantsTableData, "===variantsTableData");
 
   const chartRef = useRef(null);
   useEffect(() => {
@@ -276,7 +275,7 @@ const SalesHeader = ({
       if (selectedTitle) {
         selectedData = graphsData?.data?.map((item) => item[selectedTitle]);
       }
-
+      console.log(graphsData, selectedTitle)
       chartRef.current = new Chart(ctx, {
         type: "line",
         data: {
