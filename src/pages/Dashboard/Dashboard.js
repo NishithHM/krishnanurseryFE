@@ -164,7 +164,7 @@ const Dashboard = () => {
         <div style={{ width: "300px" }}>
           <div
             className={styles.tabItem}
-            style={{ color: selectedTab === "Nursery" && "#008000" }}
+            style={{ color: selectedTab === "Nursery" && "#038819" }}
             onClick={() => setSelectedTab("Nursery")}
           >
             Nursery
@@ -175,7 +175,7 @@ const Dashboard = () => {
         </div>
         <div style={{ width: "300px" }}>
           <div
-            style={{ color: selectedTab === "Agri" && "#008000" }}
+            style={{ color: selectedTab === "Agri" && "#038819" }}
             className={styles.tabItem}
             onClick={() => setSelectedTab("Agri")}
           >

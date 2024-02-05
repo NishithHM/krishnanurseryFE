@@ -1,5 +1,5 @@
 .header {
-  color: #539c64;
+  color: #038819 ;
   font-size: 2rem;
   font-weight: 500;
   margin-top: 3rem;
@@ -55,7 +55,7 @@
 }
 
 .iconButton {
-  background-color: #539c64;
+  background-color: #038819 ;
   width: 28px;
   height: 28px;
   border-radius: 14px;
@@ -81,7 +81,7 @@
 }
 
 .cartTable th {
-  color: #539c64;
+  color: #038819 ;
 }
 
 .cartTable td {
@@ -108,7 +108,7 @@
 }
 
 .billFigure > div {
-  color: #539c64;
+  color: #038819 ;
   margin: 0px 10px;
 }
 
@@ -207,7 +207,7 @@
 }
 
 .headerModal {
-  color: #539c64;
+  color: #038819 ;
   font-size: 2rem;
   font-weight: 500;
   margin-top: 1rem;

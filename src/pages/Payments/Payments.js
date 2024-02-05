@@ -63,7 +63,7 @@ const Payments = () => {
               to={`/authorised/dashboard/bills?search=${item.invoiceId}`}
               style={{
                 fontWeight: "bold",
-                color: "#539c64",
+                color: "#038819 ",
                 cursor: "pointer",
               }}
             >

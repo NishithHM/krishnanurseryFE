@@ -550,7 +550,7 @@ const AgriProcurement = () => {
             }}
           >
             <p
-              style={{ color: "#539C64", fontSize: "20px", fontWeight: "600" }}
+              style={{ color: "#038819 ", fontSize: "20px", fontWeight: "600" }}
             >
               Plant Images
             </p>

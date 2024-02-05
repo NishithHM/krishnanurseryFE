@@ -23,7 +23,7 @@
 
 .headertitle {
   font-size: 35px;
-  color: #539c64;
+  color: #038819 ;
 }
 
 .logoclick {
@@ -40,7 +40,7 @@
 @media screen and (min-device-width: 900px) and (max-device-width: 1400px) and (-webkit-min-device-pixel-ratio: 1) {
   .headertitle {
     font-size: 28px;
-    color: #539c64;
+    color: #038819 ;
   }
   .logoHeader {
     height: 80px;
@@ -50,7 +50,7 @@
 @media only screen and (max-width: 600px) {
   .headertitle {
     font-size: 18px;
-    color: #539c64;
+    color: #038819 ;
   }
   .logoHeader {
     height: 60px;
@@ -60,7 +60,7 @@
 @media only screen and (min-width: 320px) and (max-device-width: 425px) {
   .headertitle {
     font-size: 18px;
-    color: #539c64;
+    color: #038819 ;
   }
   .logoHeader {
     height: 50px;

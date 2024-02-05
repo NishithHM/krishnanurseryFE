@@ -9,6 +9,8 @@ const Datefilter = ({
   startDateInput,
   endDateInput,
   onReset,
+  defaultStartDate,
+  defaultEndDate
 }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -56,11 +58,13 @@ const Datefilter = ({
               setParentSet(false);
               setStartDate(e);
             }}
+            id="startDate"
             size="xs"
             value={startDate}
             maxDate={new Date()}
             styles={datePickerStyles}
             clearable={false}
+            defaultStartDate={defaultStartDate}
           
           />
         </div>
@@ -73,11 +77,13 @@ const Datefilter = ({
               setEndDate(e);
             }}
             size="xs"
+            id="endDate"
             value={endDate}
             maxDate={new Date()}
             styles={datePickerStyles}
             minDate={startDate}
             clearable={false}
+            defaultEndDate ={defaultEndDate}
           />
         </div>
       </div>

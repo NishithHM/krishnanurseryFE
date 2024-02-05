@@ -16,7 +16,7 @@
     background: transparent;
     border: none;
     outline: none;
-    color: #539c64;
+    color: #038819 ;
     padding: 0 10px;
     cursor: pointer;
   }
@@ -30,7 +30,7 @@
     background: transparent;
     border: none;
     outline: none;
-    color: #539c64;
+    color: #038819 ;
     padding: 0 10px;
     cursor: pointer;
   }
@@ -80,14 +80,14 @@
   }
   
   .noDataDisplayText {
-    color: #539c64;
+    color: #038819 ;
     text-align: center;
     font-size: 20px;
   }
   
   .tableVariants {
     width: 100%;
-    color: #539c64;
+    color: #038819 ;
     font-weight: 300;
   }
   
@@ -98,7 +98,7 @@
     height: 30px;
     border-radius: 16px;
     text-align: center;
-    background-color: #539c64;
+    background-color: #038819 ;
   }
   
   .addButton {
@@ -147,11 +147,11 @@
     text-align: center;
     font-size: 24px;
     font-weight: 500;
-    color: #539c64;
+    color: #038819 ;
   }
   
   .delIcon {
-    background-color: #539c64;
+    background-color: #038819 ;
     width: 28px;
     height: 28px;
     border-radius: 14px;
@@ -169,7 +169,7 @@
   }
   
   .borderTable {
-    border: 1px solid #539c64;
+    border: 1px solid #038819 ;
   }
   
   .immediateButton{

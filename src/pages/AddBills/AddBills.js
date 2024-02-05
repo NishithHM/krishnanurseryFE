@@ -794,7 +794,8 @@ const formatedBillHistory = (prev) => {
                 <p style={{
                      width : "50%",
                      textAlign : "center",
-                     cursor : "pointer"
+                     cursor : "pointer",
+                     color :"#038819"
                 }} onClick={() => setSelectedTab("Nursery")}>
                   Nursery
                 </p>
@@ -813,7 +814,8 @@ const formatedBillHistory = (prev) => {
                 <p style={{
                      width : "50%",
                      textAlign : "center",
-                     cursor : "pointer"
+                     cursor : "pointer",
+                     color :"#038819"
                 }} onClick={() => setSelectedTab("Agri")}>
                   Agri
                 </p>

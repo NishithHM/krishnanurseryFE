@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    color: #539c64;
+    color: #038819 ;
 }
 
 .title {
@@ -15,7 +15,7 @@
 }
 
 .controlBtn {
-    background: #539c64;
+    background: #038819 ;
     padding: 1px 4px;
     color: white;
     border-radius: 5px;

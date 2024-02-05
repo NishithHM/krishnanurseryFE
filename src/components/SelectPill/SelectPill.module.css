@@ -16,13 +16,13 @@
   -khtml-user-select: none;
   -webkit-user-select: none;
   color: #000;
-  border-color: #539c64;
+  border-color: #038819 ;
   font-weight: 500;
   transition: all 0.1s ease-in;
 }
 
 .selected {
-  background-color: #539c64;
+  background-color: #038819 ;
   color: #ffffff;
   font-weight: 600;
 }

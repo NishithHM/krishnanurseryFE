@@ -85,8 +85,8 @@ const Dropdown = ({
       borderRadius: "0px",
       outline: "none",
       "&:hover": {
-        border: "1px solid #539c64",
-        boxShadow: "0px 0px 1px #539c64",
+        border: "1px solid #038819 ",
+        boxShadow: "0px 0px 1px #038819 ",
       },
     }),
     menu: (provided, state) => ({

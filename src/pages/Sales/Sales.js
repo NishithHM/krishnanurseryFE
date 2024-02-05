@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Container from "@mui/material/Container";
 import SalesHeader from "../../components/Sales/SalesHeader";
 import Dropdown from "../../components/Dropdown/Dropdown";
@@ -10,23 +10,34 @@ import {
 } from "../../services/sales.services";
 import Datefilter from "../../components/Filters/Datefilter";
 import styles from "../../components/Sales/Sales.module.css";
+import { BackButton } from "../../components";
+
 const Sales = () => {
   const [metaData, { data }] = useMetaDataMutation();
   const [graphData] = useGraphDataMutation();
   const [cardData, setCardData] = useState(null);
   const [graphsData, setGraphsData] = useState(null);
-  const [dateRange, setDateRange] = useState({});
   const [selectedPlants, setSelectedPlants] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
+// const [selectdate ,setSelectDate] =useState(false)
+  const defaultStartDate = dayjs().subtract(1, 'year').format('YYYY-MM-DD');
+  const defaultEndDate = dayjs().format('YYYY-MM-DD');
+
+  const [dateRange, setDateRange] = useState({
+    startDate: defaultStartDate,
+    endDate: defaultEndDate,
+  });
+
   const handlePlantChange = useCallback((selectedPlants) => {
     setSelectedPlants(selectedPlants);
     setSelectedCategory([]);
   }, [selectedPlants]);
-  
+
   const handleCategoryChange = useCallback((selectedCategories) => {
     setSelectedCategory(selectedCategories);
     setSelectedPlants([]);
   }, [selectedCategory]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,10 +67,12 @@ const Sales = () => {
     };
     fetchData();
   }, [dateRange, selectedPlants, selectedCategory]);
+
   const handleDateChange = useCallback((selectedDate) => {
     if (selectedDate && selectedDate.startDate && selectedDate.endDate) {
-      const formattedStartDate = dayjs(selectedDate.startDate).format("YYYY-MM");
-      const formattedEndDate = dayjs(selectedDate.endDate).format("YYYY-MM");
+      // setSelectDate(true);
+      const formattedStartDate = dayjs(selectedDate.startDate).format("YYYY-MM-DD");
+      const formattedEndDate = dayjs(selectedDate.endDate).format("YYYY-MM-DD");
 
       const plantsArray = selectedPlants || [];
       const categoriesArray = selectedCategory || [];
@@ -77,66 +90,66 @@ const Sales = () => {
 
   return (
     <div>
+      <div>
+        <BackButton navigateTo={"/authorised/dashboard"} />
+      </div>
       <Container maxWidth="xl" className=" containermax ">
-        {/* <Container> */}
-          <div >
-            <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
-          </div>
+        <div>
+          <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
+        </div>
+        <div>
           <div>
-            <div>
-              <Grid
-                container
-                spacing={2}
-                item
-                xs={12}
-                // columnSpacing={{ xs: 3, sm: 6, md: 9 }}
-              >
-                <Grid item xs={4} className = " plants ">
-                  <Dropdown
-                    url="/api/procurements/getAll?isList=true&isAll=true"
-                    id="addPlantName"
-                    apiDataPath={{ label: "names.en.name", value: "_id" }}
-                    title="Plants"
-                    onChange={handlePlantChange}
-                    value={selectedPlants}
-                    canCreate={true}
-                    required
-                    isMultiEnabled
-                    isDisabled={selectedCategory.length > 0}
-                    minInputToFireApi={3}
-                  />
-                </Grid>
-              
-                <Grid item xs={4} className =" datefilters  ">
-                  <Datefilter
-                  
-                    onChange={handleDateChange}
-                    startDateInput={dateRange.startDate}
-                    endDateInput={dateRange.endDate}
-                  />
-                </Grid>
-                <Grid item xs={4} className = " plants ">
-                  <Dropdown
-                    url="/api/category/getAll"
-                    id="addCategory"
-                    apiDataPath={{ label: "names.en.name", value: "_id" }}
-                    title="Category"
-                    onChange={handleCategoryChange}
-                    value={selectedCategory}
-                    canCreate={true}
-                    required
-                    isMultiEnabled
-                    minInputToFireApi={3}
-                    isDisabled={selectedPlants.length > 0}
-                  />
-                </Grid>
+            <Grid container spacing={2} item xs={12}>
+              <Grid item xs={4} className="plants">
+                <Dropdown
+                  url="/api/procurements/getAll?isList=true&isAll=true"
+                  id="addPlantName"
+                  apiDataPath={{ label: "names.en.name", value: "_id" }}
+                  title="Plants"
+                  onChange={handlePlantChange}
+                  value={selectedPlants}
+                  canCreate={true}
+                  required
+                  isMultiEnabled
+                  isDisabled={selectedCategory.length > 0}
+                  minInputToFireApi={3}
+                />
               </Grid>
-            </div>
-            <div style={{"margin-top":"50px"}}>
-              <SalesHeader cardData={cardData} selectedPlants={selectedPlants} graphsData={graphsData} selectedCategory={selectedCategory} />
-            </div>
+              <Grid item xs={4} className="datefilters">
+                <Datefilter
+                  onChange={handleDateChange}
+                  startDateInput={dateRange.startDate}
+                  endDateInput={dateRange.endDate}
+                  defaultStartDate ={defaultStartDate}
+                  defaultEndDate ={defaultEndDate}
+                />
+              </Grid>
+              <Grid item xs={4} className="plants">
+                <Dropdown
+                  url="/api/category/getAll"
+                  id="addCategory"
+                  apiDataPath={{ label: "names.en.name", value: "_id" }}
+                  title="Category"
+                  onChange={handleCategoryChange}
+                  value={selectedCategory}
+                  canCreate={true}
+                  required
+                  isMultiEnabled
+                  minInputToFireApi={3}
+                  isDisabled={selectedPlants.length > 0}
+                />
+              </Grid>
+            </Grid>
           </div>
-        {/* </Container> */}
+          <div style={{ "margin-top": "50px" }}>
+            <SalesHeader
+              cardData={cardData}
+              selectedPlants={selectedPlants}
+              graphsData={graphsData}
+              selectedCategory={selectedCategory}
+            />
+          </div>
+        </div>
       </Container>
     </div>
   );

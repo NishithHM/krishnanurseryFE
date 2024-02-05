@@ -14,20 +14,18 @@
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  /* background-color: #fff; */
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 10px;
   padding: 20px;
   transition: box-shadow 0.3s, filter 0.3s;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  /* height: 80px; */
 }
 .selectedCard {
-  background: #4cd964 !important;
+  background: #038819 !important;
   color: #ffff !important;
   filter: brightness(1.2);
-  box-shadow: 0 4px 8px rgba(76, 217, 100, 0.3); /* Adjust the shadow color and intensity */
+  box-shadow: 0 4px 8px rgba(76, 217, 100, 0.3); 
 }
 
 .variants {
@@ -38,13 +36,13 @@
 .var1 {
   font-size: 20px;
   font-weight: 700;
-  color: #4cd964;
+  color: #038819 ;
 }
 .cardtit {
   text-transform: uppercase;
   font-weight: 600;
   line-height: 1.5;
-  color: #4cd964 !important;
+  color: #038819 !important;
   font-size: 20px;
 }
 
@@ -73,9 +71,18 @@
   font-size: 14px !important;
 }
 .chart {
-  position: relative;
-  height: 300px;
+  height: auto !important;
+  padding: 20px !important;
+  width: 100% !important;
 }
+.chart2{
+  height: 327px !important;
+  padding: 20px !important;
+  width: 100% !important;
+}
+/* .chartdataa{
+  width: 1350px !important;
+} */
 .graphsdataa {
   padding-top: 50px;
 }
@@ -99,13 +106,33 @@
   font-size: 20px;
 }
 .iconscolor {
-  /* color: #ffff !important; */
   fill: #ffff !important;
-  /* background: #ffff !important; */
 }
 .losstext {
   color: red !important ;
 }
 .inventorycard {
-  height: 67px;
+  padding-bottom: 50px;
+  cursor: not-allowed  !important;
+  pointer-events: none !important;
+}
+.fullWidthCard {
+  width: 100%;
+}
+.dataicons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profittext{
+  color: #038819 !important;
+}
+.profitcolr{
+  color: #ffff !important;
+}
+.coloricons{
+  color: #ffff !important;
+}
+.pricecolors{
+  color: #ffff !important;
 }

@@ -14,7 +14,7 @@ const ViewDetials = ({ onDetailClick, id }) => {
   return (
     <span
       onClick={(e) => onDetailClick(id)}
-      style={{ color: "#539c64", fontWeight: "600", cursor: "pointer" }}
+      style={{ color: "#038819 ", fontWeight: "600", cursor: "pointer" }}
     >
       View Details
     </span>

@@ -12,6 +12,9 @@ const Datepicker = ({
   minDate,
   clearable,
   disabled,
+  id,
+  defaultStartDate,
+  defaultEndDate
 }) => {
   const customStyles = {
     label: {
@@ -32,11 +35,12 @@ const Datepicker = ({
   };
 
   const appliedStyles = parentStyle ? parentStyle : customStyles;
-
+console.log(id,"===id")
+// console.log(minDate,"===minDate")
   return (
     <DatePicker
       label={label}
-      placeholder="dd-mm-yyyy"
+      placeholder={id === "startDate" ? defaultStartDate : defaultEndDate }
       inputFormat="DD-MM-YYYY"
       labelFormat="MMMM - YYYY"
       maxDate={maxDate}

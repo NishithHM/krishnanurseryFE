@@ -80,7 +80,7 @@ const Input = (props) => {
         {type === "password" && (
           <i className={styles.passwordIcon} onClick={showPasswordHandler}>
             <FontAwesomeIcon
-              style={{ color: "#539c64" }}
+              style={{ color: "#038819 " }}
               icon={!show ? faEyeSlash : faEye}
             />
           </i>
