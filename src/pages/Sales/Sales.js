@@ -108,7 +108,6 @@ const Sales = () => {
                   title="Plants"
                   onChange={handlePlantChange}
                   value={selectedPlants}
-                  canCreate={true}
                   required
                   isMultiEnabled
                   isDisabled={selectedCategory.length > 0}
@@ -132,7 +131,6 @@ const Sales = () => {
                   title="Category"
                   onChange={handleCategoryChange}
                   value={selectedCategory}
-                  canCreate={true}
                   required
                   isMultiEnabled
                   minInputToFireApi={3}
