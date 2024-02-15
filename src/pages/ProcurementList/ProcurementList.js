@@ -100,7 +100,7 @@ const ProcurementList = () => {
 
   const [plantImages, setPlantImages] = useState([]);
   const [imageLoader,setImageLoader] = useState(false)
-
+const [spinner,setSpinner] = useState(false)
   const [values] = useContext(AuthContext);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
@@ -269,6 +269,7 @@ const ProcurementList = () => {
 
   const onVariantSubmitHandler = async () => {
     setLoaders(true);
+   
     
     const isValid = validateMinMaxPrices(variantRows);
     if(!isValid) {
@@ -368,7 +369,9 @@ const ProcurementList = () => {
   const onMinimumClick = () => {
     setMinimumMode(!isMinimumSelected);
   };
-
+const setBtns = ()=>{
+  setSpinner(true);
+}
   return (
     <>
       <Toaster />
@@ -551,14 +554,18 @@ const ProcurementList = () => {
                     </table>
                   </div>
                   <div className={styles.submitWrapper}>
-                    <div className={styles.submitBtn}>
-                      <Button
+                    <div className={styles.submitBtn} onClick={setBtns}>
+                      {
+                        spinner ? (<Spinner /> )  :( <Button
                         type="primary"
                         title="Submit Variants"
                         onClick={onVariantSubmitHandler}
                         disabled={disabledVariantsSubmit}
                         loading={loaders}
                       />
+                        )
+                      }
+                      
                     </div>
                   </div>
                   <span className={styles.errorText}>{error}</span>

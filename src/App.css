@@ -118,3 +118,13 @@ input[type="number"] {
 .datefilters > div >div >div > div > div > div {
   margin-top: 5px;
 }
+.backbtn{
+  color: #038819;
+  font-size: 25px;
+  /* padding: 10px 10px 10px 0px; */
+  /* margin: 0 20px; */
+  /* margin-top: 5px; */
+}
+/* .admindash > div > div {
+  margin: 0px !important;
+} */

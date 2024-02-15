@@ -80,7 +80,7 @@ const WasteList = () => {
 
 
     const formatDamageData = ({ data, }) => {
-        const formatted = data.map((ele) => {
+        const formatted = data?.map((ele) => {
             const name = { value: ele.names?.en?.name };
             const createdAt = { value: dayjs(ele.createdAt).format("DD-MM-YYYY") };
             const reportedBy = {

@@ -25,7 +25,7 @@
   background: #038819 !important;
   color: #ffff !important;
   filter: brightness(1.2);
-  box-shadow: 0 4px 8px rgba(76, 217, 100, 0.3); 
+  box-shadow: 0 4px 8px rgba(76, 217, 100, 0.3);
 }
 
 .variants {
@@ -36,7 +36,7 @@
 .var1 {
   font-size: 20px;
   font-weight: 700;
-  color: #038819 ;
+  color: #038819;
 }
 .cardtit {
   text-transform: uppercase;
@@ -75,7 +75,7 @@
   padding: 20px !important;
   width: 100% !important;
 }
-.chart2{
+.chart2 {
   height: 327px !important;
   padding: 20px !important;
   width: 100% !important;
@@ -113,26 +113,36 @@
 }
 .inventorycard {
   padding-bottom: 50px;
-  cursor: not-allowed  !important;
+  cursor: not-allowed !important;
   pointer-events: none !important;
 }
 .fullWidthCard {
   width: 100%;
 }
-.dataicons{
+.dataicons {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.profittext{
+.profittext {
   color: #038819 !important;
 }
-.profitcolr{
+.profitcolr {
   color: #ffff !important;
 }
-.coloricons{
+.coloricons {
   color: #ffff !important;
 }
-.pricecolors{
+.pricecolors {
   color: #ffff !important;
+}
+.admindash {
+    display: flex;
+    align-items: center;
+}
+.backnavgia{
+  padding-left: 20px;
+}
+.admindash > div > div {
+  margin: 0px !important;
 }
