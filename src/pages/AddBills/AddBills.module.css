@@ -85,8 +85,6 @@
   padding: 10px 0;
   margin: 0 10px;
   padding: 10px 0 10px 0;
-  padding-bottom: 10rem;
-  height:10vh;
   overflow: auto;
 }
 
@@ -351,6 +349,14 @@
 .printButton > button > span {
   font-weight: 600;
   font-size: 16px;
+}
+
+.extraItems{
+  display: flex;
+}
+
+.extraRows{
+  margin: 10px;
 }
 
 @media print {

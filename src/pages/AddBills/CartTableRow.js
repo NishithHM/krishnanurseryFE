@@ -113,7 +113,6 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
     console.log("Total QTY", totalQty)
   }
 
-  console.log("CARTRESPONSE", cartResponse)
 
   return (
     <div className={styles.billDetails}>

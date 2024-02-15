@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { Input, Button, Toaster, BackButton, Checkbox } from "../../components";
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { BillDetails, CartTableHeader, CartTableRow } from "./CartTableRow";
 import _ from "lodash";
 import { useLazyGetCustomerByPhoneQuery } from "../../services/customer.service";
@@ -49,7 +49,7 @@ export default function AddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
-    customerAddress : "",
+    customerAddress: "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -69,12 +69,13 @@ export default function AddBills() {
     submitDisable: false,
     invoiceNumber: "",
     isWholeSale: false,
-    isApproved: false
+    isApproved: false,
+    extras: [{ name: '', price: '' }]
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
-  const [selectedTab,setSelectedTab] = useState("Nursery")
+  const [selectedTab, setSelectedTab] = useState("Nursery")
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -138,7 +139,6 @@ export default function AddBills() {
 
   const fetchCustomerInfo = async () => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
-    // console.log("by number", customerDetails)
     if (customerDetails.error) {
       setState((prev) => ({
         ...prev,
@@ -154,10 +154,9 @@ export default function AddBills() {
           // console.log("item", item?.procurementName?.ka?.name)
           let val = [];
           val.push({
-            value: `${item.procurementName.en.name} (${
-              item?.procurementName?.ka?.name || ""
-            })`,
-            type : item?.procurementName?.ka?.name === undefined ? "Agri" : "Nurssery"
+            value: `${item.procurementName.en.name} (${item?.procurementName?.ka?.name || ""
+              })`,
+            type: item?.procurementName?.ka?.name === undefined ? "Agri" : "Nurssery"
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -179,23 +178,20 @@ export default function AddBills() {
           cartRows.push({
             id: new Date().toISOString() + Math.random(),
             procurementId: item.procurementId,
-            procurementLabel: `${item.procurementName.en.name}(${
-              item?.procurementName?.ka?.name || ""
-            }) `,
+            procurementLabel: `${item.procurementName.en.name}(${item?.procurementName?.ka?.name || ""
+              }) `,
             variants: [
               {
-                label: `${item.variant.en.name}(${
-                  item?.variant?.ka?.name || ""
-                })`,
+                label: `${item.variant.en.name}(${item?.variant?.ka?.name || ""
+                  })`,
                 value: item.variant.variantId,
                 maxPrice: item.mrp,
                 minPrice: item.mrp,
               },
             ],
             variantId: item.variant.variantId,
-            variantLabel: `${item.variant.en.name}(${
-              item?.variant?.ka?.name || ""
-            })`,
+            variantLabel: `${item.variant.en.name}(${item?.variant?.ka?.name || ""
+              })`,
             mrp: item.mrp,
             price: item.rate,
             quantity: item.quantity,
@@ -208,7 +204,7 @@ export default function AddBills() {
         } else {
           setTableRowData(cartRows);
         }
-        if(customerCart.data.isApproved && approveRef.current){
+        if (customerCart.data.isApproved && approveRef.current) {
           clearInterval(approveRef.current)
         }
         setState((prev) => ({
@@ -270,9 +266,8 @@ export default function AddBills() {
     }));
     if (name === "procurementId") {
       tableRowClone.procurementId = value.value;
-      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${
-        value?.meta?.names?.ka?.name || ""
-      })`;
+      tableRowClone.procurementLabel = `${value.meta.names.en.name} (${value?.meta?.names?.ka?.name || ""
+        })`;
       let tempVariant = [];
       value.meta.variants.forEach((el) => {
         tempVariant.push({
@@ -389,13 +384,14 @@ export default function AddBills() {
         : state.customerDetails.dob,
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
       items,
-      isWholeSale: state.isWholeSale
+      isWholeSale: state.isWholeSale,
+      extras: state.extras
     };
 
     let checkout = null;
 
     if (state.cartResponse._id) {
-      const payload = { items: items,isWholeSale: state.isWholeSale };
+      const payload = { items: items, isWholeSale: state.isWholeSale, extras: state.extras };
       checkout = await updateCart({
         cartId: state.cartResponse._id,
         updatedCartData: payload,
@@ -518,22 +514,24 @@ export default function AddBills() {
   };
 
   const isTableValid = () => {
-    let output = true;
+    let table = true;
 
     for (let i = 0; i < tableRowData.length; i++) {
       if (!isRowValid(tableRowData[i])) {
-        output = false;
+        table = false;
         break;
       }
     }
 
-    return output;
+    const extraValid = state.extras.reduce((acc, val) => acc && val.name && val.price, true)
+
+    return { tableValid: table, extraValid, all: table && extraValid }
   };
 
   const shouldCheckoutDisable = () => {
     if (
       state.errorFields.length > 0 ||
-      !isTableValid() ||
+      !isTableValid().all ||
       tableRowData.length === 0
     ) {
       return true;
@@ -565,52 +563,84 @@ export default function AddBills() {
       : state.customerName;
 
   const handleKeyPress = async (e) => {
-      console.log(e.key)
-      if(e.key === "Enter") {
-       await handleCheckout();
-      }else if(e.key === "Tab") {
-       await handleAddItem()
-      }
+    console.log(e.key)
+    if (e.key === "Enter") {
+      await handleCheckout();
+    } else if (e.key === "Tab") {
+      await handleAddItem()
+    }
   }
 
-const formatedBillHistory = (prev) => {
-  if(selectedTab === "Agri") {
-    const newArray = prev.filter((curr, i) => {
-      let pr = curr[0];
-      if(pr.type === "Agri"){
-      return true; 
-      }else {
-        return false;
-      }
-    })
-    return newArray;
-  }else {
-    const newArray = prev.filter((curr, i) => {
-      let pr = curr[0];
-      if(pr.value.substring(pr.value.length-2) !== "()"){
-      return true; 
-      }else {
-        return false;
-      }
-    })
-    return newArray;
+  const formatedBillHistory = (prev) => {
+    if (selectedTab === "Agri") {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if (pr.type === "Agri") {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      return newArray;
+    } else {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if (pr.value.substring(pr.value.length - 2) !== "()") {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      return newArray;
+    }
   }
-}
-  const onPreviewClick=()=>{
+  const onPreviewClick = () => {
     setShowPreview(!showPreview);
-    if(state.isWholeSale){
-      const int= setInterval(()=>{
+    if (state.isWholeSale) {
+      const int = setInterval(() => {
         console.log('calling api')
         fetchCustomerInfo()
       }, 5000)
       approveRef.current = int
     }
-    
+
   }
 
   const onPreviewClose = () => {
     setShowPreview(!showPreview)
     clearInterval(approveRef.current)
+  }
+
+  const handleAddExtraItem = () => {
+    const newExtras = [...state.extras]
+    newExtras.push({ name: '', price: '' })
+    setState((prev => ({
+      ...prev,
+      extras: newExtras
+    })))
+  }
+
+  const handleChangeExtraItem = (e, type, index) => {
+    console.log(e.target.value)
+    const newExtra = [...state.extras]
+    const item = newExtra[index]
+    item[type] = e.target.value
+    newExtra[index] = item
+    setState((prev => ({
+      ...prev,
+      checkOutDone: false,
+      extras: [...newExtra]
+    })))
+
+  }
+
+  const handleRemoveExtraItem=(index)=>{
+    let newExtras = [...state.extras]
+    newExtras = newExtras.filter((ele,i)=> index!==i)
+    setState((prev => ({
+      ...prev,
+      extras: [...newExtras]
+    })))
   }
 
   // console.log("state", state.billingHistory)
@@ -621,11 +651,11 @@ const formatedBillHistory = (prev) => {
 
       <div className={styles.headerWrapper}>
         <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
+          <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <h1 className={styles.header}>Generate Bill</h1>
         <h1 className={styles.header} style={{
-          marginRight : "-100px"
+          marginRight: "-100px"
         }}>Purchase History</h1>
       </div>
 
@@ -634,77 +664,77 @@ const formatedBillHistory = (prev) => {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-                <Input
-                  value={state.customerNumber}
-                  id="customerNumber"
-                  type="number"
-                  errorMessage="Invalid Customer Number"
-                  required
-                  validation={(number) => number.length === 10}
-                  onChange={inputChangeHanlder}
-                  onError={onError}
-                  title="Customer Number:"
-                />
-                <Input
-                  value={name}
-                  id="customerName"
-                  type="text"
-                  title="Customer Name:"
-                  onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
-                />
-               {
+              <Input
+                value={state.customerNumber}
+                id="customerNumber"
+                type="number"
+                errorMessage="Invalid Customer Number"
+                required
+                validation={(number) => number.length === 10}
+                onChange={inputChangeHanlder}
+                onError={onError}
+                title="Customer Number:"
+              />
+              <Input
+                value={name}
+                id="customerName"
+                type="text"
+                title="Customer Name:"
+                onChange={inputChangeHanlder}
+                disabled={state.nameDisabled}
+              />
+              {
                 state.showDOB && (
                   <Input
-                  value={state.customerAddress}
-                  id="customerAddress"
-                  type="text"
-                  title="Customer Address:"
-                  onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
-                />
-                )
-               }
-            
-                {state.showDOB && (
-                  <DatePicker
-                    defaultValue={defaultDate}
-                    placeholder="dd-mm-yyyy"
-                    label="Date Of Birth"
-                    inputFormat="DD/MM/YYYY"
-                    labelFormat="MMMM - YYYY"
-                    size="sm"
-                    withAsterisk={false}
-                    value={state.dateOfBirth}
-                    onChange={dateChangeHandler}
-                    maxDate={new Date(today.setDate(today.getDate() - 1))}
-                    clearable={false}
-                    styles={{
-                      label: {
-                        width : "60%",
-                        fontSize: "18px",
-                        marginBottom: "2px",
-                        fontFamily: "sans-serif",
-                        fontWeight: 500,
-                      },
-                      input: {
-                        border: "none",
-                        width : "60%",
-                        borderBottom: "1.5px solid black",
-                        borderRadius: 0,
-                        fontSize: "18px",
-                        // fontWeight: 400,
-                        color : "#332b2b"
-                      },
-                    }}
+                    value={state.customerAddress}
+                    id="customerAddress"
+                    type="text"
+                    title="Customer Address:"
+                    onChange={inputChangeHanlder}
+                    disabled={state.nameDisabled}
                   />
-                )}
-                
+                )
+              }
+
+              {state.showDOB && (
+                <DatePicker
+                  defaultValue={defaultDate}
+                  placeholder="dd-mm-yyyy"
+                  label="Date Of Birth"
+                  inputFormat="DD/MM/YYYY"
+                  labelFormat="MMMM - YYYY"
+                  size="sm"
+                  withAsterisk={false}
+                  value={state.dateOfBirth}
+                  onChange={dateChangeHandler}
+                  maxDate={new Date(today.setDate(today.getDate() - 1))}
+                  clearable={false}
+                  styles={{
+                    label: {
+                      width: "60%",
+                      fontSize: "18px",
+                      marginBottom: "2px",
+                      fontFamily: "sans-serif",
+                      fontWeight: 500,
+                    },
+                    input: {
+                      border: "none",
+                      width: "60%",
+                      borderBottom: "1.5px solid black",
+                      borderRadius: 0,
+                      fontSize: "18px",
+                      // fontWeight: 400,
+                      color: "#332b2b"
+                    },
+                  }}
+                />
+              )}
+
             </div>
           </div>
-          <div className={styles.itemList} style={{paddingLeft: '10px'}}>
+          <div className={styles.itemList} style={{ paddingLeft: '10px' }}>
             <h3>Select if Wholesaler</h3>
-            <Checkbox value={state.isWholeSale}  label={"wholesale"} onChange={e=>setState(prev=>({...prev, isWholeSale: e, checkOutDone: false}))} />
+            <Checkbox value={state.isWholeSale} label={"wholesale"} onChange={e => setState(prev => ({ ...prev, isWholeSale: e, checkOutDone: false }))} />
           </div>
           <div className={styles.itemList}>
             <div className={styles.itemTitleWrap}>
@@ -712,14 +742,14 @@ const formatedBillHistory = (prev) => {
               <button
                 className={styles.iconButton}
                 style={{
-                  display : "flex",
-                  justifyContent : "center",
-                  alignItems : "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-                disabled={!isTableValid()}
+                disabled={!isTableValid().all}
                 onClick={handleAddItem}
               >
-                <FontAwesomeIcon icon={faPlus} style={{marginLeft : "0.8px"}} />
+                <FontAwesomeIcon icon={faPlus} style={{ marginLeft: "0.8px" }} />
               </button>
             </div>
             <div>
@@ -743,6 +773,47 @@ const formatedBillHistory = (prev) => {
                     })}
                   </tbody>
                 </table>
+              </div>
+
+              <div className={styles.cartTableContainer}>
+                <button
+                  className={styles.iconButton}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  disabled={!isTableValid().tableValid}
+                  onClick={handleAddExtraItem}
+                >
+                  <FontAwesomeIcon icon={faPlus} style={{ marginLeft: "0.8px" }} />
+                </button>
+                {state.extras.map((ele, index) => (
+                  <div className={styles.extraItems} key={index}>
+                    <div className={styles.extraRows}>
+                      <Input
+                        title="Title"
+                        type="text"
+                        value={ele.name}
+                        id={ele.name + index}
+                        onChange={(e) => handleChangeExtraItem(e, 'name', index)}
+                      />
+                    </div>
+                    <div className={styles.extraRows}>
+                      <Input
+                        title="Price"
+                        type="number"
+                        id={ele.price + index}
+                        value={ele.price}
+                        onChange={(e) => handleChangeExtraItem(e, 'price', index)} />
+                    </div>
+                    <div className={styles.extraRows}>
+                    <button className={styles.iconButton} onClick={()=>handleRemoveExtraItem(index)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                    </div>
+                  </div>
+                ))}
               </div>
               <div className={styles.checkOutWrapper}>
                 <div>
@@ -788,48 +859,48 @@ const formatedBillHistory = (prev) => {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory} style={{ marginRight : "15px"}}>
+        <div className={styles.billHistory} style={{ marginRight: "15px" }}>
           <div className={styles.historyTabContainer}>
-              <div className={styles.singleTab}>
-                <p style={{
-                     width : "50%",
-                     textAlign : "center",
-                     cursor : "pointer",
-                     color :"#038819"
-                }} onClick={() => setSelectedTab("Nursery")}>
-                  Nursery
-                </p>
-                {
-                  selectedTab === "Nursery" && (
-                    <div style={{
-                       height : "4px",
-                       width : "50%",
-                       borderRadius : "10px",
-                       background : "green"
-                }}></div>
-                  )
-                }
-              </div>
-              <div className={styles.singleTab}>
-                <p style={{
-                     width : "50%",
-                     textAlign : "center",
-                     cursor : "pointer",
-                     color :"#038819"
-                }} onClick={() => setSelectedTab("Agri")}>
-                  Agri
-                </p>
+            <div className={styles.singleTab}>
+              <p style={{
+                width: "50%",
+                textAlign: "center",
+                cursor: "pointer",
+                color: "#038819"
+              }} onClick={() => setSelectedTab("Nursery")}>
+                Nursery
+              </p>
+              {
+                selectedTab === "Nursery" && (
+                  <div style={{
+                    height: "4px",
+                    width: "50%",
+                    borderRadius: "10px",
+                    background: "green"
+                  }}></div>
+                )
+              }
+            </div>
+            <div className={styles.singleTab}>
+              <p style={{
+                width: "50%",
+                textAlign: "center",
+                cursor: "pointer",
+                color: "#038819"
+              }} onClick={() => setSelectedTab("Agri")}>
+                Agri
+              </p>
               {
                 selectedTab === "Agri" && (
                   <div style={{
-                  height : "4px",
-                  width : "50%",
-                  borderRadius : "10px",
-                  background : "green"
-                }}></div>
+                    height: "4px",
+                    width: "50%",
+                    borderRadius: "10px",
+                    background: "green"
+                  }}></div>
                 )
               }
-              </div>
+            </div>
           </div>
           <ScrollTable
             thead={billingHistoryHeader}
@@ -878,6 +949,7 @@ const formatedBillHistory = (prev) => {
             data={state}
             billedBy={auth.name}
             type="NURSERY"
+            extras={state.extras}
             isWholeSale={state.isWholeSale}
           />
         </div>
@@ -895,6 +967,7 @@ const formatedBillHistory = (prev) => {
         isWholeSale={state.isWholeSale}
         isApproved={state.isApproved}
         type="NURSERY"
+        extras={state.extras}
       >
       </InvoicePreview>
     </div>
