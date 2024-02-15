@@ -28,7 +28,8 @@ export const InvoicePreview = (props) => {
     handlePrintClick,
     cartData,
     setInvoiceNumber,
-    type
+    type,
+    extras
   } = props;
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export const InvoicePreview = (props) => {
           />
         </div>
       )}
-      <InvoiceSection {...props} printEnabled={printEnabled} />
+      <InvoiceSection {...props} printEnabled={printEnabled} extras={extras} />
       <div className={styles.modalAction}>{children}</div>
     </Modal>
   );
@@ -72,7 +73,8 @@ export const InvoiceSection = (props) => {
     invoiceNumber,
     printEnabled,
     invoiceDetails,
-    type
+    type,
+    extras,
   } = props;
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
@@ -124,6 +126,15 @@ export const InvoiceSection = (props) => {
       val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
+    extras.forEach((el, index)=>{
+      let val = []
+      val.push({ value: index + newCartList.length});
+      val.push({ value: el.name });
+      val.push({ value: el.price })
+      val.push({ value: 1 });
+      val.push({ value: el.price});
+      newCartList.push(val)
+    })
     setCartList(newCartList);
   }, [cartData]);
 
