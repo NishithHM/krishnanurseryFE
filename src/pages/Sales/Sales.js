@@ -98,7 +98,6 @@ const Sales = () => {
 
   return (
     <div>
-      <Container maxWidth="xl" className=" containermax ">
        <div className={styles.admindash}>
        <div>
           <BackButton navigateTo={"/authorised/dashboard"} className=" backbtn "/>
@@ -107,6 +106,7 @@ const Sales = () => {
           <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
         </div>
        </div>
+      <Container maxWidth="xl" className=" containermax ">
         <div>
           <div>
             <Grid container spacing={2} item xs={12}>
