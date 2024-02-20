@@ -216,6 +216,12 @@ export const procurementsApi = createApi({
           url: `/order/${id}?page=${page}`,
           method:'GET'
         })
+      }),
+      uploadPhamplet:builder.mutation({
+        query:({id, page})=>({
+          url: `/order/${id}?page=${page}`,
+          method:'GET'
+        })
       })
     };
   },

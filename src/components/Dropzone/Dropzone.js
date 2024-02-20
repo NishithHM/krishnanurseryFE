@@ -70,7 +70,7 @@ const DropZone = ({
           <span>Drag images here or click to select files</span>
           <br />
           <span>File should not exceed {maxFileSize}mb</span>
-          {maxFiles > 1 && (
+          {maxFiles > 0 && (
             <span>
               <br />
               Maximum {maxFiles} are allowed

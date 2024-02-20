@@ -36,6 +36,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ScrollTable from "../../components/Table/ScrollTable";
 import { GrClose } from "react-icons/gr";
+import DropZone from "../../components/Dropzone/Dropzone";
+import { MIME_TYPES } from "@mantine/dropzone";
 
 const billingHistoryHeader = [
   { value: "Procured On", width: "15%" },
@@ -61,6 +63,7 @@ const ProcurementList = () => {
   const [historyCount, setHistoryCount] = useState(0);
   const [variantRows, setVariantRows] = useState([rowInitState]);
   const [quantity, setQuantity] = useState("");
+  const [phamplet, setPhamphlet] = useState("");
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [isMinimumSelected, setMinimumMode] = useState(false);
@@ -155,6 +158,7 @@ const ProcurementList = () => {
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
     setQuantity(procurementData?.minimumQuantity);
+    setPhamphlet(procurementData?.phamplet)
     if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
         const row = [];
@@ -368,6 +372,12 @@ const ProcurementList = () => {
   const onMinimumClick = () => {
     setMinimumMode(!isMinimumSelected);
   };
+
+  const handlePhamplet=(files)=>{
+    //check
+    console.log(files)
+    
+  }
 
   return (
     <>
@@ -601,6 +611,29 @@ const ProcurementList = () => {
                   <p>Minimum stock needs to be mainained in inventory</p>
                 </>
               )}
+              {role==='admin' && 
+              <div>
+                <div>
+                    <span style={{fontWeight:'bold'}}>Plant phamplet</span>
+                </div>
+                <div>
+                  <span>{phamplet}</span>
+                </div>
+                <DropZone
+                  onDrop={(files) => {
+                    handlePhamplet(files);
+                  }}
+                  onReject={(files) => {
+                    toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                  }}
+                  maxSize={3 * 1024 ** 2}
+                  maxFiles="1"
+                  multiple={true}
+                  accept={[MIME_TYPES.pdf]}
+                  maxFileSize="5"
+                />
+              </div>
+              }
             </div>
           </div>
         )}
