@@ -323,7 +323,6 @@ const SalesHeader = ({
       }
     };
   }, [filteredData, selectedTitle]);
-
   return (
     <>
       <div>
@@ -418,7 +417,7 @@ const SalesHeader = ({
       </div>
       <div className={styles.graphsdataa}>
         <Grid container spacing={1} item xs={12}>
-          {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 ? (
+          {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 && variantsData?.length > 0 ? (
             <Grid item xl={6} xs={6}>
               <Card
                 className={`${styles.bg_gradient_default} ${styles.shadow}`}
@@ -447,20 +446,21 @@ const SalesHeader = ({
                 </CardHeader>
                 <CardContent>
                   <div >
-                    <canvas id="salesChart" className={`${ selectedCategory && selectedCategory.length ===2 || selectedPlants && selectedPlants.length ===2?  styles.chart :  null}`} />
+                    <canvas id="salesChart" className={`${ selectedCategory && selectedCategory.length ===2 || variantsData?.length === 0  || selectedPlants && selectedPlants.length ===2 || variantsData?.length === 0  ?  styles.chart :  null}`} />
                   </div>
                 </CardContent>
               </Card>
             </Grid>
           )}
 
-          {(selectedCategory &&
+          {
+          (selectedCategory &&
             selectedPlants.length === 0 &&
-            selectedCategory.length === 1) ||
-          (selectedPlants.length === 0 && selectedCategory.length === 0) ||
+            selectedCategory.length === 1&& variantsData?.length > 0 ) ||
+          (selectedPlants.length === 0 && selectedCategory.length === 0 && variantsData?.length > 0  ) ||
           (selectedPlants &&
             selectedCategory.length === 0 &&
-            selectedPlants.length === 1) ? (
+            selectedPlants.length === 1 && variantsData?.length > 0)? (
             // YourComponent.js
             <Grid item xl={6} xs={6} className=" grid7 ">
               <Card
@@ -477,7 +477,7 @@ const SalesHeader = ({
                 <Table data={[TABLE_HEADER, ...variantsTableData]} />
               </Card>
             </Grid>
-          ) : null}
+          ) :null}
         </Grid>
         <Grid
           container

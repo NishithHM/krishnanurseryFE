@@ -41,6 +41,7 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
+import { FadeLoader } from "react-spinners"
 const OrderMgmt = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
@@ -51,6 +52,7 @@ const OrderMgmt = () => {
     const [isVerifyOrderBtnEnabled,setIsVerifyOrderBtnEnabled] = useState(false)
     const [searchInput, setSearchInput] = useState("");
     const [ordersCount, setOrdersCount] = useState(0);
+    const [loading,setLoading] = useState(false);
     const [search, setSearch] = useState("")
     const [rejectOrder, setRejectOrder] = useState({
         isActive: false,
@@ -198,6 +200,7 @@ const OrderMgmt = () => {
     }, [plantImages, verifyOrder])
  
     const handlePlantimageSelect = (file) => {
+        
         setPlantImages((prev) => {
           let updated = [...prev, ...file];
     
@@ -206,8 +209,8 @@ const OrderMgmt = () => {
               return updated.find((a) => a.path === path);
             }
           );
+          setLoading(false);
           return uniqueArr
-          
         });
       };
 
@@ -218,7 +221,9 @@ const OrderMgmt = () => {
           return  updated
         });
       };  
-
+      const handleDropZoneClick = () => {
+        setLoading(true);
+    };
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
     return (
@@ -333,6 +338,7 @@ const OrderMgmt = () => {
 
             {/* verify order modal */}
             <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
+                
                 <AlertMessage
                     message={`Verify the order of ${verifyOrder?.data?.names?.en?.name || "Plants"
                         }.`}
@@ -355,12 +361,10 @@ const OrderMgmt = () => {
                         if (plantImages.length === 0) return toast.error("Select Plant Image");
                         if (verifyOrder.quantity <= 0)
                             return toast.error("Quantity cannot be less than one.");
-
                         const data = new FormData();
                         plantImages.forEach((img) => {
                             data.append("images", img);
                         });
-
                         data.append(
                             "body",
                             JSON.stringify({
@@ -371,9 +375,12 @@ const OrderMgmt = () => {
 
                         const res = await VerifyOrder(data);
                         if(res.error){
+                           
                             return toast.error(res.error?.data?.error)
+                        }else{
+
+                            toast.success("Order Verify Success!");
                         }
-                        toast.success("Order Verify Success!");
                         setVerifyOrder({
                             data: null,
                             isActive: false,
@@ -414,21 +421,30 @@ const OrderMgmt = () => {
                                 </div>
                             );
                         })}
-                        {plantImages.length < 3 && (
-                            <DropZone
-                                onDrop={(files) => {
-                                    handlePlantimageSelect(files);
-                                }}
-                                onReject={(files) => {
-                                    toast.error(files[0].errors[0].code.replaceAll("-", " "));
-                                }}
-                                maxSize={3 * 1024 ** 2}
-                                maxFiles="3"
-                                multiple={true}
-                                accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
-                                maxFileSize="5"
-                            />
-                        )}
+                       
+                        {loading ? (
+                <Spinner />
+            ) : (
+                <div onClick={handleDropZoneClick}>
+                    <DropZone
+                        onDrop={(files) => {
+                            
+                            handlePlantimageSelect(files);
+                        }}
+                        onReject={(files) => {
+                            setLoading(false);
+                            toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                        }}
+                        maxSize={3 * 1024 ** 2}
+                        maxFiles="3"
+                        multiple={true}
+                        accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+                        maxFileSize="5"
+                    />
+                </div>
+            )}
+                            
+                     
                     </div>
 
                     <div className={styles.inputdiv}>

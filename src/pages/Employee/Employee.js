@@ -88,7 +88,7 @@ const Employee = () => {
     delete reqBody.errorFields;
     const response = await createUser(reqBody);
 
-    if (response.error.status === 400) {
+    if (response?.error?.status === 400) {
       toast.error(response.error.data.error);
     }
   };

@@ -87,7 +87,8 @@ export default function AddBills() {
   const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
   const [auth] = useContext(AuthContext);
-
+const [loading,setLoading] = useState(false);
+const [isButtonDisabled, setButtonDisabled] = useState(false); 
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank]);
     setState((prev) => ({
@@ -365,6 +366,8 @@ export default function AddBills() {
   };
 
   const handleCheckout = async () => {
+    setLoading(true);
+    setButtonDisabled(true);
     const items = [];
 
     tableRowData.forEach((el) => {
@@ -644,7 +647,7 @@ export default function AddBills() {
   }
 
   // console.log("state", state.billingHistory)
-
+  const buttonDisable = !state.customerNumber || !name || !state.customerAddress || !state.dateOfBirth 
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -828,6 +831,7 @@ export default function AddBills() {
                   onClick={handleCheckout}
                   disabled={shouldCheckoutDisable()}
                   loading={checkOutLoading}
+                  disabled={loading ? buttonDisable || isButtonDisabled : buttonDisable || isButtonDisabled}
                 />
               </div>
             </div>
