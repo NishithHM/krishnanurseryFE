@@ -264,7 +264,7 @@ const Bills = ({type}) => {
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
         <Toaster />
       </div>
-      <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
+      <Filters purchaseCount={purchaseCount} page={page} onSubmit={handleFilterChange} onReset={handleFilterReset} />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>

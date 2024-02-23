@@ -11,6 +11,7 @@ import { isEmpty } from "lodash";
 import { Toaster } from "./components";
 import { toast } from "react-toastify";
 import NFC from "./pages/NFC/nfc";
+import CreateUser from "./CreateUser";
 
 function App() {
   // dummy data sent to select components
@@ -46,6 +47,7 @@ function App() {
               element={<NFC />}
             />
           <Route path="/authorised/*" element={<Protected />} />
+          <Route path="/createUser/*" element={<CreateUser />} />
         </Routes>
       </AuthContext.Provider>
     </div>

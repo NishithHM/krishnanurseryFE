@@ -111,6 +111,8 @@ const Sales = () => {
                   required
                   isMultiEnabled
                   isDisabled={selectedCategory.length > 0}
+          
+          
                   minInputToFireApi={3}
                 />
               </Grid>
