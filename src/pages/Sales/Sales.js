@@ -18,6 +18,8 @@ const Sales = () => {
   const [cardData, setCardData] = useState(null);
   const [graphsData, setGraphsData] = useState(null);
   const [selectedPlants, setSelectedPlants] = useState([]);
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState([]);
 // const [selectdate ,setSelectDate] =useState(false)
   const defaultStartDate = dayjs().subtract(1, 'year').format('YYYY-MM-DD');
@@ -99,7 +101,7 @@ const Sales = () => {
         </div>
         <div>
           <div>
-            <Grid container spacing={2} item xs={12}>
+            <div className="filter">
               <Grid item xs={4} className="plants">
                 <Dropdown
                   url="/api/procurements/getAll?isList=true&isAll=true"
@@ -123,6 +125,10 @@ const Sales = () => {
                   endDateInput={dateRange.endDate}
                   defaultStartDate ={defaultStartDate}
                   defaultEndDate ={defaultEndDate}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                  startDate={startDate}
+                  endDate={endDate}
                 />
               </Grid>
               <Grid item xs={4} className="plants">
@@ -139,7 +145,7 @@ const Sales = () => {
                   isDisabled={selectedPlants.length > 0}
                 />
               </Grid>
-            </Grid>
+            </div>
           </div>
           <div style={{ "margin-top": "50px" }}>
             <SalesHeader

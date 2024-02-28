@@ -15,6 +15,8 @@
   text-align: center;
 }
 
+
+
 .cellCommon {
   display: flex;
   justify-content: space-around;
@@ -33,6 +35,7 @@
 .tableCommon {
   background-color: #edeceb;
   color: #302c2c;
+  
 }
 
 .sort {
@@ -82,6 +85,7 @@
   align-items: center;
 }
 
+
 @media print {
   .printableTable {
     background-color: #ffffff !important;
@@ -96,5 +100,23 @@
     width: auto !important;
     height: auto !important;
     overflow: visible !important;
+  }
+}
+
+
+@media (min-width: 100px) and (max-width: 600px) {
+  .table {
+    width: 100%;
+    margin: 10px auto;
+    border-collapse: separate;
+    border-spacing: 0 1em;
+    padding: 10px;
+  }
+
+  .tableCommon {
+    width: 100%;
+    background-color: #edeceb;
+    color: #302c2c;
+    
   }
 }

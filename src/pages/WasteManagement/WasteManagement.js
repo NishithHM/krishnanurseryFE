@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./WasteManagement.module.css";
-import { BackButton, Button, Dropdown, Input, Toaster } from "../../components";
+import { BackButton, Button, Dropdown, Filters, Input, Toaster } from "../../components";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
 import { MIME_TYPES } from "@mantine/dropzone";
@@ -130,6 +130,7 @@ const WasteManagement = () => {
             <div className={styles.wrapper}>
                 <h1 className={styles.header}>Waste Management</h1>
                 <Toaster />
+                
                 <form className={styles.innerWrapper}>
                     <Dropdown 
                         title="Plant Name" 

@@ -35,8 +35,19 @@ const Datepicker = ({
   };
 
   const appliedStyles = parentStyle ? parentStyle : customStyles;
-console.log(id,"===id")
-// console.log(minDate,"===minDate")
+
+  const handleChange = (date) => {
+  var dates = new Date(date);
+
+  var year = dates.getFullYear();
+  var month = dates.getMonth() + 1; 
+  var day = dates.getDate();
+
+  var formattedDate = year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+
+  onChange(formattedDate);
+};
+
   return (
     <DatePicker
       label={label}
@@ -48,7 +59,7 @@ console.log(id,"===id")
       withAsterisk={isRequired ? isRequired : false}
       styles={appliedStyles}
       value={value}
-      onChange={onChange}
+      onChange={handleChange} 
       minDate={minDate}
       clearable={clearable}
       disabled={disabled}

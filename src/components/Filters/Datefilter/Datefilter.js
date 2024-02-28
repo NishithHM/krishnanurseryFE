@@ -10,10 +10,15 @@ const Datefilter = ({
   endDateInput,
   onReset,
   defaultStartDate,
-  defaultEndDate
+  defaultEndDate,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate
+
 }) => {
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  // const [startDates, setStartDates] = useState(null);
+  // const [endDates, setEndDates] = useState(null);
   const [isParentSet, setParentSet] = useState(false);
   useEffect(() => {
     setStartDate(startDateInput);
@@ -34,6 +39,8 @@ const Datefilter = ({
       onChange(data);
     }
   };
+
+  console.log('st', startDate, endDate)
 
   const datePickerStyles = {
     input: {

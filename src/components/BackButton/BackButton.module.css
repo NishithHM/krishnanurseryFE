@@ -18,3 +18,14 @@
         font-size: 18px;
     }
 }
+
+@media (min-width: 100px) and (max-width: 600px) {
+  .backButton {
+    width: 100%;
+    color: #038819 ;
+    font-size: 25px;
+    padding: 10px 10px 10px 0px;
+    margin: 0 20px;
+    margin-top: 5px;
+  }
+}

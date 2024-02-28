@@ -3,7 +3,7 @@ import styles from "./table.module.css";
 import cx from "classnames";
 import sort from "../../assets/images/sort.png";
 
-const Table = ({ data, onSortBy }) => {
+const PaymentTable = ({ data, onSortBy }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -18,7 +18,6 @@ const Table = ({ data, onSortBy }) => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
 
   const filteredData = windowWidth <= 600 ? data.slice(1) : data;
   
@@ -46,15 +45,16 @@ const Table = ({ data, onSortBy }) => {
                 <div className="values">
                 <div className="leftValue">
                   <p>Date</p>
+                  <p>Created Date</p>
+                  <p>Amount Paid</p>
                   <p>Bill Number</p>
-                  <p>Customer Name</p>
-                  <p>Total Bill</p>
                 </div>
                 <div className="rightValue">
                   <p>{curelem[0].value}</p>
                   <p>{curelem[1].value}</p>
                   <p>{curelem[2].value}</p>
                   <p>{curelem[3].value}</p>
+                  
                 </div>
                 </div>
                 <p className="viewDetails">{curelem[4].value}</p>
@@ -86,8 +86,7 @@ const Table = ({ data, onSortBy }) => {
                   {dataVal.value}
                   {dataVal.isSortable && (
                     <img
-                      onClick={() => {onSortBy(dataVal.sortBy)
-                      console.log(dataVal.sortBy)}}
+                      onClick={() => onSortBy(dataVal.sortBy)}
                       className={styles.sort}
                       src={sort}
                       alt="sort"
@@ -106,4 +105,4 @@ const Table = ({ data, onSortBy }) => {
   </>)
 };
 
-export default Table;
+export default PaymentTable;

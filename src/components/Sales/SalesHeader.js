@@ -16,6 +16,7 @@ import PaymentsIcon from "../../icons/PaymentsIcon";
 import InventoryIcon from "../../icons/InventoryIcon";
 import ProfitIons from "../../icons/ProfitIons";
 import PlantIcon from "../../icons/PlantIcon";
+import SalesTable from "../Table/SalesTable";
 const SalesHeader = ({
   cardData,
   selectedPlants,
@@ -327,16 +328,13 @@ const SalesHeader = ({
   return (
     <>
       <div>
-        <Box sx={{ width: "100%" }}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            item
-            xs={12}
+        <div style={{width: '100%'}}>
+          <div
+            className="dataCardsContainer"
           >
+            <div className="overflow">
             {headerData.map((item, index) => (
-              <Grid item xs={2} key={index}>
+              <div className="dataCard" key={index}>
                 <div
                   className={`${styles.col} ${
                     selectedCard?.title === item?.title
@@ -411,16 +409,18 @@ const SalesHeader = ({
                     </div>
                   </div>
                 </div>
-              </Grid>
+              </div>
             ))}
-          </Grid>
-        </Box>
+          </div>
+          </div>
+        </div>
       </div>
-      <div className={styles.graphsdataa}>
-        <Grid container spacing={1} item xs={12}>
+      <div style={{width: '100%'}} className={styles.graphsdataa}>
+        <div className="graphContainer" >
           {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 ? (
-            <Grid item xl={6} xs={6}>
+            <Grid className="graph"  item xl={6} xs={6}>
               <Card
+                style={{width: '100%', height: '100%'}}
                 className={`${styles.bg_gradient_default} ${styles.shadow}`}
               >
                 <CardHeader>
@@ -429,8 +429,8 @@ const SalesHeader = ({
                   </span>
                 </CardHeader>
                 <CardContent>
-                  <div >
-                    <canvas id="salesChart" className={styles.chart2}/>
+                  <div style={{width: '100%'}} >
+                    <canvas id="salesChart" style={{width: '100%'}}  className={styles.chart2}/>
                   </div>
                 </CardContent>
               </Card>
@@ -462,10 +462,10 @@ const SalesHeader = ({
             selectedCategory.length === 0 &&
             selectedPlants.length === 1) ? (
             // YourComponent.js
-            <Grid item xl={6} xs={6} className=" grid7 ">
+            <Grid item xl={6} xs={6} className=" grid7 varientSale">
               <Card
                 className={styles.shadow}
-                style={{ height: "400px", overflowY: "auto" }}
+                style={{ width: '100%', height: "100%", overflowY: "auto" }}
               >
                 <div className={styles.variants}>
                   <h1
@@ -478,7 +478,7 @@ const SalesHeader = ({
               </Card>
             </Grid>
           ) : null}
-        </Grid>
+        </div>
         <Grid
           container
           spacing={2}
@@ -494,7 +494,7 @@ const SalesHeader = ({
               <div className={styles.variants}>
                 <h1 className={styles.var1 + " poppins "}>All Plants</h1>
               </div>
-              <Table data={[TABLE_HEADER1, ...plantsData]} />
+              <SalesTable data={[TABLE_HEADER1, ...plantsData]} />
             </Card>
           </Grid>
         </Grid>

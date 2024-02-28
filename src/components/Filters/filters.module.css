@@ -42,3 +42,60 @@
     padding: 0.5rem 1.5rem 1.5rem 1.5rem;
     border-radius: 8px;
 }
+
+
+@media (min-width: 100px) and (max-width: 400px){
+    .wrapperFilter {
+        width: 75%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        background: #f3f3f3;
+        padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+        border-radius: 8px;
+    }
+    .wrapper {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .buttonWrapper {
+        height: fit-content;
+        align-self: unset;
+        display: flex;
+    }
+
+    body{
+        width: 100%;
+    }
+
+}
+
+@media (min-width: 400px) and (max-width: 600px){
+    .wrapperFilter {
+        width: 85%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+        background: #f3f3f3;
+        padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+        border-radius: 8px;
+    }
+    .wrapper {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .buttonWrapper {
+        height: fit-content;
+        align-self: unset;
+        display: flex;
+    }
+
+    body{
+        width: 100%;
+    }
+
+}

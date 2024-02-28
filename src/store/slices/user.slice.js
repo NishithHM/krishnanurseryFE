@@ -21,7 +21,8 @@ const userSlice = createSlice({
             }, 5000)
         }
     }
-})
+}) 
 
 export const userActions = userSlice.actions
 export default userSlice
+

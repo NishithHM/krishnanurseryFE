@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
 import { toUpper } from "lodash";
-
 import access_managementImg from "../../assets/images/dashboard/access_management.png";
 import produrementImg from "../../assets/images/dashboard/procurement.png";
 import maintenanceImg from "../../assets/images/dashboard/maintenance.png";
@@ -21,6 +20,20 @@ import agriprocurements from "../../assets/images/dashboard/agriprocurements.png
 const Dashboard = () => {
   const [values] = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState("Nursery");
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const USER_ROLES = {
     admin: "admin",
@@ -161,7 +174,7 @@ const Dashboard = () => {
   return (
     <div>
       <div className={styles.tabContainer}>
-        <div style={{ width: "300px" }}>
+        <div style={{ width: windowWidth < 600 ? '100px' : '300px' }}>
           <div
             className={styles.tabItem}
             style={{ color: selectedTab === "Nursery" && "#038819" }}
@@ -173,7 +186,7 @@ const Dashboard = () => {
             <div className={styles.tabBottomBar}></div>
           )}
         </div>
-        <div style={{ width: "300px" }}>
+        <div style={{ width: windowWidth < 600 ? '100px' : '300px' }}>
           <div
             style={{ color: selectedTab === "Agri" && "#038819" }}
             className={styles.tabItem}

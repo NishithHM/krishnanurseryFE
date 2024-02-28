@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
 import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
+import PaymentTable from "../../components/Table/PaymentTable";
 
 const Payments = () => {
   const [page, setPage] = useState(1);
@@ -263,7 +264,7 @@ const Payments = () => {
           <Spinner />
         ) : (
           paymentsData.status === "fulfilled" && (
-            <Table data={[TABLE_HEADER, ...data]} />
+            <PaymentTable  data={[TABLE_HEADER, ...data]} />
           )
         )}
 

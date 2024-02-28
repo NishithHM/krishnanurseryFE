@@ -14,18 +14,187 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: #555; 
 }
 
+.tableContainer{
+  width: 90%;
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;
+  padding: 20px;
+  position: relative;
+}
+
+.tableContainer .card{
+  width: 100%;
+  box-shadow: 0 0 4px rgb(200, 200, 200);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.tableContainer .card .values{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tableContainer .card .values .leftValue p{
+  font-weight: bold;
+}
+
+.tableContainer .view{
+  color: white;
+  background-color: green;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 5px 0 rgb(46, 65, 46);
+  &:active{
+    transform: translateY(5px);
+    box-shadow: none;
+  }
+}
+
+.dataCard{
+  width: 200px;
+  height: 161px;
+  flex-shrink: 0;
+
+  
+}
+
+.graphContainer{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+ .dataCardsContainer{
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.overflow{
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  overflow: auto;
+}
+
+.tableContainer .card .values .leftValue{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tableContainer .card .values .rightValue{
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tableContainer .card .values .rightValue p{
+  width: 100%;
+  height: fit-content;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+}
+
+.viewDetail{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(195, 192, 192, 0.356);
+  backdrop-filter: blur(2px);
+  position: fixed;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+
+.graph{
+  width: 50%;
+  height: 400px;
+}
+
+.varientSale{
+  width: 50%;
+  height: 400px;
+}
+
+.popupCard{
+  width: 93%;
+  height: 400px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 0 12px rgba(109, 109, 109, 0.521);
+  
+}
+
+.popupCard .values{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.popupCard .values .leftValue p{
+  font-weight: bold;
+}
+
+.close{
+  color: white;
+  background-color: rgba(253, 58, 14, 0.864);
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 5px 0 rgb(91, 57, 57);
+  &:active{
+    transform: translateY(5px);
+    box-shadow: none;
+  }
+}
+
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
 .App {
+  width: 100%;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 #root {
+  width: 100%;
   flex: 1;
   display: flex;
   height: 100%;
@@ -117,4 +286,41 @@ input[type="number"] {
 }
 .datefilters > div >div >div > div > div > div {
   margin-top: 5px;
+}
+.filter{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+@media (min-width: 100px) and (max-width: 600px) {
+  .graphContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    
+  }
+
+  .graph{
+    width: 100%;
+    height: 400px;
+  }
+  
+  .varientSale{
+    width: 100%;
+    height: 400px;
+  }
+
+  .filter{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    
+  }
+
+
 }

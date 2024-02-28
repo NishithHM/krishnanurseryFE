@@ -247,7 +247,6 @@ const Bills = ({type}) => {
     }));
   };
   const formatInvoiceItems = (data) => {
-    console.log(data)
     return data.map((item) => ({
       procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
@@ -264,7 +263,7 @@ const Bills = ({type}) => {
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
         <Toaster />
       </div>
-      <Filters purchaseCount={purchaseCount} page={page} onSubmit={handleFilterChange} onReset={handleFilterReset} />
+      <Filters apiEndpoint={'/api/excel/billing'} data={data} purchaseCount={purchaseCount} page={page} onSubmit={handleFilterChange} onReset={handleFilterReset} />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>
@@ -304,6 +303,7 @@ const Bills = ({type}) => {
           </div>
         </div>
       </div>
+
 
       {purchaseData.isLoading ? (
         <Spinner />

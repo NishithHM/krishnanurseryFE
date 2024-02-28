@@ -32,7 +32,7 @@ const Header = () => {
           <div className={styles.logout}>
             <img onClick={onLogoutHandler} src={logout} alt="Logout" />
             <div>
-              <span className={styles.userId}>{`Hello ${user.name}`} </span>
+              <span className={`${styles.userId} userName`}>{`Hello ${user.name}`} </span>
             </div>
           </div>
         )}

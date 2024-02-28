@@ -41,6 +41,7 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
+import OrderTable from "../../components/Table/OrderTable";
 const OrderMgmt = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
@@ -227,7 +228,7 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
+                <Filters apiEndpoint={'/api/excel/order-mgmt'} config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
@@ -278,7 +279,7 @@ const OrderMgmt = () => {
                     <Spinner />
                 ) : (
                     isSuccess && (
-                        <Table
+                        <OrderTable
                             data={[TABLE_HEADER, ...data]}
                             onSortBy={onSortClickHandler}
                         />
