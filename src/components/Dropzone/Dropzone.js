@@ -9,6 +9,7 @@ import { ImFilesEmpty } from "react-icons/im";
 import { toast } from "react-toastify";
 
 const DropZone = ({
+  filename,
   onDrop,
   onReject,
   maxSize,
@@ -17,28 +18,28 @@ const DropZone = ({
   accept,
   maxFileSize,
 }) => {
-  // if (files) {
-  //   return (
-  //     <div>
-  //       <p style={{ fontSize: "18px" }}>File Selected</p>
-  //       <div
-  //         style={{
-  //           display: "flex",
-  //           alignItems: "center",
-  //           justifyContent: "space-between",
-  //           border: "2px dashed black",
-  //           borderRadius: "7px",
-  //           padding: "10px",
-  //           margin: 0,
-  //         }}
-  //       >
-  //         <span>{files.name}</span>
+  if (filename) {
+    return (
+      <div>
+        <p style={{ fontSize: "18px" }}>File Selected</p>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            border: "2px dashed black",
+            borderRadius: "7px",
+            padding: "10px",
+            margin: 0,
+          }}
+        >
+          <span>{filename}</span>
 
-  //         <AiOutlineClose onClick={() => setFile(null)} />
-  //       </div>
-  //     </div>
-  //   );
-  // }
+          <AiOutlineCloseCircle onClick={() => onDrop(null)} />
+        </div>
+      </div>
+    );
+  }
   return (
     <Dropzone
       onDrop={onDrop}
@@ -47,6 +48,7 @@ const DropZone = ({
       maxFiles={maxFiles}
       multiple={multiple}
       accept={accept}
+      filename={filename}
     >
       <div
         style={{

@@ -191,3 +191,12 @@
     font-size: 20px;
    }
 }
+.viewbtn{
+      padding: 8px;
+    width: 128px;
+    border-radius: 10px;
+    color: white;
+    background-color: #038819;
+    border: #038819;
+    font-size: 16px;
+}

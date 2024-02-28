@@ -15,6 +15,9 @@ import {
   useGetProcurementHistoryMutation,
   useAddProcurementVariantsMutation,
   useAddMinimumQuantityMutation,
+  useUploadPhampletMutation,
+  useGetAllProcurementsQuery,
+  useGetPdfDataMutation,
   //   useGetAllMinimumProcurementsMutation
 } from "../../services/procurement.services";
 import {
@@ -67,7 +70,12 @@ const ProcurementList = () => {
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [isMinimumSelected, setMinimumMode] = useState(false);
-  
+  const [selectpdf, setSelectpdf] = useState(false);
+  const [pdfpath, setPDFpath] = useState(false);
+  const [pdfOpen,setPdfOpen] = useState(false);
+  const [uploadPdfData] = useUploadPhampletMutation();
+  const [GetPdfData] = useGetPdfDataMutation();
+const [filename,setFileName] = useState();
   const tableHeader = [
     [
       {
@@ -103,7 +111,7 @@ const ProcurementList = () => {
 
   const [plantImages, setPlantImages] = useState([]);
   const [imageLoader,setImageLoader] = useState(false)
-
+const [pdfsdata,setPdfsData] = useState([]);
   const [values] = useContext(AuthContext);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
@@ -340,6 +348,7 @@ const ProcurementList = () => {
   const fetchAndDisplayImages = (urls) => {
     const promises = [];
     const images = [];
+
     if (urls.length === 0) return toast.error("No Images Found!");
     setImageLoader(true)
     urls.forEach((url) => {
@@ -357,6 +366,7 @@ const ProcurementList = () => {
           const img = new Image();
           img.src = imageUrl;
           images.push(imageUrl);
+         
         })
         .catch((error) => {
            setImageLoader(false)
@@ -364,21 +374,47 @@ const ProcurementList = () => {
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      setPlantImages(images);
-      setImageLoader(false)
-    });
+      if(pdfOpen){
+        setPdfsData(images)
+      }else if(!pdfOpen){
+        setPlantImages(images);
+      }
+    setImageLoader(false);
+  });
   };
 
   const onMinimumClick = () => {
     setMinimumMode(!isMinimumSelected);
   };
 
-  const handlePhamplet=(files)=>{
+  const handlePhamplet=async(files)=>{
+    const selectedFile = files[0];
+    const formData = new FormData();
+    formData.append('images', selectedFile);
+
+
+  try{
+    const data = await uploadPdfData({
+      body :formData
+      } );
+     if(data.message !== null){
+      const response = await GetPdfData();
+      setFileName(response?.data[0]?.pamphlet)
+     }
+  }catch(err){
+    console.log(err,"====errr");
+  }
     //check
-    console.log(files)
     
   }
-
+  const imageOpen = ()=>{
+    setSelectpdf(true);
+    setPDFpath(true);
+    setPdfOpen(true);
+  }
+  const openPdfsImage = ()=>{
+  fetchAndDisplayImages([filename])
+}
   return (
     <>
       <Toaster />
@@ -613,15 +649,42 @@ const ProcurementList = () => {
               )}
               {role==='admin' && 
               <div>
+                <div style={{display:"flex",justifyContent : "space-between"}}>
                 <div>
                     <span style={{fontWeight:'bold'}}>Plant phamplet</span>
+                </div>
+                {
+                  filename && filename !==null ? <div><button onClick={openPdfsImage} className={styles.viewbtn}>View</button></div> : ""
+                }
                 </div>
                 <div>
                   <span>{phamplet}</span>
                 </div>
-                <DropZone
+                <div onClick={imageOpen}>
+                {
+                  selectpdf ?<Spinner/> :<DropZone
                   onDrop={(files) => {
                     handlePhamplet(files);
+                    setSelectpdf(false);
+                  }}
+                  onReject={(files) => {
+                    toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                  }}
+                 
+                  maxSize={3 * 1024 ** 2}
+                  maxFiles="1"
+                  multiple={true}
+                  accept={[MIME_TYPES.pdf]}
+                  maxFileSize="5"
+                
+                />
+                }
+                </div>
+                {/* {
+                  selectpdf ?<Spinner/> :<DropZone
+                  onDrop={(files) => {
+                    handlePhamplet(files);
+                    setSelectpdf(false);
                   }}
                   onReject={(files) => {
                     toast.error(files[0].errors[0].code.replaceAll("-", " "));
@@ -632,6 +695,8 @@ const ProcurementList = () => {
                   accept={[MIME_TYPES.pdf]}
                   maxFileSize="5"
                 />
+                } */}
+                
               </div>
               }
             </div>
@@ -639,7 +704,7 @@ const ProcurementList = () => {
         )}
       </div>
      {
-      imageLoader ? 
+      imageLoader && pdfsdata.length === 0 ? 
          <div style={{position : "absolute", top : "50%", left : "49%"}}>
             <Spinner />
          </div> : 
@@ -701,6 +766,65 @@ const ProcurementList = () => {
         </div>
       </Modal>
       
+     }
+     {/* pdf open images */}
+     {
+      imageLoader && pdfsdata.length === 0 ?
+      <div style={{position : "absolute", top : "50%", left : "49%"}}>
+      <Spinner />
+   </div> : 
+    <Modal isOpen={pdfsdata.length > 0}>
+  <div
+    style={{
+      border: "1px solid #e2e2e2",
+      boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+      padding: "1rem",
+      minWidth: "50%",
+      maxWidth: "80%",
+      background: "#ffffff",
+      borderRadius: "8px",
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <p
+        style={{ color: "#038819 ", fontSize: "20px", fontWeight: "600" }}
+      >
+        PDF DATA
+      </p>
+      <GrClose
+        size={22}
+        onClick={() => {
+          setPdfsData([]);
+        }}
+        style={{ cursor: "pointer" }}
+      />
+    </div>
+    <div
+      style={{
+        maxHeight: "70vh",
+        overflow: "auto",
+        display: "flex",
+        gap: "20px",
+        flexWrap: "wrap",
+      }}
+    >
+          {pdfsdata.map((pdf) => (
+      <iframe
+        key={pdf}
+        title="pdf"
+        src={pdf}
+        style={{ width: "100%", height: "600px" }}
+      />
+    ))}
+    </div>
+  </div>
+</Modal>
      }
     </>
   );

@@ -291,30 +291,28 @@ const SalesHeader = ({
           ],
         },
         options: {
+          plugins: {
+            tooltip: {
+              enabled: true,
+              intersect: false, 
+            },
+          },
           scales: {
             x: {
               type: "category",
-              ticks: {
-                color: "#000",
-              },
               grid: {
-                display: true,
-                color: "#eee", // Adjust grid color
+                color: "#eee",
               },
             },
             y: {
-              ticks: {
-                color: "#000",
-              },
               grid: {
-                display: true,
-                color: "#eee", // Adjust grid color
+                color: "#eee",
               },
             },
           },
-          responsive: true,
         },
       });
+      
     }
 
     return () => {
