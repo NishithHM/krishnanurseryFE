@@ -28,7 +28,7 @@ export const InvoicePreview = (props) => {
     handlePrintClick,
     cartData,
     setInvoiceNumber,
-    type
+    type,
   } = props;
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export const InvoiceSection = (props) => {
     invoiceNumber,
     printEnabled,
     invoiceDetails,
-    type
+    type,
   } = props;
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
@@ -124,6 +124,7 @@ export const InvoiceSection = (props) => {
       val.push({ value: el.price * el.quantity });
       newCartList.push(val);
     });
+    
     setCartList(newCartList);
   }, [cartData]);
 

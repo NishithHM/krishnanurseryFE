@@ -70,7 +70,6 @@ export default function AddBills() {
     invoiceNumber: "",
     isWholeSale: false,
     isApproved: false,
-    extras: [{ name: '', price: '' }]
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
@@ -388,13 +387,12 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
       items,
       isWholeSale: state.isWholeSale,
-      extras: state.extras
     };
 
     let checkout = null;
 
     if (state.cartResponse._id) {
-      const payload = { items: items, isWholeSale: state.isWholeSale, extras: state.extras };
+      const payload = { items: items, isWholeSale: state.isWholeSale };
       checkout = await updateCart({
         cartId: state.cartResponse._id,
         updatedCartData: payload,
@@ -526,9 +524,8 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
       }
     }
 
-    const extraValid = state.extras.reduce((acc, val) => acc && val.name && val.price, true)
 
-    return { tableValid: table, extraValid, all: table && extraValid }
+    return { tableValid: table, all: table  }
   };
 
   const shouldCheckoutDisable = () => {
@@ -614,37 +611,6 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
     clearInterval(approveRef.current)
   }
 
-  const handleAddExtraItem = () => {
-    const newExtras = [...state.extras]
-    newExtras.push({ name: '', price: '' })
-    setState((prev => ({
-      ...prev,
-      extras: newExtras
-    })))
-  }
-
-  const handleChangeExtraItem = (e, type, index) => {
-    console.log(e.target.value)
-    const newExtra = [...state.extras]
-    const item = newExtra[index]
-    item[type] = e.target.value
-    newExtra[index] = item
-    setState((prev => ({
-      ...prev,
-      checkOutDone: false,
-      extras: [...newExtra]
-    })))
-
-  }
-
-  const handleRemoveExtraItem=(index)=>{
-    let newExtras = [...state.extras]
-    newExtras = newExtras.filter((ele,i)=> index!==i)
-    setState((prev => ({
-      ...prev,
-      extras: [...newExtras]
-    })))
-  }
 
   // console.log("state", state.billingHistory)
   const buttonDisable = !state.customerNumber || !name || !state.customerAddress || !state.dateOfBirth 
@@ -778,46 +744,6 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                 </table>
               </div>
 
-              <div className={styles.cartTableContainer}>
-                <button
-                  className={styles.iconButton}
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  disabled={!isTableValid().tableValid}
-                  onClick={handleAddExtraItem}
-                >
-                  <FontAwesomeIcon icon={faPlus} style={{ marginLeft: "0.8px" }} />
-                </button>
-                {state.extras.map((ele, index) => (
-                  <div className={styles.extraItems} key={index}>
-                    <div className={styles.extraRows}>
-                      <Input
-                        title="Title"
-                        type="text"
-                        value={ele.name}
-                        id={ele.name + index}
-                        onChange={(e) => handleChangeExtraItem(e, 'name', index)}
-                      />
-                    </div>
-                    <div className={styles.extraRows}>
-                      <Input
-                        title="Price"
-                        type="number"
-                        id={ele.price + index}
-                        value={ele.price}
-                        onChange={(e) => handleChangeExtraItem(e, 'price', index)} />
-                    </div>
-                    <div className={styles.extraRows}>
-                    <button className={styles.iconButton} onClick={()=>handleRemoveExtraItem(index)}>
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
               <div className={styles.checkOutWrapper}>
                 <div>
                   {state.priceError.isExist && (
@@ -953,7 +879,6 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
             data={state}
             billedBy={auth.name}
             type="NURSERY"
-            extras={state.extras}
             isWholeSale={state.isWholeSale}
           />
         </div>
@@ -971,7 +896,6 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         isWholeSale={state.isWholeSale}
         isApproved={state.isApproved}
         type="NURSERY"
-        extras={state.extras}
       >
       </InvoicePreview>
     </div>
