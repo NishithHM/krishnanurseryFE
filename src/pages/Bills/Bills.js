@@ -327,7 +327,6 @@ const Bills = ({type}) => {
                 phoneNumber: invoiceDetail?.customerNumber,
               }}
               cartData={formatInvoiceItems(invoiceDetail?.items)}
-              extras={invoiceDetail.extras}
               cartResponse={{
                 discount: invoiceDetail?.discount,
                 roundOff: invoiceDetail?.roundOff,
@@ -360,7 +359,6 @@ const Bills = ({type}) => {
             soldBy: invoiceDetail?.soldBy?.name,
           }}
           cartData={formatInvoiceItems(invoiceDetail.items)}
-          extras={invoiceDetail.extras}
           cartResponse={{
             discount: invoiceDetail.discount,
             roundOff: invoiceDetail.roundOff,
