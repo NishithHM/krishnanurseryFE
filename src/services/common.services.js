@@ -31,6 +31,7 @@ export const commonApi = createApi({
         query: ({ pageNumber, startDate, endDate }) => ({
           url: `/excel/billing?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}`,
           method: "GET",
+          responseHandler: async (response) => await response.blob(),
         }),
       }),
 

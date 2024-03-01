@@ -262,13 +262,11 @@ const Bills = ({type}) => {
   };
 
   const handleExcelDownload = async (filterDates)=>{
-    console.log(filterDates)
     const res= await downloadExcel({pageNumber:1, startDate: '2024-02-01', endDate:"2024-03-01"})
-    const type = 'application/octet-stream'
-    const blob = new Blob([res.data], { type: type, encoding: 'UTF-8' })
+    console.log(res)
     const link = document.createElement('a')
-    link.href = window.URL.createObjectURL(blob)
-    link.download = 'file.xlsx'
+    link.href = window.URL.createObjectURL(res.data)
+    link.download = 'billing.xlsx'
     link.click()
   }
 
