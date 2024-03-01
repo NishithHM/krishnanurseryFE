@@ -8,7 +8,7 @@ import Button from "../Button";
 import Dropdown from "../Dropdown";
 import { cloneDeep, isEmpty } from "lodash";
 
-const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => {
+const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {},onExcelDownload=()=>{}  }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [filterDates, setFilterDates] = useState({
         start_date: null,
@@ -18,6 +18,10 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
     const handleSubmitFilter = () => {
         onSubmit({ ...filterDates, ...filters });
     };
+
+    const handleExcelDownload=()=>{
+        onExcelDownload({...filterDates})
+    }
 
     const handleClearFilters = async () => {
         setFilterDates(() => ({
@@ -92,6 +96,16 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {} }) => 
                             />
                         </div>
                     </div>
+                    {config.excelDownload && 
+                    
+                    <div className={styles.buttonWrapper}>
+                        <div className={styles.btnSubWrapper}>
+                            <Button
+                                title="Excel Download"
+                                onClick={handleExcelDownload}
+                            />
+                        </div>
+                    </div>}
                 </div>
             )}
         </div>

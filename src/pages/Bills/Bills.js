@@ -29,6 +29,7 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
+import { useDownloadExcelMutation } from "../../services/common.services";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -104,6 +105,7 @@ const Bills = ({type}) => {
     type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
     ...dates,
   });
+
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     search: searchQuery,
     type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
@@ -112,6 +114,8 @@ const Bills = ({type}) => {
 
   const [searchPurchase] = useSearchPurchaseMutation();
   const [approveButton] = useGetApproveMutation()
+
+  const [downloadExcel] = useDownloadExcelMutation()
   // const approve = useGetApproveQuery
   // ({
   //   customerId:purchaseData?._id
@@ -257,6 +261,17 @@ const Bills = ({type}) => {
     // return data;
   };
 
+  const handleExcelDownload = async (filterDates)=>{
+    console.log(filterDates)
+    const res= await downloadExcel({pageNumber:1, startDate: '2024-02-01', endDate:"2024-03-01"})
+    const type = 'application/octet-stream'
+    const blob = new Blob([res.data], { type: type, encoding: 'UTF-8' })
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = 'file.xlsx'
+    link.click()
+  }
+
 
   return (
     <div>
@@ -264,7 +279,7 @@ const Bills = ({type}) => {
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
         <Toaster />
       </div>
-      <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
+      <Filters config={{excelDownload: true}} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>

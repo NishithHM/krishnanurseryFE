@@ -27,8 +27,15 @@ export const commonApi = createApi({
           method: "GET",
         }),
       }),
+      downloadExcel: builder.mutation({
+        query: ({ pageNumber, startDate, endDate }) => ({
+          url: `/excel/billing?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}`,
+          method: "GET",
+        }),
+      }),
+
     };
   },
 });
 
-export const { useGetVendorMutation } = commonApi;
+export const { useGetVendorMutation, useDownloadExcelMutation } = commonApi;
