@@ -31,8 +31,15 @@ export const commonApi = createApi({
         query: ({ pageNumber, startDate, endDate }) => ({
           url: `/excel/billing?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}`,
           method: "GET",
-          responseHandler: async (response) => await response.blob(),
+          responseHandler: async (response) => {
+            return await response.blob()
+          },
         }),
+        transformResponse: (response, meta) => {
+          console.log(meta, ';metea'); // <----- Here should be date value
+          console.log(meta.response.headers.get('Count'))
+          return {response, count:meta.response.headers.get('Count'), isNext:meta.response.headers.get('Isnext')};
+        }
       }),
 
     };

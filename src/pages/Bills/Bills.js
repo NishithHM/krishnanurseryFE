@@ -263,9 +263,10 @@ const Bills = ({type}) => {
 
   const handleExcelDownload = async (filterDates)=>{
     const res= await downloadExcel({pageNumber:1, startDate: '2024-02-01', endDate:"2024-03-01"})
-    console.log(res)
+    const {count, isNext, response} = res.data
+    console.log(count, isNext)
     const link = document.createElement('a')
-    link.href = window.URL.createObjectURL(res.data)
+    link.href = window.URL.createObjectURL(response)
     link.download = 'billing.xlsx'
     link.click()
   }
