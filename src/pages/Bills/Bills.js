@@ -64,6 +64,8 @@ const getRoundedDates = () => {
 
 const Bills = ({type}) => {
   const [page, setPage] = useState(1);
+  const [excelPage, setExcelPage] = useState(1);
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
   const [data, setData] = useState([]);
   const location = useLocation();
   const [user] = useContext(AuthContext);
@@ -234,6 +236,7 @@ const Bills = ({type}) => {
 
   const handleFilterChange = (filterDates) => {
     setFilterDates(filterDates);
+    setNextExcelAvailable(true)
   };
 
   const handleFilterReset = () => {
@@ -262,9 +265,12 @@ const Bills = ({type}) => {
   };
 
   const handleExcelDownload = async (filterDates)=>{
-    const res= await downloadExcel({pageNumber:1, startDate: '2024-02-01', endDate:"2024-03-01"})
+    const res= await downloadExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
     const {count, isNext, response} = res.data
-    console.log(count, isNext)
+    setNextExcelAvailable(isNext==='true')
+    if(isNext==="true"){
+      setExcelPage((prev)=> prev+1)
+    }
     const link = document.createElement('a')
     link.href = window.URL.createObjectURL(response)
     link.download = 'billing.xlsx'
@@ -278,7 +284,7 @@ const Bills = ({type}) => {
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
         <Toaster />
       </div>
-      <Filters config={{excelDownload: true}} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
+      <Filters config={{excelDownload: true, isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>

@@ -6,9 +6,9 @@ import styles from "./filters.module.css";
 import Datefilter from "./Datefilter";
 import Button from "../Button";
 import Dropdown from "../Dropdown";
-import { cloneDeep, isEmpty } from "lodash";
+import { cloneDeep } from "lodash";
 
-const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {},onExcelDownload=()=>{}  }) => {
+const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExcelDownload=()=>{}, resetExcelPage, setNextExcelAvailable }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [filterDates, setFilterDates] = useState({
         start_date: null,
@@ -54,7 +54,12 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {},onExce
                 <div className={styles.wrapperFilter}>
                     <Datefilter
                         closeFilters={() => setIsOpen(false)}
-                        onChange={(date => setFilterDates(date))}
+                        onChange={(date => {
+                            setFilterDates(date)
+                            resetExcelPage()
+                            setNextExcelAvailable(true)
+                            }
+                            )}
                         startDateInput={filterDates.start_date}
                         endDateInput={filterDates.end_date}  
                     />
@@ -101,8 +106,9 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {},onExce
                     <div className={styles.buttonWrapper}>
                         <div className={styles.btnSubWrapper}>
                             <Button
-                                title="Excel Download"
+                                title={`Excel Download page ${config.excelPage}`}
                                 onClick={handleExcelDownload}
+                                disabled={!(filterDates.endDate && filterDates.startDate) || !config.isNextExcelAvailable}
                             />
                         </div>
                     </div>}
