@@ -9,12 +9,14 @@ const Datefilter = ({
   startDateInput,
   endDateInput,
   onReset,
+  setParentSet,
+  isParentSet,
   defaultStartDate,
   defaultEndDate
 }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [isParentSet, setParentSet] = useState(false);
+  // const [isParentSet, setParentSet] = useState(false);
   useEffect(() => {
     setStartDate(startDateInput);
     setEndDate(endDateInput);

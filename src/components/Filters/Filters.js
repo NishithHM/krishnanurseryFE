@@ -10,6 +10,7 @@ import { cloneDeep } from "lodash";
 
 const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExcelDownload=()=>{}, resetExcelPage, setNextExcelAvailable }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isParentSet, setParentSet] = useState(false);
     const [filterDates, setFilterDates] = useState({
         start_date: null,
         end_date: null,
@@ -32,6 +33,7 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExc
             vendors: [], status: []
         }))
        await onSubmit({start_date : null, end_date : null ,vendors:  [], status :[]})
+       setParentSet(false)
     }    
     
 
@@ -60,6 +62,8 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExc
                             setNextExcelAvailable(true)
                             }
                             )}
+                        setParentSet={setParentSet}
+                        isParentSet={isParentSet}
                         startDateInput={filterDates.start_date}
                         endDateInput={filterDates.end_date}  
                     />
