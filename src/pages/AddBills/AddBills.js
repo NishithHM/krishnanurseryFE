@@ -757,7 +757,6 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                   onClick={handleCheckout}
                   disabled={shouldCheckoutDisable()}
                   loading={checkOutLoading}
-                  disabled={loading ? buttonDisable || isButtonDisabled : buttonDisable || isButtonDisabled}
                 />
               </div>
             </div>
