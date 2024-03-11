@@ -11,6 +11,7 @@ import {
     BackButton,
     Modal,
     Toaster,
+    Filters,
 } from "../../components";
 
 import { ImSearch } from "react-icons/im";
@@ -19,12 +20,17 @@ import { useGetDamagesListMutation } from "../../services/procurement.services";
 import { GrClose } from "react-icons/gr";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
+import { useDownloadDamagesExcelMutation } from "../../services/common.services";
+
 
 const WasteList = () => {
     const [page, setPage] = useState(1);
+    const [excelPage, setExcelPage] = useState(1);
+    const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
     const [data, setData] = useState([]);
     const [user] = useContext(AuthContext);
     const [getDamages, { isLoading, isError, isSuccess }] = useGetDamagesListMutation()
+    const [downloadDamagesExcel] = useDownloadDamagesExcelMutation()
     const [plantImages, setPlantImages] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [damageCount, setDamageCount] = useState(0);
@@ -135,6 +141,9 @@ const WasteList = () => {
         searchHandler(event.target.value);
     };
 
+    const handleFilterChange = () => {
+        setNextExcelAvailable(true)
+      };
 
 
     const TABLE_HEADER = [
@@ -165,12 +174,27 @@ const WasteList = () => {
         fetchAndDisplayImages(data.images);
       };
 
+      const handleExcelDownload = async (filterDates)=>{
+        const res= await downloadDamagesExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
+        const {isNext, response} = res.data
+        setNextExcelAvailable(isNext==='true')
+        if(isNext==="true"){
+          setExcelPage((prev)=> prev+1)
+        }
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(response)
+        link.download = 'Damages.xlsx'
+        link.click()
+      }
+
     return (
         <div>
             <Toaster />
             <div>
                 <BackButton navigateTo={"/authorised/dashboard"} />
             </div>
+            <Filters
+             config={{excelDownload: true, isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onExcelDownload={handleExcelDownload} />
             <div className={styles.listWrapper}>
                 {/* search */}
                 <div className={styles.searchContainer}>

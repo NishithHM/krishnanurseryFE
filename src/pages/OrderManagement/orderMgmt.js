@@ -42,9 +42,12 @@ import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
 import { FadeLoader } from "react-spinners"
+import { useDownloadOrderExcelMutation } from "../../services/common.services";
 const OrderMgmt = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
+    const [excelPage, setExcelPage] = useState(1);
+    const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
     const [data, setData] = useState([]);
     const [user] = useContext(AuthContext);
     const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
@@ -80,6 +83,8 @@ const OrderMgmt = () => {
     const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
         useAddOrderInvoiceMutation();
     const [getInvoice] = useGetInvoiceMutation();
+  const [downloadOrderExcel] = useDownloadOrderExcelMutation()
+
 
 
     const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
@@ -172,6 +177,8 @@ const OrderMgmt = () => {
         const formattedFilter = formatFilter(filters)
 
         setFilters(filters)
+        setNextExcelAvailable(true)
+
         const res = await getOrders({
             body: {
                 search: search, ...formattedFilter, sortBy: sort.sortBy,
@@ -224,6 +231,20 @@ const OrderMgmt = () => {
       const handleDropZoneClick = () => {
         setLoading(true);
     };
+
+      const handleExcelDownload = async (filterDates)=>{
+        const res= await downloadOrderExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
+        const {isNext, response} = res.data
+        setNextExcelAvailable(isNext==='true')
+        if(isNext==="true"){
+          setExcelPage((prev)=> prev+1)
+        }
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(response)
+        link.download = 'Orders.xlsx'
+        link.click()
+      }
+
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
     return (
@@ -232,7 +253,8 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
+                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY', excelDownload: true, isNextExcelAvailable, excelPage }}
+                 onSubmit={handleFilterChange} onExcelDownload={handleExcelDownload} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable}/>
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
