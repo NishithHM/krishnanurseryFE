@@ -58,8 +58,8 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExc
                         closeFilters={() => setIsOpen(false)}
                         onChange={(date => {
                             setFilterDates(date)
-                            resetExcelPage()
-                            setNextExcelAvailable(true)
+                            resetExcelPage?.()
+                            setNextExcelAvailable?.(true)
                             }
                             )}
                         setParentSet={setParentSet}
@@ -105,7 +105,7 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExc
                             />
                         </div>
                     </div>
-                    {config.excelDownload && 
+                    {config?.excelDownload &&
                     
                     <div className={styles.buttonWrapper}>
                         <div className={styles.btnSubWrapper}>
