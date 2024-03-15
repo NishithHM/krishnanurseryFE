@@ -108,11 +108,15 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
     <div className={styles.billDetails}>
       <div className={styles.billFigure}>
         <div>Sub Total</div>
-        <span>&#x20B9;{cartResponse?.totalPrice}</span>
+        <span>&#x20B9;{cartResponse?.totalWithOutGst}</span>
       </div>
       <div className={styles.billFigure}>
         <div>Discount</div>
         <span>&#x20B9;{cartResponse?.discount}</span>
+      </div>
+      <div className={styles.billFigure}>
+        <div>GST</div>
+        <span>&#x20B9;{cartResponse?.gstAmount}</span>
       </div>
       {userCtx.role === "sales" && (
         <div className={styles.billFigure}>
