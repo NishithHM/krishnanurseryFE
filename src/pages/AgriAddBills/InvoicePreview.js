@@ -60,6 +60,8 @@ export const InvoiceSection = (props) => {
     { value: "MRP", width: "10%" },
     { value: "Rate", width: "10%" },
     { value: "Quantity", width: "10%" },
+    { value: "Amount", width: "10%" },
+    { value: "GST", width: "10%" },
     { value: "Sub Total", width: "20%" },
   ];
 
@@ -68,6 +70,8 @@ export const InvoiceSection = (props) => {
     { value: "Item Purchased", width: "40%" },
     { value: "MRP", width: "15%" },
     { value: "Quantity", width: "15%" },
+    { value: "Amount", width: "10%" },
+    { value: "GST", width: "10%" },
     { value: "Sub Total", width: "20%" },
   ];
 
@@ -76,7 +80,7 @@ export const InvoiceSection = (props) => {
   useEffect(() => {
     let newCartList = [];
     let discounted = false;
-    console.log(cartData)
+    console.log(cartData, 'cart-data')
     for (let index = 0; index < cartData.length; index++) {
       if (cartData[index].mrp !== cartData[index].rate) {
         discounted = true;
@@ -101,9 +105,11 @@ export const InvoiceSection = (props) => {
         val.push({ value: el.rate });
       }
       val.push({ value: el.quantity });
+      val.push({value:el.rateWithGst - el.gstAmount})
+      val.push({value:el.gstAmount})
       if (type === "AGRI") {
-        val.push({ value: el.rate * el.quantity });
-      } else val.push({ value: el.price * el.quantity });
+        val.push({ value: el.rateWithGst });
+      }
       newCartList.push(val);
     });
     setCartList(newCartList);

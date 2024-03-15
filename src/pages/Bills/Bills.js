@@ -259,7 +259,9 @@ const Bills = ({type}) => {
       procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
-      mrp: item.mrp
+      mrp: item.mrp,
+      rateWithGst: item.rateWithGst,
+      gstAmount: item.gstAmount
     }));
     // return data;
   };

@@ -86,6 +86,7 @@ export const InvoiceSection = (props) => {
     { value: "Sub Total", width: "20%" },
   ];
 
+
   const invoiceHeaderWithOutMRP = [
     { value: "S. No.", width: "10%" },
     { value: "Item Purchased", width: "40%" },
@@ -93,6 +94,13 @@ export const InvoiceSection = (props) => {
     { value: "Quantity", width: "15%" },
     { value: "Sub Total", width: "20%" },
   ];
+
+  if(type==='AGRI'){
+    invoiceHeaderWithOutMRP.splice(4,0, { value: "Amount", width: "15%" })
+    invoiceHeaderWithOutMRP.splice(5,0, { value: "GST", width: "15%" })
+    invoiceHeaderWithMRP.splice(5,0, { value: "Amount", width: "15%" })
+    invoiceHeaderWithMRP.splice(6,0, { value: "GST", width: "15%" })
+  }
 
   const scroll = false;
   useEffect(() => {
@@ -111,6 +119,7 @@ export const InvoiceSection = (props) => {
     } else {
       setInvoiceHeader(invoiceHeaderWithOutMRP);
     }
+    console.log(cartData,'cd')
 
     cartData.forEach((el, index) => {
       let val = [];
@@ -121,7 +130,16 @@ export const InvoiceSection = (props) => {
       }
       val.push({ value: el.price });
       val.push({ value: el.quantity });
-      val.push({ value: el.price * el.quantity });
+      if(type==='AGRI'){
+        val.push({value:el.rateWithGst - el.gstAmount})
+        val.push({value:el.gstAmount})
+      }
+      if(type==='AGRI'){
+        val.push({ value: el.rateWithGst });
+      }else{
+        val.push({ value: el.price * el.quantity });
+
+      }
       newCartList.push(val);
     });
     
