@@ -107,10 +107,10 @@ export const InvoiceSection = (props) => {
         val.push({ value: el.rate });
       }
       val.push({ value: el.quantity });
-      val.push({value:el.rateWithGst - el.gstAmount})
+      val.push({value:(el.rateWithGst - el.gstAmount) * el.quantity})
       val.push({value:`${el.gstAmount} (${el.gst}%)`})
       if (type === "AGRI") {
-        val.push({ value: el.rateWithGst });
+        val.push({ value: el.rate * el.quantity  + el.gstAmount});
       }
       newCartList.push(val);
     });
