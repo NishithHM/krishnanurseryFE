@@ -74,6 +74,7 @@ export const InvoiceSection = (props) => {
     invoiceDetails,
     type,
   } = props;
+  console.log(cartResponse, 'cr')
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
@@ -96,10 +97,12 @@ export const InvoiceSection = (props) => {
   ];
 
   if(type==='AGRI'){
-    invoiceHeaderWithOutMRP.splice(4,0, { value: "Amount", width: "15%" })
-    invoiceHeaderWithOutMRP.splice(5,0, { value: "GST", width: "15%" })
-    invoiceHeaderWithMRP.splice(5,0, { value: "Amount", width: "15%" })
-    invoiceHeaderWithMRP.splice(6,0, { value: "GST", width: "15%" })
+    invoiceHeaderWithOutMRP.splice(2,0, { value: "HSN Code", width: "15%" })
+    invoiceHeaderWithOutMRP.splice(5,0, { value: "Amount", width: "15%" })
+    invoiceHeaderWithOutMRP.splice(6,0, { value: "GST", width: "15%" })
+    invoiceHeaderWithMRP.splice(2,0, { value: "Amount", width: "15%" })
+    invoiceHeaderWithMRP.splice(6,0, { value: "Amount", width: "15%" })
+    invoiceHeaderWithMRP.splice(7,0, { value: "GST", width: "15%" })
   }
 
   const scroll = false;
@@ -125,6 +128,9 @@ export const InvoiceSection = (props) => {
       let val = [];
       val.push({ value: index + 1 });
       val.push({ value: el.procurementLabel });
+      if(type==='AGRI'){
+        val.push({ value: el.hsnCode });
+      }
       if (showMRPTemp) {
         val.push({ value: el.mrp });
       }
@@ -132,7 +138,7 @@ export const InvoiceSection = (props) => {
       val.push({ value: el.quantity });
       if(type==='AGRI'){
         val.push({value:el.rateWithGst - el.gstAmount})
-        val.push({value:el.gstAmount})
+        val.push({value:`${el.gstAmount} (${el.gst}%)`})
       }
       if(type==='AGRI'){
         val.push({ value: el.rateWithGst });
@@ -194,6 +200,18 @@ export const InvoiceSection = (props) => {
             <br></br>
             {clientDetails?.phoneNumber}
             <br></br>
+            {cartResponse?.customerAddress &&
+            <>
+             <b>Billing Address </b><div style={{ whiteSpace: "pre-line", maxWidth:'300px', wordWrap:'break-word' }}>{cartResponse?.customerAddress} </div> 
+            <br></br>
+             </>
+             }
+             {cartResponse?.customerGst &&
+            <>
+            <b>GST: </b>
+            {cartResponse?.customerGst}
+            </>
+             }
           </div>
         </div>
       </div>
@@ -232,6 +250,12 @@ export const InvoiceSection = (props) => {
               <div className={styles.label}>Discount Price: </div>
             )}
             <div className={styles.label}>Total Price: </div>
+            {cartResponse?.customerGst?.startsWith("29") || !cartResponse?.customerGst ?
+            <>
+            <div className={styles.label}>CGST </div>
+            <div className={styles.label}>SGST </div>
+            </>
+          : <div className={styles.label}>IGST </div>}
           </div>
 
           <div className={styles.lableValueDetails}>
@@ -243,6 +267,18 @@ export const InvoiceSection = (props) => {
             <div className={styles.discountValue}>
               <b>&#x20B9;{cartResponse.totalPrice}</b>
             </div>
+            {cartResponse?.customerGst?.startsWith("29") || !cartResponse?.customerGst ?
+            <>
+            <div className={styles.discountValue}>
+              <b>&#x20B9;{cartResponse.gstAmount/2}</b>
+            </div>
+            <div className={styles.discountValue}>
+              <b>&#x20B9;{cartResponse.gstAmount/2}</b>
+            </div>
+            </>
+          :<div className={styles.discountValue}>
+          <b>&#x20B9;{cartResponse.gstAmount}</b>
+        </div>}
           </div>
         </div>
       </div>

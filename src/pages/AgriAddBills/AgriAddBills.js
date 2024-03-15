@@ -54,6 +54,8 @@ export default function AgriAddBills() {
   const initialState = {
     customerNumber: "",
     customerDetails: {},
+    customerGst: "",
+    shippingAddress:'',
     customerName: "",
     customerAddress:  "",
     nameDisabled: true,
@@ -294,6 +296,9 @@ export default function AgriAddBills() {
         ...prev,
         customerDetails: customerDetails.data,
         customerName: customerDetails.name,
+        customerGst: customerDetails.data?.gst,
+        customerAddress: customerDetails.data?.address,
+        shippingAddress: customerDetails.data?.shippingAddress,
         billingHistory: [...billingData],
       }));
 
@@ -498,6 +503,9 @@ export default function AgriAddBills() {
         ? state.dateOfBirth
         : state.customerDetails.dob,
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
+      customerAddress: state.newCustomer ? state.customerAddress : state.customerDetails.address,
+      shippingAddress: state.newCustomer ? state.shippingAddress : state.customerDetails.shippingAddress,
+      customerGst: state.newCustomer ? state.customerGst : state.customerDetails.gst,
       items,
     };
 
@@ -704,8 +712,6 @@ export default function AgriAddBills() {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-                {
-                state.showDOB && (
                   <Input
                   value={state.customerAddress}
                   id="customerAddress"
@@ -714,9 +720,25 @@ export default function AgriAddBills() {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-                )
-               }
-              
+                
+                  <Input
+                  value={state.shippingAddress}
+                  id="shippingAddress"
+                  type="text"
+                  title="Shipping Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                
+                  <Input
+                  value={state.customerGst}
+                  id="customerGst"
+                  type="text"
+                  title="GST number"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+                
               
                 {state.showDOB && (
                   <DatePicker

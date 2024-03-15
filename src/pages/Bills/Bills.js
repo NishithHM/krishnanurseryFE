@@ -261,7 +261,9 @@ const Bills = ({type}) => {
       quantity: item.quantity,
       mrp: item.mrp,
       rateWithGst: item.rateWithGst,
-      gstAmount: item.gstAmount
+      gstAmount: item.gstAmount,
+      gst: item.gst,
+      hsnCode: item.hsnCode
     }));
     // return data;
   };
@@ -353,6 +355,7 @@ const Bills = ({type}) => {
                 discount: invoiceDetail?.discount,
                 roundOff: invoiceDetail?.roundOff,
                 totalPrice: invoiceDetail?.totalPrice,
+                gstAmount: invoiceDetail?.gstAmount
               }}
               invoiceNumber={invoiceDetail.invoiceId}
               printEnabled={true}
@@ -385,6 +388,9 @@ const Bills = ({type}) => {
             discount: invoiceDetail.discount,
             roundOff: invoiceDetail.roundOff,
             totalPrice: invoiceDetail.totalPrice,
+            gstAmount: invoiceDetail?.gstAmount,
+            customerAddress: invoiceDetail?.customerAddress,
+            customerGst: invoiceDetail?.customerGst
           }}
           invoiceNumber={invoiceDetail.invoiceId}
           setInvoiceNumber={() => {}}
