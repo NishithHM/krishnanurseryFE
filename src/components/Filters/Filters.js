@@ -17,7 +17,11 @@ const Filters = ({ onSubmit = () => { }, onReset = () => { }, config = {}, onExc
     });
     const [filters, setFilters] = useState({ vendors: [], status: [] })
     const handleSubmitFilter = () => {
-        onSubmit({ ...filterDates, ...filters });
+        const updatedFilterDates = {
+            start_date: filterDates.startDate,
+            end_date: filterDates.endDate
+        }
+        onSubmit({ ...updatedFilterDates, ...filters });
     };
 
     const handleExcelDownload=()=>{
