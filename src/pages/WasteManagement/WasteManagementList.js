@@ -35,13 +35,25 @@ const WasteList = () => {
     const [searchInput, setSearchInput] = useState("");
     const [damageCount, setDamageCount] = useState(0);
     const [loadImages,setLoadImages] = useState(false)
+    const [filterDates, setFilterDates] = useState({
+        start_date: null,
+        end_date: null,
+      });
+
+      const dates = {};
+      if (filterDates.start_date && filterDates.end_date) {
+        dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
+        dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
+      }
+
+  
 
     const loadInitialOrders = async (page) => {
         if (page === 1) {
             const counts = await getDamages({ isCount: true });
             setDamageCount(get(counts, "data[0].count", 0));
         }
-        const list = await getDamages({ pageNumber: page });
+        const list = await getDamages({ pageNumber: page, ...dates });
         const formattedData = formatDamageData({
             data: list.data,
         });
@@ -50,7 +62,7 @@ const WasteList = () => {
 
     useEffect(() => {
         loadInitialOrders(page);
-    }, [page]);
+    }, [page, filterDates]);
 
     const fetchAndDisplayImages = (urls) => {
         const promises = [];
@@ -141,7 +153,8 @@ const WasteList = () => {
         searchHandler(event.target.value);
     };
 
-    const handleFilterChange = () => {
+    const handleFilterChange = (filterDates) => {       
+        setFilterDates(filterDates);
         setNextExcelAvailable(true)
       };
 
@@ -174,6 +187,7 @@ const WasteList = () => {
         fetchAndDisplayImages(data.images);
       };
 
+
       const handleExcelDownload = async (filterDates)=>{
         const res= await downloadDamagesExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
         const {isNext, response} = res.data
@@ -186,6 +200,7 @@ const WasteList = () => {
         link.download = 'Damages.xlsx'
         link.click()
       }
+
 
     return (
         <div>
