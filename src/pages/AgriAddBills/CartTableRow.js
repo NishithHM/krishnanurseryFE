@@ -96,7 +96,7 @@ export const CartTableHeader = () => {
   );
 };
 
-export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
+export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur, onPaymentChange, onPaymentNumChange, paymentInfo,paymentType }) => {
   const [userCtx, setContext] = useContext(AuthContext);
 
   let subTotal = 0;
@@ -105,6 +105,7 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
   }
 
   return (
+    <>
     <div className={styles.billDetails}>
       <div className={styles.billFigure}>
         <div>Sub Total</div>
@@ -121,7 +122,6 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
       {userCtx.role === "sales" && (
         <div className={styles.billFigure}>
           <div>Round Off</div>
-          <span>&#x20B9;</span>
           <input
             // value={}
             name="roundOff"
@@ -140,5 +140,30 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
         <span>&#x20B9;{isNaN(subTotal) ? "" : subTotal}</span>
       </div>
     </div>
+    <div>
+      <div style={{flex:1, display:'flex'}}>
+      <span style={{marginRight: "10px", marginLeft: '10px'}}>Payment Type *</span>
+      <div  style={{width: '400px', display:'flex'}}>
+          <Dropdown
+            placeholder="Select Payment Type"
+            required
+            id="paymentType"
+            data={[{label: 'CASH', value:'CASH'}, {label:'ONLINE', value:'ONLINE'}]}
+            value={paymentType?{label:paymentType,value:paymentType} :null}
+            onChange={onPaymentChange}
+          />
+      </div>
+      <div className={styles.billFigure}>
+          <span style={{marginRight:'10px'}}>Payment Info</span>
+          <input
+            name="payment info"
+            className={styles.cartInput}
+            value={paymentInfo}
+            onChange={onPaymentNumChange}
+          />
+        </div>
+        </div>
+    </div>
+    </>
   );
 };

@@ -10,7 +10,7 @@ import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { BillDetails, CartTableHeader, CartTableRow } from "./CartTableRow";
-import _ from "lodash";
+import _, { cloneDeep } from "lodash";
 import { useLazyGetCustomerByPhoneQuery } from "../../services/customer.service";
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
@@ -76,6 +76,8 @@ export default function AgriAddBills() {
     checkOutDone: false,
     submitDisable: false,
     invoiceNumber: "",
+    paymentType: '',
+    paymentInfo: ''
   };
   const agriBillingAddress = {
     companyName: "Agri Shopee",
@@ -121,14 +123,15 @@ export default function AgriAddBills() {
   const [cartData, setCartData] = useState(initialCartState);
   const [needsUpdate, setNeedsUpdate] = useState(false);
 
-  useEffect(() => {
+  const updateCartItems=async()=>{
     if (!needsUpdate) return;
     if (isCheckoutDone) setIsCheckoutDone(false);
 
     const cartItems = cartData.variants;
     const updatedItems = [];
 
-    cartItems.map(async (item, index) => {
+    for(let i=0; i< cartItems.length; i++) {
+      const item = cartItems[i]
       if (
         item.options.length > 0 &&
         item?.options.every((opt) => !!opt.value)
@@ -185,12 +188,15 @@ export default function AgriAddBills() {
       } else {
         updatedItems.push(item);
       }
-    });
+    };
     if (updatedItems.length === cartItems.length) {
-      setCartData((prev) => ({ ...prev, variants: updatedItems }));
-      setNeedsUpdate(false);
+        setCartData((prev) => ({ ...prev, variants: cloneDeep([...updatedItems]) }));
+        setNeedsUpdate(false);
     }
-  }, [cartData, needsUpdate]);
+  }
+  useEffect(() => {
+    updateCartItems()
+  }, [JSON.stringify(cartData), needsUpdate]);
 
   const inputChangeHanlder = (event, id) => {
     setState((prev) => {
@@ -491,7 +497,7 @@ export default function AgriAddBills() {
 
     console.log(items);
     // return;
-
+    console.log(state.customerDetails, state.newCustomer)
     const cartPayload = {
       customerNumber: state.newCustomer
         ? `${state.customerNumber}`
@@ -564,6 +570,8 @@ export default function AgriAddBills() {
   const handleSubmit = async () => {
     const payload = {
       roundOff: state.roundOff,
+      paymentType: state.paymentType,
+      paymentInfo: state.paymentInfo
     };
 
     const confirmCart = await submitCart({
@@ -605,7 +613,7 @@ export default function AgriAddBills() {
 
     let roundOff = e.target.value;
 
-    const roundOffLimit = Math.min(500, state.cartResponse.totalPrice * 0.1);
+    const roundOffLimit = 1
 
     const correctValue = roundOff <= roundOffLimit;
 
@@ -624,6 +632,7 @@ export default function AgriAddBills() {
       }));
     }
   };
+
 
   const handleRoundOffValue = (e) => {
     handleRoundOff(e);
@@ -645,7 +654,7 @@ export default function AgriAddBills() {
   };
 
   const shouldSubmitDisable = () => {
-    if (state.checkOutDone && !state.submitError.isExist && isCheckoutDone) {
+    if (state.checkOutDone && !state.submitError.isExist && isCheckoutDone && state.paymentType) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -658,6 +667,14 @@ export default function AgriAddBills() {
       handleReset();
     },
   });
+
+  const handlePaymentMode =e=>{
+    setState((prev)=>({...prev, paymentType:e.value}))
+  }
+
+  const handlePaymentInfo =e=>{
+    setState((prev)=>({...prev, paymentInfo:e.target.value}))
+  }
 
   const today = new Date();
 
@@ -849,6 +866,10 @@ export default function AgriAddBills() {
               cartResponse={state.cartResponse}
               onRoundOff={handleRoundOffValue}
               onBlur={(e) => handleRoundOff(e)}
+              paymentInfo={state.paymentInfo}
+              paymentType={state.paymentType}
+              onPaymentChange={handlePaymentMode}
+              onPaymentNumChange={handlePaymentInfo}
             />
             <div className={styles.submitWrapper}>
               <div>
@@ -928,6 +949,10 @@ export default function AgriAddBills() {
           cartResponse={state.cartResponse}
           onRoundOff={handleRoundOffValue}
           onBlur={(e) => handleRoundOff(e)}
+          paymentInfo={state.paymentInfo}
+          paymentType={state.paymentType}
+          onPaymentChange={handlePaymentMode}
+          onPaymentNumChange={handlePaymentInfo}
         />
         <div className={styles.submitWrapper}>
           <div>
@@ -963,6 +988,8 @@ export default function AgriAddBills() {
             roundOff={state.roundOff}
             data={state}
             billedBy={auth.name}
+            paymentType={state.paymentType}
+            paymentInfo={state.paymentInfo}
           />
         </div>
       </div>
@@ -979,6 +1006,8 @@ export default function AgriAddBills() {
         roundOff={state.roundOff}
         handlePrintClick={handleSubmit}
         billedBy={auth.name}
+        paymentType={state.paymentType}
+        paymentInfo={state.paymentInfo}
       >
         {/* <Button
           type="primary"

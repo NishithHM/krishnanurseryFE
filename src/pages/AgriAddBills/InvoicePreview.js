@@ -49,6 +49,8 @@ export const InvoiceSection = (props) => {
     data = {},
     billAddress,
     type,
+    paymentInfo,
+    paymentType
   } = props;
 
   const [cartList, setCartList] = useState([]);
@@ -81,7 +83,6 @@ export const InvoiceSection = (props) => {
   useEffect(() => {
     let newCartList = [];
     let discounted = false;
-    console.log(cartData, 'cart-data')
     for (let index = 0; index < cartData.length; index++) {
       if (cartData[index].mrp !== cartData[index].rate) {
         discounted = true;
@@ -116,7 +117,6 @@ export const InvoiceSection = (props) => {
     });
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
-  console.log(cartResponse, 'test')
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
@@ -179,7 +179,13 @@ export const InvoiceSection = (props) => {
             {cartResponse?.customerGst}
             </>
              }
-            <br></br>
+             {paymentType &&
+            <>
+            <br/>
+            <b>Payment Details: </b>
+            {paymentType} {paymentInfo ? `/${paymentInfo}` : ''}
+            </>
+             }
           </div>
         </div>
       </div>

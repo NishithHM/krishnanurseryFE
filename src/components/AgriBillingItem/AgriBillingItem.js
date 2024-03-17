@@ -134,7 +134,7 @@ const AgriBillingItem = ({
       )}
       {variants.map((ele, index) => {
         return (
-          <div key={index} className={styles.wrapper}>
+          <div key={JSON.stringify(ele)} className={styles.wrapper}>
             <div className={styles.variantsRow}>
               <div className={styles.dropDownWrapper}>
                 <Dropdown

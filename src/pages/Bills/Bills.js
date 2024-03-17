@@ -382,6 +382,8 @@ const Bills = ({type}) => {
             invoiceDate: invoiceDetail?.billedDate,
             billedBy: invoiceDetail?.billedBy?.name,
             soldBy: invoiceDetail?.soldBy?.name,
+            paymentType: invoiceDetail?.paymentType,
+            paymentInfo: invoiceDetail?.paymentInfo
           }}
           cartData={formatInvoiceItems(invoiceDetail.items)}
           cartResponse={{
