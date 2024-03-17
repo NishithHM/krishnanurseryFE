@@ -9,16 +9,18 @@ const Datefilter = ({
   startDateInput,
   endDateInput,
   onReset,
+  setParentSet,
+  isParentSet,
   defaultStartDate,
   defaultEndDate
 }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [isParentSet, setParentSet] = useState(false);
+  // const [isParentSet, setParentSet] = useState(false);
   useEffect(() => {
     setStartDate(startDateInput);
     setEndDate(endDateInput);
-    setParentSet(true);
+    setParentSet?.(true);
   }, [startDateInput, endDateInput]);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const Datefilter = ({
 
           <Datepicker
             onChange={(e) => {
-              setParentSet(false);
+              setParentSet?.(false);
               setStartDate(e);
             }}
             id="startDate"
@@ -73,7 +75,7 @@ const Datefilter = ({
           <span className={styles.inputTitle}>End Date</span>
           <Datepicker
             onChange={(e) => {
-              setParentSet(false);
+              setParentSet?.(false);
               setEndDate(e);
             }}
             size="xs"

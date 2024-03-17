@@ -423,6 +423,9 @@ const AgriProcurement = () => {
                 <>
                   <div>
                     <Filters
+                      // config={{excelDownload: false}}
+                      // resetExcelPage={() => {}}
+                      // setNextExcelAvailable={() => {}}
                       startDateInput={startDate}
                       endDateInput={endDate}
                       onChange={onChangeHandler}

@@ -40,11 +40,14 @@ import {
   useVerifyOrderMutation,
   useRejectOrderMutation,
 } from "../../services/agrivariants.services";
+import { useDownloadOrderExcelMutation } from "../../services/common.services";
 // import { useRejectOrderMutation, useVerifyOrderMutation } from "../../services/procurement.services";
 
 const AgriOrderMgmt = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [excelPage, setExcelPage] = useState(1);
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
   const [data, setData] = useState([]);
   const [user] = useContext(AuthContext);
   const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
@@ -83,7 +86,7 @@ const AgriOrderMgmt = () => {
   const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
     useAddOrderInvoiceMutation();
   const [getInvoice] = useGetInvoiceMutation();
-
+  const [downloadOrderExcel] = useDownloadOrderExcelMutation()
   const [RejectOrder, { isLoading: isRejectLoading }] =
     useRejectOrderMutation();
   const [VerifyOrder, { isLoading: isVerifyLoading }] =
@@ -185,6 +188,8 @@ const AgriOrderMgmt = () => {
     setPage(() => 1)
 
     setFilters(filters);
+    setNextExcelAvailable(true)
+
     const res = await getOrders({
       body: {
         search: search,
@@ -204,6 +209,19 @@ const AgriOrderMgmt = () => {
     });
     setData(list);
   };
+
+  const handleExcelDownload = async (filterDates)=>{
+    const res= await downloadOrderExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
+    const {isNext, response} = res.data
+    setNextExcelAvailable(isNext==='true')
+    if(isNext==="true"){
+      setExcelPage((prev)=> prev+1)
+    }
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(response)
+    link.download = 'Orders.xlsx'
+    link.click()
+  }
 
   const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
 
@@ -241,8 +259,9 @@ const AgriOrderMgmt = () => {
           <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
         </div>
         <Filters
-          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI" }}
+          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI", excelDownload: user.role==='admin', isNextExcelAvailable, excelPage }}
           onSubmit={handleFilterChange}
+          onExcelDownload={handleExcelDownload} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable}
         />
         <div className={styles.wrapper}>
           {/* search */}
