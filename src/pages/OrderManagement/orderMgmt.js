@@ -247,7 +247,7 @@ const OrderMgmt = () => {
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY', excelDownload: true, isNextExcelAvailable, excelPage }}
+                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY', excelDownload: user.role==='admin', isNextExcelAvailable, excelPage }}
                  onSubmit={handleFilterChange} onExcelDownload={handleExcelDownload} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable}/>
                 <div className={styles.wrapper}>
                     {/* search */}
