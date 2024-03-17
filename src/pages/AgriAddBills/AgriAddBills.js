@@ -123,14 +123,15 @@ export default function AgriAddBills() {
   const [cartData, setCartData] = useState(initialCartState);
   const [needsUpdate, setNeedsUpdate] = useState(false);
 
-  useEffect(() => {
+  const updateCartItems=async()=>{
     if (!needsUpdate) return;
     if (isCheckoutDone) setIsCheckoutDone(false);
 
     const cartItems = cartData.variants;
     const updatedItems = [];
 
-    cartItems.map(async (item, index) => {
+    for(let i=0; i< cartItems.length; i++) {
+      const item = cartItems[i]
       if (
         item.options.length > 0 &&
         item?.options.every((opt) => !!opt.value)
@@ -187,12 +188,15 @@ export default function AgriAddBills() {
       } else {
         updatedItems.push(item);
       }
-    });
+    };
     if (updatedItems.length === cartItems.length) {
-      setCartData((prev) => ({ ...prev, variants: updatedItems }));
-      setNeedsUpdate(false);
+        setCartData((prev) => ({ ...prev, variants: cloneDeep([...updatedItems]) }));
+        setNeedsUpdate(false);
     }
-  }, [cartData, needsUpdate]);
+  }
+  useEffect(() => {
+    updateCartItems()
+  }, [JSON.stringify(cartData), needsUpdate]);
 
   const inputChangeHanlder = (event, id) => {
     setState((prev) => {
