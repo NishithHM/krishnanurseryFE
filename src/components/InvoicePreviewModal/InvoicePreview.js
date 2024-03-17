@@ -211,6 +211,13 @@ export const InvoiceSection = (props) => {
             {cartResponse?.customerGst}
             </>
              }
+             {invoiceDetails?.paymentType &&
+            <>
+            <br/>
+            <b>Payment Details: </b>
+              {invoiceDetails?.paymentType} {invoiceDetails?.paymentInfo ? `/${invoiceDetails?.paymentInfo}` : ''}
+            </>
+             }
           </div>
         </div>
       </div>
