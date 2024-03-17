@@ -259,7 +259,7 @@ const AgriOrderMgmt = () => {
           <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
         </div>
         <Filters
-          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI", excelDownload: true, isNextExcelAvailable, excelPage }}
+          config={{ isVendor: true, orderStatus: true, vendorType: "AGRI", excelDownload: user.role==='admin', isNextExcelAvailable, excelPage }}
           onSubmit={handleFilterChange}
           onExcelDownload={handleExcelDownload} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable}
         />

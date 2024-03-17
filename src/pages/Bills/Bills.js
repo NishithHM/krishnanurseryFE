@@ -288,7 +288,7 @@ const Bills = ({type}) => {
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
         <Toaster />
       </div>
-      <Filters config={{excelDownload: true, isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
+      <Filters config={{excelDownload: user.role==='admin', isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>

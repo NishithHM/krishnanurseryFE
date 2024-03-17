@@ -209,7 +209,7 @@ const WasteList = () => {
                 <BackButton navigateTo={"/authorised/dashboard"} />
             </div>
             <Filters
-             config={{excelDownload: true, isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onExcelDownload={handleExcelDownload} />
+             config={{excelDownload: user.role==='admin', isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onExcelDownload={handleExcelDownload} />
             <div className={styles.listWrapper}>
                 {/* search */}
                 <div className={styles.searchContainer}>
