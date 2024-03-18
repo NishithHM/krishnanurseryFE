@@ -122,7 +122,6 @@ export const InvoiceSection = (props) => {
     } else {
       setInvoiceHeader(invoiceHeaderWithOutMRP);
     }
-    console.log(cartData,'cd')
 
     cartData.forEach((el, index) => {
       let val = [];
@@ -257,12 +256,14 @@ export const InvoiceSection = (props) => {
               <div className={styles.label}>Discount Price: </div>
             )}
             <div className={styles.label}>Total Price: </div>
+           {type==='AGRI' && <>
             {cartResponse?.customerGst?.startsWith("29") || !cartResponse?.customerGst ?
             <>
             <div className={styles.label}>CGST </div>
             <div className={styles.label}>SGST </div>
             </>
           : <div className={styles.label}>IGST </div>}
+          </>}
           </div>
 
           <div className={styles.lableValueDetails}>
@@ -274,6 +275,7 @@ export const InvoiceSection = (props) => {
             <div className={styles.discountValue}>
               <b>&#x20B9;{cartResponse.totalPrice}</b>
             </div>
+            {type==='AGRI' && <>
             {cartResponse?.customerGst?.startsWith("29") || !cartResponse?.customerGst ?
             <>
             <div className={styles.discountValue}>
@@ -286,6 +288,7 @@ export const InvoiceSection = (props) => {
           :<div className={styles.discountValue}>
           <b>&#x20B9;{cartResponse.gstAmount}</b>
         </div>}
+        </>}
           </div>
         </div>
       </div>
