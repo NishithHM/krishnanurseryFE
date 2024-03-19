@@ -200,7 +200,8 @@ const OrderMgmt = () => {
     }, [plantImages, verifyOrder])
  
     const handlePlantimageSelect = (file) => {
-        
+        console.log('plant-images')
+        setLoading(false);
         setPlantImages((prev) => {
           let updated = [...prev, ...file];
     
@@ -211,7 +212,6 @@ const OrderMgmt = () => {
           );
           return uniqueArr
         });
-        setLoading(false);
       };
       const handlePlantImageRemove = (index) => {
         setPlantImages((prev) => {
@@ -224,6 +224,7 @@ const OrderMgmt = () => {
         setLoading(true);
     };
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
+    console.log(loading, 'loading')
 
     return (
         <>
