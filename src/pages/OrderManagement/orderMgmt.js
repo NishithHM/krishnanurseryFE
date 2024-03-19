@@ -220,7 +220,6 @@ const OrderMgmt = () => {
         });
         setLoading(false);
       };
-
       const handlePlantImageRemove = (index) => {
         setPlantImages((prev) => {
           let updated = [...prev];
