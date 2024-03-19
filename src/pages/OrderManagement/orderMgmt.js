@@ -213,7 +213,6 @@ const OrderMgmt = () => {
         });
         setLoading(false);
       };
-      console.log(loading, 'loading')
       const handlePlantImageRemove = (index) => {
         setPlantImages((prev) => {
           let updated = [...prev];
