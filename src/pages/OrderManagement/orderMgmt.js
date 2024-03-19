@@ -216,9 +216,9 @@ const OrderMgmt = () => {
               return updated.find((a) => a.path === path);
             }
           );
-          setLoading(false);
           return uniqueArr
         });
+        setLoading(false);
       };
 
       const handlePlantImageRemove = (index) => {
