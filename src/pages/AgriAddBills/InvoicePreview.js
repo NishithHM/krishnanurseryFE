@@ -112,7 +112,7 @@ export const InvoiceSection = (props) => {
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
       <div className={styles.headerWrapperModal}>
-        <h1 className={styles.headerModal}>Bill Invoice</h1>
+        <h1 className={styles.headerModal}>Bill Of Supply</h1>
       </div>
 
       <div className={styles.clientDetailsWrapper}>
