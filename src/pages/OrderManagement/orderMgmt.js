@@ -245,7 +245,6 @@ const OrderMgmt = () => {
       }
 
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
-    console.log(loading, 'loading')
 
     return (
         <>
@@ -444,9 +443,9 @@ const OrderMgmt = () => {
                             );
                         })}
                        
-                        {loading ? (
-                <Spinner />
-            ) : (
+        
+               {loading && <Spinner /> }
+         
                 <div onClick={handleDropZoneClick}>
                     <DropZone
                         onDrop={(files) => {
@@ -464,7 +463,6 @@ const OrderMgmt = () => {
                         maxFileSize="5"
                     />
                 </div>
-            )}
                             
                      
                     </div>
