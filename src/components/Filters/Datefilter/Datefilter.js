@@ -52,7 +52,7 @@ const Datefilter = ({
   return (
     <div className={styles.wrapper}>
       <div className={styles.innerWrapper}>
-        <div>
+        <div className={styles.startDate}>
           <span className={styles.inputTitle}>Start Date</span>
 
           <Datepicker
@@ -71,7 +71,7 @@ const Datefilter = ({
           />
         </div>
 
-        <div>
+        <div className={styles.endDate}>
           <span className={styles.inputTitle}>End Date</span>
           <Datepicker
             onChange={(e) => {
