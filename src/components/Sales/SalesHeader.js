@@ -425,8 +425,7 @@ const SalesHeader = ({
       <div
        className={styles.graphsdataa}>
         <Grid
-        className={styles.graphContainer}
-      // style={{border: '1px solid red', display: 'flex', flexDirection: 'column'}} 
+         className={styles.graphContainer}
          container spacing={1} item xs={12}>
           {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 ? (
             <Grid className={styles.graph}
@@ -475,7 +474,7 @@ const SalesHeader = ({
             selectedCategory.length === 0 &&
             selectedPlants.length === 1) ? (
             // YourComponent.js
-            <Grid item xl={6} xs={6} className=" grid7 ">
+            <Grid className={styles.graph}  item xl={6} xs={6} >
               <Card
                 className={styles.shadow}
                 style={{ height: "400px", overflowY: "auto" }}
@@ -499,7 +498,7 @@ const SalesHeader = ({
           xs={12}
           style={{ "margin-bottom": "40px" }}
         >
-          <Grid item xl={12} xs={12} className=" grid7 ">
+          <Grid style={{maxWidth:'unset'}} item xl={12} xs={12} className=" grid7 ">
             <Card
               style={{ height: "500px", overflowY: "auto", marginTop: "50px" }}
               className={styles.shadow}

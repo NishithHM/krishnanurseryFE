@@ -209,8 +209,17 @@
 
 @media (min-width: 400px) and (max-width: 700px) {
   html{
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
   }
+
+  .graphContainer{
+    flex-direction: column !important;
+  }
+
+  .graph{
+    max-width: 100% !important;
+  }
+
   .filterContainer {
     width: 100%;
     display: flex !important;
