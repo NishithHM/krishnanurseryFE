@@ -327,16 +327,22 @@ const SalesHeader = ({
   return (
     <>
       <div>
-        <Box sx={{ width: "100%" }}>
+        <Box className={styles.boxContainer} sx={{ width: "100%" }}>
           <Grid
             container
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             item
             xs={12}
+            classes={{ container: styles.cardContainer }}
           >
             {headerData.map((item, index) => (
-              <Grid item xs={2} key={index}>
+              <Grid 
+               item 
+               xs={2} key={index}
+              classes={{ item: styles.card }}
+              >
+
                 <div
                   className={`${styles.col} ${
                     selectedCard?.title === item?.title
@@ -374,7 +380,7 @@ const SalesHeader = ({
                         </span>
                       ) : (
                         <span>
-                          <RupeeIcon isSelected={selectedCardIndex === index} />
+                           <RupeeIcon isSelected={selectedCardIndex === index} />
                         </span>
                       )}
                     </div>
@@ -416,10 +422,17 @@ const SalesHeader = ({
           </Grid>
         </Box>
       </div>
-      <div className={styles.graphsdataa}>
-        <Grid container spacing={1} item xs={12}>
+      <div
+       className={styles.graphsdataa}>
+        <Grid
+        className={styles.graphContainer}
+      // style={{border: '1px solid red', display: 'flex', flexDirection: 'column'}} 
+         container spacing={1} item xs={12}>
           {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 ? (
-            <Grid item xl={6} xs={6}>
+            <Grid className={styles.graph}
+             item
+              xl={6} 
+              xs={6}>
               <Card
                 className={`${styles.bg_gradient_default} ${styles.shadow}`}
               >

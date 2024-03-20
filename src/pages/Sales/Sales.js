@@ -99,8 +99,14 @@ const Sales = () => {
         </div>
         <div>
           <div>
-            <Grid container spacing={2} item xs={12}>
-              <Grid item xs={4} className="plants">
+            <Grid
+             classes={{container: styles.filterContainer}}
+              container
+               spacing={2}
+                item 
+                xs={12}
+                >
+              <Grid classes={{item: styles.plants}} item xs={4} className="plants">
                 <Dropdown
                   url="/api/procurements/getAll?isList=true&isAll=true"
                   id="addPlantName"
@@ -114,7 +120,9 @@ const Sales = () => {
                   minInputToFireApi={3}
                 />
               </Grid>
-              <Grid item xs={4} className="datefilters">
+              <Grid
+             classes={{item: styles.dateFilters}}
+             item xs={4} className="datefilters">
                 <Datefilter
                   onChange={handleDateChange}
                   startDateInput={dateRange.startDate}
@@ -123,7 +131,9 @@ const Sales = () => {
                   defaultEndDate ={defaultEndDate}
                 />
               </Grid>
-              <Grid item xs={4} className="plants">
+              <Grid 
+             classes={{item: styles.plants}}
+               item xs={4} className="plants">
                 <Dropdown
                   url="/api/category/getAll"
                   id="addCategory"
