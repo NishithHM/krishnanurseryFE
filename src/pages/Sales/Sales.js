@@ -93,7 +93,7 @@ const Sales = () => {
       <div>
         <BackButton navigateTo={"/authorised/dashboard"} />
       </div>
-      <Container maxWidth="xl" className=" containermax ">
+      <Container maxWidth="xl" className=" containermax " style={{maxWidth:'unset'}}>
         <div>
           <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
         </div>
