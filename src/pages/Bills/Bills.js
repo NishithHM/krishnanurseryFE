@@ -29,6 +29,7 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
+import { useDownloadBillingExcelMutation } from "../../services/common.services";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -63,6 +64,8 @@ const getRoundedDates = () => {
 
 const Bills = ({type}) => {
   const [page, setPage] = useState(1);
+  const [excelPage, setExcelPage] = useState(1);
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
   const [data, setData] = useState([]);
   const location = useLocation();
   const [user] = useContext(AuthContext);
@@ -104,6 +107,7 @@ const Bills = ({type}) => {
     type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
     ...dates,
   });
+
   const purchaseCountReq = useGetAllPurchasesCountQuery({
     search: searchQuery,
     type: location.pathname.substring(22) === "bills" ? "NURSERY" : "AGRI",
@@ -112,6 +116,8 @@ const Bills = ({type}) => {
 
   const [searchPurchase] = useSearchPurchaseMutation();
   const [approveButton] = useGetApproveMutation()
+
+  const [downloadBillingExcel] = useDownloadBillingExcelMutation()
   // const approve = useGetApproveQuery
   // ({
   //   customerId:purchaseData?._id
@@ -230,6 +236,7 @@ const Bills = ({type}) => {
 
   const handleFilterChange = (filterDates) => {
     setFilterDates(filterDates);
+    setNextExcelAvailable(true)
   };
 
   const handleFilterReset = () => {
@@ -252,10 +259,27 @@ const Bills = ({type}) => {
       procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
-      mrp: item.mrp
+      mrp: item.mrp,
+      rateWithGst: item.rateWithGst,
+      gstAmount: item.gstAmount,
+      gst: item.gst,
+      hsnCode: item.hsnCode
     }));
     // return data;
   };
+
+  const handleExcelDownload = async (filterDates)=>{
+    const res= await downloadBillingExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
+    const {isNext, response} = res.data
+    setNextExcelAvailable(isNext==='true')
+    if(isNext==="true"){
+      setExcelPage((prev)=> prev+1)
+    }
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(response)
+    link.download = 'billing.xlsx'
+    link.click()
+  }
 
 
   return (
@@ -264,7 +288,7 @@ const Bills = ({type}) => {
         <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
         <Toaster />
       </div>
-      <Filters onSubmit={handleFilterChange} onReset={handleFilterReset} />
+      <Filters config={{excelDownload: user.role==='admin', isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>
@@ -331,6 +355,7 @@ const Bills = ({type}) => {
                 discount: invoiceDetail?.discount,
                 roundOff: invoiceDetail?.roundOff,
                 totalPrice: invoiceDetail?.totalPrice,
+                gstAmount: invoiceDetail?.gstAmount
               }}
               invoiceNumber={invoiceDetail.invoiceId}
               printEnabled={true}
@@ -357,12 +382,17 @@ const Bills = ({type}) => {
             invoiceDate: invoiceDetail?.billedDate,
             billedBy: invoiceDetail?.billedBy?.name,
             soldBy: invoiceDetail?.soldBy?.name,
+            paymentType: invoiceDetail?.paymentType,
+            paymentInfo: invoiceDetail?.paymentInfo
           }}
           cartData={formatInvoiceItems(invoiceDetail.items)}
           cartResponse={{
             discount: invoiceDetail.discount,
             roundOff: invoiceDetail.roundOff,
             totalPrice: invoiceDetail.totalPrice,
+            gstAmount: invoiceDetail?.gstAmount,
+            customerAddress: invoiceDetail?.customerAddress,
+            customerGst: invoiceDetail?.customerGst
           }}
           invoiceNumber={invoiceDetail.invoiceId}
           setInvoiceNumber={() => {}}

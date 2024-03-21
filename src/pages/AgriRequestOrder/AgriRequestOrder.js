@@ -210,6 +210,11 @@ const AgriRequesrOrder = () => {
     }
   }, [state.vendorName.label]);
 
+  console.log('e', orderData)
+  // console.log('tos', orderData[0].totalQuantity)
+  // console.log('pri', orderData[0].price)
+
+
   return (
     <div>
       <div>
@@ -225,6 +230,7 @@ const AgriRequesrOrder = () => {
         isFormValid={(e) => setIsFormValid(!e)}
         setIsVariantAdded={setIsVariantAdded}
       />
+
       <div
         style={{
           padding: "20px",
@@ -368,14 +374,15 @@ const AgriRequesrOrder = () => {
               isPlaceOrder
                 ? !isFormValid ||
                   description === "" ||
+                  orderData.length === 0 ||  
                   !state.vendorName ||
                   state.vendorContact === "" ||
                   !state.orderId ||
                   !state.expectedDeliveryDate ||
                   !state.expectedDeliveryDate ||
                   isNaN(state.currentPaidAmount) ||
-                  state.currentPaidAmount <= -1
-                : !isFormValid || description === ""
+                  state.currentPaidAmount <= -1 
+                : !isFormValid || description === "" || orderData.length === 0
             }
             onClick={isPlaceOrder ? handleCreateOrder : handleRequestOrder}
           />
