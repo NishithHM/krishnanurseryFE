@@ -72,7 +72,17 @@ const WasteManagement = () => {
           };
         });
       };
+      useEffect(() => {
+        const handleWindowBlur = () => {
+            setLoading(false); // Hide spinner when window loses focus
+        };
 
+        window.addEventListener('blur', handleWindowBlur);
+
+        return () => {
+            window.removeEventListener('blur', handleWindowBlur);
+        };
+    }, []);
       const handlePlantimageSelect = (file) => {
         setState((prev) => {
           let updated = [...prev.plantImages, ...file];
@@ -185,9 +195,9 @@ const WasteManagement = () => {
                     </div>
                   );
                 })}
-             {loading ? (
+             {loading &&  
                 <Spinner />
-            ) : (
+             } 
                 <div onClick={handleDropZoneClick}>
                     <DropZone
                         onDrop={(files) => {
@@ -195,9 +205,12 @@ const WasteManagement = () => {
                             handlePlantimageSelect(files);
                         }}
                         onReject={(files) => {
-                            setLoading(false);
                             toast.error(files[0].errors[0].code.replaceAll("-", " "));
                         }}
+                        onCancel={() => {
+                          console.log("")
+                          setLoading(false); // Turn off the spinner
+                      }}
                         maxSize={3 * 1024 ** 2}
                         maxFiles="3"
                         multiple={true}
@@ -205,7 +218,7 @@ const WasteManagement = () => {
                         maxFileSize="5"
                     />
                 </div>
-            )}
+            
                     <div className={styles.formButton}>
                         <Button
                             loading={isLoading}
