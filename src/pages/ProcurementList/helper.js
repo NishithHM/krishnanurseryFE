@@ -94,10 +94,11 @@ export const getTableBody = (data, imagesHandler) => {
             <p
               onClick={() => handleDownload(ele.invoice || "")}
               style={{
-                cursor: "pointer",
+                // cursor: "pointer",
                 fontWeight: "bold",
                 color: "#302c2c",
               }}
+              className={`${ele?.invoice  ? styles.invoicedata : styles.nullinvoice}`}
             >
               {ele?.invoice ? "View" : "N/A"}
             </p>

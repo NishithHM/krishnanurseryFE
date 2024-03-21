@@ -12,7 +12,7 @@ import {
     Modal,
     Alert,
     AlertMessage,
-    Dropzone,
+    // Dropzone,
     Input,
     AddInvoiceModal,
     Filters,
@@ -41,7 +41,7 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
-import { FadeLoader } from "react-spinners"
+// import { FadeLoader } from "react-spinners"
 const OrderMgmt = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
@@ -200,7 +200,6 @@ const OrderMgmt = () => {
     }, [plantImages, verifyOrder])
  
     const handlePlantimageSelect = (file) => {
-        
         setPlantImages((prev) => {
           let updated = [...prev, ...file];
     
@@ -225,7 +224,17 @@ const OrderMgmt = () => {
         setLoading(true);
     };
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
+    useEffect(() => {
+        const handleWindowBlur = () => {
+            setLoading(false); // Hide spinner when window loses focus
+        };
 
+        window.addEventListener('blur', handleWindowBlur);
+
+        return () => {
+            window.removeEventListener('blur', handleWindowBlur);
+        };
+    }, []);
     return (
         <>
             <div>
@@ -422,13 +431,12 @@ const OrderMgmt = () => {
                             );
                         })}
                        
-                        {loading ? (
+                        {  loading &&   
                 <Spinner />
-            ) : (
+             }
                 <div onClick={handleDropZoneClick}>
                     <DropZone
                         onDrop={(files) => {
-                            
                             handlePlantimageSelect(files);
                         }}
                         onReject={(files) => {
@@ -442,7 +450,7 @@ const OrderMgmt = () => {
                         maxFileSize="5"
                     />
                 </div>
-            )}
+            
                             
                      
                     </div>
