@@ -212,6 +212,7 @@
 
   .graphContainer{
     flex-direction: column !important;
+    
   }
 
   .graph{
@@ -279,7 +280,6 @@
     align-items: center;
     flex-wrap: nowrap !important;
     gap: 20px;
-
   }
 
   .plants{

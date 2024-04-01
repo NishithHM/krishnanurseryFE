@@ -498,7 +498,7 @@ const SalesHeader = ({
           xs={12}
           style={{ "margin-bottom": "40px" }}
         >
-          <Grid style={{maxWidth:'unset'}} item xl={12} xs={12} className=" grid7 ">
+          <Grid style={{maxWidth:'unset'}} item xl={12} xs={12} className="grid7 ">
             <Card
               style={{ height: "500px", overflowY: "auto", marginTop: "50px" }}
               className={styles.shadow}
