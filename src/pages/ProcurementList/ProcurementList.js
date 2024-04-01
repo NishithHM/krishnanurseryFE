@@ -270,7 +270,6 @@ const [spinner,setSpinner] = useState(false)
   const onVariantSubmitHandler = async () => {
     setLoaders(true);
    
-    
     const isValid = validateMinMaxPrices(variantRows);
     if(!isValid) {
       setLoaders(false)
@@ -554,18 +553,14 @@ const setBtns = ()=>{
                     </table>
                   </div>
                   <div className={styles.submitWrapper}>
-                    <div className={styles.submitBtn} onClick={setBtns}>
-                      {
-                        spinner ? (<Spinner /> )  :( <Button
+                    <div className={styles.submitBtn} >
+                       <Button
                         type="primary"
                         title="Submit Variants"
                         onClick={onVariantSubmitHandler}
                         disabled={disabledVariantsSubmit}
                         loading={loaders}
                       />
-                        )
-                      }
-                      
                     </div>
                   </div>
                   <span className={styles.errorText}>{error}</span>
