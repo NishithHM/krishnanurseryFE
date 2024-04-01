@@ -3,11 +3,13 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .percent {
   display: flex;
   padding-top: 20px;
   align-items: center;
 }
+
 .col {
   position: relative;
   display: flex;
@@ -21,6 +23,7 @@
   transition: box-shadow 0.3s, filter 0.3s;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 .selectedCard {
   background: #038819 !important;
   color: #ffff !important;
@@ -33,11 +36,13 @@
   align-items: center;
   padding-left: 20px;
 }
+
 .var1 {
   font-size: 20px;
   font-weight: 700;
   color: #038819;
 }
+
 .cardtit {
   text-transform: uppercase;
   font-weight: 600;
@@ -52,6 +57,7 @@
   line-height: 1.5;
   color: #32325d;
 }
+
 .ratiopercent {
   /* color: #2dce89 !important; */
   /* font-size: 0.875rem !important; */
@@ -60,9 +66,11 @@
   color: red;
   font-size: 15px;
 }
+
 .dater {
   padding-left: 20px;
 }
+
 .ranges {
   white-space: nowrap !important;
   font-weight: 300;
@@ -70,6 +78,7 @@
   color: #ffff !important;
   font-size: 14px !important;
 }
+
 .chart {
   height: auto !important;
   padding: 20px !important;
@@ -80,24 +89,29 @@
   padding: 20px !important;
   width: 100% !important;
 }
+
 /* .chartdataa{
   width: 1350px !important;
 } */
 .graphsdataa {
   padding-top: 50px;
 }
+
 .shadow {
   border-radius: 12px 12px 12px 12px !important;
   background-color: #ffffff !important;
   box-shadow: 4px 4px 8px 1px #d6d5d2;
 }
+
 .ratesicons {
   display: flex;
   align-items: center;
 }
+
 .dash {
   color: #000;
 }
+
 .selectedCardtit {
   text-transform: uppercase;
   font-weight: 600;
@@ -105,17 +119,21 @@
   color: #ffff !important;
   font-size: 20px;
 }
+
 .iconscolor {
   fill: #ffff !important;
 }
+
 .losstext {
-  color: red !important ;
+  color: red !important;
 }
+
 .inventorycard {
   padding-bottom: 50px;
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
+
 .fullWidthCard {
   width: 100%;
 }
@@ -124,25 +142,213 @@
   justify-content: center;
   align-items: center;
 }
+
 .profittext {
   color: #038819 !important;
 }
+
 .profitcolr {
   color: #ffff !important;
 }
+
 .coloricons {
   color: #ffff !important;
 }
+
 .pricecolors {
   color: #ffff !important;
 }
-.admindash {
-    display: flex;
+
+
+@media (min-width: 100px) and (max-width: 400px) {
+  html{
+    overflow-x: hidden;
+  }
+  .filterContainer {
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+  }
+
+  .cardContainer {
+    width: calc(100% + 825px) !important;
+    display: flex !important;
+    flex-direction: row !important;
     align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 20px;
+
+  }
+
+  .plants{
+    max-width: 100% !important;
+  }
+
+  .boxContainer{
+    width: 100%;
+    overflow: scroll ;
+  }
+
+  .card {
+    width: 200px;
+    height: 100%;
+    flex-shrink: 0;
+
+  }
+  .dateFilters{
+    max-width: 100% !important;
+    justify-content: unset;
+  
+  }
+
+
 }
-.backnavgia{
-  padding-left: 20px;
+
+@media (min-width: 400px) and (max-width: 700px) {
+  html{
+    /* overflow-x: hidden; */
+  }
+
+  .graphContainer{
+    flex-direction: column !important;
+    
+  }
+
+  .graph{
+    max-width: 100% !important;
+  }
+
+  .filterContainer {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+
+  }
+
+  .cardContainer {
+    width: calc(100% + 825px) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 20px;
+
+  }
+
+  .plants{
+    width: 100% !important;
+  }
+
+  .boxContainer{
+    width: 100%;
+    overflow: scroll ;
+  }
+
+  .card {
+    width: 200px;
+    height: 100%;
+    flex-shrink: 0;
+
+  }
+
+  .dateFilters{
+    max-width: 100% !important;
+    justify-content: unset;
+
+  }
+
 }
-/* .admindash > div > div {
-  margin: 0px !important;
-} */
+
+@media (min-width: 700px) and (max-width: 1100px) {
+  html{
+    overflow-x: hidden;
+  }
+  .filterContainer {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px;
+    justify-content: space-between;
+
+  }
+
+  .cardContainer {
+    width: calc(100% + 416px) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 20px;
+  }
+
+  .plants{
+    width: 100% !important;
+  }
+
+  .boxContainer{
+    width: 100%;
+    overflow: scroll ;
+  }
+
+  .card {
+    width: 200px;
+    height: 100%;
+    flex-shrink: 0;
+
+  }
+
+  .dateFilters{
+    max-width: 100% !important;
+    justify-content: unset;
+
+  }
+
+
+
+}
+
+@media (min-width: 1100px) and (max-width: 1200px) {
+  html{
+    overflow-x: hidden;
+  }
+  .filterContainer {
+    width: 100%;
+    display: flex !important;
+    flex-direction: row !important;
+
+  }
+
+  .cardContainer {
+    width: calc(100% + 344px) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 20px;
+
+  }
+
+  .plants{
+    width: 100% !important;
+  }
+
+  .boxContainer{
+    width: 100%;
+    overflow: scroll ;
+  }
+
+  .card {
+    width: 150px;
+    height: 100%;
+    flex-shrink: 0;
+
+  }
+  .dateFilters{
+    max-width: 100% !important;
+    justify-content: unset;
+
+  }
+
+
+}

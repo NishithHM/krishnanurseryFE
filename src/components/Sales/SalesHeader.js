@@ -326,16 +326,22 @@ const SalesHeader = ({
   return (
     <>
       <div>
-        <Box sx={{ width: "100%" }}>
+        <Box className={styles.boxContainer} sx={{ width: "100%" }}>
           <Grid
             container
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             item
             xs={12}
+            classes={{ container: styles.cardContainer }}
           >
             {headerData.map((item, index) => (
-              <Grid item xs={2} key={index}>
+              <Grid 
+               item 
+               xs={2} key={index}
+              classes={{ item: styles.card }}
+              >
+
                 <div
                   className={`${styles.col} ${
                     selectedCard?.title === item?.title
@@ -373,7 +379,7 @@ const SalesHeader = ({
                         </span>
                       ) : (
                         <span>
-                          <RupeeIcon isSelected={selectedCardIndex === index} />
+                           <RupeeIcon isSelected={selectedCardIndex === index} />
                         </span>
                       )}
                     </div>
@@ -415,10 +421,16 @@ const SalesHeader = ({
           </Grid>
         </Box>
       </div>
-      <div className={styles.graphsdataa}>
-        <Grid container spacing={1} item xs={12}>
-          {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 && variantsData?.length > 0 ? (
-            <Grid item xl={6} xs={6}>
+      <div
+       className={styles.graphsdataa}>
+        <Grid
+         className={styles.graphContainer}
+         container spacing={1} item xs={12}>
+          {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 ? (
+            <Grid className={styles.graph}
+             item
+              xl={6} 
+              xs={6}>
               <Card
                 className={`${styles.bg_gradient_default} ${styles.shadow}`}
               >
@@ -462,7 +474,7 @@ const SalesHeader = ({
             selectedCategory.length === 0 &&
             selectedPlants.length === 1 && variantsData?.length > 0)? (
             // YourComponent.js
-            <Grid item xl={6} xs={6} className=" grid7 ">
+            <Grid className={styles.graph}  item xl={6} xs={6} >
               <Card
                 className={styles.shadow}
                 style={{ height: "400px", overflowY: "auto" }}
@@ -486,7 +498,7 @@ const SalesHeader = ({
           xs={12}
           style={{ "margin-bottom": "40px" }}
         >
-          <Grid item xl={12} xs={12} className=" grid7 ">
+          <Grid style={{maxWidth:'unset'}} item xl={12} xs={12} className="grid7 ">
             <Card
               style={{ height: "500px", overflowY: "auto", marginTop: "50px" }}
               className={styles.shadow}
