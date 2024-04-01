@@ -291,6 +291,7 @@ const [spinner,setSpinner] = useState(false)
     getProcurements.refetch();
     if (res) {
       toast.success("Variants added Successfully!");
+      setSpinner(false)
     }
     setLoaders(false);
   };
