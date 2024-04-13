@@ -364,6 +364,8 @@ const Bills = ({type}) => {
                 invoiceDate: invoiceDetail?.billedDate,
                 billedBy: invoiceDetail?.billedBy?.name,
                 soldBy: invoiceDetail?.soldBy?.name,
+                cashAmount: invoiceDetail?.cashAmount,
+                onlineAmount: invoiceDetail?.onlineAmount
               }}
               type={type}
             />
@@ -383,7 +385,9 @@ const Bills = ({type}) => {
             billedBy: invoiceDetail?.billedBy?.name,
             soldBy: invoiceDetail?.soldBy?.name,
             paymentType: invoiceDetail?.paymentType,
-            paymentInfo: invoiceDetail?.paymentInfo
+            paymentInfo: invoiceDetail?.paymentInfo,
+            cashAmount: invoiceDetail?.cashAmount,
+            onlineAmount: invoiceDetail?.onlineAmount
           }}
           cartData={formatInvoiceItems(invoiceDetail.items)}
           cartResponse={{

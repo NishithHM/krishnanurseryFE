@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown } from "../../components";
+import { Dropdown, Input } from "../../components";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import styles from "./AddBills.module.css";
 import { AuthContext } from "../../context";
@@ -96,7 +96,7 @@ export const CartTableHeader = () => {
   );
 };
 
-export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur, onPaymentChange, onPaymentNumChange, paymentInfo,paymentType }) => {
+export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur, onPaymentChange, handleInputInfo, paymentInfo,paymentType, cashAmount, onlineAmount }) => {
   const [userCtx, setContext] = useContext(AuthContext);
 
   let subTotal = 0;
@@ -148,18 +148,46 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur, onPaym
             placeholder="Select Payment Type"
             required
             id="paymentType"
-            data={[{label: 'CASH', value:'CASH'}, {label:'ONLINE', value:'ONLINE'}]}
+            data={[{label: 'CASH', value:'CASH'}, {label:'ONLINE', value:'ONLINE'}, {label: 'BOTH',value:'BOTH'}]}
             value={paymentType?{label:paymentType,value:paymentType} :null}
-            onChange={onPaymentChange}
+            onChange={(e)=>onPaymentChange(e, subTotal)}
           />
       </div>
-      <div className={styles.billFigure}>
-          <span style={{marginRight:'10px'}}>Payment Info</span>
-          <input
-            name="payment info"
+      
+        {paymentType==='BOTH' &&
+        <>
+        <div className={styles.billFigure}>
+          <Input
+            id={"cashAmount"}
+            title="Cash Amount"
+            type="Number"
+            required
+            className={styles.cartInput}
+            value={cashAmount}
+            onChange={(e, id)=>handleInputInfo(e, id, subTotal)}
+          />
+        </div>
+        <div className={styles.billFigure}>
+          <Input
+            id={"onlineAmount"}
+            title="Online Amount"
+            required
+            type="Number"
+            disabled
+            max={subTotal}
+            className={styles.cartInput}
+            value={onlineAmount}
+          />
+        </div>
+        </>
+        }
+        <div className={styles.billFigure}>
+          <Input
+            id={"paymentInfo"}
+            title="payment info"
             className={styles.cartInput}
             value={paymentInfo}
-            onChange={onPaymentNumChange}
+            onChange={handleInputInfo}
           />
         </div>
         </div>

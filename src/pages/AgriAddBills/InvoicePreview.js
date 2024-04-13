@@ -50,7 +50,9 @@ export const InvoiceSection = (props) => {
     billAddress,
     type,
     paymentInfo,
-    paymentType
+    paymentType,
+    cashAmount,
+    onlineAmount
   } = props;
 
   const [cartList, setCartList] = useState([]);
@@ -184,6 +186,7 @@ export const InvoiceSection = (props) => {
             <br/>
             <b>Payment Details: </b>
             {paymentType} {paymentInfo ? `/${paymentInfo}` : ''}
+            {paymentType==="BOTH" && <span>{cashAmount}(cash) {onlineAmount}(online) </span> }
             </>
              }
           </div>
