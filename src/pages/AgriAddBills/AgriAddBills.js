@@ -77,7 +77,9 @@ export default function AgriAddBills() {
     submitDisable: false,
     invoiceNumber: "",
     paymentType: '',
-    paymentInfo: ''
+    paymentInfo: '',
+    cashAmount: null,
+    onlineAmount: null
   };
   const agriBillingAddress = {
     companyName: "Agri Shopee",
@@ -571,7 +573,9 @@ export default function AgriAddBills() {
     const payload = {
       roundOff: state.roundOff,
       paymentType: state.paymentType,
-      paymentInfo: state.paymentInfo
+      paymentInfo: state.paymentInfo,
+      cashAmount: state.cashAmount,
+      onlineAmount: state.onlineAmount
     };
 
     const confirmCart = await submitCart({
@@ -654,7 +658,13 @@ export default function AgriAddBills() {
   };
 
   const shouldSubmitDisable = () => {
-    if (state.checkOutDone && !state.submitError.isExist && isCheckoutDone && state.paymentType) {
+    let paymentValidation = true
+    if(state.paymentType=== 'BOTH'){
+      paymentValidation =  state.cashAmount && state.onlineAmount
+    }else {
+      paymentValidation = Boolean(state.paymentType)
+    }
+    if (state.checkOutDone && !state.submitError.isExist && isCheckoutDone && paymentValidation) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -668,12 +678,25 @@ export default function AgriAddBills() {
     },
   });
 
-  const handlePaymentMode =e=>{
-    setState((prev)=>({...prev, paymentType:e.value}))
+  const handlePaymentMode =(e, total)=>{
+    let cashAmount =0
+    let onlineAmount=0
+    if(e.value==='CASH'){
+      cashAmount = total
+    }
+
+    if(e.value==='ONLINE'){
+      onlineAmount = total
+    }
+
+    setState((prev)=>({...prev, paymentType:e.value, cashAmount, onlineAmount}))
   }
 
-  const handlePaymentInfo =e=>{
-    setState((prev)=>({...prev, paymentInfo:e.target.value}))
+  const handleInputInfo =(e, id, total)=>{
+    setState((prev)=>({...prev, [id]:e.target.value}))
+    if(id==='cashAmount'){
+      setState((prev)=>({...prev, onlineAmount:total - e.target.value}))
+    }
   }
 
   const today = new Date();
@@ -867,9 +890,11 @@ export default function AgriAddBills() {
               onRoundOff={handleRoundOffValue}
               onBlur={(e) => handleRoundOff(e)}
               paymentInfo={state.paymentInfo}
+              cashAmount={state.cashAmount}
+              onlineAmount={state.onlineAmount}
               paymentType={state.paymentType}
               onPaymentChange={handlePaymentMode}
-              onPaymentNumChange={handlePaymentInfo}
+              handleInputInfo={handleInputInfo}
             />
             <div className={styles.submitWrapper}>
               <div>
@@ -952,7 +977,9 @@ export default function AgriAddBills() {
           paymentInfo={state.paymentInfo}
           paymentType={state.paymentType}
           onPaymentChange={handlePaymentMode}
-          onPaymentNumChange={handlePaymentInfo}
+          cashAmount={state.cashAmount}
+          onlineAmount={state.onlineAmount}
+          handleInputInfo={handleInputInfo}
         />
         <div className={styles.submitWrapper}>
           <div>
@@ -990,6 +1017,8 @@ export default function AgriAddBills() {
             billedBy={auth.name}
             paymentType={state.paymentType}
             paymentInfo={state.paymentInfo}
+            cashAmount={state.cashAmount}
+            onlineAmount={state.onlineAmount}
           />
         </div>
       </div>
@@ -1008,6 +1037,8 @@ export default function AgriAddBills() {
         billedBy={auth.name}
         paymentType={state.paymentType}
         paymentInfo={state.paymentInfo}
+        cashAmount={state.cashAmount}
+        onlineAmount={state.onlineAmount}
       >
         {/* <Button
           type="primary"

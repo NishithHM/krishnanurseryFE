@@ -69,7 +69,11 @@ export default function AddBills() {
     submitDisable: false,
     invoiceNumber: "",
     isWholeSale: false,
-    isApproved: false
+    isApproved: false,
+    paymentType: '',
+    paymentInfo: '',
+    cashAmount: null,
+    onlineAmount: null
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
@@ -446,6 +450,10 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
   const handleSubmit = async () => {
     const payload = {
       roundOff: state.roundOff,
+      paymentType: state.paymentType,
+      paymentInfo: state.paymentInfo,
+      cashAmount: state.cashAmount,
+      onlineAmount: state.onlineAmount
     };
 
     const confirmCart = await submitCart({
@@ -546,7 +554,13 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
   };
 
   const shouldSubmitDisable = () => {
-    if (state.checkOutDone && !state.submitError.isExist) {
+    let paymentValidation = true
+    if(state.paymentType=== 'BOTH'){
+      paymentValidation =  state.cashAmount && state.onlineAmount
+    }else {
+      paymentValidation = Boolean(state.paymentType)
+    }
+    if (state.checkOutDone && !state.submitError.isExist && paymentValidation) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -614,6 +628,27 @@ const formatedBillHistory = (prev) => {
   const onPreviewClose = () => {
     setShowPreview(!showPreview)
     clearInterval(approveRef.current)
+  }
+
+  const handlePaymentMode =(e, total)=>{
+    let cashAmount =0
+    let onlineAmount=0
+    if(e.value==='CASH'){
+      cashAmount = total
+    }
+
+    if(e.value==='ONLINE'){
+      onlineAmount = total
+    }
+
+    setState((prev)=>({...prev, paymentType:e.value, cashAmount, onlineAmount}))
+  }
+
+  const handleInputInfo =(e, id, total)=>{
+    setState((prev)=>({...prev, [id]:e.target.value}))
+    if(id==='cashAmount'){
+      setState((prev)=>({...prev, onlineAmount:total - e.target.value}))
+    }
   }
 
   // console.log("state", state.billingHistory)
@@ -770,6 +805,12 @@ const formatedBillHistory = (prev) => {
               cartResponse={state.cartResponse}
               onRoundOff={handleRoundOffValue}
               onBlur={(e) => handleRoundOff(e)}
+              paymentInfo={state.paymentInfo}
+              cashAmount={state.cashAmount}
+              onlineAmount={state.onlineAmount}
+              paymentType={state.paymentType}
+              onPaymentChange={handlePaymentMode}
+              handleInputInfo={handleInputInfo}
             />
             <div className={styles.submitWrapper}>
               <div>
@@ -847,6 +888,12 @@ const formatedBillHistory = (prev) => {
           cartResponse={state.cartResponse}
           onRoundOff={handleRoundOffValue}
           onBlur={(e) => handleRoundOff(e)}
+          paymentInfo={state.paymentInfo}
+          cashAmount={state.cashAmount}
+          onlineAmount={state.onlineAmount}
+          paymentType={state.paymentType}
+          onPaymentChange={handlePaymentMode}
+          handleInputInfo={handleInputInfo}
         />
         <div className={styles.submitWrapper}>
           <div>
@@ -882,6 +929,10 @@ const formatedBillHistory = (prev) => {
             billedBy={auth.name}
             type="NURSERY"
             isWholeSale={state.isWholeSale}
+            paymentType={state.paymentType}
+            paymentInfo={state.paymentInfo}
+            cashAmount={state.cashAmount}
+            onlineAmount={state.onlineAmount}
           />
         </div>
       </div>
@@ -897,6 +948,10 @@ const formatedBillHistory = (prev) => {
         billedBy={auth.name}
         isWholeSale={state.isWholeSale}
         isApproved={state.isApproved}
+        paymentType={state.paymentType}
+        paymentInfo={state.paymentInfo}
+        cashAmount={state.cashAmount}
+        onlineAmount={state.onlineAmount}
         type="NURSERY"
       >
       </InvoicePreview>
