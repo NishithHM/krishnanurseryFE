@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import styles from "./ProcurementList.module.css";
-import { useState } from "react";
 
 const requiredData = [
   "lastProcuredOn",
