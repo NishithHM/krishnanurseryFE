@@ -21,7 +21,7 @@ import { AuthContext } from "../../context";
 import Datepicker from "../../components/Datepicker/Datepicker";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
-  const approveRef = useRef()
+  const approveRef = useRef();
 
   const tableRowBlank = {
     id: new Date().toISOString(),
@@ -49,7 +49,7 @@ export default function AddBills() {
     customerNumber: "",
     customerDetails: {},
     customerName: "",
-    customerAddress : "",
+    customerAddress: "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -69,12 +69,13 @@ export default function AddBills() {
     submitDisable: false,
     invoiceNumber: "",
     isWholeSale: false,
-    isApproved: false
+    isPamphletDataNeededInBill: false,
+    isApproved: false,
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
-  const [selectedTab,setSelectedTab] = useState("Nursery")
+  const [selectedTab, setSelectedTab] = useState("Nursery");
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -157,7 +158,10 @@ export default function AddBills() {
             value: `${item.procurementName.en.name} (${
               item?.procurementName?.ka?.name || ""
             })`,
-            type : item?.procurementName?.ka?.name === undefined ? "Agri" : "Nurssery"
+            type:
+              item?.procurementName?.ka?.name === undefined
+                ? "Agri"
+                : "Nurssery",
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -208,8 +212,8 @@ export default function AddBills() {
         } else {
           setTableRowData(cartRows);
         }
-        if(customerCart.data.isApproved && approveRef.current){
-          clearInterval(approveRef.current)
+        if (customerCart.data.isApproved && approveRef.current) {
+          clearInterval(approveRef.current);
         }
         setState((prev) => ({
           ...prev,
@@ -222,7 +226,7 @@ export default function AddBills() {
           checkOutDone: false,
           // roundOff: 0,
           isApproved: customerCart.data.isApproved,
-          isWholeSale: customerCart.data.isWholeSale || false
+          isWholeSale: customerCart.data.isWholeSale || false,
         }));
         return;
       }
@@ -389,13 +393,13 @@ export default function AddBills() {
         : state.customerDetails.dob,
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
       items,
-      isWholeSale: state.isWholeSale
+      isWholeSale: state.isWholeSale,
     };
 
     let checkout = null;
 
     if (state.cartResponse._id) {
-      const payload = { items: items,isWholeSale: state.isWholeSale };
+      const payload = { items: items, isWholeSale: state.isWholeSale };
       checkout = await updateCart({
         cartId: state.cartResponse._id,
         updatedCartData: payload,
@@ -428,7 +432,7 @@ export default function AddBills() {
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
         isWholeSale: checkout.data.isWholeSale || false,
-        isApproved: checkout.data.isApproved
+        isApproved: checkout.data.isApproved,
       }));
       toast.success("Checkout is successful!");
     }
@@ -509,7 +513,8 @@ export default function AddBills() {
   };
 
   const isRowValid = (row) => {
-    const price = (row.price >= row.minPrice || state.isWholeSale) && row.price <= row.mrp;
+    const price =
+      (row.price >= row.minPrice || state.isWholeSale) && row.price <= row.mrp;
 
     if (row.procurementId && row.variantId && price && row.quantity >= 1) {
       return true;
@@ -565,53 +570,52 @@ export default function AddBills() {
       : state.customerName;
 
   const handleKeyPress = async (e) => {
-      console.log(e.key)
-      if(e.key === "Enter") {
-       await handleCheckout();
-      }else if(e.key === "Tab") {
-       await handleAddItem()
-      }
-  }
-
-const formatedBillHistory = (prev) => {
-  if(selectedTab === "Agri") {
-    const newArray = prev.filter((curr, i) => {
-      let pr = curr[0];
-      if(pr.type === "Agri"){
-      return true; 
-      }else {
-        return false;
-      }
-    })
-    return newArray;
-  }else {
-    const newArray = prev.filter((curr, i) => {
-      let pr = curr[0];
-      if(pr.value.substring(pr.value.length-2) !== "()"){
-      return true; 
-      }else {
-        return false;
-      }
-    })
-    return newArray;
-  }
-}
-  const onPreviewClick=()=>{
-    setShowPreview(!showPreview);
-    if(state.isWholeSale){
-      const int= setInterval(()=>{
-        console.log('calling api')
-        fetchCustomerInfo()
-      }, 5000)
-      approveRef.current = int
+    console.log(e.key);
+    if (e.key === "Enter") {
+      await handleCheckout();
+    } else if (e.key === "Tab") {
+      await handleAddItem();
     }
-    
-  }
+  };
+
+  const formatedBillHistory = (prev) => {
+    if (selectedTab === "Agri") {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if (pr.type === "Agri") {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      return newArray;
+    } else {
+      const newArray = prev.filter((curr, i) => {
+        let pr = curr[0];
+        if (pr.value.substring(pr.value.length - 2) !== "()") {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      return newArray;
+    }
+  };
+  const onPreviewClick = () => {
+    setShowPreview(!showPreview);
+    if (state.isWholeSale) {
+      const int = setInterval(() => {
+        console.log("calling api");
+        fetchCustomerInfo();
+      }, 5000);
+      approveRef.current = int;
+    }
+  };
 
   const onPreviewClose = () => {
-    setShowPreview(!showPreview)
-    clearInterval(approveRef.current)
-  }
+    setShowPreview(!showPreview);
+    clearInterval(approveRef.current);
+  };
 
   // console.log("state", state.billingHistory)
 
@@ -621,12 +625,17 @@ const formatedBillHistory = (prev) => {
 
       <div className={styles.headerWrapper}>
         <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
+          <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <h1 className={styles.header}>Generate Bill</h1>
-        <h1 className={styles.header} style={{
-          marginRight : "-100px"
-        }}>Purchase History</h1>
+        <h1
+          className={styles.header}
+          style={{
+            marginRight: "-100px",
+          }}
+        >
+          Purchase History
+        </h1>
       </div>
 
       <div className={styles.billWrapper}>
@@ -634,28 +643,27 @@ const formatedBillHistory = (prev) => {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
+              <Input
+                value={state.customerNumber}
+                id="customerNumber"
+                type="number"
+                errorMessage="Invalid Customer Number"
+                required
+                validation={(number) => number.length === 10}
+                onChange={inputChangeHanlder}
+                onError={onError}
+                title="Customer Number:"
+              />
+              <Input
+                value={name}
+                id="customerName"
+                type="text"
+                title="Customer Name:"
+                onChange={inputChangeHanlder}
+                disabled={state.nameDisabled}
+              />
+              {state.showDOB && (
                 <Input
-                  value={state.customerNumber}
-                  id="customerNumber"
-                  type="number"
-                  errorMessage="Invalid Customer Number"
-                  required
-                  validation={(number) => number.length === 10}
-                  onChange={inputChangeHanlder}
-                  onError={onError}
-                  title="Customer Number:"
-                />
-                <Input
-                  value={name}
-                  id="customerName"
-                  type="text"
-                  title="Customer Name:"
-                  onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
-                />
-               {
-                state.showDOB && (
-                  <Input
                   value={state.customerAddress}
                   id="customerAddress"
                   type="text"
@@ -663,65 +671,88 @@ const formatedBillHistory = (prev) => {
                   onChange={inputChangeHanlder}
                   disabled={state.nameDisabled}
                 />
-                )
-               }
-            
-                {state.showDOB && (
-                  <DatePicker
-                    defaultValue={defaultDate}
-                    placeholder="dd-mm-yyyy"
-                    label="Date Of Birth"
-                    inputFormat="DD/MM/YYYY"
-                    labelFormat="MMMM - YYYY"
-                    size="sm"
-                    withAsterisk={false}
-                    value={state.dateOfBirth}
-                    onChange={dateChangeHandler}
-                    maxDate={new Date(today.setDate(today.getDate() - 1))}
-                    clearable={false}
-                    styles={{
-                      label: {
-                        width : "60%",
-                        fontSize: "18px",
-                        marginBottom: "2px",
-                        fontFamily: "sans-serif",
-                        fontWeight: 500,
-                      },
-                      input: {
-                        border: "none",
-                        width : "60%",
-                        borderBottom: "1.5px solid black",
-                        borderRadius: 0,
-                        fontSize: "18px",
-                        // fontWeight: 400,
-                        color : "#332b2b"
-                      },
-                    }}
-                  />
-                )}
-                
+              )}
+
+              {state.showDOB && (
+                <DatePicker
+                  defaultValue={defaultDate}
+                  placeholder="dd-mm-yyyy"
+                  label="Date Of Birth"
+                  inputFormat="DD/MM/YYYY"
+                  labelFormat="MMMM - YYYY"
+                  size="sm"
+                  withAsterisk={false}
+                  value={state.dateOfBirth}
+                  onChange={dateChangeHandler}
+                  maxDate={new Date(today.setDate(today.getDate() - 1))}
+                  clearable={false}
+                  styles={{
+                    label: {
+                      width: "60%",
+                      fontSize: "18px",
+                      marginBottom: "2px",
+                      fontFamily: "sans-serif",
+                      fontWeight: 500,
+                    },
+                    input: {
+                      border: "none",
+                      width: "60%",
+                      borderBottom: "1.5px solid black",
+                      borderRadius: 0,
+                      fontSize: "18px",
+                      // fontWeight: 400,
+                      color: "#332b2b",
+                    },
+                  }}
+                />
+              )}
             </div>
           </div>
-          <div className={styles.itemList} style={{paddingLeft: '10px'}}>
+          <div className={styles.itemList} style={{ paddingLeft: "10px" }}>
             <h3>Select if Wholesaler</h3>
-            <Checkbox value={state.isWholeSale}  label={"wholesale"} onChange={e=>setState(prev=>({...prev, isWholeSale: e, checkOutDone: false}))} />
+            <Checkbox
+              value={state.isWholeSale}
+              label={"wholesale"}
+              onChange={(e) =>
+                setState((prev) => ({
+                  ...prev,
+                  isWholeSale: e,
+                  checkOutDone: false,
+                }))
+              }
+            />
           </div>
           <div className={styles.itemList}>
             <div className={styles.itemTitleWrap}>
               <h3>Items List</h3>
+
               <button
                 className={styles.iconButton}
                 style={{
-                  display : "flex",
-                  justifyContent : "center",
-                  alignItems : "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 disabled={!isTableValid()}
                 onClick={handleAddItem}
               >
-                <FontAwesomeIcon icon={faPlus} style={{marginLeft : "0.8px"}} />
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  style={{ marginLeft: "0.8px" }}
+                />
               </button>
             </div>
+            <Checkbox
+              value={state.isPamphletDataNeededInBill}
+              label={"Include Pamphlet in bill"}
+              onChange={(e) =>
+                setState((prev) => ({
+                  ...prev,
+                  isPamphletDataNeededInBill: e,
+                  checkOutDone: false,
+                }))
+              }
+            />
             <div>
               <div className={styles.cartTableContainer}>
                 <table className={styles.cartTable}>
@@ -788,48 +819,54 @@ const formatedBillHistory = (prev) => {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory} style={{ marginRight : "15px"}}>
+        <div className={styles.billHistory} style={{ marginRight: "15px" }}>
           <div className={styles.historyTabContainer}>
-              <div className={styles.singleTab}>
-                <p style={{
-                     width : "50%",
-                     textAlign : "center",
-                     cursor : "pointer",
-                     color :"#038819"
-                }} onClick={() => setSelectedTab("Nursery")}>
-                  Nursery
-                </p>
-                {
-                  selectedTab === "Nursery" && (
-                    <div style={{
-                       height : "4px",
-                       width : "50%",
-                       borderRadius : "10px",
-                       background : "green"
-                }}></div>
-                  )
-                }
-              </div>
-              <div className={styles.singleTab}>
-                <p style={{
-                     width : "50%",
-                     textAlign : "center",
-                     cursor : "pointer",
-                     color :"#038819"
-                }} onClick={() => setSelectedTab("Agri")}>
-                  Agri
-                </p>
-              {
-                selectedTab === "Agri" && (
-                  <div style={{
-                  height : "4px",
-                  width : "50%",
-                  borderRadius : "10px",
-                  background : "green"
-                }}></div>
-                )
-              }
-              </div>
+            <div className={styles.singleTab}>
+              <p
+                style={{
+                  width: "50%",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  color: "#038819",
+                }}
+                onClick={() => setSelectedTab("Nursery")}
+              >
+                Nursery
+              </p>
+              {selectedTab === "Nursery" && (
+                <div
+                  style={{
+                    height: "4px",
+                    width: "50%",
+                    borderRadius: "10px",
+                    background: "green",
+                  }}
+                ></div>
+              )}
+            </div>
+            <div className={styles.singleTab}>
+              <p
+                style={{
+                  width: "50%",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  color: "#038819",
+                }}
+                onClick={() => setSelectedTab("Agri")}
+              >
+                Agri
+              </p>
+              {selectedTab === "Agri" && (
+                <div
+                  style={{
+                    height: "4px",
+                    width: "50%",
+                    borderRadius: "10px",
+                    background: "green",
+                  }}
+                ></div>
+              )}
+            </div>
           </div>
           <ScrollTable
             thead={billingHistoryHeader}
@@ -895,8 +932,7 @@ const formatedBillHistory = (prev) => {
         isWholeSale={state.isWholeSale}
         isApproved={state.isApproved}
         type="NURSERY"
-      >
-      </InvoicePreview>
+      ></InvoicePreview>
     </div>
   );
 }
