@@ -20,12 +20,15 @@ export const baseQueryWithAuth = async (args, api, extraOptions) => {
  * @returns {Promise}
  */
 export const downloadFile = async (url) => {
-  const res = axios.get(
+  const res = await axios.get(
     `${process.env.REACT_APP_BASE_URL}/api/download?path=${url}`,
     {
+      responseType: "blob",
       headers: {
         Authorization: sessionStorage.getItem("authToken"),
       },
     }
   );
+
+  return res?.data;
 };

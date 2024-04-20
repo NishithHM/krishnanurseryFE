@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import pdfToText from "react-pdftotext";
+
 import { Input, Button, Toaster, BackButton, Checkbox } from "../../components";
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +21,7 @@ import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
 import Datepicker from "../../components/Datepicker/Datepicker";
+import { downloadFile } from "../../services/helper";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
   const approveRef = useRef();
@@ -76,6 +79,9 @@ export default function AddBills() {
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Nursery");
+  const [pamphlet, setPamphlet] = useState(null);
+  const [pamphletData, setPamphletData] = useState(null);
+
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -268,6 +274,8 @@ export default function AddBills() {
     let tableDataClone = [...tableRowData];
     let tableRowClone = { ...tableDataClone[index] };
 
+    setPamphlet(value?.meta?.pamphlet);
+
     setState((prev) => ({
       ...prev,
       checkOutDone: false,
@@ -371,6 +379,23 @@ export default function AddBills() {
       ...prev,
       priceError: { error: "", isExist: false },
     }));
+  };
+
+  const handlePamphletDownload = async (e) => {
+    try {
+      const pdfBlob = await downloadFile(pamphlet);
+
+      const pdfText = await pdfToText(pdfBlob);
+
+      setPamphletData(pdfText);
+      setState((prev) => ({
+        ...prev,
+        isPamphletDataNeededInBill: e,
+        checkOutDone: false,
+      }));
+    } catch (error) {
+      toast.error("Error in downloading pamphlet");
+    }
   };
 
   const handleCheckout = async () => {
@@ -742,17 +767,13 @@ export default function AddBills() {
                 />
               </button>
             </div>
-            <Checkbox
-              value={state.isPamphletDataNeededInBill}
-              label={"Include Pamphlet in bill"}
-              onChange={(e) =>
-                setState((prev) => ({
-                  ...prev,
-                  isPamphletDataNeededInBill: e,
-                  checkOutDone: false,
-                }))
-              }
-            />
+            {pamphlet && (
+              <Checkbox
+                value={state.isPamphletDataNeededInBill}
+                label={"Include Pamphlet in bill"}
+                onChange={handlePamphletDownload}
+              />
+            )}
             <div>
               <div className={styles.cartTableContainer}>
                 <table className={styles.cartTable}>
@@ -922,6 +943,7 @@ export default function AddBills() {
       <InvoicePreview
         showPreview={showPreview}
         onClose={onPreviewClose}
+        pamphletData={pamphletData}
         clientDetails={state.customerDetails}
         cartData={tableRowData}
         cartResponse={state?.cartResponse}

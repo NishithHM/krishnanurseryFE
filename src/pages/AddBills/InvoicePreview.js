@@ -6,20 +6,29 @@ import { Button } from "../../components";
 import dayjs from "dayjs";
 
 const billConfig = {
-  NURSERY:{
-    name:'Shree Krishna Nursery',
-    email:"mailus.skn@gmail.com",
-    gst:'29ACCFA0434C1Z0'
+  NURSERY: {
+    name: "Shree Krishna Nursery",
+    email: "mailus.skn@gmail.com",
+    gst: "29ACCFA0434C1Z0",
   },
-  AGRI:{
-    name:'Agri Shopee',
-    email:'agrishopee@gmail.com',
-    gst:'29ACCFA0434C1Z0'
-  }
-}
+  AGRI: {
+    name: "Agri Shopee",
+    email: "agrishopee@gmail.com",
+    gst: "29ACCFA0434C1Z0",
+  },
+};
 
 export const InvoicePreview = (props) => {
-  const { showPreview, onClose, children, handlePrintClick, cartResponse, cartData, type, isWholeSale } = props;
+  const {
+    showPreview,
+    onClose,
+    children,
+    handlePrintClick,
+    cartResponse,
+    cartData,
+    type,
+    isWholeSale,
+  } = props;
 
   const printEnabled = false;
 
@@ -43,11 +52,11 @@ export const InvoicePreview = (props) => {
           loading={!cartResponse.isApproved && isWholeSale}
           buttonType="submit"
           onClick={handlePrintClick}
-          disabled={!cartResponse.isApproved  && isWholeSale}
+          disabled={!cartResponse.isApproved && isWholeSale}
         />
-        {!cartResponse.isApproved && isWholeSale &&<p>
-          Waiting for admin approval
-        </p>}
+        {!cartResponse.isApproved && isWholeSale && (
+          <p>Waiting for admin approval</p>
+        )}
       </div>
 
       <div className={styles.modalAction}>{children}</div>
@@ -65,6 +74,7 @@ export const InvoiceSection = (props) => {
     roundOff,
     billedBy,
     type,
+    pamphletData
   } = props;
 
   const [cartList, setCartList] = useState([]);
@@ -134,17 +144,21 @@ export const InvoiceSection = (props) => {
           <div className={styles.addressDetails}>
             <b>{billConfig[type].name}</b>
             <br></br>
-            No.188, Near airport, Santhekadur post, 
+            No.188, Near airport, Santhekadur post,
             <br></br>
             Shivamogga - 577222
           </div>
-          <div><strong>Phone Number</strong> : 81051-73777</div>
-          <div><strong>Email </strong>: {billConfig[type].email}</div>
-          {
-            type !== "NURSERY" && (
-              <div><strong>GSTIN </strong>: {billConfig[type].gst}</div>
-            )
-          }
+          <div>
+            <strong>Phone Number</strong> : 81051-73777
+          </div>
+          <div>
+            <strong>Email </strong>: {billConfig[type].email}
+          </div>
+          {type !== "NURSERY" && (
+            <div>
+              <strong>GSTIN </strong>: {billConfig[type].gst}
+            </div>
+          )}
         </div>
 
         <div className={styles.clientDetails}>
@@ -218,6 +232,7 @@ export const InvoiceSection = (props) => {
           </div>
         </div>
       </div>
+        <pre>{pamphletData}</pre>
       <div className={styles.credits}>Innovative IT solutions by Coden</div>
     </div>
   );
