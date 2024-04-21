@@ -79,7 +79,9 @@ export default function AgriAddBills() {
     paymentType: '',
     paymentInfo: '',
     cashAmount: null,
-    onlineAmount: null
+    onlineAmount: null,
+    isCustomerUpdate: false,
+    lockCustomerFields: false
   };
   const agriBillingAddress = {
     companyName: "Agri Shopee",
@@ -201,12 +203,21 @@ export default function AgriAddBills() {
   }, [JSON.stringify(cartData), needsUpdate]);
 
   const inputChangeHanlder = (event, id) => {
+    const isCustomerFeilds = ["customerAddress", "customerGst", "shippingAddress"].includes(id)
     setState((prev) => {
       return {
         ...prev,
         [id]: event.target.value,
       };
     });
+    if(isCustomerFeilds){
+      setState((prev) => {
+        return {
+          ...prev,
+          isCustomerUpdate: isCustomerFeilds,
+        };
+      });
+    }
   };
 
   const dateChangeHandler = (event) => {
@@ -260,7 +271,7 @@ export default function AgriAddBills() {
     return newData;
   };
 
-  const fetchCustomerInfo = async () => {
+  const fetchCustomerInfo = async (isCheckout=false) => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
 
     if (customerDetails.error) {
@@ -323,7 +334,7 @@ export default function AgriAddBills() {
             nameDisabled: true,
             showDOB: false,
             newCustomer: false,
-            checkOutDone: false,
+            checkOutDone: isCheckout,
             roundOff: 0,
             customerName: customerDetails.name,
           }));
@@ -338,7 +349,7 @@ export default function AgriAddBills() {
             showDOB: false,
             newCustomer: false,
             roundOff: 0,
-            checkOutDone: false,
+            checkOutDone: isCheckout,
             cartResponse: {},
           }));
         }
@@ -361,7 +372,7 @@ export default function AgriAddBills() {
 
   useEffect(() => {
     if (state.customerNumber.length === 10) {
-      fetchCustomerInfo();
+      fetchCustomerInfo(false);
     }
   }, [state.customerNumber]);
 
@@ -511,16 +522,22 @@ export default function AgriAddBills() {
         ? state.dateOfBirth
         : state.customerDetails.dob,
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
-      customerAddress: state.newCustomer ? state.customerAddress : state.customerDetails.address,
-      shippingAddress: state.newCustomer ? state.shippingAddress : state.customerDetails.shippingAddress,
-      customerGst: state.newCustomer ? state.customerGst : state.customerDetails.gst,
+      customerAddress: state.isCustomerUpdate ? state.customerAddress : state.customerDetails.address,
+      shippingAddress: state.isCustomerUpdate ? state.shippingAddress : state.customerDetails.shippingAddress,
+      customerGst: state.isCustomerUpdate ? state.customerGst : state.customerDetails.gst,
+      isCustomerUpdate: state.isCustomerUpdate,
       items,
     };
 
     let checkout = null;
 
     if (state.cartResponse._id) {
-      const payload = { items: items };
+      const payload = { 
+        items: items , 
+        customerAddress: state.isCustomerUpdate ? state.customerAddress : state.customerDetails.address,
+        shippingAddress: state.isCustomerUpdate ? state.shippingAddress : state.customerDetails.shippingAddress,
+        customerGst: state.isCustomerUpdate ? state.customerGst : state.customerDetails.gst,
+        isCustomerUpdate: state.isCustomerUpdate,};
       checkout = await updateCart({
         cartId: state.cartResponse._id,
         updatedCartData: payload,
@@ -528,6 +545,8 @@ export default function AgriAddBills() {
     } else {
       checkout = await checkoutCart(cartPayload);
     }
+    await fetchCustomerInfo(true)
+
 
     if (!checkout) {
       return toast.error("Error Checkout");
@@ -556,6 +575,7 @@ export default function AgriAddBills() {
         priceError: { isExist: false, error: "" },
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
+        lockCustomerFields: true
       }));
       toast.success("Checkout is successful!");
       setIsCheckoutDone(true);
@@ -758,7 +778,7 @@ export default function AgriAddBills() {
                   type="text"
                   title="Customer Address:"
                   onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
+                  disabled={state.lockCustomerFields}
                 />
                 
                   <Input
@@ -767,7 +787,7 @@ export default function AgriAddBills() {
                   type="text"
                   title="Shipping Address:"
                   onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
+                  disabled={state.lockCustomerFields}
                 />
                 
                   <Input
@@ -776,7 +796,7 @@ export default function AgriAddBills() {
                   type="text"
                   title="GST number"
                   onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
+                  disabled={state.lockCustomerFields}
                 />
                 
               
