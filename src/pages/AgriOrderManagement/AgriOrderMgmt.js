@@ -491,6 +491,7 @@ const AgriOrderMgmt = () => {
           orderId={addInvoice?.data?.orderId}
           getInvoice={getInvoice}
           type="AGRI"
+          isInvoice
         />
       )}
     </>

@@ -20,6 +20,7 @@ const AddInvoiceModal = ({
   orderId,
   getInvoice,
   type,
+  isInvoice
 }) => {
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
 
@@ -87,7 +88,7 @@ const AddInvoiceModal = ({
         subMessage={""}
         cancelBtnLabel={"Close"}
         confirmBtnLabel={"Submit"}
-        confirmBtnEnable={(!orderInvoiceFile || !state.totalToPay || state.totalToPay <= 0 || !state.invoiceId) ? true : false}
+        confirmBtnEnable={(!orderInvoiceFile || !state.totalToPay || state.totalToPay <= 0 || !(state.invoiceId || !isInvoice)) ? true : false}
         successLoading={isAddInvoiceLoading}
         handleCancel={() => {
           setAddInvoice({ isActive: false, id: null });
@@ -101,15 +102,21 @@ const AddInvoiceModal = ({
             return toast.error("Invoice Amount should not be less than 0");
           const data = new FormData();
           data.append("invoice", orderInvoiceFile);
+
+          const body = {
+            orderData:  state.orderVal,
+            finalAmountPaid:
+              parseInt(state.totalToPay, 10) +
+              parseInt(state.advanceAmount, 10),
+          }
+
+          if(isInvoice){
+            body.invoiceId = state.invoiceId
+          }
+
           data.append(
             "body",
-            JSON.stringify({
-              orderData:  state.orderVal,
-              invoiceId: state.invoiceId,
-              finalAmountPaid:
-                parseInt(state.totalToPay, 10) +
-                parseInt(state.advanceAmount, 10),
-            })
+            JSON.stringify(body)
           );
 
           const res = await AddOrderInvoice({
@@ -226,7 +233,7 @@ const AddInvoiceModal = ({
                 gap: "40px",
               }}
             >
-
+              {isInvoice &&
             <Input
                 value={state.invoiceId}
                 id="invoiceId"
@@ -239,7 +246,7 @@ const AddInvoiceModal = ({
                 }
                 title="Ivoice Id"
                 required
-              />
+              />}
               </div>
           </div>
 

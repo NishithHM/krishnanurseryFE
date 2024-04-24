@@ -81,7 +81,8 @@ export default function AgriAddBills() {
     cashAmount: null,
     onlineAmount: null,
     isCustomerUpdate: false,
-    lockCustomerFields: false
+    lockCustomerFields: false,
+    isCheckoutDone: false
   };
   const agriBillingAddress = {
     companyName: "Agri Shopee",
@@ -93,7 +94,6 @@ export default function AgriAddBills() {
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
-  const [isCheckoutDone, setIsCheckoutDone] = useState(false);
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -128,8 +128,15 @@ export default function AgriAddBills() {
   const [needsUpdate, setNeedsUpdate] = useState(false);
 
   const updateCartItems=async()=>{
-    if (!needsUpdate) return;
-    if (isCheckoutDone) setIsCheckoutDone(false);
+    if (!needsUpdate) {
+      return; 
+    }else{
+    if (state.isCheckoutDone) {
+      setState((prev=>({
+        ...prev,
+        isCheckoutDone:false
+      })))
+    }
 
     const cartItems = cartData.variants;
     const updatedItems = [];
@@ -197,6 +204,7 @@ export default function AgriAddBills() {
         setCartData((prev) => ({ ...prev, variants: cloneDeep([...updatedItems]) }));
         setNeedsUpdate(false);
     }
+  }
   }
   useEffect(() => {
     updateCartItems()
@@ -338,6 +346,12 @@ export default function AgriAddBills() {
             roundOff: 0,
             customerName: customerDetails.name,
           }));
+          setTimeout(() => {
+            setState((prev) => ({
+              ...prev,
+              isCheckoutDone: isCheckout,
+            }));
+          }, 500);
           return;
         } else {
           setCartData((prev) => ({ ...prev, variants: [] }));
@@ -567,6 +581,7 @@ export default function AgriAddBills() {
             name: checkout.data.customerName,
             phoneNumber: checkout.data.customerNumber,
           },
+          isCheckoutDone: true
         }));
       }
       setState((prev) => ({
@@ -575,10 +590,12 @@ export default function AgriAddBills() {
         priceError: { isExist: false, error: "" },
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
-        lockCustomerFields: true
+        lockCustomerFields: true,
+        isCheckoutDone: true
       }));
+
+
       toast.success("Checkout is successful!");
-      setIsCheckoutDone(true);
     }
   };
 
@@ -679,12 +696,14 @@ export default function AgriAddBills() {
 
   const shouldSubmitDisable = () => {
     let paymentValidation = true
+    console.log(state.paymentType)
     if(state.paymentType=== 'BOTH'){
       paymentValidation =  state.cashAmount && state.onlineAmount
     }else {
       paymentValidation = Boolean(state.paymentType)
     }
-    if (state.checkOutDone && !state.submitError.isExist && isCheckoutDone && paymentValidation) {
+    console.log(state.checkOutDone, !state.submitError.isExist, state.isCheckoutDone, paymentValidation )
+    if (state.checkOutDone && !state.submitError.isExist && state.isCheckoutDone && paymentValidation) {
       return shouldCheckoutDisable();
     }
     return true;
