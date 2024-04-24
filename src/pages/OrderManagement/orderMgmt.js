@@ -507,6 +507,7 @@ const OrderMgmt = () => {
                     orderId={addInvoice?.data?.orderId}
                     getInvoice={getInvoice}
                     type="NUR"
+                    isInvoice={false}
                 />
             )}
         </>
