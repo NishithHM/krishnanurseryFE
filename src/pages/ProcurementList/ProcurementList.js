@@ -164,7 +164,6 @@ const ProcurementList = () => {
   const onDetailClick = (id) => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
 
-
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
     setQuantity(procurementData?.minimumQuantity);
@@ -398,6 +397,7 @@ const ProcurementList = () => {
     try {
       const data = await uploadPdfData({
         body: formData,
+        pamphletId: id,
       });
       if (data.message !== null) {
         const response = await GetPdfData();

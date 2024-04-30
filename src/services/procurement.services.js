@@ -224,8 +224,8 @@ export const procurementsApi = createApi({
       //   })
       // })
       uploadPhamplet:builder.mutation({
-        query:({body})=>({
-          url: 'pamphlet/644902225d698cdd131aacd9',
+        query:({body,pamphletId})=>({
+          url: `pamphlet/${pamphletId}`,
           method:'POST',
           body,
         })
