@@ -321,20 +321,25 @@ const SalesHeader = ({
       }
     };
   }, [filteredData, selectedTitle]);
-
   return (
     <>
       <div>
-        <Box sx={{ width: "100%" }}>
+        <Box className={styles.boxContainer} sx={{ width: "100%" }}>
           <Grid
             container
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             item
             xs={12}
+            classes={{ container: styles.cardContainer }}
           >
             {headerData.map((item, index) => (
-              <Grid item xs={2} key={index}>
+              <Grid 
+               item 
+               xs={2} key={index}
+              classes={{ item: styles.card }}
+              >
+
                 <div
                   className={`${styles.col} ${
                     selectedCard?.title === item?.title
@@ -372,7 +377,7 @@ const SalesHeader = ({
                         </span>
                       ) : (
                         <span>
-                          <RupeeIcon isSelected={selectedCardIndex === index} />
+                           <RupeeIcon isSelected={selectedCardIndex === index} />
                         </span>
                       )}
                     </div>
@@ -414,10 +419,16 @@ const SalesHeader = ({
           </Grid>
         </Box>
       </div>
-      <div className={styles.graphsdataa}>
-        <Grid container spacing={1} item xs={12}>
+      <div
+       className={styles.graphsdataa}>
+        <Grid
+         className={styles.graphContainer}
+         container spacing={1} item xs={12}>
           {selectedPlants && selectedPlants.length !== 2 && selectedCategory && selectedCategory.length !==2 ? (
-            <Grid item xl={6} xs={6}>
+            <Grid className={styles.graph}
+             item
+              xl={6} 
+              xs={6}>
               <Card
                 className={`${styles.bg_gradient_default} ${styles.shadow}`}
               >
@@ -445,22 +456,23 @@ const SalesHeader = ({
                 </CardHeader>
                 <CardContent>
                   <div >
-                    <canvas id="salesChart" className={`${ selectedCategory && selectedCategory.length ===2 || selectedPlants && selectedPlants.length ===2?  styles.chart :  null}`} />
+                    <canvas id="salesChart" className={`${ selectedCategory && selectedCategory.length ===2 || variantsData?.length === 0  || selectedPlants && selectedPlants.length ===2 || variantsData?.length === 0  ?  styles.chart :  null}`} />
                   </div>
                 </CardContent>
               </Card>
             </Grid>
           )}
 
-          {(selectedCategory &&
+          {
+          (selectedCategory &&
             selectedPlants.length === 0 &&
-            selectedCategory.length === 1) ||
-          (selectedPlants.length === 0 && selectedCategory.length === 0) ||
+            selectedCategory.length === 1&& variantsData?.length > 0 ) ||
+          (selectedPlants.length === 0 && selectedCategory.length === 0 && variantsData?.length > 0  ) ||
           (selectedPlants &&
             selectedCategory.length === 0 &&
-            selectedPlants.length === 1) ? (
+            selectedPlants.length === 1 && variantsData?.length > 0)? (
             // YourComponent.js
-            <Grid item xl={6} xs={6} className=" grid7 ">
+            <Grid className={styles.graph}  item xl={6} xs={6} >
               <Card
                 className={styles.shadow}
                 style={{ height: "400px", overflowY: "auto" }}
@@ -475,7 +487,7 @@ const SalesHeader = ({
                 <Table data={[TABLE_HEADER, ...variantsTableData]} />
               </Card>
             </Grid>
-          ) : null}
+          ) :null}
         </Grid>
         <Grid
           container
@@ -484,7 +496,7 @@ const SalesHeader = ({
           xs={12}
           style={{ "margin-bottom": "40px" }}
         >
-          <Grid item xl={12} xs={12} className=" grid7 ">
+          <Grid style={{maxWidth:'unset'}} item xl={12} xs={12} className="grid7 ">
             <Card
               style={{ height: "500px", overflowY: "auto", marginTop: "50px" }}
               className={styles.shadow}

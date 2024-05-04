@@ -3,6 +3,7 @@
   gap: 4rem;
 }
 
+
 .dateInput {
   background: #fff;
 }
@@ -35,3 +36,19 @@
     align-self: flex-start;
   }
 }
+
+
+@media (min-width: 100px) and (max-width: 400px) {
+  .startDate{
+    width: 50%;
+  }
+  .endDate{
+    width: 50%;
+  }
+  
+  .innerWrapper{
+    display: flex;
+    flex-direction: column;
+  }
+}
+

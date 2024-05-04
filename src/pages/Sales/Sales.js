@@ -19,24 +19,30 @@ const Sales = () => {
   const [graphsData, setGraphsData] = useState(null);
   const [selectedPlants, setSelectedPlants] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
-// const [selectdate ,setSelectDate] =useState(false)
-  const defaultStartDate = dayjs().subtract(1, 'year').format('YYYY-MM-DD');
-  const defaultEndDate = dayjs().format('YYYY-MM-DD');
+  // const [selectdate ,setSelectDate] =useState(false)
+  const defaultStartDate = dayjs().subtract(1, "year").format("YYYY-MM-DD");
+  const defaultEndDate = dayjs().format("YYYY-MM-DD");
 
   const [dateRange, setDateRange] = useState({
     startDate: defaultStartDate,
     endDate: defaultEndDate,
   });
 
-  const handlePlantChange = useCallback((selectedPlants) => {
-    setSelectedPlants(selectedPlants);
-    setSelectedCategory([]);
-  }, [selectedPlants]);
+  const handlePlantChange = useCallback(
+    (selectedPlants) => {
+      setSelectedPlants(selectedPlants);
+      setSelectedCategory([]);
+    },
+    [selectedPlants]
+  );
 
-  const handleCategoryChange = useCallback((selectedCategories) => {
-    setSelectedCategory(selectedCategories);
-    setSelectedPlants([]);
-  }, [selectedCategory]);
+  const handleCategoryChange = useCallback(
+    (selectedCategories) => {
+      setSelectedCategory(selectedCategories);
+      setSelectedPlants([]);
+    },
+    [selectedCategory]
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,7 +77,9 @@ const Sales = () => {
   const handleDateChange = useCallback((selectedDate) => {
     if (selectedDate && selectedDate.startDate && selectedDate.endDate) {
       // setSelectDate(true);
-      const formattedStartDate = dayjs(selectedDate.startDate).format("YYYY-MM-DD");
+      const formattedStartDate = dayjs(selectedDate.startDate).format(
+        "YYYY-MM-DD"
+      );
       const formattedEndDate = dayjs(selectedDate.endDate).format("YYYY-MM-DD");
 
       const plantsArray = selectedPlants || [];
@@ -90,17 +98,25 @@ const Sales = () => {
 
   return (
     <div>
-      <div>
-        <BackButton navigateTo={"/authorised/dashboard"} />
-      </div>
-      <Container maxWidth="xl" className=" containermax ">
-        <div>
+       <div className={styles.admindash}>
+       <div>
+          <BackButton navigateTo={"/authorised/dashboard"} className=" backbtn "/>
+        </div>
+        <div className={styles.backnavgia}>
           <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
         </div>
+       </div>
+      <Container maxWidth="xl" className=" containermax " style={{maxWidth:'unset'}}>
         <div>
           <div>
-            <Grid container spacing={2} item xs={12}>
-              <Grid item xs={4} className="plants">
+            <Grid
+             classes={{container: styles.filterContainer}}
+              container
+               spacing={2}
+                item 
+                xs={12}
+                >
+              <Grid classes={{item: styles.plants}} item xs={4} className="plants">
                 <Dropdown
                   url="/api/procurements/getAll?isList=true&isAll=true"
                   id="addPlantName"
@@ -114,16 +130,20 @@ const Sales = () => {
                   minInputToFireApi={3}
                 />
               </Grid>
-              <Grid item xs={4} className="datefilters">
+              <Grid
+             classes={{item: styles.dateFilters}}
+             item xs={4} className="datefilters">
                 <Datefilter
                   onChange={handleDateChange}
                   startDateInput={dateRange.startDate}
                   endDateInput={dateRange.endDate}
-                  defaultStartDate ={defaultStartDate}
-                  defaultEndDate ={defaultEndDate}
+                  defaultStartDate={defaultStartDate}
+                  defaultEndDate={defaultEndDate}
                 />
               </Grid>
-              <Grid item xs={4} className="plants">
+              <Grid 
+             classes={{item: styles.plants}}
+               item xs={4} className="plants">
                 <Dropdown
                   url="/api/category/getAll"
                   id="addCategory"

@@ -30,6 +30,8 @@ const AddNewVariants = () => {
   const [options, setOptions] = useState([]);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [variantName, setVariantName] = useState("");
+  const [gst, setGST] = useState(null);
+  const [hsnCode, setHSNCode] = useState("");
 
   const { data, isLoading: isGetOptionsLoading } = useGetAgriOptionsQuery();
   const optionsType = data || [];
@@ -69,7 +71,8 @@ const AddNewVariants = () => {
       setJsonData(res.data);
       setSelectedVariant({ label: res.data.type, value: res.data.type });
       setVariantName(res.data.name);
-
+      setGST(res.data.gst)
+      setHSNCode(res.data.hsnCode)
       setOptions(res.data?.options || []);
     }
 
@@ -126,13 +129,13 @@ const AddNewVariants = () => {
     if (editId) {
       await updateAgriVariantOptions({
         id: editId,
-        body: { options: data },
+        body: { options: data, hsnCode, gst },
       });
       toast.success("Variant Options Updated");
       navigate("../dashboard/agri-variants");
 
     } else {
-      const data = { type: selectedVariant.value, name: variantName, options };
+      const data = { type: selectedVariant.value, name: variantName, options, hsnCode, gst };
       const res = await AddNewAgriVariant(data);
       if(!res || res.error) {
         toast.error(res.error?.data?.message)
@@ -234,6 +237,21 @@ const AddNewVariants = () => {
                     value={variantName}
                     disabled={editId}
                     onChange={(e) => setVariantName(e.target.value)}
+                  />
+                </div>
+                <div style={{ width: "100%" }}>
+                  <Input
+                    title="GST"
+                    value={gst}
+                    type="number"
+                    onChange={(e) => setGST(e.target.value)}
+                  />
+                </div>
+                <div style={{ width: "100%" }}>
+                  <Input
+                    title="HSN Code"
+                    value={hsnCode}
+                    onChange={(e) => setHSNCode(e.target.value)}
                   />
                 </div>
               </div>

@@ -248,6 +248,19 @@ export const formatOrdersData = ({ data, role, onAction }) => {
             {get(order, `${ele.value}`, "")}
           </span>
         );
+      }else if(ele?.value==="orderId"){
+        value = (
+          <>
+          <span style={{ maxWidth: "200px", display: "block" }}>
+            {get(order, `${ele.value}`, "")}
+          </span>
+          {get(order, `invoiceId`, "") && 
+          <span style={{ maxWidth: "200px", display: "block" }}>
+          {get(order, `invoiceId`, "")} (INV)
+          </span>
+          }
+          </>
+        );
       } else {
         value = get(order, `${ele.value}`, "");
       }

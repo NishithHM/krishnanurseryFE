@@ -120,7 +120,6 @@ const AgriVariants = () => {
     return getVariantsBody(data, deleteClickHandler, editClickHandler);
   }, [JSON.stringify(data),data]);
 
-  console.log("Table Body" , tableBody)
   return (
     <>
       <div className={Styles.agriContainer}>

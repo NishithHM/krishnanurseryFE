@@ -74,6 +74,10 @@ export default function AddBills() {
     isWholeSale: false,
     isPamphletDataNeededInBill: false,
     isApproved: false,
+    paymentType: '',
+    paymentInfo: '',
+    cashAmount: null,
+    onlineAmount: null
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
@@ -93,7 +97,8 @@ export default function AddBills() {
   const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
   const [auth] = useContext(AuthContext);
-
+const [loading,setLoading] = useState(false);
+const [isButtonDisabled, setButtonDisabled] = useState(false); 
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank]);
     setState((prev) => ({
@@ -399,6 +404,8 @@ export default function AddBills() {
   };
 
   const handleCheckout = async () => {
+    setLoading(true);
+    setButtonDisabled(true);
     const items = [];
 
     tableRowData.forEach((el) => {
@@ -472,6 +479,10 @@ export default function AddBills() {
   const handleSubmit = async () => {
     const payload = {
       roundOff: state.roundOff,
+      paymentType: state.paymentType,
+      paymentInfo: state.paymentInfo,
+      cashAmount: state.cashAmount,
+      onlineAmount: state.onlineAmount
     };
 
     const confirmCart = await submitCart({
@@ -573,7 +584,13 @@ export default function AddBills() {
   };
 
   const shouldSubmitDisable = () => {
-    if (state.checkOutDone && !state.submitError.isExist) {
+    let paymentValidation = true
+    if(state.paymentType=== 'BOTH'){
+      paymentValidation =  state.cashAmount && state.onlineAmount
+    }else {
+      paymentValidation = Boolean(state.paymentType)
+    }
+    if (state.checkOutDone && !state.submitError.isExist && paymentValidation) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -642,8 +659,29 @@ export default function AddBills() {
     clearInterval(approveRef.current);
   };
 
-  // console.log("state", state.billingHistory)
+  const handlePaymentMode =(e, total)=>{
+    let cashAmount =0
+    let onlineAmount=0
+    if(e.value==='CASH'){
+      cashAmount = total
+    }
 
+    if(e.value==='ONLINE'){
+      onlineAmount = total
+    }
+
+    setState((prev)=>({...prev, paymentType:e.value, cashAmount, onlineAmount}))
+  }
+
+  const handleInputInfo =(e, id, total)=>{
+    setState((prev)=>({...prev, [id]:e.target.value}))
+    if(id==='cashAmount'){
+      setState((prev)=>({...prev, onlineAmount:total - e.target.value}))
+    }
+  }
+
+  // console.log("state", state.billingHistory)
+  const buttonDisable = !state.customerNumber || !name || !state.customerAddress || !state.dateOfBirth 
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -819,6 +857,12 @@ export default function AddBills() {
               cartResponse={state.cartResponse}
               onRoundOff={handleRoundOffValue}
               onBlur={(e) => handleRoundOff(e)}
+              paymentInfo={state.paymentInfo}
+              cashAmount={state.cashAmount}
+              onlineAmount={state.onlineAmount}
+              paymentType={state.paymentType}
+              onPaymentChange={handlePaymentMode}
+              handleInputInfo={handleInputInfo}
             />
             <div className={styles.submitWrapper}>
               <div>
@@ -902,6 +946,12 @@ export default function AddBills() {
           cartResponse={state.cartResponse}
           onRoundOff={handleRoundOffValue}
           onBlur={(e) => handleRoundOff(e)}
+          paymentInfo={state.paymentInfo}
+          cashAmount={state.cashAmount}
+          onlineAmount={state.onlineAmount}
+          paymentType={state.paymentType}
+          onPaymentChange={handlePaymentMode}
+          handleInputInfo={handleInputInfo}
         />
         <div className={styles.submitWrapper}>
           <div>
@@ -937,6 +987,10 @@ export default function AddBills() {
             billedBy={auth.name}
             type="NURSERY"
             isWholeSale={state.isWholeSale}
+            paymentType={state.paymentType}
+            paymentInfo={state.paymentInfo}
+            cashAmount={state.cashAmount}
+            onlineAmount={state.onlineAmount}
           />
         </div>
       </div>
@@ -953,6 +1007,10 @@ export default function AddBills() {
         billedBy={auth.name}
         isWholeSale={state.isWholeSale}
         isApproved={state.isApproved}
+        paymentType={state.paymentType}
+        paymentInfo={state.paymentInfo}
+        cashAmount={state.cashAmount}
+        onlineAmount={state.onlineAmount}
         type="NURSERY"
       ></InvoicePreview>
     </div>

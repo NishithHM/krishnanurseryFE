@@ -110,8 +110,9 @@ const ProcurementList = () => {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const [plantImages, setPlantImages] = useState([]);
-  const [imageLoader, setImageLoader] = useState(false);
   const [pdfsdata, setPdfsData] = useState([]);
+  const [imageLoader,setImageLoader] = useState(false)
+const [spinner,setSpinner] = useState(false)
   const [values] = useContext(AuthContext);
   const role = values.role;
   const getProcurements = useGetProcurementsQuery({
@@ -282,7 +283,7 @@ const ProcurementList = () => {
 
   const onVariantSubmitHandler = async () => {
     setLoaders(true);
-
+   
     const isValid = validateMinMaxPrices(variantRows);
     if (!isValid) {
       setLoaders(false);
@@ -416,6 +417,9 @@ const ProcurementList = () => {
   const openPdfsImage = () => {
     fetchAndDisplayImages([filename]);
   };
+const setBtns = ()=>{
+  setSpinner(true);
+}
   return (
     <>
       <Toaster />
@@ -596,8 +600,8 @@ const ProcurementList = () => {
                     </table>
                   </div>
                   <div className={styles.submitWrapper}>
-                    <div className={styles.submitBtn}>
-                      <Button
+                    <div className={styles.submitBtn} >
+                       <Button
                         type="primary"
                         title="Submit Variants"
                         onClick={onVariantSubmitHandler}

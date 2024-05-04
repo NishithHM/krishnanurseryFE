@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./WasteManagement.module.css";
-import { BackButton, Button, Dropdown, Input, Toaster } from "../../components";
+import { BackButton, Button, Dropdown, Input, Spinner, Toaster } from "../../components";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
 import { MIME_TYPES } from "@mantine/dropzone";
@@ -31,7 +31,9 @@ const WasteManagement = () => {
       ]= useReportDamageMutation()
       
     const [getProcurement] = useGetProcurementMutation() 
-
+    const [loading,setLoading] = useState(false);
+    const [add,setAdd] = useState(false);
+    const [isButtonDisabled, setButtonDisabled] = useState(false); 
     useEffect(()=>{
         if(procId){
              getProcurement({id: procId}).then(res=>{
@@ -70,7 +72,17 @@ const WasteManagement = () => {
           };
         });
       };
+      useEffect(() => {
+        const handleWindowBlur = () => {
+            setLoading(false); // Hide spinner when window loses focus
+        };
 
+        window.addEventListener('blur', handleWindowBlur);
+
+        return () => {
+            window.removeEventListener('blur', handleWindowBlur);
+        };
+    }, []);
       const handlePlantimageSelect = (file) => {
         setState((prev) => {
           let updated = [...prev.plantImages, ...file];
@@ -80,6 +92,7 @@ const WasteManagement = () => {
               return updated.find((a) => a.path === path);
             }
           );
+          setLoading(false);
           return{
             ...prev,
             plantImages: uniqueArr,
@@ -102,6 +115,9 @@ const WasteManagement = () => {
     const buttonDisable = !addPlantName || !damagedQty || isEmpty(plantImages)
 
     const onSubmit = async ()=>{
+      console.log("hello")
+      setAdd(true);
+        setButtonDisabled(true);
         const formdata = new FormData();
         const body = {
             damagedQuantity: damagedQty
@@ -121,7 +137,9 @@ const WasteManagement = () => {
             }, 3000);
           }
     }
-
+    const handleDropZoneClick = () => {
+      setLoading(true);
+  };
     return (
         <div>
             <div>
@@ -177,23 +195,39 @@ const WasteManagement = () => {
                     </div>
                   );
                 })}
-            {plantImages.length < 3 && (
-              <DropZone
-                onDrop={(files) => {
-                  handlePlantimageSelect(files);
-                }}
-                onReject={(files) => {
-                  toast.error(files[0].errors[0].code.replaceAll("-", " "));
-                }}
-                maxSize={3 * 1024 ** 2}
-                maxFiles="3"
-                multiple={true}
-                accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
-                maxFileSize="5"
-              />
-            )}
+             {loading &&  
+                <Spinner />
+             } 
+                <div onClick={handleDropZoneClick}>
+                    <DropZone
+                        onDrop={(files) => {
+                            
+                            handlePlantimageSelect(files);
+                        }}
+                        onReject={(files) => {
+                            toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                        }}
+                        onCancel={() => {
+                          console.log("")
+                          setLoading(false); // Turn off the spinner
+                      }}
+                        maxSize={3 * 1024 ** 2}
+                        maxFiles="3"
+                        multiple={true}
+                        accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+                        maxFileSize="5"
+                    />
+                </div>
+            
                     <div className={styles.formButton}>
-                        <Button loading={isLoading} onClick={onSubmit} type="primary" title="Save" buttonType="submit" disabled={buttonDisable} />
+                        <Button
+                            loading={isLoading}
+                            onClick={onSubmit}
+                            type="primary"
+                            title="Save"
+                            buttonType="submit"
+                            disabled={add ? buttonDisable || isButtonDisabled : buttonDisable || isButtonDisabled} // Disable the button if it's clicked or disabled state is true
+                        />
                     </div>
                 </form>
             </div>

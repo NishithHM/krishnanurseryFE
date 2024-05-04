@@ -12,7 +12,7 @@ import {
     Modal,
     Alert,
     AlertMessage,
-    Dropzone,
+    // Dropzone,
     Input,
     AddInvoiceModal,
     Filters,
@@ -41,9 +41,12 @@ import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { AiOutlineClose } from "react-icons/ai";
 import DropZone from "../../components/Dropzone/Dropzone";
+import { useDownloadOrderExcelMutation } from "../../services/common.services";
 const OrderMgmt = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
+    const [excelPage, setExcelPage] = useState(1);
+    const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
     const [data, setData] = useState([]);
     const [user] = useContext(AuthContext);
     const [sort, setSort] = useState({ sortBy: "createdAt", sortType: "-1" });
@@ -51,6 +54,7 @@ const OrderMgmt = () => {
     const [isVerifyOrderBtnEnabled,setIsVerifyOrderBtnEnabled] = useState(false)
     const [searchInput, setSearchInput] = useState("");
     const [ordersCount, setOrdersCount] = useState(0);
+    const [loading,setLoading] = useState(false);
     const [search, setSearch] = useState("")
     const [rejectOrder, setRejectOrder] = useState({
         isActive: false,
@@ -78,6 +82,8 @@ const OrderMgmt = () => {
     const [AddOrderInvoice, { isLoading: isAddInvoiceLoading }] =
         useAddOrderInvoiceMutation();
     const [getInvoice] = useGetInvoiceMutation();
+  const [downloadOrderExcel] = useDownloadOrderExcelMutation()
+
 
 
     const [getOrders, { isLoading, isError, isSuccess }] = useGetOrdersMutation();
@@ -170,6 +176,8 @@ const OrderMgmt = () => {
         const formattedFilter = formatFilter(filters)
 
         setFilters(filters)
+        setNextExcelAvailable(true)
+
         const res = await getOrders({
             body: {
                 search: search, ...formattedFilter, sortBy: sort.sortBy,
@@ -206,8 +214,8 @@ const OrderMgmt = () => {
               return updated.find((a) => a.path === path);
             }
           );
+          setLoading(false);
           return uniqueArr
-          
         });
       };
 
@@ -218,16 +226,43 @@ const OrderMgmt = () => {
           return  updated
         });
       };  
+      const handleDropZoneClick = () => {
+        setLoading(true);
+    };
+
+      const handleExcelDownload = async (filterDates)=>{
+        const res= await downloadOrderExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
+        const {isNext, response} = res.data
+        setNextExcelAvailable(isNext==='true')
+        if(isNext==="true"){
+          setExcelPage((prev)=> prev+1)
+        }
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(response)
+        link.download = 'Orders.xlsx'
+        link.click()
+      }
 
     const TABLE_HEADER = ROLE_TABLE_HEADER[user.role];
+    useEffect(() => {
+        const handleWindowBlur = () => {
+            setLoading(false); // Hide spinner when window loses focus
+        };
 
+        window.addEventListener('blur', handleWindowBlur);
+
+        return () => {
+            window.removeEventListener('blur', handleWindowBlur);
+        };
+    }, []);
     return (
         <>
             <div>
                 <div>
                     <BackButton navigateTo={"/authorised/dashboard"} />
                 </div>
-                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY' }} onSubmit={handleFilterChange} />
+                <Filters config={{ isVendor: user.role === "sales" ? false  : true, orderStatus: true, vendorType:'NURSERY', excelDownload: user.role==='admin', isNextExcelAvailable, excelPage }}
+                 onSubmit={handleFilterChange} onExcelDownload={handleExcelDownload} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable}/>
                 <div className={styles.wrapper}>
                     {/* search */}
                     <div className={styles.searchContainer}>
@@ -333,6 +368,7 @@ const OrderMgmt = () => {
 
             {/* verify order modal */}
             <Modal isOpen={verifyOrder.isActive} contentLabel="Verify Order">
+                
                 <AlertMessage
                     message={`Verify the order of ${verifyOrder?.data?.names?.en?.name || "Plants"
                         }.`}
@@ -355,12 +391,10 @@ const OrderMgmt = () => {
                         if (plantImages.length === 0) return toast.error("Select Plant Image");
                         if (verifyOrder.quantity <= 0)
                             return toast.error("Quantity cannot be less than one.");
-
                         const data = new FormData();
                         plantImages.forEach((img) => {
                             data.append("images", img);
                         });
-
                         data.append(
                             "body",
                             JSON.stringify({
@@ -371,9 +405,12 @@ const OrderMgmt = () => {
 
                         const res = await VerifyOrder(data);
                         if(res.error){
+                           
                             return toast.error(res.error?.data?.error)
+                        }else{
+
+                            toast.success("Order Verify Success!");
                         }
-                        toast.success("Order Verify Success!");
                         setVerifyOrder({
                             data: null,
                             isActive: false,
@@ -414,21 +451,29 @@ const OrderMgmt = () => {
                                 </div>
                             );
                         })}
-                        {plantImages.length < 3 && (
-                            <DropZone
-                                onDrop={(files) => {
-                                    handlePlantimageSelect(files);
-                                }}
-                                onReject={(files) => {
-                                    toast.error(files[0].errors[0].code.replaceAll("-", " "));
-                                }}
-                                maxSize={3 * 1024 ** 2}
-                                maxFiles="3"
-                                multiple={true}
-                                accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
-                                maxFileSize="5"
-                            />
-                        )}
+                       
+                        {  loading &&   
+                <Spinner />
+             }
+                <div onClick={handleDropZoneClick}>
+                    <DropZone
+                        onDrop={(files) => {
+                            handlePlantimageSelect(files);
+                        }}
+                        onReject={(files) => {
+                            setLoading(false);
+                            toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                        }}
+                        maxSize={3 * 1024 ** 2}
+                        maxFiles="3"
+                        multiple={true}
+                        accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+                        maxFileSize="5"
+                    />
+                </div>
+            
+                            
+                     
                     </div>
 
                     <div className={styles.inputdiv}>
@@ -462,6 +507,7 @@ const OrderMgmt = () => {
                     orderId={addInvoice?.data?.orderId}
                     getInvoice={getInvoice}
                     type="NUR"
+                    isInvoice={false}
                 />
             )}
         </>

@@ -30,6 +30,7 @@ const Dashboard = () => {
   };
   const DashboardData = [
     {
+      id : 1,
       title: "Access Management",
       tile_img: access_managementImg,
       path: "access-management",
@@ -37,6 +38,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 2,
       title: "Procurement",
       tile_img: produrementImg,
       path: "procurement-list",
@@ -44,6 +46,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 3,
       title: "Categories",
       tile_img: categoriesImg,
       path: "categories",
@@ -51,6 +54,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 4,
       title: "Bill History",
       tile_img: billBook,
       path: "bills",
@@ -58,6 +62,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 5,
       title: "Add Bills",
       tile_img: billsImg,
       path: "add-bills",
@@ -66,6 +71,7 @@ const Dashboard = () => {
     },
 
     {
+      id : 6,
       title: "Orders",
       tile_img: orders,
       path: "orders",
@@ -73,13 +79,15 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 7,
       title: "Waste Management",
       tile_img: waste,
       path: "waste-management",
-      allowed: [USER_ROLES.admin, USER_ROLES.sales],
+      allowed: [USER_ROLES.admin, USER_ROLES.sales,USER_ROLES.procurement],
       tabType: "Nursery",
     },
     {
+      id : 8,
       title: "Under Maintenance",
       tile_img: maintenanceImg,
       path: "under-maintainence",
@@ -87,6 +95,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 9,
       title: "Payments",
       tile_img: paymentsIcon,
       path: "payments",
@@ -94,6 +103,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 10,
       title: "Sales",
       tile_img: salesImg,
       path: "sales",
@@ -102,6 +112,7 @@ const Dashboard = () => {
       tabType: "Nursery",
     },
     {
+      id : 11,
       title: "Procurement",
       tile_img: produrementImg,
       path: "agri-add-procurements",
@@ -110,6 +121,7 @@ const Dashboard = () => {
       tabType: "Agri",
     },
     {
+      id : 12,
       title: "Orders",
       tile_img: orders,
       path: "agri-orders",
@@ -117,6 +129,7 @@ const Dashboard = () => {
       tabType: "Agri",
     },
     {
+      id : 13,
       title: "Bill History",
       tile_img: billBook,
       path: "agri-bills",
@@ -124,6 +137,7 @@ const Dashboard = () => {
       tabType: "Agri"
     },
     {
+      id : 14,
       title: "Add Bills",
       tile_img: billsImg,
       path: "agri-add-bills",
@@ -131,6 +145,7 @@ const Dashboard = () => {
       tabType: "Agri",
     },
     {
+      id : 15,
       title: "Agri Variants",
       tile_img: agriVariantsImg,
       path: "agri-variants",
@@ -189,7 +204,7 @@ const Dashboard = () => {
       <div className={styles.gridContainer}>
         {data.map((e) => {
           return (
-            <div className={e.isDisabled && styles.cardDisabled}>
+            <div className={e.isDisabled && styles.cardDisabled} key={e?.id}>
               <Link to={e.path} key={e.path}>
                 <LandingTile
                   image={e.tile_img}

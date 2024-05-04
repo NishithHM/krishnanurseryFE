@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown } from "../../components";
+import { Dropdown, Input } from "../../components";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import styles from "./AddBills.module.css";
 import { AuthContext } from "../../context";
@@ -98,7 +98,7 @@ export const CartTableHeader = () => {
   );
 };
 
-export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
+export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur, paymentType, onPaymentChange, cashAmount, onlineAmount, handleInputInfo,paymentInfo }) => {
   const [userCtx, setContext] = useContext(AuthContext);
 
   let subTotal = 0;
@@ -113,9 +113,9 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
     console.log("Total QTY", totalQty)
   }
 
-  console.log("CARTRESPONSE", cartResponse)
 
   return (
+    <>
     <div className={styles.billDetails}>
       <div className={styles.billFigure}>
         <div>Sub Total</div>
@@ -151,5 +151,58 @@ export const BillDetails = ({ roundOff, cartResponse, onRoundOff, onBlur }) => {
         <span>&#x20B9;{isNaN(totalQty) ? "" : totalQty}</span>
       </div>
     </div>
+    <div>
+      <div style={{flex:1, display:'flex'}}>
+      <span style={{marginRight: "10px", marginLeft: '10px'}}>Payment Type *</span>
+      <div  style={{width: '400px', display:'flex'}}>
+          <Dropdown
+            placeholder="Select Payment Type"
+            required
+            id="paymentType"
+            data={[{label: 'CASH', value:'CASH'}, {label:'ONLINE', value:'ONLINE'}, {label: 'BOTH',value:'BOTH'}]}
+            value={paymentType?{label:paymentType,value:paymentType} :null}
+            onChange={(e)=>onPaymentChange(e, subTotal)}
+          />
+      </div>
+      
+        {paymentType==='BOTH' &&
+        <>
+        <div className={styles.billFigure}>
+          <Input
+            id={"cashAmount"}
+            title="Cash Amount"
+            type="Number"
+            required
+            max={subTotal}
+            className={styles.cartInput}
+            value={cashAmount}
+            onChange={(e, id)=>handleInputInfo(e, id, subTotal)}
+          />
+        </div>
+        <div className={styles.billFigure}>
+          <Input
+            id={"onlineAmount"}
+            title="Online Amount"
+            required
+            type="Number"
+            disabled
+            className={styles.cartInput}
+            value={onlineAmount}
+          />
+        </div>
+        </>
+        }
+        <div className={styles.billFigure}>
+          <Input
+            id={"paymentInfo"}
+            title="payment info"
+            className={styles.cartInput}
+            value={paymentInfo}
+            onChange={handleInputInfo}
+          />
+        </div>
+        </div>
+    </div>
+    </>
   );
 };
