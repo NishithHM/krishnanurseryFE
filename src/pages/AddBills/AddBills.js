@@ -413,9 +413,15 @@ export default function AddBills() {
     setButtonDisabled(true);
     const items = [];
 
-    tableRowData.forEach((el) => {
+    tableRowData.forEach((el, index) => {
       const { procurementId, variantId, quantity, price } = el;
-      items.push({ procurementId, variantId, quantity, price, isInfoSheet: true });
+      items.push({
+        procurementId,
+        variantId,
+        quantity,
+        price,
+        isInfoSheet: true,
+      });
     });
 
     const cartPayload = {
@@ -443,6 +449,7 @@ export default function AddBills() {
       });
     } else {
       checkout = await checkoutCart(cartPayload);
+      console.log("checkout cart response", checkout?.data);
     }
 
     if (checkout.error) {
@@ -607,7 +614,9 @@ export default function AddBills() {
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
-      window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')
+      window.open(
+        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      );
       handleReset();
     },
   });

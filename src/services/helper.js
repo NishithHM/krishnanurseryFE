@@ -32,3 +32,12 @@ export const downloadFile = async (url) => {
 
   return res?.data;
 };
+
+/*
+ * Function to create blob URL
+ * @param {Blob} blob
+ * @returns {String}
+ */
+export const createBlobURL = (blob) => {
+  return URL.createObjectURL(blob);
+};
