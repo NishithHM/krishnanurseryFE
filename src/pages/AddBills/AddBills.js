@@ -415,7 +415,7 @@ export default function AddBills() {
 
     tableRowData.forEach((el) => {
       const { procurementId, variantId, quantity, price } = el;
-      items.push({ procurementId, variantId, quantity, price });
+      items.push({ procurementId, variantId, quantity, price, isInfoSheet: true });
     });
 
     const cartPayload = {
@@ -607,6 +607,7 @@ export default function AddBills() {
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
+      window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')
       handleReset();
     },
   });
