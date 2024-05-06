@@ -25,7 +25,8 @@ export const CartTableRow = ({
   const selectedVariant = { label: item.variantLabel, value: item.variantId };
 
   return (
-    <tr>
+    <>
+
       <td style={{width : "20%"}}>
         <Dropdown
           onChange={(value) => onChangeHandler(value, "procurementId")}
@@ -78,7 +79,7 @@ export const CartTableRow = ({
           <FontAwesomeIcon icon={faTrash} />
         </button>
       </td>
-    </tr>
+    </>
   );
 };
 
@@ -86,6 +87,7 @@ export const CartTableHeader = () => {
   return (
     <thead>
       <tr>
+        <th>Include Pamphlet</th>
         <th>Plant Name</th>
         <th>Variant</th>
         <th>MRP</th>

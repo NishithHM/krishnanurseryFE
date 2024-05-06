@@ -74,16 +74,16 @@ export default function AddBills() {
     isWholeSale: false,
     isPamphletDataNeededInBill: false,
     isApproved: false,
-    paymentType: '',
-    paymentInfo: '',
+    paymentType: "",
+    paymentInfo: "",
     cashAmount: null,
-    onlineAmount: null
+    onlineAmount: null,
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Nursery");
-  const [pamphlet, setPamphlet] = useState(null);
+  const [pamphlet, setPamphlet] = useState([]);
   const [pamphletData, setPamphletData] = useState(null);
 
   const printRef = useRef();
@@ -97,8 +97,8 @@ export default function AddBills() {
   const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
   const [auth] = useContext(AuthContext);
-const [loading,setLoading] = useState(false);
-const [isButtonDisabled, setButtonDisabled] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank]);
     setState((prev) => ({
@@ -279,7 +279,12 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
     let tableDataClone = [...tableRowData];
     let tableRowClone = { ...tableDataClone[index] };
 
-    setPamphlet(value?.meta?.pamphlet);
+    setPamphlet((pre) => {
+      if (value?.meta?.pamphlet) return [...pre, value?.meta?.pamphlet];
+      return pre;
+    });
+
+    console.log("value", value?.meta);
 
     setState((prev) => ({
       ...prev,
@@ -482,7 +487,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
       paymentType: state.paymentType,
       paymentInfo: state.paymentInfo,
       cashAmount: state.cashAmount,
-      onlineAmount: state.onlineAmount
+      onlineAmount: state.onlineAmount,
     };
 
     const confirmCart = await submitCart({
@@ -584,11 +589,11 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
   };
 
   const shouldSubmitDisable = () => {
-    let paymentValidation = true
-    if(state.paymentType=== 'BOTH'){
-      paymentValidation =  state.cashAmount && state.onlineAmount
-    }else {
-      paymentValidation = Boolean(state.paymentType)
+    let paymentValidation = true;
+    if (state.paymentType === "BOTH") {
+      paymentValidation = state.cashAmount && state.onlineAmount;
+    } else {
+      paymentValidation = Boolean(state.paymentType);
     }
     if (state.checkOutDone && !state.submitError.isExist && paymentValidation) {
       return shouldCheckoutDisable();
@@ -659,29 +664,38 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
     clearInterval(approveRef.current);
   };
 
-  const handlePaymentMode =(e, total)=>{
-    let cashAmount =0
-    let onlineAmount=0
-    if(e.value==='CASH'){
-      cashAmount = total
+  const handlePaymentMode = (e, total) => {
+    let cashAmount = 0;
+    let onlineAmount = 0;
+    if (e.value === "CASH") {
+      cashAmount = total;
     }
 
-    if(e.value==='ONLINE'){
-      onlineAmount = total
+    if (e.value === "ONLINE") {
+      onlineAmount = total;
     }
 
-    setState((prev)=>({...prev, paymentType:e.value, cashAmount, onlineAmount}))
-  }
+    setState((prev) => ({
+      ...prev,
+      paymentType: e.value,
+      cashAmount,
+      onlineAmount,
+    }));
+  };
 
-  const handleInputInfo =(e, id, total)=>{
-    setState((prev)=>({...prev, [id]:e.target.value}))
-    if(id==='cashAmount'){
-      setState((prev)=>({...prev, onlineAmount:total - e.target.value}))
+  const handleInputInfo = (e, id, total) => {
+    setState((prev) => ({ ...prev, [id]: e.target.value }));
+    if (id === "cashAmount") {
+      setState((prev) => ({ ...prev, onlineAmount: total - e.target.value }));
     }
-  }
+  };
 
   // console.log("state", state.billingHistory)
-  const buttonDisable = !state.customerNumber || !name || !state.customerAddress || !state.dateOfBirth 
+  const buttonDisable =
+    !state.customerNumber ||
+    !name ||
+    !state.customerAddress ||
+    !state.dateOfBirth;
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -805,13 +819,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                 />
               </button>
             </div>
-            {pamphlet && (
-              <Checkbox
-                value={state.isPamphletDataNeededInBill}
-                label={"Include Pamphlet in bill"}
-                onChange={handlePamphletDownload}
-              />
-            )}
+
             <div>
               <div className={styles.cartTableContainer}>
                 <table className={styles.cartTable}>
@@ -819,16 +827,26 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                   <tbody>
                     {tableRowData.map((el, index) => {
                       return (
-                        <CartTableRow
-                          key={el.id}
-                          item={el}
-                          handleRemoveItem={() => handleRemoveItem(index)}
-                          onInputChange={(value, name) =>
-                            tableInputChange(value, name, index)
-                          }
-                          handleKeyPress={handleKeyPress}
-                          onBlur={(e, name) => onBlur(e, name, index)}
-                        />
+                        <tr key={el.id}>
+                          <td>
+                            {pamphlet[index] && (
+                              <Checkbox
+                                value={state.isPamphletDataNeededInBill}
+                                onChange={handlePamphletDownload}
+                              />
+                            )}
+                          </td>
+                          <CartTableRow
+                            key={el.id}
+                            item={el}
+                            handleRemoveItem={() => handleRemoveItem(index)}
+                            onInputChange={(value, name) =>
+                              tableInputChange(value, name, index)
+                            }
+                            handleKeyPress={handleKeyPress}
+                            onBlur={(e, name) => onBlur(e, name, index)}
+                          />
+                        </tr>
                       );
                     })}
                   </tbody>

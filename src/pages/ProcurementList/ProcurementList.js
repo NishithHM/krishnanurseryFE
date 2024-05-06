@@ -631,7 +631,7 @@ const setBtns = ()=>{
                       />
                     </div>
                   </div>
-                  <p>Minimum stock needs to be mainained in inventory</p>
+                  <p>Minimum stock needs to be maintained in inventory</p>
                 </>
               )}
               {role === "procurement" && (
