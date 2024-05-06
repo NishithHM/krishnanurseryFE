@@ -85,6 +85,7 @@ export default function AddBills() {
   const [selectedTab, setSelectedTab] = useState("Nursery");
   const [pamphlet, setPamphlet] = useState([]);
   const [pamphletData, setPamphletData] = useState(null);
+  const [selectedPamphlet, setSelectedPamphlet] = useState([]);
 
   const printRef = useRef();
   // const invoiceRef = useRef();
@@ -391,19 +392,18 @@ export default function AddBills() {
     }));
   };
 
-  const handlePamphletDownload = async (e) => {
+  const handlePamphletDownload = async (e, index) => {
     try {
-      const pdfBlob = await downloadFile(pamphlet);
-
-      const pdfText = await pdfToText(pdfBlob);
-
-      setPamphletData(pdfText);
-      setState((prev) => ({
-        ...prev,
-        isPamphletDataNeededInBill: e,
-        checkOutDone: false,
-      }));
+      if (e) {
+        setSelectedPamphlet((pre) => {
+          return [...pre, pamphlet[index]];
+        });
+      } else
+        setSelectedPamphlet((pre) => {
+          return pre.filter((el) => el !== pamphlet[index]);
+        });
     } catch (error) {
+      console.log("error", error);
       toast.error("Error in downloading pamphlet");
     }
   };
@@ -519,6 +519,8 @@ export default function AddBills() {
       // handleReset();
     }
   };
+
+  console.log("selectedPamphlet", selectedPamphlet);
 
   const handleRoundOff = (e) => {
     if (e > 0) return toast.error("Round Off Should not be less than 0");
@@ -831,8 +833,9 @@ export default function AddBills() {
                           <td>
                             {pamphlet[index] && (
                               <Checkbox
-                                value={state.isPamphletDataNeededInBill}
-                                onChange={handlePamphletDownload}
+                                onChange={(e) =>
+                                  handlePamphletDownload(e, index)
+                                }
                               />
                             )}
                           </td>
