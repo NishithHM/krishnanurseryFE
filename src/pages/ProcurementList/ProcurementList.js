@@ -694,15 +694,23 @@ const setBtns = ()=>{
                     ) : (
                       !phamplet && (
                         <DropZone
+                        onFilePickerModalClose={()=>{
+                          setSelectpdf(false);
+                        
+                        }}
                           onDrop={(files) => {
                             handlePhamplet(files);
                             setSelectpdf(false);
                           }}
                           onReject={(files) => {
+                            setSelectpdf(false);
+
                             toast.error(
                               files[0].errors[0].code.replaceAll("-", " ")
+                              
                             );
                           }}
+                        
                           maxSize={3 * 1024 ** 2}
                           maxFiles="1"
                           multiple={true}

@@ -9,6 +9,7 @@ import { ImFilesEmpty } from "react-icons/im";
 import { toast } from "react-toastify";
 
 const DropZone = ({
+  onFilePickerModalClose,
   filename,
   onDrop,
   onReject,
@@ -16,6 +17,7 @@ const DropZone = ({
   maxFiles,
   multiple,
   accept,
+
   maxFileSize,
 }) => {
   if (filename) {
@@ -49,6 +51,7 @@ const DropZone = ({
       multiple={multiple}
       accept={accept}
       filename={filename}
+      onFileDialogCancel={onFilePickerModalClose}
     >
       <div
         style={{
@@ -67,7 +70,7 @@ const DropZone = ({
         <Dropzone.Idle>
           <ImFilesEmpty size="3.2rem" stroke={1.5} />
         </Dropzone.Idle>
-
+ 
         <div style={{ color: "#8e8e8e" }}>
           <span>Drag images here or click to select files</span>
           <br />
