@@ -35,9 +35,15 @@ export const downloadFile = async (url) => {
 
 /*
  * Function to create blob URL
- * @param {Blob} blob
+ * @param {bufferData} bufferData
  * @returns {String}
  */
-export const createBlobURL = (blob) => {
-  return URL.createObjectURL(blob);
+export const createBlobURL = (bufferData) => {
+  if(!bufferData?.length) return null;
+  const uint8Array = new Uint8Array(bufferData);
+  const blob = new Blob([uint8Array], { type: 'application/pdf' }); 
+
+  const blobUrl =URL.createObjectURL(blob);
+  return blobUrl;
+
 };

@@ -21,7 +21,7 @@ import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
 import Datepicker from "../../components/Datepicker/Datepicker";
-import { downloadFile } from "../../services/helper";
+import { createBlobURL, downloadFile } from "../../services/helper";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
   const approveRef = useRef();
@@ -415,14 +415,18 @@ export default function AddBills() {
 
     tableRowData.forEach((el, index) => {
       const { procurementId, variantId, quantity, price } = el;
+
+      const infoSheetFileName = selectedPamphlet[index]?.split("phamphlet-")[1];
+
       items.push({
         procurementId,
         variantId,
         quantity,
         price,
-        isInfoSheet: true,
+        isInfoSheet: infoSheetFileName?.includes(procurementId)||false,
       });
     });
+
 
     const cartPayload = {
       customerNumber: state.newCustomer
@@ -478,6 +482,7 @@ export default function AddBills() {
         isWholeSale: checkout.data.isWholeSale || false,
         isApproved: checkout.data.isApproved,
       }));
+      console.log("checkout.....", checkout.data);
       toast.success("Checkout is successful!");
     }
   };
@@ -505,9 +510,9 @@ export default function AddBills() {
     if (confirmCart.error) {
       setState((prev) => ({
         ...prev,
-        submitError: { isExist: true, error: confirmCart.error.data.error },
+        submitError: { isExist: true, error: confirmCart?.error?.data?.error },
       }));
-      toast.error(confirmCart.error.data.error);
+      toast.error(confirmCart?.error?.data?.error);
     }
 
     if (confirmCart.data) {
@@ -518,16 +523,23 @@ export default function AddBills() {
         submitSuccess: { isExist: true, msg: "Billing is successful" },
       }));
 
+  
+      const pdfUrl= createBlobURL(confirmCart?.data?.infoBuffer?.data)
+      
+
+  
       // added this set timeout because print is being called before the state is updated so, to add some delay...
       setTimeout(() => {
         handlePrint();
+if(selectedPamphlet.length>0)
+        window.open(pdfUrl, "_blank");
+
       }, 1000);
       // toast.success("Billing is successful!");
       // handleReset();
     }
   };
 
-  console.log("selectedPamphlet", selectedPamphlet);
 
   const handleRoundOff = (e) => {
     if (e > 0) return toast.error("Round Off Should not be less than 0");
@@ -614,9 +626,7 @@ export default function AddBills() {
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
-      window.open(
-        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-      );
+     
       handleReset();
     },
   });
