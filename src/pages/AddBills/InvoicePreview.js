@@ -78,7 +78,8 @@ export const InvoiceSection = (props) => {
     paymentType,
     paymentInfo,
     cashAmount,
-    onlineAmount
+    onlineAmount,
+    selectedPamphlet,
   } = props;
 
   const [cartList, setCartList] = useState([]);
@@ -188,21 +189,29 @@ export const InvoiceSection = (props) => {
             {clientDetails?.phoneNumber}
             <br></br>
           </div>
-          {paymentType &&
+          {paymentType && (
             <>
-            <br/>
-            <b>Payment Details: </b>
-            {paymentType} {paymentInfo ? `/${paymentInfo}` : ''}
-            {paymentType==="BOTH" && <span>₹{cashAmount}(cash) ₹{onlineAmount}(online) </span> }
+              <br />
+              <b>Payment Details: </b>
+              {paymentType} {paymentInfo ? `/${paymentInfo}` : ""}
+              {paymentType === "BOTH" && (
+                <span>
+                  ₹{cashAmount}(cash) ₹{onlineAmount}(online){" "}
+                </span>
+              )}
             </>
-             }
+          )}
         </div>
       </div>
 
       {!printEnabled && (
         <div>
           {invoiceHeader && invoiceHeader.length > 0 && (
-            <ScrollTable thead={invoiceHeader} tbody={cartList} />
+            <ScrollTable
+              thead={invoiceHeader}
+              tbody={cartList}
+              selectedPamphlet={selectedPamphlet}
+            />
           )}
         </div>
       )}
@@ -210,6 +219,7 @@ export const InvoiceSection = (props) => {
         <div>
           {invoiceHeader && invoiceHeader.length > 0 && (
             <ScrollTable
+              selectedPamphlet={selectedPamphlet}
               thead={invoiceHeader}
               tbody={cartList}
               scroll={false}
@@ -239,12 +249,16 @@ export const InvoiceSection = (props) => {
               </div>
             )}
             <div className={styles.discountValue}>
-              <b>&#x20B9;{cartResponse.totalPrice - roundOff}</b>
+              <b>
+                &#x20B9;
+                {(cartResponse.totalPrice + selectedPamphlet?.length * 2 ?? 0) -
+                  roundOff}
+              </b>
             </div>
           </div>
         </div>
       </div>
-        <pre>{pamphletData}</pre>
+      <pre>{pamphletData}</pre>
       <div className={styles.credits}>Innovative IT solutions by Coden</div>
     </div>
   );

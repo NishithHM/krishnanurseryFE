@@ -87,7 +87,6 @@ export const CartTableHeader = () => {
   return (
     <thead>
       <tr>
-        <th>Include Pamphlet</th>
         <th>Plant Name</th>
         <th>Variant</th>
         <th>MRP</th>
@@ -95,6 +94,7 @@ export const CartTableHeader = () => {
         <th>Quantity</th>
         <th>Total</th>
         <th>Delete</th>
+        <th>Include Pamphlet</th>
       </tr>
     </thead>
   );

@@ -423,10 +423,9 @@ export default function AddBills() {
         variantId,
         quantity,
         price,
-        isInfoSheet: infoSheetFileName?.includes(procurementId)||false,
+        isInfoSheet: infoSheetFileName?.includes(procurementId) || false,
       });
     });
-
 
     const cartPayload = {
       customerNumber: state.newCustomer
@@ -523,23 +522,17 @@ export default function AddBills() {
         submitSuccess: { isExist: true, msg: "Billing is successful" },
       }));
 
-  
-      const pdfUrl= createBlobURL(confirmCart?.data?.infoBuffer?.data)
-      
+      const pdfUrl = createBlobURL(confirmCart?.data?.infoBuffer?.data);
 
-  
       // added this set timeout because print is being called before the state is updated so, to add some delay...
       setTimeout(() => {
         handlePrint();
-if(selectedPamphlet.length>0)
-        window.open(pdfUrl, "_blank");
-
+        if (selectedPamphlet.length > 0) window.open(pdfUrl, "_blank");
       }, 1000);
       // toast.success("Billing is successful!");
       // handleReset();
     }
   };
-
 
   const handleRoundOff = (e) => {
     if (e > 0) return toast.error("Round Off Should not be less than 0");
@@ -626,7 +619,7 @@ if(selectedPamphlet.length>0)
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
-     
+
       handleReset();
     },
   });
@@ -850,15 +843,6 @@ if(selectedPamphlet.length>0)
                     {tableRowData.map((el, index) => {
                       return (
                         <tr key={el.id}>
-                          <td>
-                            {pamphlet[index] && (
-                              <Checkbox
-                                onChange={(e) =>
-                                  handlePamphletDownload(e, index)
-                                }
-                              />
-                            )}
-                          </td>
                           <CartTableRow
                             key={el.id}
                             item={el}
@@ -869,6 +853,16 @@ if(selectedPamphlet.length>0)
                             handleKeyPress={handleKeyPress}
                             onBlur={(e, name) => onBlur(e, name, index)}
                           />
+
+                          <td>
+                            {pamphlet[index] && (
+                              <Checkbox
+                                onChange={(e) =>
+                                  handlePamphletDownload(e, index)
+                                }
+                              />
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
@@ -1036,6 +1030,7 @@ if(selectedPamphlet.length>0)
         </div>
       </div>
       <InvoicePreview
+        selectedPamphlet={selectedPamphlet}
         showPreview={showPreview}
         onClose={onPreviewClose}
         pamphletData={pamphletData}
