@@ -216,7 +216,27 @@ export const procurementsApi = createApi({
           url: `/order/${id}?page=${page}`,
           method:'GET'
         })
-      })
+      }),
+      // uploadPhamplet:builder.mutation({
+      //   query:({id, page})=>({
+      //     url: `/order/${id}?page=${page}`,
+      //     method:'GET'
+      //   })
+      // })
+      uploadPhamplet:builder.mutation({
+        query:({body,pamphletId})=>({
+          url: `pamphlet/${pamphletId}`,
+          method:'POST',
+          body,
+        })
+      }),
+      getPdfData:builder.mutation({
+        query:()=>({
+          url: `/getAll`,
+          method:'GET',
+        }),
+      }),
+      
     };
   },
 });
@@ -241,6 +261,8 @@ export const {
   useAddOrderInvoiceMutation,
   useReportMaintainenceMutation,
   useGetOrderIdMutation,
-  useGetInvoiceMutation
+  useGetInvoiceMutation,
   //   useGetAllMinimumProcurementsMutation
+  useUploadPhampletMutation,
+  useGetPdfDataMutation,
 } = procurementsApi;

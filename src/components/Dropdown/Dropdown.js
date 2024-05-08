@@ -66,6 +66,8 @@ const Dropdown = ({
         : `${process.env.REACT_APP_BASE_URL}${url}?search=${inputValue}`,
       config
     );
+
+    
     const optionsVal = res.data.map((opt) => ({
       label: get(opt, apiDataPath.label, opt),
       value: get(opt, apiDataPath.value, opt),

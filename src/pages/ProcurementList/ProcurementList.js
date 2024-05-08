@@ -15,6 +15,9 @@ import {
   useGetProcurementHistoryMutation,
   useAddProcurementVariantsMutation,
   useAddMinimumQuantityMutation,
+  useUploadPhampletMutation,
+  useGetAllProcurementsQuery,
+  useGetPdfDataMutation,
   //   useGetAllMinimumProcurementsMutation
 } from "../../services/procurement.services";
 import {
@@ -36,6 +39,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ScrollTable from "../../components/Table/ScrollTable";
 import { GrClose } from "react-icons/gr";
+import DropZone from "../../components/Dropzone/Dropzone";
+import { MIME_TYPES } from "@mantine/dropzone";
 
 const billingHistoryHeader = [
   { value: "Procured On", width: "15%" },
@@ -61,10 +66,16 @@ const ProcurementList = () => {
   const [historyCount, setHistoryCount] = useState(0);
   const [variantRows, setVariantRows] = useState([rowInitState]);
   const [quantity, setQuantity] = useState("");
+  const [phamplet, setPhamphlet] = useState("");
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [isMinimumSelected, setMinimumMode] = useState(false);
-  
+  const [selectpdf, setSelectpdf] = useState(false);
+  const [pdfpath, setPDFpath] = useState(false);
+  const [pdfOpen, setPdfOpen] = useState(false);
+  const [uploadPdfData] = useUploadPhampletMutation();
+  const [GetPdfData] = useGetPdfDataMutation();
+  const [filename, setFileName] = useState();
   const tableHeader = [
     [
       {
@@ -99,6 +110,7 @@ const ProcurementList = () => {
   const [firstLoad, setFirstLoad] = useState(true);
 
   const [plantImages, setPlantImages] = useState([]);
+  const [pdfsdata, setPdfsData] = useState([]);
   const [imageLoader,setImageLoader] = useState(false)
 const [spinner,setSpinner] = useState(false)
   const [values] = useContext(AuthContext);
@@ -116,7 +128,7 @@ const [spinner,setSpinner] = useState(false)
       const data = getProcurements.data;
       if (data.length > 0) {
         onDetailClick(data[0]._id);
-        setFirstLoad(false)
+        setFirstLoad(false);
       }
     }
   }, [getProcurements]);
@@ -152,9 +164,11 @@ const [spinner,setSpinner] = useState(false)
 
   const onDetailClick = (id) => {
     const procurementData = getProcurements.data.find((ele) => ele._id === id);
+
     const history = procurementData?.procurementHistory;
     const variants = procurementData?.variants;
     setQuantity(procurementData?.minimumQuantity);
+    setPhamphlet(procurementData?.pamphlet);
     if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
         const row = [];
@@ -222,37 +236,38 @@ const [spinner,setSpinner] = useState(false)
   };
 
   const onSubmitHandler = async (e) => {
-    if(e.start_date !== null && e.end_date !== null) {
-    const res = await getProcurementHistory({
-      startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
-      endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
-      id: id,
-      pageNumber: 1,
-    });
-    const resCount = await getProcurementHistory({
-      startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
-      endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
-      id: id,
-      isCount: true,
-    });
-    setHistoryCount(resCount.data[0]?.count);
+    if (e.start_date !== null && e.end_date !== null) {
+      const res = await getProcurementHistory({
+        startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
+        endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
+        id: id,
+        pageNumber: 1,
+      });
+      const resCount = await getProcurementHistory({
+        startDate: dayjs(e.start_date).format("YYYY-MM-DD"),
+        endDate: dayjs(e.end_date).format("YYYY-MM-DD"),
+        id: id,
+        isCount: true,
+      });
+      setHistoryCount(resCount.data[0]?.count);
 
-    if (res.data) {
-      const body = await getTableBody(res.data, setImageurlsHandler);
-      setProcurementListHistory(body);
-      setError("");
-    }
-    if (res.error) {
-      toast.error("Unable to Add...");
-      setError(res?.error?.data.error);
-    }
-   }
-    else {
-      const procurementData = getProcurements.data.find((ele) => ele._id === id);
+      if (res.data) {
+        const body = await getTableBody(res.data, setImageurlsHandler);
+        setProcurementListHistory(body);
+        setError("");
+      }
+      if (res.error) {
+        toast.error("Unable to Add...");
+        setError(res?.error?.data.error);
+      }
+    } else {
+      const procurementData = getProcurements.data.find(
+        (ele) => ele._id === id
+      );
       const history = procurementData?.procurementHistory;
       const body = getTableBody(history, setImageurlsHandler);
       setProcurementListHistory(body);
-   }
+    }
   };
 
   const onVariantInputChange = ({ val, cIndex, rIndex }) => {
@@ -266,23 +281,24 @@ const [spinner,setSpinner] = useState(false)
     setVariantRows(oldRow);
   };
 
-
   const onVariantSubmitHandler = async () => {
     setLoaders(true);
    
     const isValid = validateMinMaxPrices(variantRows);
-    if(!isValid) {
-      setLoaders(false)
-      return toast.error("Max Price value must be greater than Min Price value")
+    if (!isValid) {
+      setLoaders(false);
+      return toast.error(
+        "Max Price value must be greater than Min Price value"
+      );
     }
-    
+
     const variants = variantRows.map((ele) => {
       return ele.reduce((acc, val) => {
         const obj = { [val.id]: val.value };
         return { ...acc, ...obj };
       }, {});
     });
-    
+
     const res = await addProcurementVariants({
       id: id,
       body: { variants },
@@ -336,8 +352,9 @@ const [spinner,setSpinner] = useState(false)
   const fetchAndDisplayImages = (urls) => {
     const promises = [];
     const images = [];
+
     if (urls.length === 0) return toast.error("No Images Found!");
-    setImageLoader(true)
+    setImageLoader(true);
     urls.forEach((url) => {
       const promise = fetch(
         `${process.env.REACT_APP_BASE_URL}/api/download?path=${url}`,
@@ -355,18 +372,50 @@ const [spinner,setSpinner] = useState(false)
           images.push(imageUrl);
         })
         .catch((error) => {
-           setImageLoader(false)
+          setImageLoader(false);
         });
       promises.push(promise);
     });
     Promise.all(promises).then(() => {
-      setPlantImages(images);
-      setImageLoader(false)
+      if (pdfOpen) {
+        setPdfsData(images);
+      } else if (!pdfOpen) {
+        setPlantImages(images);
+      }
+      setImageLoader(false);
     });
   };
 
   const onMinimumClick = () => {
     setMinimumMode(!isMinimumSelected);
+  };
+
+  const handlePhamplet = async (files) => {
+    const selectedFile = files[0];
+    const formData = new FormData();
+    formData.append("images", selectedFile);
+
+    try {
+      const data = await uploadPdfData({
+        body: formData,
+        pamphletId: id,
+      });
+      if (data.message !== null) {
+        const response = await GetPdfData();
+        setFileName(response?.data[0]?.pamphlet);
+      }
+    } catch (err) {
+      console.log(err, "====errr");
+    }
+    //check
+  };
+  const imageOpen = () => {
+    setSelectpdf(true);
+    setPDFpath(true);
+    setPdfOpen(true);
+  };
+  const openPdfsImage = () => {
+    fetchAndDisplayImages([filename]);
   };
 const setBtns = ()=>{
   setSpinner(true);
@@ -407,7 +456,7 @@ const setBtns = ()=>{
               </button>
               <span>{`${page === 1 ? "1" : (page - 1) * 10 + 1}-${
                 page * 10 > finalCount ? finalCount : page * 10
-                } of ${finalCount}`}</span>
+              } of ${finalCount}`}</span>
               <button
                 disabled={
                   (page * 10 > finalCount ? finalCount : page * 10) >=
@@ -421,16 +470,14 @@ const setBtns = ()=>{
             </div>
           </div>
           <div className={styles.tablewrapper}>
-            {
-              (tableBody.length === 0) ? (
-                <Spinner />
-              ) : (
-                <Table
-                 data={[...tableHeader, ...tableBody]}
-                 onSortBy={onSortClickHandler}
-                />
-              )
-            }
+            {tableBody.length === 0 ? (
+              <Spinner />
+            ) : (
+              <Table
+                data={[...tableHeader, ...tableBody]}
+                onSortBy={onSortClickHandler}
+              />
+            )}
           </div>
         </div>
         {id && (
@@ -451,7 +498,7 @@ const setBtns = ()=>{
                     pageFilter * 10 > historyCount
                       ? historyCount
                       : pageFilter * 10
-                    } of ${historyCount}`}</span>
+                  } of ${historyCount}`}</span>
                   <button
                     disabled={
                       (pageFilter * 10 > historyCount
@@ -584,7 +631,7 @@ const setBtns = ()=>{
                       />
                     </div>
                   </div>
-                  <p>Minimum stock needs to be mainained in inventory</p>
+                  <p>Minimum stock needs to be maintained in inventory</p>
                 </>
               )}
               {role === "procurement" && (
@@ -600,77 +647,229 @@ const setBtns = ()=>{
                       />
                     </div>
                   </div>
-                  <p>Minimum stock needs to be mainained in inventory</p>
+                  <p>Minimum stock needs to be maintained in inventory</p>
                 </>
+              )}
+              {role === "admin" && (
+                <div>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <div>
+                      <span style={{ fontWeight: "bold" }}>
+                        Plant pamphlet.
+                      </span>
+                    </div>
+                    {filename && (
+                      <div>
+                        <button
+                          onClick={openPdfsImage}
+                          className={styles.viewbtn}
+                        >
+                          View
+                        </button>
+                      </div>
+                    )}
+                    {phamplet && (
+                      <>
+                        <div>
+                          <button
+                            onClick={() => setPhamphlet("")}
+                            className={styles.viewbtn}
+                          >
+                            Update pamphlet
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {phamplet && (
+                    <div>
+                      <span>A pamphlet is present already</span>
+                    </div>
+                  )}
+                  <div onClick={imageOpen}>
+                    {selectpdf ? (
+                      <Spinner />
+                    ) : (
+                      !phamplet && (
+                        <DropZone
+                        onFilePickerModalClose={()=>{
+                          setSelectpdf(false);
+                        
+                        }}
+                          onDrop={(files) => {
+                            handlePhamplet(files);
+                            setSelectpdf(false);
+                          }}
+                          onReject={(files) => {
+                            setSelectpdf(false);
+
+                            toast.error(
+                              files[0].errors[0].code.replaceAll("-", " ")
+                              
+                            );
+                          }}
+                        
+                          maxSize={3 * 1024 ** 2}
+                          maxFiles="1"
+                          multiple={true}
+                          accept={[MIME_TYPES.pdf]}
+                          maxFileSize="5"
+                        />
+                      )
+                    )}
+                  </div>
+                  {/* {
+                  selectpdf ?<Spinner/> :<DropZone
+                  onDrop={(files) => {
+                    handlePhamplet(files);
+                    setSelectpdf(false);
+                  }}
+                  onReject={(files) => {
+                    toast.error(files[0].errors[0].code.replaceAll("-", " "));
+                  }}
+                  maxSize={3 * 1024 ** 2}
+                  maxFiles="1"
+                  multiple={true}
+                  accept={[MIME_TYPES.pdf]}
+                  maxFileSize="5"
+                />
+                } */}
+                </div>
               )}
             </div>
           </div>
         )}
       </div>
-     {
-      imageLoader ? 
-         <div style={{position : "absolute", top : "50%", left : "49%"}}>
-            <Spinner />
-         </div> : 
-          <Modal isOpen={plantImages.length > 0}>
-        <div
-          style={{
-            border: "1px solid #e2e2e2",
-            boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-            padding: "1rem",
-            minWidth: "50%",
-            maxWidth: "80%",
-            background: "#ffffff",
-            borderRadius: "8px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <p
-              style={{ color: "#038819 ", fontSize: "20px", fontWeight: "600" }}
-            >
-              Plant Images
-            </p>
-            <GrClose
-              size={22}
-              onClick={() => {
-                setPlantImages([]);
-              }}
-              style={{ cursor: "pointer" }}
-            />
-          </div>
-          <div
-            style={{
-              maxHeight: "70vh",
-              overflow: "auto",
-              display: "flex",
-              gap: "20px",
-              flexWrap: "wrap",
-            }}
-          >
-          {
-           plantImages.map((img) => {
-              return (
-                <>
-                  {
-                    imageLoader ? <Spinner /> :  (
-                      <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
-                    )
-                  }
-                </>
-              );
-            })
-          }
-          </div>
+      {imageLoader && pdfsdata.length === 0 ? (
+        <div style={{ position: "absolute", top: "50%", left: "49%" }}>
+          <Spinner />
         </div>
-      </Modal>
-      
-     }
+      ) : (
+        <Modal isOpen={plantImages.length > 0}>
+          <div
+            style={{
+              border: "1px solid #e2e2e2",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              padding: "1rem",
+              minWidth: "50%",
+              maxWidth: "80%",
+              background: "#ffffff",
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <p
+                style={{
+                  color: "#038819 ",
+                  fontSize: "20px",
+                  fontWeight: "600",
+                }}
+              >
+                Plant Images
+              </p>
+              <GrClose
+                size={22}
+                onClick={() => {
+                  setPlantImages([]);
+                }}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            <div
+              style={{
+                maxHeight: "70vh",
+                overflow: "auto",
+                display: "flex",
+                gap: "20px",
+                flexWrap: "wrap",
+              }}
+            >
+              {plantImages.map((img) => {
+                return (
+                  <>
+                    {imageLoader ? (
+                      <Spinner />
+                    ) : (
+                      <img src={img} alt="img" style={{ maxWidth: "20rem" }} />
+                    )}
+                  </>
+                );
+              })}
+            </div>
+          </div>
+        </Modal>
+      )}
+      {/* pdf open images */}
+      {imageLoader && pdfsdata.length === 0 ? (
+        <div style={{ position: "absolute", top: "50%", left: "49%" }}>
+          <Spinner />
+        </div>
+      ) : (
+        <Modal isOpen={pdfsdata.length > 0}>
+          <div
+            style={{
+              border: "1px solid #e2e2e2",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              padding: "1rem",
+              minWidth: "50%",
+              maxWidth: "80%",
+              background: "#ffffff",
+              borderRadius: "8px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <p
+                style={{
+                  color: "#038819 ",
+                  fontSize: "20px",
+                  fontWeight: "600",
+                }}
+              >
+                PDF DATA
+              </p>
+              <GrClose
+                size={22}
+                onClick={() => {
+                  setPdfsData([]);
+                }}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            <div
+              style={{
+                maxHeight: "70vh",
+                overflow: "auto",
+                display: "flex",
+                gap: "20px",
+                flexWrap: "wrap",
+              }}
+            >
+              {pdfsdata.map((pdf) => (
+                <iframe
+                  key={pdf}
+                  title="pdf"
+                  src={pdf}
+                  style={{ width: "100%", height: "600px" }}
+                />
+              ))}
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

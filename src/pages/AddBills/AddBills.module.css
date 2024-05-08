@@ -1,5 +1,5 @@
 .header {
-  color: #038819 ;
+  color: #038819;
   font-size: 20px;
   font-weight: 500;
   line-height: 1rem;
@@ -14,7 +14,7 @@
 
 .purchaseListHeader {
   text-align: center;
-  color: #038819 ;
+  color: #038819;
   font-size: 20px;
   font-weight: 500;
   line-height: 1rem;
@@ -61,11 +61,10 @@
 
 .billHistory {
   width: 40%;
-
 }
 
 .iconButton {
-  background-color: #038819 ;
+  background-color: #038819;
   width: 28px;
   height: 28px;
   border-radius: 14px;
@@ -85,20 +84,22 @@
   padding: 10px 0;
   margin: 0 10px;
   padding: 10px 0 10px 0;
+  padding-bottom: 10rem;
+  height: 10vh;
   overflow: auto;
 }
 
 .cartTableContainer::-webkit-scrollbar {
-  width: 5px; 
+  width: 5px;
 }
 
 .cartTableContainer::-webkit-scrollbar-thumb {
-  background-color: #888; 
+  background-color: #888;
   border-radius: 10px;
 }
 
 .cartTableContainer::-webkit-scrollbar-thumb:hover {
-  background-color: #555; 
+  background-color: #555;
 }
 
 .cartTable {
@@ -106,7 +107,9 @@
 }
 
 .cartTable th {
-  color: #038819 ;
+  color: #038819;
+  padding-left: 1rem;
+
 }
 
 .cartTable td {
@@ -130,14 +133,14 @@
 }
 
 .historyTabContainer {
-  display : flex;
+  display: flex;
   justify-content: space-around;
   align-items: center;
 }
 
 .singleTab {
-  width : 50%;
-  display : flex;
+  width: 50%;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -148,7 +151,7 @@
 }
 
 .billFigure > div {
-  color: #038819 ;
+  color: #038819;
   margin: 0px 10px;
 }
 
@@ -184,7 +187,7 @@
   justify-content: space-between;
   padding: 10px 0px 20px 0;
   border: none;
-  margin: 0 10px 0 0
+  margin: 0 10px 0 0;
 }
 
 .checkOutWrapper > button {
@@ -238,7 +241,7 @@
 }
 
 .headerModal {
-  color: #038819 ;
+  color: #038819;
   font-size: 20px;
   font-weight: 500;
   margin-top: 1rem;

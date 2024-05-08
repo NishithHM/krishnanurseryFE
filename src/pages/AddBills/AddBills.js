@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
+import pdfToText from "react-pdftotext";
+
 import { Input, Button, Toaster, BackButton, Checkbox } from "../../components";
 import styles from "./AddBills.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,9 +21,10 @@ import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
 import Datepicker from "../../components/Datepicker/Datepicker";
+import { createBlobURL, downloadFile } from "../../services/helper";
 export default function AddBills() {
   const [userCtx, setContext] = useContext(AuthContext);
-  const approveRef = useRef()
+  const approveRef = useRef();
 
   const tableRowBlank = {
     id: new Date().toISOString(),
@@ -69,16 +72,21 @@ export default function AddBills() {
     submitDisable: false,
     invoiceNumber: "",
     isWholeSale: false,
+    isPamphletDataNeededInBill: false,
     isApproved: false,
-    paymentType: '',
-    paymentInfo: '',
+    paymentType: "",
+    paymentInfo: "",
     cashAmount: null,
-    onlineAmount: null
+    onlineAmount: null,
   };
   const [tableRowData, setTableRowData] = useState([tableRowBlank]);
   const [state, setState] = useState(initialState);
   const [showPreview, setShowPreview] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Nursery")
+  const [pamphlet, setPamphlet] = useState([]);
+  const [pamphletData, setPamphletData] = useState(null);
+  const [selectedPamphlet, setSelectedPamphlet] = useState([]);
+
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
@@ -90,8 +98,8 @@ export default function AddBills() {
   const [submitCart, { isLoading: submitLoading }] = useSubmitCartMutation();
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
   const [auth] = useContext(AuthContext);
-const [loading,setLoading] = useState(false);
-const [isButtonDisabled, setButtonDisabled] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank]);
     setState((prev) => ({
@@ -158,9 +166,13 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
           // console.log("item", item?.procurementName?.ka?.name)
           let val = [];
           val.push({
-            value: `${item.procurementName.en.name} (${item?.procurementName?.ka?.name || ""
-              })`,
-            type: item?.procurementName?.ka?.name === undefined ? "Agri" : "Nurssery"
+            value: `${item.procurementName.en.name} (${
+              item?.procurementName?.ka?.name || ""
+            })`,
+            type:
+              item?.procurementName?.ka?.name === undefined
+                ? "Agri"
+                : "Nurssery",
           });
           val.push({
             value: new Date(history.billedDate).toLocaleDateString("en-US", {
@@ -209,7 +221,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
           setTableRowData(cartRows);
         }
         if (customerCart.data.isApproved && approveRef.current) {
-          clearInterval(approveRef.current)
+          clearInterval(approveRef.current);
         }
         setState((prev) => ({
           ...prev,
@@ -222,7 +234,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
           checkOutDone: false,
           // roundOff: 0,
           isApproved: customerCart.data.isApproved,
-          isWholeSale: customerCart.data.isWholeSale || false
+          isWholeSale: customerCart.data.isWholeSale || false,
         }));
         return;
       }
@@ -263,6 +275,13 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
   const tableInputChange = (value, name, index) => {
     let tableDataClone = [...tableRowData];
     let tableRowClone = { ...tableDataClone[index] };
+
+    setPamphlet((pre) => {
+      if (value?.meta?.pamphlet) return [...pre, value?.meta?.pamphlet];
+      return pre;
+    });
+
+    console.log("value", value?.meta);
 
     setState((prev) => ({
       ...prev,
@@ -368,14 +387,39 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
     }));
   };
 
+  const handlePamphletDownload = async (e, index) => {
+    try {
+      if (e) {
+        setSelectedPamphlet((pre) => {
+          return [...pre, pamphlet[index]];
+        });
+      } else
+        setSelectedPamphlet((pre) => {
+          return pre.filter((el) => el !== pamphlet[index]);
+        });
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Error in downloading pamphlet");
+    }
+  };
+
   const handleCheckout = async () => {
     setLoading(true);
     setButtonDisabled(true);
     const items = [];
 
-    tableRowData.forEach((el) => {
+    tableRowData.forEach((el, index) => {
       const { procurementId, variantId, quantity, price } = el;
-      items.push({ procurementId, variantId, quantity, price });
+
+      const infoSheetFileName = selectedPamphlet[index]?.split("phamphlet-")[1];
+
+      items.push({
+        procurementId,
+        variantId,
+        quantity,
+        price,
+        isInfoSheet: infoSheetFileName?.includes(procurementId) || false,
+      });
     });
 
     const cartPayload = {
@@ -403,6 +447,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
       });
     } else {
       checkout = await checkoutCart(cartPayload);
+      console.log("checkout cart response", checkout?.data);
     }
 
     if (checkout.error) {
@@ -429,8 +474,9 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
         isWholeSale: checkout.data.isWholeSale || false,
-        isApproved: checkout.data.isApproved
+        isApproved: checkout.data.isApproved,
       }));
+      console.log("checkout.....", checkout.data);
       toast.success("Checkout is successful!");
     }
   };
@@ -447,7 +493,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
       paymentType: state.paymentType,
       paymentInfo: state.paymentInfo,
       cashAmount: state.cashAmount,
-      onlineAmount: state.onlineAmount
+      onlineAmount: state.onlineAmount,
     };
 
     const confirmCart = await submitCart({
@@ -458,9 +504,9 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
     if (confirmCart.error) {
       setState((prev) => ({
         ...prev,
-        submitError: { isExist: true, error: confirmCart.error.data.error },
+        submitError: { isExist: true, error: confirmCart?.error?.data?.error },
       }));
-      toast.error(confirmCart.error.data.error);
+      toast.error(confirmCart?.error?.data?.error);
     }
 
     if (confirmCart.data) {
@@ -471,9 +517,12 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         submitSuccess: { isExist: true, msg: "Billing is successful" },
       }));
 
+      const pdfUrl = createBlobURL(confirmCart?.data?.infoBuffer?.data);
+
       // added this set timeout because print is being called before the state is updated so, to add some delay...
       setTimeout(() => {
         handlePrint();
+        if (selectedPamphlet.length > 0) window.open(pdfUrl, "_blank");
       }, 1000);
       // toast.success("Billing is successful!");
       // handleReset();
@@ -514,7 +563,8 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
   };
 
   const isRowValid = (row) => {
-    const price = (row.price >= row.minPrice || state.isWholeSale) && row.price <= row.mrp;
+    const price =
+      (row.price >= row.minPrice || state.isWholeSale) && row.price <= row.mrp;
 
     if (row.procurementId && row.variantId && price && row.quantity >= 1) {
       return true;
@@ -549,11 +599,11 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
   };
 
   const shouldSubmitDisable = () => {
-    let paymentValidation = true
-    if(state.paymentType=== 'BOTH'){
-      paymentValidation =  state.cashAmount && state.onlineAmount
-    }else {
-      paymentValidation = Boolean(state.paymentType)
+    let paymentValidation = true;
+    if (state.paymentType === "BOTH") {
+      paymentValidation = state.cashAmount && state.onlineAmount;
+    } else {
+      paymentValidation = Boolean(state.paymentType);
     }
     if (state.checkOutDone && !state.submitError.isExist && paymentValidation) {
       return shouldCheckoutDisable();
@@ -565,6 +615,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
+
       handleReset();
     },
   });
@@ -577,13 +628,13 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
       : state.customerName;
 
   const handleKeyPress = async (e) => {
-    console.log(e.key)
+    console.log(e.key);
     if (e.key === "Enter") {
       await handleCheckout();
     } else if (e.key === "Tab") {
-      await handleAddItem()
+      await handleAddItem();
     }
-  }
+  };
 
   const formatedBillHistory = (prev) => {
     if (selectedTab === "Agri") {
@@ -594,7 +645,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         } else {
           return false;
         }
-      })
+      });
       return newArray;
     } else {
       const newArray = prev.filter((curr, i) => {
@@ -604,50 +655,58 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         } else {
           return false;
         }
-      })
+      });
       return newArray;
     }
-  }
+  };
   const onPreviewClick = () => {
     setShowPreview(!showPreview);
     if (state.isWholeSale) {
       const int = setInterval(() => {
-        console.log('calling api')
-        fetchCustomerInfo()
-      }, 5000)
-      approveRef.current = int
+        console.log("calling api");
+        fetchCustomerInfo();
+      }, 5000);
+      approveRef.current = int;
     }
-
-  }
+  };
 
   const onPreviewClose = () => {
-    setShowPreview(!showPreview)
-    clearInterval(approveRef.current)
-  }
+    setShowPreview(!showPreview);
+    clearInterval(approveRef.current);
+  };
 
-  const handlePaymentMode =(e, total)=>{
-    let cashAmount =0
-    let onlineAmount=0
-    if(e.value==='CASH'){
-      cashAmount = total
+  const handlePaymentMode = (e, total) => {
+    let cashAmount = 0;
+    let onlineAmount = 0;
+    if (e.value === "CASH") {
+      cashAmount = total;
     }
 
-    if(e.value==='ONLINE'){
-      onlineAmount = total
+    if (e.value === "ONLINE") {
+      onlineAmount = total;
     }
 
-    setState((prev)=>({...prev, paymentType:e.value, cashAmount, onlineAmount}))
-  }
+    setState((prev) => ({
+      ...prev,
+      paymentType: e.value,
+      cashAmount,
+      onlineAmount,
+    }));
+  };
 
-  const handleInputInfo =(e, id, total)=>{
-    setState((prev)=>({...prev, [id]:e.target.value}))
-    if(id==='cashAmount'){
-      setState((prev)=>({...prev, onlineAmount:total - e.target.value}))
+  const handleInputInfo = (e, id, total) => {
+    setState((prev) => ({ ...prev, [id]: e.target.value }));
+    if (id === "cashAmount") {
+      setState((prev) => ({ ...prev, onlineAmount: total - e.target.value }));
     }
-  }
+  };
 
   // console.log("state", state.billingHistory)
-  const buttonDisable = !state.customerNumber || !name || !state.customerAddress || !state.dateOfBirth 
+  const buttonDisable =
+    !state.customerNumber ||
+    !name ||
+    !state.customerAddress ||
+    !state.dateOfBirth;
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
@@ -657,9 +716,14 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
         <h1 className={styles.header}>Generate Bill</h1>
-        <h1 className={styles.header} style={{
-          marginRight: "-100px"
-        }}>Purchase History</h1>
+        <h1
+          className={styles.header}
+          style={{
+            marginRight: "-100px",
+          }}
+        >
+          Purchase History
+        </h1>
       </div>
 
       <div className={styles.billWrapper}>
@@ -686,18 +750,16 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                 onChange={inputChangeHanlder}
                 disabled={state.nameDisabled}
               />
-              {
-                state.showDOB && (
-                  <Input
-                    value={state.customerAddress}
-                    id="customerAddress"
-                    type="text"
-                    title="Customer Address:"
-                    onChange={inputChangeHanlder}
-                    disabled={state.nameDisabled}
-                  />
-                )
-              }
+              {state.showDOB && (
+                <Input
+                  value={state.customerAddress}
+                  id="customerAddress"
+                  type="text"
+                  title="Customer Address:"
+                  onChange={inputChangeHanlder}
+                  disabled={state.nameDisabled}
+                />
+              )}
 
               {state.showDOB && (
                 <DatePicker
@@ -727,21 +789,31 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                       borderRadius: 0,
                       fontSize: "18px",
                       // fontWeight: 400,
-                      color: "#332b2b"
+                      color: "#332b2b",
                     },
                   }}
                 />
               )}
-
             </div>
           </div>
-          <div className={styles.itemList} style={{ paddingLeft: '10px' }}>
+          <div className={styles.itemList} style={{ paddingLeft: "10px" }}>
             <h3>Select if Wholesaler</h3>
-            <Checkbox value={state.isWholeSale} label={"wholesale"} onChange={e => setState(prev => ({ ...prev, isWholeSale: e, checkOutDone: false }))} />
+            <Checkbox
+              value={state.isWholeSale}
+              label={"wholesale"}
+              onChange={(e) =>
+                setState((prev) => ({
+                  ...prev,
+                  isWholeSale: e,
+                  checkOutDone: false,
+                }))
+              }
+            />
           </div>
           <div className={styles.itemList}>
             <div className={styles.itemTitleWrap}>
               <h3>Items List</h3>
+
               <button
                 className={styles.iconButton}
                 style={{
@@ -752,9 +824,13 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                 disabled={!isTableValid().all}
                 onClick={handleAddItem}
               >
-                <FontAwesomeIcon icon={faPlus} style={{ marginLeft: "0.8px" }} />
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  style={{ marginLeft: "0.8px" }}
+                />
               </button>
             </div>
+
             <div>
               <div className={styles.cartTableContainer}>
                 <table className={styles.cartTable}>
@@ -762,16 +838,28 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
                   <tbody>
                     {tableRowData.map((el, index) => {
                       return (
-                        <CartTableRow
-                          key={el.id}
-                          item={el}
-                          handleRemoveItem={() => handleRemoveItem(index)}
-                          onInputChange={(value, name) =>
-                            tableInputChange(value, name, index)
-                          }
-                          handleKeyPress={handleKeyPress}
-                          onBlur={(e, name) => onBlur(e, name, index)}
-                        />
+                        <tr key={el.id}>
+                          <CartTableRow
+                            key={el.id}
+                            item={el}
+                            handleRemoveItem={() => handleRemoveItem(index)}
+                            onInputChange={(value, name) =>
+                              tableInputChange(value, name, index)
+                            }
+                            handleKeyPress={handleKeyPress}
+                            onBlur={(e, name) => onBlur(e, name, index)}
+                          />
+
+                          <td>
+                            {pamphlet[index] && (
+                              <Checkbox
+                                onChange={(e) =>
+                                  handlePamphletDownload(e, index)
+                                }
+                              />
+                            )}
+                          </td>
+                        </tr>
                       );
                     })}
                   </tbody>
@@ -831,44 +919,50 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         <div className={styles.billHistory} style={{ marginRight: "15px" }}>
           <div className={styles.historyTabContainer}>
             <div className={styles.singleTab}>
-              <p style={{
-                width: "50%",
-                textAlign: "center",
-                cursor: "pointer",
-                color: "#038819"
-              }} onClick={() => setSelectedTab("Nursery")}>
+              <p
+                style={{
+                  width: "50%",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  color: "#038819",
+                }}
+                onClick={() => setSelectedTab("Nursery")}
+              >
                 Nursery
               </p>
-              {
-                selectedTab === "Nursery" && (
-                  <div style={{
+              {selectedTab === "Nursery" && (
+                <div
+                  style={{
                     height: "4px",
                     width: "50%",
                     borderRadius: "10px",
-                    background: "green"
-                  }}></div>
-                )
-              }
+                    background: "green",
+                  }}
+                ></div>
+              )}
             </div>
             <div className={styles.singleTab}>
-              <p style={{
-                width: "50%",
-                textAlign: "center",
-                cursor: "pointer",
-                color: "#038819"
-              }} onClick={() => setSelectedTab("Agri")}>
+              <p
+                style={{
+                  width: "50%",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  color: "#038819",
+                }}
+                onClick={() => setSelectedTab("Agri")}
+              >
                 Agri
               </p>
-              {
-                selectedTab === "Agri" && (
-                  <div style={{
+              {selectedTab === "Agri" && (
+                <div
+                  style={{
                     height: "4px",
                     width: "50%",
                     borderRadius: "10px",
-                    background: "green"
-                  }}></div>
-                )
-              }
+                    background: "green",
+                  }}
+                ></div>
+              )}
             </div>
           </div>
           <ScrollTable
@@ -933,8 +1027,10 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         </div>
       </div>
       <InvoicePreview
+        selectedPamphlet={selectedPamphlet}
         showPreview={showPreview}
         onClose={onPreviewClose}
+        pamphletData={pamphletData}
         clientDetails={state.customerDetails}
         cartData={tableRowData}
         cartResponse={state?.cartResponse}
@@ -949,8 +1045,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         cashAmount={state.cashAmount}
         onlineAmount={state.onlineAmount}
         type="NURSERY"
-      >
-      </InvoicePreview>
+      ></InvoicePreview>
     </div>
   );
 }
