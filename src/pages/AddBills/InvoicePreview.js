@@ -252,15 +252,14 @@ export const InvoiceSection = (props) => {
             <div className={styles.discountValue}>
               <b>
                 &#x20B9;
-                {(cartResponse.totalPrice + selectedPamphlet?.length * 2 ?? 0) -
+                {(cartResponse?.totalPrice + selectedPamphlet?.length * 2 ?? 0) -
                   roundOff}
               </b>
             </div>
           </div>
         </div>
       </div>
-      <pre>{pamphletData}</pre>
-      <div className={styles.credits}>Innovative IT solutions by Coden</div>
+      <div className={styles.credits}>Innovative IT solutions by Coden.</div>
     </div>
   );
 };

@@ -57,7 +57,7 @@ export default function ScrollTable({
               >
                 <td>{tbody?.length + 1}</td>
                 <td> info sheets</td>
-                <td>{selectedPamphlet?.length * 2}</td>
+                <td>{2}</td>
                 <td>{selectedPamphlet?.length}</td>
                 <td>{selectedPamphlet?.length * 2}</td>
               </tr>

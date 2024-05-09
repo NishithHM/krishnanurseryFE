@@ -86,6 +86,7 @@ export default function AddBills() {
   const [pamphlet, setPamphlet] = useState([]);
   const [pamphletData, setPamphletData] = useState(null);
   const [selectedPamphlet, setSelectedPamphlet] = useState([]);
+  const [blobPdfUrl, setBlobPdfUrl] = useState(null);
 
   const printRef = useRef();
   // const invoiceRef = useRef();
@@ -519,10 +520,10 @@ export default function AddBills() {
 
       const pdfUrl = createBlobURL(confirmCart?.data?.infoBuffer?.data);
 
+      setBlobPdfUrl(pdfUrl);
       // added this set timeout because print is being called before the state is updated so, to add some delay...
       setTimeout(() => {
         handlePrint();
-        if (selectedPamphlet.length > 0) window.open(pdfUrl, "_blank");
       }, 1000);
       // toast.success("Billing is successful!");
       // handleReset();
@@ -615,6 +616,7 @@ export default function AddBills() {
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
+      if (!!selectedPamphlet.length) window.open(blobPdfUrl, "_blank");
 
       handleReset();
     },
@@ -1009,6 +1011,7 @@ export default function AddBills() {
       <div style={{ display: "none" }}>
         <div ref={printRef}>
           <InvoiceSection
+            selectedPamphlet={selectedPamphlet}
             clientDetails={state.customerDetails}
             cartData={tableRowData}
             cartResponse={state.cartResponse}

@@ -6,19 +6,19 @@ import Button from "../Button";
 import dayjs from "dayjs";
 
 const billConfig = {
-  NURSERY:{
-    name:'Shree Krishna Nursery',
-    email:"mailus.skn@gmail.com",
-    phoneNumber:"81051-73777",
+  NURSERY: {
+    name: "Shree Krishna Nursery",
+    email: "mailus.skn@gmail.com",
+    phoneNumber: "81051-73777",
     GSTIN: "29ACCFA0434C1Z0",
   },
-  AGRI:{
-    name:'Agri Shopee',
-    email:'agrishopee@gmail.com',
-    phoneNumber:'81471-92555',
+  AGRI: {
+    name: "Agri Shopee",
+    email: "agrishopee@gmail.com",
+    phoneNumber: "81471-92555",
     GSTIN: "29ACCFA0434C1Z0",
-  }
-}
+  },
+};
 
 export const InvoicePreview = (props) => {
   const {
@@ -28,6 +28,7 @@ export const InvoicePreview = (props) => {
     handlePrintClick,
     cartData,
     setInvoiceNumber,
+    infoSheetPrice,
     type,
   } = props;
 
@@ -46,7 +47,7 @@ export const InvoicePreview = (props) => {
       size="auto"
       closeOnClickOutside={false}
       closeOnEscape={true}
-      style={{overflow:'scroll'}}
+      style={{ overflow: "scroll" }}
     >
       {handlePrintClick && (
         <div className={styles.printButton}>
@@ -72,9 +73,19 @@ export const InvoiceSection = (props) => {
     invoiceNumber,
     printEnabled,
     invoiceDetails,
+    infoSheetPrice,
+
     type,
   } = props;
-  console.log(cartResponse, 'cr')
+
+  let arrayToCrateUsingInfoSheetPrice = 0;
+
+  if (infoSheetPrice > 0 && infoSheetPrice === 2) {
+    arrayToCrateUsingInfoSheetPrice = 1;
+  } else if (infoSheetPrice > 2) {
+    arrayToCrateUsingInfoSheetPrice = infoSheetPrice / 2;
+  }
+  console.log(cartResponse, "cr");
   const [cartList, setCartList] = useState();
   const [invoiceHeader, setInvoiceHeader] = useState([]);
 
@@ -87,7 +98,6 @@ export const InvoiceSection = (props) => {
     { value: "Sub Total", width: "20%" },
   ];
 
-
   const invoiceHeaderWithOutMRP = [
     { value: "S. No.", width: "10%" },
     { value: "Item Purchased", width: "40%" },
@@ -96,13 +106,13 @@ export const InvoiceSection = (props) => {
     { value: "Sub Total", width: "20%" },
   ];
 
-  if(type==='AGRI'){
-    invoiceHeaderWithOutMRP.splice(2,0, { value: "HSN Code", width: "15%" })
-    invoiceHeaderWithOutMRP.splice(5,0, { value: "Amount", width: "15%" })
-    invoiceHeaderWithOutMRP.splice(6,0, { value: "GST", width: "15%" })
-    invoiceHeaderWithMRP.splice(2,0, { value: "Amount", width: "15%" })
-    invoiceHeaderWithMRP.splice(6,0, { value: "Amount", width: "15%" })
-    invoiceHeaderWithMRP.splice(7,0, { value: "GST", width: "15%" })
+  if (type === "AGRI") {
+    invoiceHeaderWithOutMRP.splice(2, 0, { value: "HSN Code", width: "15%" });
+    invoiceHeaderWithOutMRP.splice(5, 0, { value: "Amount", width: "15%" });
+    invoiceHeaderWithOutMRP.splice(6, 0, { value: "GST", width: "15%" });
+    invoiceHeaderWithMRP.splice(2, 0, { value: "Amount", width: "15%" });
+    invoiceHeaderWithMRP.splice(6, 0, { value: "Amount", width: "15%" });
+    invoiceHeaderWithMRP.splice(7, 0, { value: "GST", width: "15%" });
   }
 
   const scroll = false;
@@ -127,7 +137,7 @@ export const InvoiceSection = (props) => {
       let val = [];
       val.push({ value: index + 1 });
       val.push({ value: el.procurementLabel });
-      if(type==='AGRI'){
+      if (type === "AGRI") {
         val.push({ value: el.hsnCode });
       }
       if (showMRPTemp) {
@@ -135,22 +145,20 @@ export const InvoiceSection = (props) => {
       }
       val.push({ value: el.price });
       val.push({ value: el.quantity });
-      if(type==='AGRI'){
-        val.push({value:(el.rateWithGst - el.gstAmount)* el.quantity})
-        val.push({value:`${el.gstAmount} (${el.gst}%)`})
+      if (type === "AGRI") {
+        val.push({ value: (el.rateWithGst - el.gstAmount) * el.quantity });
+        val.push({ value: `${el.gstAmount} (${el.gst}%)` });
       }
-      if(type==='AGRI'){
+      if (type === "AGRI") {
         val.push({ value: el.price * el.quantity + el.gstAmount });
-      }else{
+      } else {
         val.push({ value: el.price * el.quantity });
-
       }
       newCartList.push(val);
     });
     
     setCartList(newCartList);
   }, [cartData]);
-
 
   return (
     <div className={styles.modalContent} id="modal-print-section">
@@ -165,25 +173,30 @@ export const InvoiceSection = (props) => {
           <div className={styles.addressDetails}>
             <b>{billConfig[type].name}</b>
             <br></br>
-            No.188, Near airport, Santhekadur post, 
+            No.188, Near airport, Santhekadur post,
             <br></br>
             Shivamogga - 577222
           </div>
-          <div><strong>Phone Number</strong> : {billConfig[type].phoneNumber}</div>
-          <div><strong>Email </strong>: {billConfig[type].email} </div>
-           {
-            type !== 'NURSERY' && (
-              <div><strong>GSTIN </strong>: {billConfig[type].GSTIN} </div>
-            )
-           }
-          
+          <div>
+            <strong>Phone Number</strong> : {billConfig[type].phoneNumber}
+          </div>
+          <div>
+            <strong>Email </strong>: {billConfig[type].email}{" "}
+          </div>
+          {type !== "NURSERY" && (
+            <div>
+              <strong>GSTIN </strong>: {billConfig[type].GSTIN}{" "}
+            </div>
+          )}
         </div>
 
         <div className={styles.clientDetails}>
           <div className={styles.lableValueDetails}>
             <div className={styles.label}>Invoice Date:</div>
             <div className={styles.value}>
-              {dayjs(new Date(invoiceDetails?.invoiceDate)).format('DD/MM/YYYY HH:mm:ss A')}
+              {dayjs(new Date(invoiceDetails?.invoiceDate)).format(
+                "DD/MM/YYYY HH:mm:ss A"
+              )}
             </div>
           </div>
 
@@ -199,26 +212,43 @@ export const InvoiceSection = (props) => {
             <br></br>
             {clientDetails?.phoneNumber}
             <br></br>
-            {cartResponse?.customerAddress &&
-            <>
-             <b>Billing Address </b><div style={{ whiteSpace: "pre-line", maxWidth:'300px', wordWrap:'break-word' }}>{cartResponse?.customerAddress} </div> 
-            <br></br>
-             </>
-             }
-             {cartResponse?.customerGst &&
-            <>
-            <b>GST: </b>
-            {cartResponse?.customerGst}
-            </>
-             }
-             {invoiceDetails?.paymentType &&
-            <>
-            <br/>
-            <b>Payment Details: </b>
-              {invoiceDetails?.paymentType} {invoiceDetails?.paymentInfo ? `/${invoiceDetails?.paymentInfo}` : ''}
-              {invoiceDetails?.paymentType==="BOTH" && <span>₹{invoiceDetails?.cashAmount}(cash) ₹{invoiceDetails?.onlineAmount}(online) </span> }
-            </>
-             }
+            {cartResponse?.customerAddress && (
+              <>
+                <b>Billing Address </b>
+                <div
+                  style={{
+                    whiteSpace: "pre-line",
+                    maxWidth: "300px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {cartResponse?.customerAddress}{" "}
+                </div>
+                <br></br>
+              </>
+            )}
+            {cartResponse?.customerGst && (
+              <>
+                <b>GST: </b>
+                {cartResponse?.customerGst}
+              </>
+            )}
+            {invoiceDetails?.paymentType && (
+              <>
+                <br />
+                <b>Payment Details: </b>
+                {invoiceDetails?.paymentType}{" "}
+                {invoiceDetails?.paymentInfo
+                  ? `/${invoiceDetails?.paymentInfo}`
+                  : ""}
+                {invoiceDetails?.paymentType === "BOTH" && (
+                  <span>
+                    ₹{invoiceDetails?.cashAmount}(cash) ₹
+                    {invoiceDetails?.onlineAmount}(online){" "}
+                  </span>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -226,7 +256,13 @@ export const InvoiceSection = (props) => {
       {!printEnabled && (
         <div>
           {invoiceHeader && invoiceHeader.length > 0 && (
-            <ScrollTable thead={invoiceHeader} tbody={cartList} />
+            <ScrollTable
+              selectedPamphlet={new Array(arrayToCrateUsingInfoSheetPrice).fill(
+                0
+              )}
+              thead={invoiceHeader}
+              tbody={cartList}
+            />
           )}
         </div>
       )}
@@ -235,6 +271,10 @@ export const InvoiceSection = (props) => {
         <div>
           {invoiceHeader && invoiceHeader.length > 0 && (
             <ScrollTable
+              selectedPamphlet={new Array(arrayToCrateUsingInfoSheetPrice).fill(
+                0
+              )}
+              infoSheetPrice={infoSheetPrice}
               thead={invoiceHeader}
               tbody={cartList}
               scroll={scroll}
@@ -257,14 +297,19 @@ export const InvoiceSection = (props) => {
               <div className={styles.label}>Discount Price: </div>
             )}
             <div className={styles.label}>Total Price: </div>
-           {type==='AGRI' && <>
-            {cartResponse?.customerGst?.startsWith("29") || !cartResponse?.customerGst ?
-            <>
-            <div className={styles.label}>CGST </div>
-            <div className={styles.label}>SGST </div>
-            </>
-          : <div className={styles.label}>IGST </div>}
-          </>}
+            {type === "AGRI" && (
+              <>
+                {cartResponse?.customerGst?.startsWith("29") ||
+                !cartResponse?.customerGst ? (
+                  <>
+                    <div className={styles.label}>CGST </div>
+                    <div className={styles.label}>SGST </div>
+                  </>
+                ) : (
+                  <div className={styles.label}>IGST </div>
+                )}
+              </>
+            )}
           </div>
 
           <div className={styles.lableValueDetails}>
@@ -276,24 +321,28 @@ export const InvoiceSection = (props) => {
             <div className={styles.discountValue}>
               <b>&#x20B9;{cartResponse.totalPrice}</b>
             </div>
-            {type==='AGRI' && <>
-            {cartResponse?.customerGst?.startsWith("29") || !cartResponse?.customerGst ?
-            <>
-            <div className={styles.discountValue}>
-              <b>&#x20B9;{cartResponse.gstAmount/2}</b>
-            </div>
-            <div className={styles.discountValue}>
-              <b>&#x20B9;{cartResponse.gstAmount/2}</b>
-            </div>
-            </>
-          :<div className={styles.discountValue}>
-          <b>&#x20B9;{cartResponse.gstAmount}</b>
-        </div>}
-        </>}
+            {type === "AGRI" && (
+              <>
+                {cartResponse?.customerGst?.startsWith("29") ||
+                !cartResponse?.customerGst ? (
+                  <>
+                    <div className={styles.discountValue}>
+                      <b>&#x20B9;{cartResponse.gstAmount / 2}</b>
+                    </div>
+                    <div className={styles.discountValue}>
+                      <b>&#x20B9;{cartResponse.gstAmount / 2}</b>
+                    </div>
+                  </>
+                ) : (
+                  <div className={styles.discountValue}>
+                    <b>&#x20B9;{cartResponse.gstAmount}</b>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
-
