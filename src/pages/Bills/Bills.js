@@ -20,7 +20,7 @@ import {
   useGetAllPurchasesCountQuery,
   useGetAllPurchasesQuery,
   useSearchPurchaseMutation,
-  useGetApproveMutation
+  useGetApproveMutation,
 } from "../../services/bills.service";
 import {
   InvoicePreview,
@@ -62,10 +62,10 @@ const getRoundedDates = () => {
   return { start_date: formattedRoundedDate, end_date: formattedDate };
 };
 
-const Bills = ({type}) => {
+const Bills = ({ type }) => {
   const [page, setPage] = useState(1);
   const [excelPage, setExcelPage] = useState(1);
-  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
   const [data, setData] = useState([]);
   const location = useLocation();
   const [user] = useContext(AuthContext);
@@ -83,8 +83,7 @@ const Bills = ({type}) => {
   const [showPreview, setShowPreview] = useState(false);
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
-  useEffect(() => {
-  }, [filterDates]);
+  useEffect(() => {}, [filterDates]);
 
   const [searchParams] = useSearchParams();
   useEffect(() => {
@@ -115,9 +114,9 @@ const Bills = ({type}) => {
   });
 
   const [searchPurchase] = useSearchPurchaseMutation();
-  const [approveButton] = useGetApproveMutation()
+  const [approveButton] = useGetApproveMutation();
 
-  const [downloadBillingExcel] = useDownloadBillingExcelMutation()
+  const [downloadBillingExcel] = useDownloadBillingExcelMutation();
   // const approve = useGetApproveQuery
   // ({
   //   customerId:purchaseData?._id
@@ -125,7 +124,11 @@ const Bills = ({type}) => {
 
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
-      const date = { value: dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY") };
+      const date = {
+        value: dayjs(purchase.billedDate || purchase.updatedAt).format(
+          "DD-MM-YYYY"
+        ),
+      };
 
       const openModal = {
         value: (
@@ -142,22 +145,26 @@ const Bills = ({type}) => {
       };
 
       const approve = {
-        value:  purchase.isApproved === false && purchase.status ==='CART' && user.role==='admin'  ? (
-          <span
-            style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
-            onClick={async()=>{
-              const res =  await approveButton({
-                billId: purchase?._id
-              });
-              toast.success("Bill Successfully Approved");
-            }}
-            
-          >
-            Approve
-          </span>
-        ): <></>,
+        value:
+          purchase.isApproved === false &&
+          purchase.status === "CART" &&
+          user.role === "admin" ? (
+            <span
+              style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
+              onClick={async () => {
+                const res = await approveButton({
+                  billId: purchase?._id,
+                });
+                toast.success("Bill Successfully Approved");
+              }}
+            >
+              Approve
+            </span>
+          ) : (
+            <></>
+          ),
       };
-      
+
       const data = [
         date,
         { value: purchase.invoiceId },
@@ -169,7 +176,7 @@ const Bills = ({type}) => {
           }).format(purchase.totalPrice),
         },
         openModal,
-        approve
+        approve,
       ];
       return data;
     });
@@ -236,7 +243,7 @@ const Bills = ({type}) => {
 
   const handleFilterChange = (filterDates) => {
     setFilterDates(filterDates);
-    setNextExcelAvailable(true)
+    setNextExcelAvailable(true);
   };
 
   const handleFilterReset = () => {
@@ -254,41 +261,63 @@ const Bills = ({type}) => {
     }));
   };
   const formatInvoiceItems = (data) => {
-    console.log(data)
+    console.log(data);
     return data.map((item) => ({
-      procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
+      procurementLabel:
+        type === "NURSERY"
+          ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})`
+          : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
       mrp: item.mrp,
       rateWithGst: item.rateWithGst,
       gstAmount: item.gstAmount,
       gst: item.gst,
-      hsnCode: item.hsnCode
+      hsnCode: item.hsnCode,
     }));
     // return data;
   };
 
-  const handleExcelDownload = async (filterDates)=>{
-    const res= await downloadBillingExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
-    const {isNext, response} = res.data
-    setNextExcelAvailable(isNext==='true')
-    if(isNext==="true"){
-      setExcelPage((prev)=> prev+1)
+  const handleExcelDownload = async (filterDates) => {
+    const res = await downloadBillingExcel({
+      pageNumber: excelPage,
+      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+    });
+    const { isNext, response } = res.data;
+    setNextExcelAvailable(isNext === "true");
+    if (isNext === "true") {
+      setExcelPage((prev) => prev + 1);
     }
-    const link = document.createElement('a')
-    link.href = window.URL.createObjectURL(response)
-    link.download = 'billing.xlsx'
-    link.click()
-  }
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(response);
+    link.download = "billing.xlsx";
+    link.click();
+  };
 
+  console.log("details", invoiceDetail);
 
   return (
     <div>
       <div>
-        <BackButton navigateTo={"/authorised/dashboard"} tabType={type === "AGRI" ? "AGRI" : undefined} />
+        <BackButton
+          navigateTo={"/authorised/dashboard"}
+          tabType={type === "AGRI" ? "AGRI" : undefined}
+        />
         <Toaster />
       </div>
-      <Filters config={{excelDownload: user.role==='admin', isNextExcelAvailable, excelPage}} resetExcelPage={()=> setExcelPage(1)} setNextExcelAvailable={setNextExcelAvailable} onSubmit={handleFilterChange} onReset={handleFilterReset} onExcelDownload={handleExcelDownload} />
+      <Filters
+        config={{
+          excelDownload: user.role === "admin",
+          isNextExcelAvailable,
+          excelPage,
+        }}
+        resetExcelPage={() => setExcelPage(1)}
+        setNextExcelAvailable={setNextExcelAvailable}
+        onSubmit={handleFilterChange}
+        onReset={handleFilterReset}
+        onExcelDownload={handleExcelDownload}
+      />
       <div className={styles.wrapper}>
         {/* search */}
         <div className={styles.searchContainer}>
@@ -341,7 +370,6 @@ const Bills = ({type}) => {
         <p className={styles.errorMessage}>Unable to load Users Data</p>
       )}
 
-     
       {showPreview && invoiceDetail && (
         <div style={{ display: "none" }}>
           <div ref={printRef}>
@@ -355,8 +383,9 @@ const Bills = ({type}) => {
                 discount: invoiceDetail?.discount,
                 roundOff: invoiceDetail?.roundOff,
                 totalPrice: invoiceDetail?.totalPrice,
-                gstAmount: invoiceDetail?.gstAmount
+                gstAmount: invoiceDetail?.gstAmount,
               }}
+              infoSheetPrice={invoiceDetail?.infoSheetPrice}
               invoiceNumber={invoiceDetail.invoiceId}
               printEnabled={true}
               roundOff={invoiceDetail?.roundOff}
@@ -365,7 +394,7 @@ const Bills = ({type}) => {
                 billedBy: invoiceDetail?.billedBy?.name,
                 soldBy: invoiceDetail?.soldBy?.name,
                 cashAmount: invoiceDetail?.cashAmount,
-                onlineAmount: invoiceDetail?.onlineAmount
+                onlineAmount: invoiceDetail?.onlineAmount,
               }}
               type={type}
             />
@@ -374,6 +403,7 @@ const Bills = ({type}) => {
       )}
       {showPreview && invoiceDetail && (
         <InvoicePreview
+          infoSheetPrice={invoiceDetail?.infoSheetPrice}
           showPreview={showPreview}
           onClose={() => setShowPreview(!showPreview)}
           clientDetails={{
@@ -387,7 +417,7 @@ const Bills = ({type}) => {
             paymentType: invoiceDetail?.paymentType,
             paymentInfo: invoiceDetail?.paymentInfo,
             cashAmount: invoiceDetail?.cashAmount,
-            onlineAmount: invoiceDetail?.onlineAmount
+            onlineAmount: invoiceDetail?.onlineAmount,
           }}
           cartData={formatInvoiceItems(invoiceDetail.items)}
           cartResponse={{
@@ -396,7 +426,7 @@ const Bills = ({type}) => {
             totalPrice: invoiceDetail.totalPrice,
             gstAmount: invoiceDetail?.gstAmount,
             customerAddress: invoiceDetail?.customerAddress,
-            customerGst: invoiceDetail?.customerGst
+            customerGst: invoiceDetail?.customerGst,
           }}
           invoiceNumber={invoiceDetail.invoiceId}
           setInvoiceNumber={() => {}}
