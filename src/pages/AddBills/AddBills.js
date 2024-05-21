@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import pdfToText from "react-pdftotext";
 
 import { Input, Button, Toaster, BackButton, Checkbox } from "../../components";
 import styles from "./AddBills.module.css";
@@ -86,10 +85,10 @@ export default function AddBills() {
   const [pamphlet, setPamphlet] = useState([]);
   const [pamphletData, setPamphletData] = useState(null);
   const [selectedPamphlet, setSelectedPamphlet] = useState([]);
-  const [blobPdfUrl, setBlobPdfUrl] = useState(null);
 
   const printRef = useRef();
   // const invoiceRef = useRef();
+  const blobUrl = useRef();
   const printEnabled = true;
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
@@ -516,22 +515,16 @@ export default function AddBills() {
     }
 
     if (confirmCart.data) {
+      const pdfUrl = createBlobURL(confirmCart?.data?.infoBuffer?.data);
       setState((prev) => ({
         ...prev,
         submitResponse: confirmCart.data,
         submitError: { isExist: false, error: "" },
         submitSuccess: { isExist: true, msg: "Billing is successful" },
       }));
+      blobUrl.current = pdfUrl;
 
-      const pdfUrl = createBlobURL(confirmCart?.data?.infoBuffer?.data);
-
-      setBlobPdfUrl(pdfUrl);
-      // added this set timeout because print is being called before the state is updated so, to add some delay...
-      setTimeout(() => {
-        handlePrint();
-      }, 1000);
-      // toast.success("Billing is successful!");
-      // handleReset();
+      handlePrint();
     }
   };
 
@@ -620,7 +613,7 @@ export default function AddBills() {
     content: () => printRef.current,
     onAfterPrint: () => {
       toast.success("Invoice Print Success");
-      if (!!selectedPamphlet.length) window.open(blobPdfUrl, "_blank");
+      if (!!selectedPamphlet.length) window.open(blobUrl?.current, "_blank");
 
       handleReset();
     },
