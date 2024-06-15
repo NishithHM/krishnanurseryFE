@@ -580,7 +580,6 @@ export default function AgriAddBills() {
         isCustomerUpdate: state.isCustomerUpdate,
       };
 
-      console.log(payload, "payload");
 
       checkout = await updateCart({
         cartId: state.cartResponse._id,
