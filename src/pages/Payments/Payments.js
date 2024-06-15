@@ -30,6 +30,7 @@ const Payments = () => {
   const [data, setData] = useState([]);
   const [newPaymenModal, setNewPaymentModal] = useState(false);
   const [newPayment, setNewPayment] = useState({ type: null });
+  const [paymentMode, setPaymentMode] = useState({ type: null });
 
   const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
@@ -40,9 +41,7 @@ const Payments = () => {
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
 
-  const handleViewBill = (id) => {
-  
-  };
+  const handleViewBill = (id) => {};
 
   const formatPaymentsData = (data) => {
     const formatted = data.map((item) => {
@@ -140,6 +139,12 @@ const Payments = () => {
     { value: "OTHERS", label: "Others" },
   ];
 
+  const PAYMENT_MODES = [
+    { value: "CASH", label: "Cash" },
+    { value: "ONLINE", label: "Online" },
+    { value: "BOTH", label: "Both" },
+  ];
+
   let filtered_payment_types = [];
 
   if (user_role === "admin") {
@@ -149,7 +154,6 @@ const Payments = () => {
   } else if (user_role === "procurement") {
     filtered_payment_types = [PAYMENT_TYPES[1], PAYMENT_TYPES[2]];
   }
-
 
   const handleCreatePayment = async () => {
     const data = newPayment;
@@ -277,8 +281,9 @@ const Payments = () => {
         onClose={() => {
           setNewPaymentModal(false);
           setNewPayment({ type: null });
+          setPaymentMode({ type: null });
         }}
-        size={"md"}
+        size={"lg"}
         title="Add New Payment"
       >
         <div
@@ -372,31 +377,102 @@ const Payments = () => {
                   setNewPayment((prev) => ({ ...prev, name: e.target.value }))
                 }
               />
-              {newPayment.type.value === "OTHERS" && (
+              {newPayment.type.value === "SALARY" && (
                 <Input
                   required
-                  title="Bill Number"
-                  value={newPayment.invoiceId}
+                  title="Amount Paid"
+                  type="number"
+                  value={newPayment.amount}
                   onChange={(e) =>
                     setNewPayment((prev) => ({
                       ...prev,
-                      invoiceId: e.target.value,
+                      amount: e.target.value,
                     }))
                   }
                 />
               )}
-              <Input
-                required
-                title="Amount Paid"
-                type="number"
-                value={newPayment.amount}
-                onChange={(e) =>
-                  setNewPayment((prev) => ({
-                    ...prev,
-                    amount: e.target.value,
-                  }))
-                }
-              />
+              {newPayment.type.value === "OTHERS" && (
+                <>
+                  <Input
+                    required
+                    title="accountNumber"
+                    value={newPayment.accountNumber}
+                    onChange={(e) =>
+                      setNewPayment((prev) => ({
+                        ...prev,
+                        accountNumber: e.target.value,
+                      }))
+                    }
+                  />
+                  <Input
+                    required
+                    title="IFSC code"
+                    type="number"
+                    value={newPayment.ifscCode}
+                    onChange={(e) =>
+                      setNewPayment((prev) => ({
+                        ...prev,
+                        ifscCode: e.target.value,
+                      }))
+                    }
+                  />
+
+                  <Input
+                    required
+                    title="Bank name"
+                    type="number"
+                    value={newPayment.bankName}
+                    onChange={(e) =>
+                      setNewPayment((prev) => ({
+                        ...prev,
+                        bankName: e.target.value,
+                      }))
+                    }
+                  />
+                  <Input
+                    required
+                    title="Total Amount Paid"
+                    type="number"
+                    value={newPayment.totalAmountPaid}
+                    onChange={(e) =>
+                      setNewPayment((prev) => ({
+                        ...prev,
+                        totalAmountPaid: e.target.value,
+                      }))
+                    }
+                  />
+                  <Dropdown
+                    required
+                    title="Payment Mode"
+                    data={PAYMENT_MODES}
+                    value={paymentMode.type}
+                    onChange={(e) =>
+                      setPaymentMode((prev) => ({
+                        ...prev,
+                        type: e?.value,
+                      }))
+                    }
+                  />
+                  {paymentMode.type === "CASH" && (
+                    <PaymentModeCash
+                      value={newPayment?.amountPaidCash}
+                      setNewPayment={setNewPayment}
+                    />
+                  )}
+                  {paymentMode.type === "ONLINE" && (
+                    <PaymentModeOnline
+                      value={newPayment?.amountPaidOnline}
+                      setNewPayment={setNewPayment}
+                    />
+                  )}
+                  {paymentMode.type === "BOTH" && (
+                    <PaymentModeBoth
+                      newPayment={newPayment}
+                      setNewPayment={setNewPayment}
+                    />
+                  )}
+                </>
+              )}
             </>
           ) : (
             <></>
@@ -404,6 +480,61 @@ const Payments = () => {
           <Button title="Submit" onClick={handleCreatePayment} />
         </div>
       </MantineModal>
+    </>
+  );
+};
+
+const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
+  return (
+    <>
+      <Input
+        min={0}
+        required
+        title="Amount that is paid in cash"
+        value={value}
+        onChange={(e) =>
+          setNewPayment((prev) => ({
+            ...prev,
+            amountPaidCash: e.target.value,
+          }))
+        }
+      />
+    </>
+  );
+};
+
+const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
+  return (
+    <>
+      <Input
+        min={0}
+        required
+        disabled={disabled}
+        title="Amount that is paid online"
+        value={value}
+        onChange={(e) =>
+          setNewPayment((prev) => ({
+            ...prev,
+            amountPaidOnline: e.target.value,
+          }))
+        }
+      />
+    </>
+  );
+};
+const PaymentModeBoth = ({ newPayment, setNewPayment }) => {
+  return (
+    <>
+      <PaymentModeCash
+        totalAmountPaid={newPayment.totalAmountPaid}
+        value={newPayment.amountPaidCash}
+        setNewPayment={setNewPayment}
+      />
+      <PaymentModeOnline
+        disabled={true}
+        value={newPayment?.totalAmountPaid - newPayment?.amountPaidCash || 0}
+        setNewPayment={setNewPayment}
+      />
     </>
   );
 };
