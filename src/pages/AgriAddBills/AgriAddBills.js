@@ -844,6 +844,7 @@ export default function AgriAddBills() {
               <Input
                 value={state.customerAddress}
                 id="customerAddress"
+                required
                 type="text"
                 title="Customer Address:"
                 onChange={inputChangeHanlder}
