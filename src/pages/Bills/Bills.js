@@ -308,7 +308,7 @@ const Bills = ({ type }) => {
       </div>
       <Filters
         config={{
-          excelDownload: user.role === "admin",
+          excelDownload: user.role === "admin" || "sales",
           isNextExcelAvailable,
           excelPage,
         }}
