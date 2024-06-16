@@ -1,0 +1,43 @@
+.sectionContainer {
+    display: flex;
+    margin: 10px;
+    padding: 10px;
+}
+
+.innerSection {
+    flex: 3;
+}
+
+.addSectionBtn {
+    width: 20%;
+}
+
+.innerContainer {
+    margin-left: 20px;
+}
+
+.card {
+    /* display: flex;
+    flex-direction: row; */
+    justify-content: space-between;
+    box-shadow: 4px 4px 8px 1px #d6d5d2;
+    border: 1px solid #b9b1b1;
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 50%;
+    align-items: center;
+    text-align: center;
+}
+
+.searchContainer{
+    width:100%;
+}
+
+ /* div[class*="Search_wrapper"]{
+    padding-left: 0px;
+} */
+
+.dropdownContainer {
+    width: 50%;
+    margin: 24px;
+  }

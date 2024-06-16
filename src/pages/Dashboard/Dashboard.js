@@ -153,6 +153,33 @@ const Dashboard = () => {
       isDisabled: false,
       tabType: "Agri",
     },
+    {
+      id : 16,
+      title: "Plant Details",
+      tile_img: agriVariantsImg,
+      path: "plant-details",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+      tabType: "ECommerce",
+    },
+    {
+      id : 17,
+      title: "Add Offers",
+      tile_img: agriVariantsImg,
+      path: "add-offers",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+      tabType: "ECommerce",
+    },
+    {
+      id : 16,
+      title: "Add Sections",
+      tile_img: agriVariantsImg,
+      path: "add-sections",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+      tabType: "ECommerce",
+    },
   ];
 
   const { state } = useLocation()
@@ -197,6 +224,18 @@ const Dashboard = () => {
             Agri
           </div>
           {selectedTab === "Agri" && (
+            <div className={styles.tabBottomBar}></div>
+          )}
+        </div>
+        <div style={{ width: "300px" }}>
+          <div
+            style={{ color: selectedTab === "ECommerce" && "#038819" }}
+            className={styles.tabItem}
+            onClick={() => setSelectedTab("ECommerce")}
+          >
+            E-Commerce
+          </div>
+          {selectedTab === "ECommerce" && (
             <div className={styles.tabBottomBar}></div>
           )}
         </div>
