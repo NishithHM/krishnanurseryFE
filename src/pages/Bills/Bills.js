@@ -157,10 +157,15 @@ const Bills = ({type}) => {
           </span>
         ): <></>,
       };
-      
+
+      let paymentThrough = `Cash: ${purchase?.cashAmount ?? 0}, Online: ${
+        purchase?.onlineAmount ?? 0
+      }`;
+
       const data = [
         date,
         { value: purchase.invoiceId },
+        { value: paymentThrough },
         { value: purchase.customerName },
         {
           value: new Intl.NumberFormat("ja-JP", {
@@ -217,6 +222,10 @@ const Bills = ({type}) => {
 
     {
       value: " Bill Number",
+      isSortable: false,
+    },
+    {
+      value: "Payment Through",
       isSortable: false,
     },
     {
@@ -280,7 +289,6 @@ const Bills = ({type}) => {
     link.download = 'billing.xlsx'
     link.click()
   }
-
 
   return (
     <div>
