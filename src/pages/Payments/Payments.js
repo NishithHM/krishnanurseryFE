@@ -13,6 +13,7 @@ import {
   BackButton,
   Input,
   Dropdown,
+  Filters,
 } from "../../components";
 
 import { ImSearch } from "react-icons/im";
@@ -36,22 +37,39 @@ const Payments = () => {
     type: null,
   });
   const [paymentMode, setPaymentMode] = useState({ type: null });
+  const [filterDates, setFilterDates] = useState({
+    start_date: null,
+    end_date: null,
+  });
 
   const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
+
+  const dates = {};
+
+  if (filterDates.start_date && filterDates.end_date) {
+    dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
+    dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
+  }
 
   // requests
   const paymentsData = useGetAllPaymentsQuery(page);
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
   // );
-  const paymentsCountReq = useGetAllPaymentsCountQuery({ search: searchInput });
+  const paymentsCountReq = useGetAllPaymentsCountQuery({
+    search: searchInput,
+  });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
 
   // console.log(dataFromPhoneNumber, "data phone");
 
   const handleViewBill = (id) => {};
+
+  const handleFilterChange = (filterDates) => {
+    setFilterDates(filterDates);
+  };
 
   const formatPaymentsData = (data) => {
     const formatted = data.map((item) => {
@@ -234,6 +252,9 @@ const Payments = () => {
         <div>
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
+
+        <Filters onSubmit={handleFilterChange} />
+
         <div className={styles.wrapper}>
           {/* search */}
           <div className={styles.searchContainer}>
