@@ -49,7 +49,14 @@ export const billsApi = createApi({
       }),
       // bills page endpoints
       getAllPurchases: builder.query({
-        query: ({ pageNumber = 1, startDate, endDate, sortBy, sortType, type }) => {
+        query: ({
+          pageNumber = 1,
+          startDate,
+          endDate,
+          sortBy,
+          sortType,
+          type,
+        }) => {
           return {
             url: "/history",
             method: "GET",
@@ -57,7 +64,7 @@ export const billsApi = createApi({
           };
         },
         invalidatesTags: ["purchaseHistory"],
-        providesTags: ['billHistory']
+        providesTags: ["billHistory"],
       }),
       getAllPurchasesCount: builder.query({
         query: ({ search = null, startDate, endDate, type }) => {
@@ -68,7 +75,7 @@ export const billsApi = createApi({
           return {
             url: "/history",
             method: "GET",
-            params: { isCount: true, startDate, endDate, type,  ...options },
+            params: { isCount: true, startDate, endDate, type, ...options },
           };
         },
         providesTags: ["purchaseHistory"],
@@ -82,7 +89,7 @@ export const billsApi = createApi({
         invalidatesTags: ["purchaseHistory"],
       }),
       getApprove: builder.mutation({
-        query: ({billId}) => ({
+        query: ({ billId }) => ({
           url: `/approve/${billId}`, // id ??
           method: "GET",
         }),
@@ -100,5 +107,5 @@ export const {
   useGetAllPurchasesQuery,
   useGetAllPurchasesCountQuery,
   useSearchPurchaseMutation,
-  useGetApproveMutation
+  useGetApproveMutation,
 } = billsApi;
