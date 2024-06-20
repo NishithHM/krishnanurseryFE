@@ -29,10 +29,10 @@ export const paymentsApi = createApi({
         invalidatesTags: ["User", "UserCount"],
       }),
       getAllPayments: builder.query({
-        query: (page = 1) => ({
+        query: ({ page = 1, startDate, endDate }) => ({
           url: "/getAll",
           method: "GET",
-          params: { pageNumber: page },
+          params: { pageNumber: page, startDate, endDate },
         }),
         providesTags: ["User"],
       }),
