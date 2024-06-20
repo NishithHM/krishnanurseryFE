@@ -1,0 +1,59 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  /* align-items: center; */
+}
+.searchContainer {
+  position: relative;
+  margin: 0 10px;
+  padding: 0 10px;
+}
+.searchInput {
+  width: 18rem;
+  background: #edeceb;
+  border: none;
+  outline: none;
+  padding: 0.8rem;
+  border-radius: 4px;
+}
+.searchInput:focus {
+  outline: none;
+  border: none;
+}
+.searchIcon {
+  position: absolute;
+  right: 1.2rem;
+  top: 18%;
+}
+.paginationContainer {
+  font-weight: 500;
+  letter-spacing: 1;
+  text-align: end;
+  padding: 0 10px;
+  color: #302c2c;
+}
+.paginationInner {
+  display: flex;
+  justify-content: end;
+  margin-top: 5px;
+  align-items: center;
+}
+.paginationControls {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #038819;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.paginationControls:disabled {
+  color: #919191;
+  cursor: not-allowed;
+}
+.errorMessage {
+  text-align: center;
+  color: red;
+  font-size: 1.5rem;
+}
