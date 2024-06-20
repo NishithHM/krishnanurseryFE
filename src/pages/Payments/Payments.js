@@ -203,13 +203,12 @@ const Payments = () => {
         return toast.error("Amount Should not be empty or less than 0");
       // if (data.type.value === "OTHERS" && !data.invoiceId)
       //   return toast.error("Invalid Invoice Id");
-      console.log(data?.amount, "data from payment");
       const res = {
         type: data?.type?.value,
         empName: data?.name,
-        amount: data?.totalAmountPaid,
-        phoneNumber: data?.phone || null,
-        transferType: paymentMode?.type,
+        amount: data?.amount,
+        phoneNumber: data?.phone || "",
+        transferType: paymentMode?.type || "CASH",
         accountNumber: data?.accountNumber,
         ifscCode: data?.ifscCode,
         bankName: data?.bankName,
@@ -468,11 +467,11 @@ const Payments = () => {
                     required
                     title="Total Amount Paid"
                     type="number"
-                    value={newPayment?.totalAmountPaid}
+                    value={newPayment?.amount}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
-                        totalAmountPaid: e.target.value,
+                        amount: e.target.value,
                       }))
                     }
                   />
@@ -575,13 +574,13 @@ const PaymentModeBoth = ({ newPayment, setNewPayment }) => {
   return (
     <>
       <PaymentModeCash
-        totalAmountPaid={newPayment.totalAmountPaid}
+        totalAmountPaid={newPayment.amount}
         value={newPayment.amountPaidCash}
         setNewPayment={setNewPayment}
       />
       <PaymentModeOnline
         disabled={true}
-        value={newPayment?.totalAmountPaid - newPayment?.amountPaidCash || 0}
+        value={newPayment?.amount - newPayment?.amountPaidCash || 0}
         setNewPayment={setNewPayment}
       />
     </>

@@ -1,3 +1,3 @@
-import Payments from "./Payments";
+import AgriPayments from "./Payments";
 
-export default Payments;
+export default AgriPayments;
