@@ -19,7 +19,10 @@ import { ImSearch } from "react-icons/im";
 import get from "lodash/get";
 import { Modal as MantineModal } from "@mantine/core";
 import { AuthContext } from "../../context";
-import { useGetAllPaymentsQuery } from "../../services/payments.services";
+import {
+  useGetAllPaymentsByPhoneNumberQuery,
+  useGetAllPaymentsQuery,
+} from "../../services/payments.services";
 import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
 import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
@@ -29,7 +32,9 @@ const Payments = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [newPaymenModal, setNewPaymentModal] = useState(false);
-  const [newPayment, setNewPayment] = useState({ type: null });
+  const [newPayment, setNewPayment] = useState({
+    type: null,
+  });
   const [paymentMode, setPaymentMode] = useState({ type: null });
 
   const [searchInput, setSearchInput] = useState("");
@@ -37,9 +42,14 @@ const Payments = () => {
 
   // requests
   const paymentsData = useGetAllPaymentsQuery(page);
+  // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
+  //   newPayment?.phone
+  // );
   const paymentsCountReq = useGetAllPaymentsCountQuery({ search: searchInput });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
+
+  // console.log(dataFromPhoneNumber, "data phone");
 
   const handleViewBill = (id) => {};
 
@@ -191,13 +201,21 @@ const Payments = () => {
 
       if (!data.amount && data.amount === "" && data.amount >= 0)
         return toast.error("Amount Should not be empty or less than 0");
-      if (data.type.value === "OTHERS" && !data.invoiceId)
-        return toast.error("Invalid Invoice Id");
-
+      // if (data.type.value === "OTHERS" && !data.invoiceId)
+      //   return toast.error("Invalid Invoice Id");
+      console.log(data?.amount, "data from payment");
       const res = {
-        type: data.type.value,
-        empName: data.name,
-        amount: data.amount,
+        type: data?.type?.value,
+        empName: data?.name,
+        amount: data?.totalAmountPaid,
+        phoneNumber: data?.phone || null,
+        transferType: paymentMode?.type,
+        accountNumber: data?.accountNumber,
+        ifscCode: data?.ifscCode,
+        bankName: data?.bankName,
+        comment: data?.comment,
+        cashAmount: data?.amountPaidCash,
+        onlineAmount: data?.amountPaidOnline,
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
@@ -298,7 +316,7 @@ const Payments = () => {
             required
             title="Payment Type"
             data={filtered_payment_types}
-            value={newPayment.type}
+            value={newPayment?.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
           {newPayment.type && newPayment.type.value === "BROKER" ? (
@@ -333,7 +351,7 @@ const Payments = () => {
                   required
                   disabled={newPayment?.broker?.disabled || false}
                   type="number"
-                  value={newPayment.brokerPhone}
+                  value={newPayment?.brokerPhone}
                   onChange={(e) =>
                     setNewPayment((prev) => ({
                       ...prev,
@@ -345,7 +363,7 @@ const Payments = () => {
               <Input
                 required
                 title="Bill Number"
-                value={newPayment.invoiceId}
+                value={newPayment?.invoiceId}
                 onChange={(e) =>
                   setNewPayment((prev) => ({
                     ...prev,
@@ -358,7 +376,7 @@ const Payments = () => {
                 required
                 title="Amount Paid"
                 type="number"
-                value={newPayment.amount}
+                value={newPayment?.amount}
                 onChange={(e) =>
                   setNewPayment((prev) => ({
                     ...prev,
@@ -369,20 +387,36 @@ const Payments = () => {
             </>
           ) : newPayment.type ? (
             <>
+              {newPayment.type.value === "OTHERS" && (
+                <Input
+                  required
+                  title="Phone Number"
+                  type="number"
+                  value={newPayment?.phone}
+                  onChange={(e) =>
+                    setNewPayment((prev) => ({
+                      ...prev,
+                      phone: e.target.value,
+                    }))
+                  }
+                />
+              )}
               <Input
                 required
                 title="Name"
-                value={newPayment.name}
+                type="text"
+                value={newPayment?.name}
                 onChange={(e) =>
                   setNewPayment((prev) => ({ ...prev, name: e.target.value }))
                 }
               />
+
               {newPayment.type.value === "SALARY" && (
                 <Input
                   required
                   title="Amount Paid"
                   type="number"
-                  value={newPayment.amount}
+                  value={newPayment?.amount}
                   onChange={(e) =>
                     setNewPayment((prev) => ({
                       ...prev,
@@ -396,7 +430,8 @@ const Payments = () => {
                   <Input
                     required
                     title="accountNumber"
-                    value={newPayment.accountNumber}
+                    type="number"
+                    value={newPayment?.accountNumber}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
@@ -407,8 +442,8 @@ const Payments = () => {
                   <Input
                     required
                     title="IFSC code"
-                    type="number"
-                    value={newPayment.ifscCode}
+                    type="text"
+                    value={newPayment?.ifscCode}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
@@ -420,8 +455,8 @@ const Payments = () => {
                   <Input
                     required
                     title="Bank name"
-                    type="number"
-                    value={newPayment.bankName}
+                    type="text"
+                    value={newPayment?.bankName}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
@@ -433,7 +468,7 @@ const Payments = () => {
                     required
                     title="Total Amount Paid"
                     type="number"
-                    value={newPayment.totalAmountPaid}
+                    value={newPayment?.totalAmountPaid}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
@@ -445,11 +480,23 @@ const Payments = () => {
                     required
                     title="Payment Mode"
                     data={PAYMENT_MODES}
-                    value={paymentMode.type}
+                    value={paymentMode?.type}
                     onChange={(e) =>
                       setPaymentMode((prev) => ({
                         ...prev,
                         type: e?.value,
+                      }))
+                    }
+                  />
+                  <Input
+                    required
+                    title="Comment"
+                    type="text"
+                    value={newPayment?.comment}
+                    onChange={(e) =>
+                      setNewPayment((prev) => ({
+                        ...prev,
+                        comment: e.target.value,
                       }))
                     }
                   />
@@ -490,6 +537,7 @@ const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
       <Input
         min={0}
         required
+        type="number"
         title="Amount that is paid in cash"
         value={value}
         onChange={(e) =>
@@ -510,6 +558,7 @@ const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
         min={0}
         required
         disabled={disabled}
+        type="number"
         title="Amount that is paid online"
         value={value}
         onChange={(e) =>
