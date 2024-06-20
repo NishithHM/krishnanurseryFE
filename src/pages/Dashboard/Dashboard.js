@@ -163,6 +163,14 @@ const Dashboard = () => {
       isDisabled: false,
       tabType: "Nursery",
     },
+    {
+      title: "Agri Payments",
+      tile_img: paymentsIcon,
+      path: "agri-payments",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement, USER_ROLES.sales],
+      isDisabled: false,
+      tabType: "Agri",
+    },
   ];
 
   const { state } = useLocation()
