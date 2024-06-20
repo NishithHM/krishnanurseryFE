@@ -53,7 +53,7 @@ const Payments = () => {
   }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery(page);
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
   // );
