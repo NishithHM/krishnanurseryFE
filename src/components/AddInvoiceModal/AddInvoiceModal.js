@@ -7,7 +7,8 @@ import Modal from "../Modal";
 import Input from "../Input";
 import styles from "./AddInvoiceModal.module.css";
 import { useGetVendorMutation } from "../../services/common.services";
-import {useGetInvoiceMutation} from "../../services/procurement.services";
+import { useGetInvoiceMutation } from "../../services/procurement.services";
+import Dropdown from "../Dropdown";
 
 const AddInvoiceModal = ({
   addInvoice,
@@ -20,10 +21,10 @@ const AddInvoiceModal = ({
   orderId,
   getInvoice,
   type,
-  isInvoice
+  isInvoice,
 }) => {
   const [orderInvoiceFile, setOrderInvoiceFile] = useState(null);
-
+  const [paymentMode, setPaymentMode] = useState({ type: null });
 
   const [getVendor] = useGetVendorMutation();
 
@@ -31,23 +32,33 @@ const AddInvoiceModal = ({
     advanceAmount: 0,
     deviation: 0,
     invoiceTotal: 0,
+    amountPaidOnline: 0,
+    amountPaidCash: 0,
     totalToPay: 0,
-    invoiceId: '',
+    comments: "",
+    invoiceId: "",
     orderVal: {
-      items:[],
-      totalAmount:0,
-      advanceAmount:0
+      items: [],
+      totalAmount: 0,
+      advanceAmount: 0,
     },
   });
+
+  const PAYMENT_MODES = [
+    { value: "CASH", label: "Cash" },
+    { value: "ONLINE", label: "Online" },
+    { value: "BOTH", label: "Both" },
+  ];
 
   useEffect(() => {
     async function get(id) {
       const res = await getVendor({ id });
-      const invoiceRes = await getInvoice({id:orderId, page:'orders'});
-      setState((prev) => ({ ...prev, 
+      const invoiceRes = await getInvoice({ id: orderId, page: "orders" });
+      setState((prev) => ({
+        ...prev,
         deviation: res.data.deviation,
-        orderVal: invoiceRes?.data, 
-        advanceAmount: invoiceRes?.data?.advanceAmount
+        orderVal: invoiceRes?.data,
+        advanceAmount: invoiceRes?.data?.advanceAmount,
       }));
     }
 
@@ -58,27 +69,32 @@ const AddInvoiceModal = ({
   useEffect(() => {
     setState((prev) => ({
       ...prev,
-      invoiceTotal: state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
-      totalToPay: state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
+      invoiceTotal:
+        state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
+      totalToPay:
+        state?.orderVal?.totalAmount - state.advanceAmount + state.deviation,
     }));
   }, [state?.orderVal?.totalAmount, state.deviation, state.advanceAmount]);
 
-  const onItemChange=(e, id)=>{
-    const newOrderData = {...state.orderVal}
-    const mewItems = newOrderData.items.map(ele=> {
-      const newEle = {...ele}
-      if(ele._id === id){
-        newEle.totalPrice =  parseInt(e?.target?.value || 0, 10)
+  const onItemChange = (e, id) => {
+    const newOrderData = { ...state.orderVal };
+    const mewItems = newOrderData.items.map((ele) => {
+      const newEle = { ...ele };
+      if (ele._id === id) {
+        newEle.totalPrice = parseInt(e?.target?.value || 0, 10);
       }
-      return newEle
-    })
-    newOrderData.items = mewItems
-    newOrderData.totalAmount = mewItems.reduce((acc, ele)=> acc+ele.totalPrice, 0)
-    setState(prev=>({
+      return newEle;
+    });
+    newOrderData.items = mewItems;
+    newOrderData.totalAmount = mewItems.reduce(
+      (acc, ele) => acc + ele.totalPrice,
+      0
+    );
+    setState((prev) => ({
       ...prev,
-      orderVal: newOrderData
-    }))
-  }
+      orderVal: newOrderData,
+    }));
+  };
 
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
@@ -88,7 +104,14 @@ const AddInvoiceModal = ({
         subMessage={""}
         cancelBtnLabel={"Close"}
         confirmBtnLabel={"Submit"}
-        confirmBtnEnable={(!orderInvoiceFile || !state.totalToPay || state.totalToPay <= 0 || !(state.invoiceId || !isInvoice)) ? true : false}
+        confirmBtnEnable={
+          !orderInvoiceFile ||
+          !state.totalToPay ||
+          state.totalToPay <= 0 ||
+          !(state.invoiceId || !isInvoice)
+            ? true
+            : false
+        }
         successLoading={isAddInvoiceLoading}
         handleCancel={() => {
           setAddInvoice({ isActive: false, id: null });
@@ -104,27 +127,27 @@ const AddInvoiceModal = ({
           data.append("invoice", orderInvoiceFile);
 
           const body = {
-            orderData:  state.orderVal,
+            orderData: state.orderVal,
             finalAmountPaid:
               parseInt(state.totalToPay, 10) +
               parseInt(state.advanceAmount, 10),
+            onlineAmount: state.amountPaidOnline,
+            cashAmount: state.amountPaidCash,
+            comments: state.comments,
+          };
+
+          if (isInvoice) {
+            body.invoiceId = state.invoiceId;
           }
 
-          if(isInvoice){
-            body.invoiceId = state.invoiceId
-          }
-
-          data.append(
-            "body",
-            JSON.stringify(body)
-          );
+          data.append("body", JSON.stringify(body));
 
           const res = await AddOrderInvoice({
             id: addInvoice?.data?.orderId,
             body: data,
           });
-          if(res.error) {
-            return toast.error(res.error?.data?.error)
+          if (res.error) {
+            return toast.error(res.error?.data?.error);
           }
           toast.success("Invoice Updated!");
           setAddInvoice({ isActive: false, id: null });
@@ -163,9 +186,12 @@ const AddInvoiceModal = ({
                   }}
                 >
                   <div className={styles.fileNameStyle}>
-                  <span>{orderInvoiceFile.name}</span>
+                    <span>{orderInvoiceFile.name}</span>
 
-                  <AiOutlineClose className={styles.closeIcon} onClick={() => setOrderInvoiceFile(null)} />
+                    <AiOutlineClose
+                      className={styles.closeIcon}
+                      onClick={() => setOrderInvoiceFile(null)}
+                    />
                   </div>
                 </div>
               </div>
@@ -210,7 +236,6 @@ const AddInvoiceModal = ({
                 gap: "40px",
               }}
             >
-
               <Input
                 value={state.totalToPay}
                 id="totalToPay"
@@ -224,8 +249,57 @@ const AddInvoiceModal = ({
                 title="Amount paid to vendor"
                 required
               />
-              
             </div>
+            <br />
+            <Dropdown
+              required
+              title="Payment Mode"
+              data={PAYMENT_MODES}
+              value={paymentMode.type}
+              onChange={(e) =>
+                setPaymentMode((prev) => ({
+                  ...prev,
+                  type: e?.value,
+                }))
+              }
+            />
+            <br />
+
+            <Input
+              value={state.comments}
+              id="comments"
+              type="text"
+              onChange={(e) =>
+                setState((prev) => ({
+                  ...prev,
+                  comments: e.target.value,
+                }))
+              }
+              title="Comments"
+              required
+            />
+            <br />
+
+            {paymentMode.type === "CASH" && (
+              <PaymentModeCash
+                value={state?.amountPaidCash}
+                setNewPayment={setState}
+              />
+            )}
+            {paymentMode.type === "ONLINE" && (
+              <PaymentModeOnline
+                value={state?.amountPaidOnline}
+                setNewPayment={setState}
+              />
+            )}
+            {paymentMode.type === "BOTH" && (
+              <PaymentModeBoth
+                newPayment={state}
+                totalToPay={state.totalToPay}
+                setNewPayment={setState}
+              />
+            )}
+
             <div
               style={{
                 marginTop: "40px",
@@ -233,21 +307,22 @@ const AddInvoiceModal = ({
                 gap: "40px",
               }}
             >
-              {isInvoice &&
-            <Input
-                value={state.invoiceId}
-                id="invoiceId"
-                type="text"
-                onChange={(e) =>
-                  setState((prev) => ({
-                    ...prev,
-                    invoiceId: e.target.value,
-                  }))
-                }
-                title="Ivoice Id"
-                required
-              />}
-              </div>
+              {isInvoice && (
+                <Input
+                  value={state.invoiceId}
+                  id="invoiceId"
+                  type="text"
+                  onChange={(e) =>
+                    setState((prev) => ({
+                      ...prev,
+                      invoiceId: e.target.value,
+                    }))
+                  }
+                  title="Ivoice Id"
+                  required
+                />
+              )}
+            </div>
           </div>
 
           <div
@@ -267,20 +342,30 @@ const AddInvoiceModal = ({
               }}
             >
               <div className={styles.invoiceItem}>
-                <span> {type === "AGRI" ? "Products" : "Plant Name"} x Quantity</span>
+                <span>
+                  {" "}
+                  {type === "AGRI" ? "Products" : "Plant Name"} x Quantity
+                </span>
                 <span>Subtotal</span>
               </div>
-               {state.orderVal?.items.map((ele) => {
-                  return (
-                    <div className={`${styles.invoiceItem} ${styles.plantItem}`}>
-                       <span>{`${ele?.names?.en?.name || ele?.names } x ${ele?.orderedQuantity}`}</span>
-                       <div style={{width:'100px'}}>
-                      <Input type="number" onChange={e=> onItemChange(e, ele._id)} style={{width:'100px'}} value={ele?.totalPrice}/>
-                      </div>
+              {state.orderVal?.items.map((ele) => {
+                return (
+                  <div className={`${styles.invoiceItem} ${styles.plantItem}`}>
+                    <span>{`${ele?.names?.en?.name || ele?.names} x ${
+                      ele?.orderedQuantity
+                    }`}</span>
+                    <div style={{ width: "100px" }}>
+                      <Input
+                        type="number"
+                        onChange={(e) => onItemChange(e, ele._id)}
+                        style={{ width: "100px" }}
+                        value={ele?.totalPrice}
+                      />
                     </div>
-                  );
-                })}
-              
+                  </div>
+                );
+              })}
+
               <div className={styles.invoiceItem}>
                 <span>Total Amount (invoice)</span>
                 <span>{state.orderVal.totalAmount}</span>
@@ -326,6 +411,61 @@ const AddInvoiceModal = ({
         </div>
       </AlertMessage>
     </Modal>
+  );
+};
+
+const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
+  return (
+    <>
+      <Input
+        min={0}
+        required
+        title="Amount that is paid in cash"
+        value={value}
+        onChange={(e) =>
+          setNewPayment((prev) => ({
+            ...prev,
+            amountPaidCash: e.target.value,
+          }))
+        }
+      />
+    </>
+  );
+};
+
+const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
+  return (
+    <>
+      <Input
+        min={0}
+        required
+        disabled={disabled}
+        title="Amount that is paid online"
+        value={value}
+        onChange={(e) =>
+          setNewPayment((prev) => ({
+            ...prev,
+            amountPaidOnline: e.target.value,
+          }))
+        }
+      />
+    </>
+  );
+};
+const PaymentModeBoth = ({ newPayment, setNewPayment, totalToPay }) => {
+  return (
+    <>
+      <PaymentModeCash
+        totalAmountPaid={newPayment.totalAmountPaid}
+        value={newPayment.amountPaidCash}
+        setNewPayment={setNewPayment}
+      />
+      <PaymentModeOnline
+        disabled={true}
+        value={totalToPay - newPayment?.amountPaidCash || 0}
+        setNewPayment={setNewPayment}
+      />
+    </>
   );
 };
 
