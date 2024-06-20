@@ -99,7 +99,7 @@ const Bills = ({type}) => {
     dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
     dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
   }
-  
+
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     pageNumber: page,
