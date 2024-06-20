@@ -36,6 +36,12 @@ export const paymentsApi = createApi({
         }),
         providesTags: ["User"],
       }),
+      getAllPaymentsByPhoneNumber: builder.query({
+        query: (phoneNumberAsParams) => ({
+          url: "/get-info/" + phoneNumberAsParams,
+          method: "GET",
+        }),
+      }),
       getAllPaymentsCount: builder.query({
         query: ({ search }) => {
           const options = {};
@@ -62,6 +68,7 @@ export const paymentsApi = createApi({
 export const {
   useCreatePaymentMutation,
   useGetAllPaymentsQuery,
+  useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsCountQuery,
   useSearchPaymentMutation,
 } = paymentsApi;
