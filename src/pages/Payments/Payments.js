@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import debounce from "lodash/debounce";
+import dayjs from "dayjs";
 import styles from "./Payments.module.css";
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -54,9 +54,11 @@ const Payments = () => {
 
   // requests
   const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
+
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
   // );
+
   const paymentsCountReq = useGetAllPaymentsCountQuery({
     search: searchInput,
   });
@@ -221,6 +223,22 @@ const Payments = () => {
         return toast.error("Amount Should not be empty or less than 0");
       // if (data.type.value === "OTHERS" && !data.invoiceId)
       //   return toast.error("Invalid Invoice Id");
+      if (paymentMode.type === "BOTH") {
+        if (
+          data.amountPaidCash &&
+          data.amountPaidOnline &&
+          Number(data.amount) !==
+            Number(data.amountPaidOnline) + Number(data.amountPaidCash)
+        )
+          return toast.error(
+            "Total amount should be equal to sum of cash and online amount",
+            {
+              position: "bottom-right",
+              autoClose: 5000,
+            }
+          );
+      }
+
       const res = {
         type: data?.type?.value,
         empName: data?.name,
@@ -560,12 +578,12 @@ const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
         type="number"
         title="Amount that is paid in cash"
         value={value}
-        onChange={(e) =>
+        onChange={(e) => {
           setNewPayment((prev) => ({
             ...prev,
             amountPaidCash: e.target.value,
-          }))
-        }
+          }));
+        }}
       />
     </>
   );
@@ -592,6 +610,12 @@ const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
   );
 };
 const PaymentModeBoth = ({ newPayment, setNewPayment }) => {
+  useEffect(() => {
+    setNewPayment((prev) => ({
+      ...prev,
+      amountPaidOnline: newPayment?.amount - newPayment?.amountPaidCash || 0,
+    }));
+  }, [newPayment?.amount, newPayment?.amountPaidCash]);
   return (
     <>
       <PaymentModeCash
