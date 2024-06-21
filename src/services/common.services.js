@@ -4,7 +4,7 @@ import { baseQueryWithAuth } from "./helper";
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 
 export const commonApi = createApi({
-  reducerPath: "vendor",
+  reducerPath: "common",
   baseQuery: (args, api) =>
     baseQueryWithAuth(args, api, {
       baseUrl: `${process.env.REACT_APP_BASE_URL}/api`,

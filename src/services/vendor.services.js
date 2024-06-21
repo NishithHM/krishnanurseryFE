@@ -3,8 +3,8 @@ import { baseQueryWithAuth } from "./helper";
 
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 
-export const userApi = createApi({
-  reducerPath: "user",
+export const vendorApi = createApi({
+  reducerPath: "vendor",
   baseQuery: (args, api) =>
     baseQueryWithAuth(args, api, {
       baseUrl: `${process.env.REACT_APP_BASE_URL}/api/vendors`,
@@ -17,7 +17,7 @@ export const userApi = createApi({
         },
       }),
     }),
-  //tagTypes: ["User", "UserCount"],
+  tagTypes: ["vendor"],
 
   endpoints: (builder) => {
     return {
@@ -27,12 +27,21 @@ export const userApi = createApi({
           method: "GET",
           params: {type}
         }),
-        //invalidatesTags: ["User", "UserCount"],
+        invalidatesTags: [],
+      }),
+      searchVendor: builder.mutation({
+        query: (search = null) => ({
+          url: "/getAll",
+          method: "GET",
+          params: { search },
+        }),
+        invalidatesTags: [],
       }),
     };
   },
 });
 
 export const {
- useGetVendorQuery
-} = userApi;
+ useGetVendorQuery,
+ useSearchVendorMutation
+} = vendorApi;
