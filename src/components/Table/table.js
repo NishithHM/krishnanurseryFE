@@ -17,6 +17,8 @@ const Table = ({ data, onSortBy }) => {
     );
   }
 
+  console.log(data, "data...");
+
   return (
     <div>
       <table className={styles.table}>
@@ -37,6 +39,7 @@ const Table = ({ data, onSortBy }) => {
                   key={dIndex}
                 >
                   {dataVal.value}
+
                   {dataVal.isSortable && (
                     <img
                       onClick={() => onSortBy(dataVal.sortBy)}

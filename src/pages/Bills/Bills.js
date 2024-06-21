@@ -98,6 +98,7 @@ const Bills = ({ type }) => {
     dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
     dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
   }
+
   // requests
   const purchaseData = useGetAllPurchasesQuery({
     pageNumber: page,
@@ -165,9 +166,14 @@ const Bills = ({ type }) => {
           ),
       };
 
+      let paymentThrough = `Cash: ${purchase?.cashAmount ?? 0}, Online: ${
+        purchase?.onlineAmount ?? 0
+      }`;
+
       const data = [
         date,
         { value: purchase.invoiceId },
+        { value: paymentThrough },
         { value: purchase.customerName },
         {
           value: new Intl.NumberFormat("ja-JP", {
@@ -224,6 +230,10 @@ const Bills = ({ type }) => {
 
     {
       value: " Bill Number",
+      isSortable: false,
+    },
+    {
+      value: "Payment Through",
       isSortable: false,
     },
     {
@@ -295,8 +305,6 @@ const Bills = ({ type }) => {
     link.click();
   };
 
-  console.log("details", invoiceDetail);
-
   return (
     <div>
       <div>
@@ -308,7 +316,7 @@ const Bills = ({ type }) => {
       </div>
       <Filters
         config={{
-          excelDownload: user.role === "admin",
+          excelDownload: user.role === "admin" || "sales",
           isNextExcelAvailable,
           excelPage,
         }}

@@ -43,6 +43,7 @@ const AgriBillingItem = ({
     }
   }, []);
   const [getAgriVariantById] = useGetAgriVariantByIdMutation();
+
   const dropDownChangeHandler = async (event, id, index, optIndex) => {
     const variant = cloneDeep(variants[index]);
     variant[id] = event;
@@ -50,9 +51,9 @@ const AgriBillingItem = ({
       const res = await getAgriVariantById({ id: event.value });
       variant.options = res.data?.options || [];
     }
-    if(id === "type") {
+    if (id === "type") {
       variant.options = [];
-      variant.name = ""
+      variant.name = "";
     }
     if (optIndex > -1) {
       const newVariantOptions = cloneDeep(variant.options);
@@ -132,9 +133,10 @@ const AgriBillingItem = ({
           <h2>No Items</h2>
         </div>
       )}
+
       {variants.map((ele, index) => {
         return (
-          <div key={JSON.stringify(ele)} className={styles.wrapper}>
+          <div key={ele?.procurementId} className={styles.wrapper}>
             <div className={styles.variantsRow}>
               <div className={styles.dropDownWrapper}>
                 <Dropdown
@@ -218,13 +220,19 @@ const AgriBillingItem = ({
                           <Input
                             value={ele.price}
                             id="price"
-                            type="number"  
-                            onChange={(e, id) =>{
-                              if(Number(e.target.value) > 0 || e.target.value === "") {
-                                dropDownChangeHandler(e?.target?.value, id, index)
+                            type="number"
+                            onChange={(e, id) => {
+                              if (
+                                Number(e.target.value) > 0 ||
+                                e.target.value === ""
+                              ) {
+                                dropDownChangeHandler(
+                                  e?.target?.value,
+                                  id,
+                                  index
+                                );
                               }
-                            }
-                            }
+                            }}
                             title="Price"
                             required
                             min={ele?.minPrice || 0}

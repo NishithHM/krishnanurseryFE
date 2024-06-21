@@ -55,9 +55,9 @@ export default function AgriAddBills() {
     customerNumber: "",
     customerDetails: {},
     customerGst: "",
-    shippingAddress:'',
+    shippingAddress: "",
     customerName: "",
-    customerAddress:  "",
+    customerAddress: "",
     nameDisabled: true,
     showDOB: false,
     dateOfBirth: defaultDate,
@@ -76,13 +76,13 @@ export default function AgriAddBills() {
     checkOutDone: false,
     submitDisable: false,
     invoiceNumber: "",
-    paymentType: '',
-    paymentInfo: '',
+    paymentType: "",
+    paymentInfo: "",
     cashAmount: null,
     onlineAmount: null,
     isCustomerUpdate: false,
     lockCustomerFields: false,
-    isCheckoutDone: false
+    isCheckoutDone: false,
   };
   const agriBillingAddress = {
     companyName: "Agri Shopee",
@@ -97,7 +97,7 @@ export default function AgriAddBills() {
   const printRef = useRef();
   // const invoiceRef = useRef();
   const printEnabled = true;
-  const [selectedTab,setSelectedTab] = useState("Agri")
+  const [selectedTab, setSelectedTab] = useState("Agri");
 
   const [getCustomerByPhone] = useLazyGetCustomerByPhoneQuery();
   const [checkoutCart, { isLoading: checkOutLoading }] =
@@ -127,98 +127,112 @@ export default function AgriAddBills() {
   const [cartData, setCartData] = useState(initialCartState);
   const [needsUpdate, setNeedsUpdate] = useState(false);
 
-  const updateCartItems=async()=>{
+  const updateCartItems = async () => {
     if (!needsUpdate) {
-      return; 
-    }else{
-    if (state.isCheckoutDone) {
-      setState((prev=>({
-        ...prev,
-        isCheckoutDone:false
-      })))
-    }
-
-    const cartItems = cartData.variants;
-    const updatedItems = [];
-
-    for(let i=0; i< cartItems.length; i++) {
-      const item = cartItems[i]
-      if (
-        item.options.length > 0 &&
-        item?.options.every((opt) => !!opt.value)
-      ) {
-        // fetch price here
-
-        if (item.isTouched && !item.isFetched) {
-          const productData = {
-            variant: item.options.map((option) => ({
-              optionName: option.optionName,
-              optionValue: option.value.label,
-            })),
-            name: item.name.label,
-            type: item.type.label,
-          };
-          const productDetail = await getProductDetail({ productData });
-
-          item.isFetched = true;
-          item.isTouched = false;
-
-          if (productDetail.error) {
-            setState((prev) => ({
-              ...prev,
-              priceError: { isExist: true, error: "Product Search Not Found!" },
-              errorFields: ["Invalid Product Details"],
-            }));
-            return;
-          }
-          if (!productDetail.data) {
-            setState((prev) => ({
-              ...prev,
-              priceError: { isExist: true, error: "Product Search Not Found!" },
-              errorFields: ["Invalid Product Details"],
-            }));
-            return;
-          }
-          if (state.priceError.isExist) {
-            setState((prev) => ({
-              ...prev,
-              priceError: { isExist: false, error: "" },
-              errorFields: [],
-            }));
-          }
-          item.price = productDetail?.data?.maxPrice || 0;
-          item.minPrice = productDetail?.data?.minPrice || 0;
-
-          item.procurementId = productDetail?.data?._id || "";
-
-          item.remainingQuantity = productDetail?.data?.remainingQuantity || 0;
-
-          const data = { ...item, ...productDetail.data };
-          updatedItems.push(data);
-        }
-      } else {
-        updatedItems.push(item);
+      return;
+    } else {
+      if (state.isCheckoutDone) {
+        setState((prev) => ({
+          ...prev,
+          isCheckoutDone: false,
+        }));
       }
-    };
-    if (updatedItems.length === cartItems.length) {
-        setCartData((prev) => ({ ...prev, variants: cloneDeep([...updatedItems]) }));
+
+      const cartItems = cartData.variants;
+      const updatedItems = [];
+
+      for (let i = 0; i < cartItems.length; i++) {
+        const item = cartItems[i];
+        if (
+          item.options.length > 0 &&
+          item?.options.every((opt) => !!opt.value)
+        ) {
+          // fetch price here
+
+          if (item.isTouched && !item.isFetched) {
+            const productData = {
+              variant: item.options.map((option) => ({
+                optionName: option.optionName,
+                optionValue: option.value.label,
+              })),
+              name: item.name.label,
+              type: item.type.label,
+            };
+            const productDetail = await getProductDetail({ productData });
+
+            item.isFetched = true;
+            item.isTouched = false;
+
+            if (productDetail.error) {
+              setState((prev) => ({
+                ...prev,
+                priceError: {
+                  isExist: true,
+                  error: "Product Search Not Found!",
+                },
+                errorFields: ["Invalid Product Details"],
+              }));
+              return;
+            }
+            if (!productDetail.data) {
+              setState((prev) => ({
+                ...prev,
+                priceError: {
+                  isExist: true,
+                  error: "Product Search Not Found!",
+                },
+                errorFields: ["Invalid Product Details"],
+              }));
+              return;
+            }
+            if (state.priceError.isExist) {
+              setState((prev) => ({
+                ...prev,
+                priceError: { isExist: false, error: "" },
+                errorFields: [],
+              }));
+            }
+            item.price = productDetail?.data?.maxPrice || 0;
+            item.minPrice = productDetail?.data?.minPrice || 0;
+
+            item.procurementId = productDetail?.data?._id || "";
+
+            item.remainingQuantity =
+              productDetail?.data?.remainingQuantity || 0;
+
+            const data = { ...item, ...productDetail.data };
+            updatedItems.push(data);
+          }
+        } else {
+          updatedItems.push(item);
+        }
+      }
+      if (updatedItems.length === cartItems.length) {
+        setCartData((prev) => ({
+          ...prev,
+          variants: cloneDeep([...updatedItems]),
+        }));
         setNeedsUpdate(false);
+      }
     }
-  }
-  }
+  };
   useEffect(() => {
-    updateCartItems()
+    updateCartItems();
   }, [JSON.stringify(cartData), needsUpdate]);
 
   const inputChangeHanlder = (event, id) => {
-    const isCustomerFeilds = ["customerAddress", "customerGst", "shippingAddress"].includes(id)
+    const isCustomerFeilds = [
+      "customerAddress",
+      "customerGst",
+      "shippingAddress",
+    ].includes(id);
     setState((prev) => {
       return {
         ...prev,
         [id]: event.target.value,
       };
     });
-    if(isCustomerFeilds){
+    if (isCustomerFeilds) {
       setState((prev) => {
         return {
           ...prev,
@@ -279,7 +293,7 @@ export default function AgriAddBills() {
     return newData;
   };
 
-  const fetchCustomerInfo = async (isCheckout=false) => {
+  const fetchCustomerInfo = async (isCheckout = false) => {
     const customerDetails = await getCustomerByPhone(state.customerNumber);
 
     if (customerDetails.error) {
@@ -298,12 +312,12 @@ export default function AgriAddBills() {
           if (item.procurementName?.ka?.name) {
             val.push({
               value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
-              type : "Nursery"
+              type: "Nursery",
             });
           } else {
             val.push({
               value: `${item.procurementName.en.name}`,
-              type:  "Agri"
+              type: "Agri",
             });
           }
 
@@ -498,16 +512,16 @@ export default function AgriAddBills() {
   };
 
   const formatedBillHistory = (prev) => {
-      const newArray = prev.filter((curr, i) => {
-        let pr = curr[0];
-        if(pr.type=== selectedTab){
-        return true; 
-        }else {
-          return false;
-        }
-      })
-      return newArray;
-  }
+    const newArray = prev.filter((curr, i) => {
+      let pr = curr[0];
+      if (pr.type === selectedTab) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return newArray;
+  };
 
   const handleCheckout = async () => {
     const items = [];
@@ -524,7 +538,7 @@ export default function AgriAddBills() {
 
     console.log(items);
     // return;
-    console.log(state.customerDetails, state.newCustomer)
+    console.log(state.customerDetails, state.newCustomer);
     const cartPayload = {
       customerNumber: state.newCustomer
         ? `${state.customerNumber}`
@@ -536,9 +550,15 @@ export default function AgriAddBills() {
         ? state.dateOfBirth
         : state.customerDetails.dob,
       ...(!state.newCustomer && { customerId: state.customerDetails._id }),
-      customerAddress: state.isCustomerUpdate ? state.customerAddress : state.customerDetails.address,
-      shippingAddress: state.isCustomerUpdate ? state.shippingAddress : state.customerDetails.shippingAddress,
-      customerGst: state.isCustomerUpdate ? state.customerGst : state.customerDetails.gst,
+      customerAddress: state.isCustomerUpdate
+        ? state.customerAddress
+        : state.customerDetails.address,
+      shippingAddress: state.isCustomerUpdate
+        ? state.shippingAddress
+        : state.customerDetails.shippingAddress,
+      customerGst: state.isCustomerUpdate
+        ? state.customerGst
+        : state.customerDetails.gst,
       isCustomerUpdate: state.isCustomerUpdate,
       items,
     };
@@ -546,12 +566,21 @@ export default function AgriAddBills() {
     let checkout = null;
 
     if (state.cartResponse._id) {
-      const payload = { 
-        items: items , 
-        customerAddress: state.isCustomerUpdate ? state.customerAddress : state.customerDetails.address,
-        shippingAddress: state.isCustomerUpdate ? state.shippingAddress : state.customerDetails.shippingAddress,
-        customerGst: state.isCustomerUpdate ? state.customerGst : state.customerDetails.gst,
-        isCustomerUpdate: state.isCustomerUpdate,};
+      const payload = {
+        items: items,
+        customerAddress: state.isCustomerUpdate
+          ? state.customerAddress
+          : state.customerDetails.address,
+        shippingAddress: state.isCustomerUpdate
+          ? state.shippingAddress
+          : state.customerDetails.shippingAddress,
+        customerGst: state.isCustomerUpdate
+          ? state.customerGst
+          : state.customerDetails.gst,
+        isCustomerUpdate: state.isCustomerUpdate,
+      };
+
+
       checkout = await updateCart({
         cartId: state.cartResponse._id,
         updatedCartData: payload,
@@ -559,8 +588,7 @@ export default function AgriAddBills() {
     } else {
       checkout = await checkoutCart(cartPayload);
     }
-    await fetchCustomerInfo(true)
-
+    await fetchCustomerInfo(true);
 
     if (!checkout) {
       return toast.error("Error Checkout");
@@ -581,7 +609,7 @@ export default function AgriAddBills() {
             name: checkout.data.customerName,
             phoneNumber: checkout.data.customerNumber,
           },
-          isCheckoutDone: true
+          isCheckoutDone: true,
         }));
       }
       setState((prev) => ({
@@ -591,9 +619,8 @@ export default function AgriAddBills() {
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
         lockCustomerFields: true,
-        isCheckoutDone: true
+        isCheckoutDone: true,
       }));
-
 
       toast.success("Checkout is successful!");
     }
@@ -612,7 +639,7 @@ export default function AgriAddBills() {
       paymentType: state.paymentType,
       paymentInfo: state.paymentInfo,
       cashAmount: state.cashAmount,
-      onlineAmount: state.onlineAmount
+      onlineAmount: state.onlineAmount,
     };
 
     const confirmCart = await submitCart({
@@ -654,7 +681,7 @@ export default function AgriAddBills() {
 
     let roundOff = e.target.value;
 
-    const roundOffLimit = 1
+    const roundOffLimit = 1;
 
     const correctValue = roundOff <= roundOffLimit;
 
@@ -673,7 +700,6 @@ export default function AgriAddBills() {
       }));
     }
   };
-
 
   const handleRoundOffValue = (e) => {
     handleRoundOff(e);
@@ -695,15 +721,25 @@ export default function AgriAddBills() {
   };
 
   const shouldSubmitDisable = () => {
-    let paymentValidation = true
-    console.log(state.paymentType)
-    if(state.paymentType=== 'BOTH'){
-      paymentValidation =  state.cashAmount && state.onlineAmount
-    }else {
-      paymentValidation = Boolean(state.paymentType)
+    let paymentValidation = true;
+    console.log(state.paymentType);
+    if (state.paymentType === "BOTH") {
+      paymentValidation = state.cashAmount && state.onlineAmount;
+    } else {
+      paymentValidation = Boolean(state.paymentType);
     }
-    console.log(state.checkOutDone, !state.submitError.isExist, state.isCheckoutDone, paymentValidation )
-    if (state.checkOutDone && !state.submitError.isExist && state.isCheckoutDone && paymentValidation) {
+    console.log(
+      state.checkOutDone,
+      !state.submitError.isExist,
+      state.isCheckoutDone,
+      paymentValidation
+    );
+    if (
+      state.checkOutDone &&
+      !state.submitError.isExist &&
+      state.isCheckoutDone &&
+      paymentValidation
+    ) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -717,26 +753,31 @@ export default function AgriAddBills() {
     },
   });
 
-  const handlePaymentMode =(e, total)=>{
-    let cashAmount =0
-    let onlineAmount=0
-    if(e.value==='CASH'){
-      cashAmount = total
+  const handlePaymentMode = (e, total) => {
+    let cashAmount = 0;
+    let onlineAmount = 0;
+    if (e.value === "CASH") {
+      cashAmount = total;
     }
 
-    if(e.value==='ONLINE'){
-      onlineAmount = total
+    if (e.value === "ONLINE") {
+      onlineAmount = total;
     }
 
-    setState((prev)=>({...prev, paymentType:e.value, cashAmount, onlineAmount}))
-  }
+    setState((prev) => ({
+      ...prev,
+      paymentType: e.value,
+      cashAmount,
+      onlineAmount,
+    }));
+  };
 
-  const handleInputInfo =(e, id, total)=>{
-    setState((prev)=>({...prev, [id]:e.target.value}))
-    if(id==='cashAmount'){
-      setState((prev)=>({...prev, onlineAmount:total - e.target.value}))
+  const handleInputInfo = (e, id, total) => {
+    setState((prev) => ({ ...prev, [id]: e.target.value }));
+    if (id === "cashAmount") {
+      setState((prev) => ({ ...prev, onlineAmount: total - e.target.value }));
     }
-  }
+  };
 
   const today = new Date();
 
@@ -748,23 +789,32 @@ export default function AgriAddBills() {
   return (
     <div className={styles.addBillsWrapper}>
       <Toaster />
-     <div style={{
-        display : "flex",
-        alignItems : "center",
-        justifyContent : "space-between",
-        width : "80%",
-     }}>
-        <div style={{
-          display : "flex",
-          alignSelf: "flex-end",
-          marginTop : "3%",
-        }}>
-        <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "80%",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignSelf: "flex-end",
+            marginTop: "3%",
+          }}
+        >
+          <BackButton navigateTo={"/authorised/dashboard"} tabType="AGRI" />
         </div>
         <h1 className={styles.header}>Generate Bill</h1>
-        <h1 className={styles.header} style={{
-          marginRight : "-100px"
-        }}>Purchase History</h1>
+        <h1
+          className={styles.header}
+          style={{
+            marginRight: "-100px",
+          }}
+        >
+          Purchase History
+        </h1>
       </div>
 
       <div className={styles.billWrapper}>
@@ -772,84 +822,83 @@ export default function AgriAddBills() {
           <div className={styles.customerDetails}>
             <h3 style={{ paddingLeft: "10px" }}>Customer Details</h3>
             <div className={styles.formWrapper}>
-                <Input
-                  value={state.customerNumber}
-                  id="customerNumber"
-                  type="number"
-                  errorMessage="Invalid Customer Number"
-                  required
-                  validation={(number) => number.length === 10}
-                  onChange={inputChangeHanlder}
-                  onError={onError}
-                  title="Customer Number:"
+              <Input
+                value={state.customerNumber}
+                id="customerNumber"
+                type="number"
+                errorMessage="Invalid Customer Number"
+                required
+                validation={(number) => number.length === 10}
+                onChange={inputChangeHanlder}
+                onError={onError}
+                title="Customer Number:"
+              />
+              <Input
+                value={name}
+                id="customerName"
+                type="text"
+                title="Customer Name:"
+                onChange={inputChangeHanlder}
+                disabled={state.nameDisabled}
+              />
+              <Input
+                value={state.customerAddress}
+                id="customerAddress"
+                required
+                type="text"
+                title="Customer Address:"
+                onChange={inputChangeHanlder}
+                disabled={state.lockCustomerFields}
+              />
+
+              <Input
+                value={state.shippingAddress}
+                id="shippingAddress"
+                type="text"
+                title="Shipping Address:"
+                onChange={inputChangeHanlder}
+                disabled={state.lockCustomerFields}
+              />
+
+              <Input
+                value={state.customerGst}
+                id="customerGst"
+                type="text"
+                title="GST number"
+                onChange={inputChangeHanlder}
+                disabled={state.lockCustomerFields}
+              />
+
+              {state.showDOB && (
+                <DatePicker
+                  defaultValue={defaultDate}
+                  placeholder="dd-mm-yyyy"
+                  label="Date Of Birth"
+                  inputFormat="DD/MM/YYYY"
+                  labelFormat="MMMM - YYYY"
+                  size="sm"
+                  withAsterisk={false}
+                  value={state.dateOfBirth}
+                  onChange={dateChangeHandler}
+                  clearable={false}
+                  maxDate={new Date(today.setDate(today.getDate() - 1))}
+                  styles={{
+                    label: {
+                      fontSize: "18px",
+                      marginBottom: "2px",
+                      fontFamily: "sans-serif",
+                      fontWeight: 500,
+                    },
+                    input: {
+                      border: "none",
+                      borderBottom: "1.5px solid black",
+                      borderRadius: 0,
+                      fontSize: "18px",
+                      fontWeight: 400,
+                    },
+                  }}
                 />
-                <Input
-                  value={name}
-                  id="customerName"
-                  type="text"
-                  title="Customer Name:"
-                  onChange={inputChangeHanlder}
-                  disabled={state.nameDisabled}
-                />
-                  <Input
-                  value={state.customerAddress}
-                  id="customerAddress"
-                  type="text"
-                  title="Customer Address:"
-                  onChange={inputChangeHanlder}
-                  disabled={state.lockCustomerFields}
-                />
-                
-                  <Input
-                  value={state.shippingAddress}
-                  id="shippingAddress"
-                  type="text"
-                  title="Shipping Address:"
-                  onChange={inputChangeHanlder}
-                  disabled={state.lockCustomerFields}
-                />
-                
-                  <Input
-                  value={state.customerGst}
-                  id="customerGst"
-                  type="text"
-                  title="GST number"
-                  onChange={inputChangeHanlder}
-                  disabled={state.lockCustomerFields}
-                />
-                
-              
-                {state.showDOB && (
-                  <DatePicker
-                    defaultValue={defaultDate}
-                    placeholder="dd-mm-yyyy"
-                    label="Date Of Birth"
-                    inputFormat="DD/MM/YYYY"
-                    labelFormat="MMMM - YYYY"
-                    size="sm"
-                    withAsterisk={false}
-                    value={state.dateOfBirth}
-                    onChange={dateChangeHandler}
-                    clearable={false}
-                    maxDate={new Date(today.setDate(today.getDate() - 1))}
-                    styles={{
-                      label: {
-                        fontSize: "18px",
-                        marginBottom: "2px",
-                        fontFamily: "sans-serif",
-                        fontWeight: 500,
-                      },
-                      input: {
-                        border: "none",
-                        borderBottom: "1.5px solid black",
-                        borderRadius: 0,
-                        fontSize: "18px",
-                        fontWeight: 400,
-                      },
-                    }}
-                  />
-                )}
-              
+              )}
             </div>
           </div>
           <div className={styles.itemList}>
@@ -863,7 +912,7 @@ export default function AgriAddBills() {
                 <FontAwesomeIcon icon={faPlus} />
               </button>
             </div> */}
-            <div >
+            <div>
               <div className={styles.agriAddBillWrapper}>
                 <AgriBillingItem
                   placeOrder={true}
@@ -958,47 +1007,52 @@ export default function AgriAddBills() {
             </div>
           </div>
         </div>
-        <div className={styles.billHistory} style={{marginRight : "10px"}}>
-        <div className={styles.historyTabContainer}>
-              <div className={styles.singleTab}>
-               <p style={{
-                     width : "50%",
-                     textAlign : "center",
-                     cursor : "pointer"
-                }} onClick={() => setSelectedTab("Agri")}>
-                  Agri
-                </p>
-                {
-                  selectedTab === "Agri" && (
-                    <div style={{
-                  height : "4px",
-                  width : "50%",
-                  borderRadius : "10px",
-                  background : "green"
-                }}></div>
-                  )
-                }
-              </div>
-              <div className={styles.singleTab}>
-                 <p style={{
-                     width : "50%",
-                     textAlign : "center",
-                     cursor : "pointer"
+        <div className={styles.billHistory} style={{ marginRight: "10px" }}>
+          <div className={styles.historyTabContainer}>
+            <div className={styles.singleTab}>
+              <p
+                style={{
+                  width: "50%",
+                  textAlign: "center",
+                  cursor: "pointer",
                 }}
-                  onClick={() => setSelectedTab("Nursery")}>
-                  Nursery
-                </p>
-              {
-                selectedTab === "Nursery" && (
-                  <div style={{
-                  height : "4px",
-                  width : "50%",
-                  borderRadius : "10px",
-                  background : "green"
-                }}></div>
-                )
-              }
-              </div>
+                onClick={() => setSelectedTab("Agri")}
+              >
+                Agri
+              </p>
+              {selectedTab === "Agri" && (
+                <div
+                  style={{
+                    height: "4px",
+                    width: "50%",
+                    borderRadius: "10px",
+                    background: "green",
+                  }}
+                ></div>
+              )}
+            </div>
+            <div className={styles.singleTab}>
+              <p
+                style={{
+                  width: "50%",
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => setSelectedTab("Nursery")}
+              >
+                Nursery
+              </p>
+              {selectedTab === "Nursery" && (
+                <div
+                  style={{
+                    height: "4px",
+                    width: "50%",
+                    borderRadius: "10px",
+                    background: "green",
+                  }}
+                ></div>
+              )}
+            </div>
           </div>
           <ScrollTable
             thead={billingHistoryHeader}

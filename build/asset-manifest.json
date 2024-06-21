@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/static/css/main.ec14d292.css",
-    "main.js": "/static/js/main.3ddeab73.js",
-    "static/js/787.ac4d46bc.chunk.js": "/static/js/787.ac4d46bc.chunk.js",
+    "main.css": "/static/css/main.693bd8b7.css",
+    "main.js": "/static/js/main.652398eb.js",
+    "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/wasteManagementIcon.png": "/static/media/wasteManagementIcon.e6e5d0fdb7c9a775b773.png",
     "static/media/agriprocurements.png": "/static/media/agriprocurements.af7ddc0180240b43eb65.png",
     "static/media/agri_variants.jpeg": "/static/media/agri_variants.1bb2a440b9a554a8e6a2.jpeg",
@@ -12,6 +12,7 @@
     "static/media/logo.png": "/static/media/logo.2e80816afa07ac944da2.png",
     "static/media/logo2.png": "/static/media/logo2.91f7bf4f9c449a35dc78.png",
     "static/media/sales.png": "/static/media/sales.43b7c0fd010cdf7a15ae.png",
+    "static/media/VendorIcon.png": "/static/media/VendorIcon.cbd3ab264bc4d9af4654.png",
     "static/media/payments.png": "/static/media/payments.b236b60e743bc85d9208.png",
     "static/media/procurement.png": "/static/media/procurement.f3f5ef6369f20bafe3cd.png",
     "static/media/SignWhiteBG.png": "/static/media/SignWhiteBG.9fc6f78074e16678e990.png",
@@ -19,12 +20,12 @@
     "static/media/maintenance.png": "/static/media/maintenance.143e3063613ac409f6f0.png",
     "static/media/billBook.png": "/static/media/billBook.942098d32268e4a23413.png",
     "index.html": "/index.html",
-    "main.ec14d292.css.map": "/static/css/main.ec14d292.css.map",
-    "main.3ddeab73.js.map": "/static/js/main.3ddeab73.js.map",
-    "787.ac4d46bc.chunk.js.map": "/static/js/787.ac4d46bc.chunk.js.map"
+    "main.693bd8b7.css.map": "/static/css/main.693bd8b7.css.map",
+    "main.652398eb.js.map": "/static/js/main.652398eb.js.map",
+    "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ec14d292.css",
-    "static/js/main.3ddeab73.js"
+    "static/css/main.693bd8b7.css",
+    "static/js/main.652398eb.js"
   ]
 }
