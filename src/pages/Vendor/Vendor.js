@@ -13,82 +13,77 @@ import {
   BackButton,
 } from "../../components";
 
-import {
-  useDeleteUserMutation,
-  useGetAllUsersCountQuery,
-  useSearchUserMutation,
-} from "../../services/user.services";
 
 import { ImSearch } from "react-icons/im";
-import get from "lodash/get";
-import {useGetVendorQuery } from "../../services/vendor.services";
+import { useGetVendorQuery, useSearchVendorMutation } from "../../services/vendor.services";
 
 const Vendor = () => {
-  const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
 
-  const [deleteUser, setDeleteUser] = useState(false);
-  const [deleteUserUid, setDeleteUserUid] = useState(null);
 
   const [searchInput, setSearchInput] = useState("");
-  const [usersCount, setUsersCount] = useState(0);
+  const [viewPayment, setViewPayment] = useState(false);
 
   // requests
-  const usersData = useGetVendorQuery("NURSERY");
-  const usersCountReq = useGetAllUsersCountQuery({ search: searchInput });
-  const [searchUser] = useSearchUserMutation();
-  const [deleteUserReq] = useDeleteUserMutation();
-  console.log(usersData,"usersData")
+  const vendorData = useGetVendorQuery("NURSERY");
+  const [searchVendor] = useSearchVendorMutation();
 
-  // const count = get(usersCountReq.data, "users[0].count", 0);
+  const onViewPaymentClick = (data) => {
+    setViewPayment(true)
+    paymentFormattedData(data.paymentTypes)
 
-  const openDeleteModalHandler = (uid) => {
-    setDeleteUserUid(uid);
-    setDeleteUser(true);
+  }
+
+  
+
+  const paymentFormattedData = (data) => {
+    const formatted = data?.map((ele)=>{
+        const cashAmt = ele?.cashAmount
+        const comments = ele?.comments
+        const date = dayjs(ele.date).format("DD-MM-YYYY");
+        const orderId = ele?.orderId;
+        const onlineAmount = ele?.onlineAmount;
+        const totalAmount = ele?.totalAmount;
+          return [{value:cashAmt}, {value: comments}, {value:date}, {value:onlineAmount}, {value:orderId}, {value:totalAmount}]
+      })
+    setPaymentData(formatted)
+
+    return formatted;
   };
-  const closeDeleteModalHandler = () => {
-    setDeleteUser(false);
-    setDeleteUserUid(null);
-  };
 
-  const formatUsersData = (data) => {
-    const formatted = data.map((user) => {
-      const name = { value: user.name };
-      const createdAt = { value: dayjs(user.createdAt).format("DD-MM-YYYY") };
+  const vendorFormattedData = (data) => {
+    const formatted = data.map((vendor) => {
+      const name = { value: vendor?.name };
+      const createdAt = { value: dayjs(vendor.createdAt).format("DD-MM-YYYY") };
       const phoneNumber = {
-        value: user.phoneNumber,
+        value: vendor?.contact,
       };
-      const userRole = { value: user.role };
-      const deleteUser = {
+      const deviation = { value: vendor?.deviation }
+      const viewPayments = {
         value: (
           <span
-            style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
-            onClick={() => {
-              openDeleteModalHandler(user._id);
-            }}
+            style={{ color: "#038819", fontWeight: "600", cursor: "pointer" }}
+            onClick={()=>onViewPaymentClick(vendor)}
           >
-            Delete
+            View Payments
           </span>
         ),
       };
 
-      const data = [name, createdAt, phoneNumber, userRole, deleteUser];
+      const data = [name, createdAt, phoneNumber, deviation, viewPayments];
       return data;
     });
 
     return formatted;
   };
 
-  const deleteUserHandler = async (uid) => {
-    await deleteUserReq(uid);
-    closeDeleteModalHandler();
-  };
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
-      const res = await searchUser(query);
-      const users = formatUsersData(res.data.users);
-      setData(users);
+      const res = await searchVendor(query);
+      const vendors = vendorFormattedData(res?.data);
+      setData(vendors);
     }
   }, 500);
 
@@ -98,15 +93,10 @@ const Vendor = () => {
   };
 
   useEffect(() => {
-    if (usersCountReq.status !== "fulfilled") return;
-    setUsersCount(usersCountReq.data.users[0]?.count || 0);
-  }, [usersCountReq]);
-
-  useEffect(() => {
-    if (usersData.status !== "fulfilled") return;
-    const users = formatUsersData(usersData.data.users);
-    setData(users);
-  }, [usersData, searchInput]);
+    if (vendorData.status !== "fulfilled") return;
+    const vendors = vendorFormattedData(vendorData.data);
+    setData(vendors);
+  }, [vendorData, searchInput]);
 
   const TABLE_HEADER = [
     {
@@ -120,11 +110,43 @@ const Vendor = () => {
       isSortable: false,
     },
     {
-      value: "Phone Number",
+      value: "Contact",
       isSortable: false,
     },
     {
-      value: "User Role",
+      value: "Deviation",
+      isSortable: false,
+    },
+    {
+      value: "",
+      isSortable: false,
+    },
+  ];
+  const PAYMENT_HEADER = [
+    {
+      // id: new Date().toISOString(),
+      value: "Cash Amount",
+      isSortable: false,
+    },
+
+    {
+      value: "Comments",
+      isSortable: false,
+    },
+    {
+      value: "Date",
+      isSortable: false,
+    },
+    {
+      value: "Online Amount",
+      isSortable: false,
+    },
+    {
+      value: "Order Id",
+      isSortable: false,
+    },
+    {
+      value: "Total Amount",
       isSortable: false,
     },
     {
@@ -149,52 +171,28 @@ const Vendor = () => {
           />
           <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
         </div>
-        {/* pagination */}
-        <div className={styles.paginationContainer}>
-          <div className={styles.paginationInner}>
-            {/* count */}
-            <span>{`${page === 1 ? "1" : (page - 1) * 10}-${
-              page * 10 > usersCount ? usersCount : page * 10
-            } of ${usersCount}`}</span>
-            {/* controls */}
-            <button
-              onClick={() => setPage((e) => e - 1)}
-              disabled={page === 1}
-              className={styles.paginationControls}
-            >
-              <FaChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => setPage((e) => e + 1)}
-              disabled={
-                (page * 10 > usersCount ? usersCount : page * 10) >= usersCount
-              }
-              className={styles.paginationControls}
-            >
-              <FaChevronRight size={16} />
-            </button>
+      </div>
+      <div style={{ display: "flex", width: "100%" }}>
+        {vendorData.isLoading ? (
+          <Spinner />
+        ) : (
+          vendorData.status === "fulfilled" && (
+            <div style={{ flex: 1 }}>
+              <Table data={[TABLE_HEADER, ...data]} />
+            </div>
+          )
+        )}
+
+        {vendorData.isError && (
+          <p className={styles.errorMessage}>Unable to load vendor Data</p>
+        )}
+        {viewPayment && 
+          <div style={{ flex: 1 }}>
+            <Table data={[PAYMENT_HEADER, ...paymentData]} />
           </div>
-        </div>
+        }
       </div>
 
-      {usersData.isLoading ? (
-        <Spinner />
-      ) : (
-        usersData.status === "fulfilled" && (
-          <Table data={[TABLE_HEADER, ...data]} />
-        )
-      )}
-
-      {usersData.isError && (
-        <p className={styles.errorMessage}>Unable to load Users Data</p>
-      )}
-
-      <Modal isOpen={deleteUser} contentLabel="Delete User">
-        <Alert
-          handleCancel={closeDeleteModalHandler}
-          handleConfirm={() => deleteUserHandler(deleteUserUid)}
-        />
-      </Modal>
     </div>
   );
 };
