@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Vendor.module.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
@@ -24,6 +24,7 @@ const Vendor = () => {
 
   const [searchInput, setSearchInput] = useState("");
   const [viewPayment, setViewPayment] = useState(false);
+  const tableRef = useRef(null);
 
   // requests
   const vendorData = useGetVendorQuery("NURSERY");
@@ -35,18 +36,18 @@ const Vendor = () => {
 
   }
 
-  
+
 
   const paymentFormattedData = (data) => {
-    const formatted = data?.map((ele)=>{
-        const cashAmt = ele?.cashAmount
-        const comments = ele?.comments
-        const date = dayjs(ele.date).format("DD-MM-YYYY");
-        const orderId = ele?.orderId;
-        const onlineAmount = ele?.onlineAmount;
-        const totalAmount = ele?.totalAmount;
-          return [{value:cashAmt}, {value: comments}, {value:date}, {value:onlineAmount}, {value:orderId}, {value:totalAmount}]
-      })
+    const formatted = data?.map((ele) => {
+      const cashAmt = ele?.cashAmount
+      const comments = ele?.comments
+      const date = dayjs(ele.date).format("DD-MM-YYYY");
+      const orderId = ele?.orderId;
+      const onlineAmount = ele?.onlineAmount;
+      const totalAmount = ele?.totalAmount;
+      return [{ value: cashAmt }, { value: comments }, { value: date }, { value: onlineAmount }, { value: orderId }, { value: totalAmount }]
+    })
     setPaymentData(formatted)
 
     return formatted;
@@ -63,8 +64,9 @@ const Vendor = () => {
       const viewPayments = {
         value: (
           <span
-            style={{ color: "#038819", fontWeight: "600", cursor: "pointer" }}
-            onClick={()=>onViewPaymentClick(vendor)}
+            style={{ color: vendor?.paymentTypes?.length === 0 ? "gray" : "#038819", fontWeight: "600", cursor: vendor?.paymentTypes?.length === 0 ? "not-allowed" : "pointer" }}
+            onClick={() => vendor?.paymentTypes?.length !== 0 && onViewPaymentClick(vendor)}
+            aria-disabled={vendor?.paymentTypes?.length === 0}
           >
             View Payments
           </span>
@@ -97,6 +99,12 @@ const Vendor = () => {
     const vendors = vendorFormattedData(vendorData.data);
     setData(vendors);
   }, [vendorData, searchInput]);
+
+  useEffect(() => {
+    if (viewPayment && tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [viewPayment, paymentData]);
 
   const TABLE_HEADER = [
     {
@@ -186,8 +194,8 @@ const Vendor = () => {
         {vendorData.isError && (
           <p className={styles.errorMessage}>Unable to load vendor Data</p>
         )}
-        {viewPayment && 
-          <div style={{ flex: 1 }}>
+        {viewPayment &&
+          <div ref={tableRef} style={{ flex: 1 }}>
             <Table data={[PAYMENT_HEADER, ...paymentData]} />
           </div>
         }
