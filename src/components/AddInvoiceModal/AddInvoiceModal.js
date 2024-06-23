@@ -453,10 +453,16 @@ const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
   );
 };
 const PaymentModeBoth = ({ newPayment, setNewPayment, totalToPay }) => {
+  useEffect(() => {
+    setNewPayment((prev) => ({
+      ...prev,
+      amountPaidOnline: totalToPay - newPayment?.amountPaidCash || 0,
+    }));
+  }, [totalToPay, newPayment?.amountPaidCash]);
   return (
     <>
       <PaymentModeCash
-        totalAmountPaid={newPayment.totalAmountPaid}
+        totalAmountPaid={newPayment?.totalAmountPaid}
         value={newPayment.amountPaidCash}
         setNewPayment={setNewPayment}
       />
