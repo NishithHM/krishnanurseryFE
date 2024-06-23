@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
-import { toUpper } from "lodash";
 
 import access_managementImg from "../../assets/images/dashboard/access_management.png";
 import produrementImg from "../../assets/images/dashboard/procurement.png";
@@ -9,14 +8,14 @@ import billBook from "../../assets/images/dashboard/billBook.png";
 import categoriesImg from "../../assets/images/dashboard/categories.png";
 import billsImg from "../../assets/images/dashboard/bills.png";
 import salesImg from "../../assets/images/dashboard/sales.png";
-import agriVariantsImg from "../../assets/images/dashboard/agri_variants.jpeg"
+import agriVariantsImg from "../../assets/images/dashboard/agri_variants.jpeg";
+import vendorImg from "../../assets/images/dashboard/vendor.png";
 import orders from "../../assets/images/dashboard/orders.png";
 import waste from "../../assets/images/dashboard/wasteManagementIcon.png";
 import paymentsIcon from "../../assets/images/dashboard/payments.png";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import LandingTile from "../../components/LandingTile/landingTile";
 import { AuthContext } from "../../context/AuthContext/authContext";
-import agriprocurements from "../../assets/images/dashboard/agriprocurements.png";
 
 const Dashboard = () => {
   const [values] = useContext(AuthContext);
@@ -161,6 +160,15 @@ const Dashboard = () => {
       allowed: [USER_ROLES.admin, USER_ROLES.procurement, USER_ROLES.sales],
       isDisabled: false,
       tabType: "Agri",
+    },
+    {
+      id : 17,
+      title: "Vendor",
+      tile_img: vendorImg,
+      path: "vendors",
+      allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+      isDisabled: false,
+      tabType: "Nursery",
     },
   ];
 

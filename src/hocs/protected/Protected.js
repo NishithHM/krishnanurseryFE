@@ -30,6 +30,7 @@ import { Footer, Header } from "../../components";
 import WasteList from "../../pages/WasteManagement/WasteManagementList";
 import SalesDashBoard from "../../pages/Sales";
 import AgriPayments from "../../pages/Payments";
+import Vendor from "../../pages/Vendor";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
@@ -152,6 +153,11 @@ const Protected = () => {
               element={<AgriPayments />}
             />
             <Route path="/dashboard/sales" exact element={<Sales />} />
+             <Route
+              path="/dashboard/vendors"
+              exact
+              element={<Vendor/>}
+            />
           </Routes>
         </div>
         <Footer />
