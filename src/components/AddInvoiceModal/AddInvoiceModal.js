@@ -255,7 +255,7 @@ const AddInvoiceModal = ({
               required
               title="Payment Mode"
               data={PAYMENT_MODES}
-              value={paymentMode.type}
+              value={paymentMode?.type?.value}
               onChange={(e) =>
                 setPaymentMode((prev) => ({
                   ...prev,

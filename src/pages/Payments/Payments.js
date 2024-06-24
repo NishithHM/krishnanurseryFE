@@ -366,7 +366,7 @@ const Payments = () => {
           setNewPayment({ type: null });
           setPaymentMode({ type: null });
         }}
-        size={"lg"}
+        size={"700px"}
         title="Add New Payment"
       >
         <div
@@ -491,7 +491,7 @@ const Payments = () => {
                 />
               )}
               {newPayment.type.value === "OTHERS" && (
-                <>
+                <React.Fragment>
                   <Input
                     required
                     title="accountNumber"
@@ -545,9 +545,9 @@ const Payments = () => {
                     <Dropdown
                       required
                       title="Payment Mode"
-                      id="paymentMode"
+                      id="DropDownPaymentMode"
                       data={PAYMENT_MODES}
-                      value={paymentMode?.type}
+                      value={paymentMode?.type?.value}
                       onChange={(e) => {
                         setPaymentMode((prev) => ({
                           ...prev,
@@ -586,7 +586,7 @@ const Payments = () => {
                       setNewPayment={setNewPayment}
                     />
                   )}
-                </>
+                </React.Fragment>
               )}
             </>
           ) : (
