@@ -43,15 +43,20 @@ export const paymentsApi = createApi({
         }),
       }),
       getAllPaymentsCount: builder.query({
-        query: ({ search }) => {
+        query: ({ search, startDate, endDate }) => {
           const options = {};
           if (search) options["search"] = search;
+
+          if (startDate) options["startDate"] = startDate;
+          if (endDate) options["endDate"] = endDate;
+
           return {
             url: "/getAll",
             method: "GET",
             params: { isCount: true, ...options },
           };
         },
+        keepUnusedDataFor: 0,
         providesTags: ["UserCount"],
       }),
       searchPayment: builder.mutation({
