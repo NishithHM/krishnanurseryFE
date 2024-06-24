@@ -46,7 +46,7 @@ const Vendor = () => {
       const orderId = ele?.orderId;
       const onlineAmount = ele?.onlineAmount;
       const totalAmount = ele?.totalAmount;
-      return [{ value: cashAmt }, { value: comments }, { value: date }, { value: onlineAmount }, { value: orderId }, { value: totalAmount }]
+      return [ { value: date }, { value: orderId },{value: comments }, { value: cashAmt }, {value: onlineAmount },  { value: totalAmount }]
     })
     setPaymentData(formatted)
 
@@ -132,27 +132,27 @@ const Vendor = () => {
   ];
   const PAYMENT_HEADER = [
     {
-      // id: new Date().toISOString(),
-      value: "Cash Amount",
-      isSortable: false,
-    },
-
-    {
-      value: "Comments",
-      isSortable: false,
-    },
-    {
       value: "Date",
-      isSortable: false,
-    },
-    {
-      value: "Online Amount",
       isSortable: false,
     },
     {
       value: "Order Id",
       isSortable: false,
     },
+    {
+      value: "Comments",
+      isSortable: false,
+    },
+    {
+      // id: new Date().toISOString(),
+      value: "Cash Amount",
+      isSortable: false,
+    },
+    {
+      value: "Online Amount",
+      isSortable: false,
+    },
+    
     {
       value: "Total Amount",
       isSortable: false,
