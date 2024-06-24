@@ -61,6 +61,7 @@ const Payments = () => {
 
   const paymentsCountReq = useGetAllPaymentsCountQuery({
     search: searchInput,
+    ...dates,
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
@@ -69,8 +70,9 @@ const Payments = () => {
 
   const handleViewBill = (id) => {};
 
-  const handleFilterChange = (filterDates) => {
+  const handleFilterChange = async (filterDates) => {
     setFilterDates(filterDates);
+    await paymentsCountReq.refetch();
   };
 
   const formatPaymentsData = (data) => {
@@ -141,9 +143,13 @@ const Payments = () => {
     searchHandler(event.target.value);
   };
 
+  const getUserCount = () => {
+    setUsersCount(paymentsCountReq.data[0].count || 0);
+  };
+
   useEffect(() => {
     if (paymentsCountReq.status !== "fulfilled") return;
-    setUsersCount(paymentsCountReq.data[0].count || 0);
+    getUserCount();
   }, [paymentsCountReq]);
 
   useEffect(() => {
@@ -322,7 +328,11 @@ const Payments = () => {
             <div className={styles.paginationInner}>
               {/* count */}
               <span>{`${page === 1 ? "1" : (page - 1) * 10}-${
-                page * 10 > usersCount ? usersCount : page * 10
+                page * 10 > usersCount
+                  ? usersCount
+                  : data?.length > 10
+                  ? page * 10
+                  : data?.length
               } of ${usersCount}`}</span>
               {/* controls */}
               <button
