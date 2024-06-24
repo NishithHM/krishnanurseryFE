@@ -76,6 +76,16 @@ const Payments = () => {
   const formatPaymentsData = (data) => {
     const formatted = data.map((item) => {
       const name = { value: item.name };
+      let paymentInfo = `Cash: ${item?.cashAmount ?? 0}, Online: ${
+        item?.onlineAmount ?? 0
+      }`;
+
+      let paymentThrough = {
+        value: paymentInfo,
+      };
+      let comment = {
+        value: item?.comment || "---",
+      };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
       const amount = {
         value: item.amount,
@@ -103,7 +113,15 @@ const Payments = () => {
           ),
       };
 
-      const data = [name, createdAt, amount, invoiceId, action];
+      const data = [
+        name,
+        createdAt,
+        paymentThrough,
+        comment,
+        amount,
+        invoiceId,
+        action,
+      ];
       return data;
     });
 
@@ -144,6 +162,14 @@ const Payments = () => {
 
     {
       value: "Created Date",
+      isSortable: false,
+    },
+    {
+      value: "Payment Through",
+      isSortable: false,
+    },
+    {
+      value: "Comment",
       isSortable: false,
     },
 
