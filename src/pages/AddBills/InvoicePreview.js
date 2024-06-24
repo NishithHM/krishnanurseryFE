@@ -176,10 +176,17 @@ export const InvoiceSection = (props) => {
           </div>
           {paymentType &&
             <>
-            <br/>
-            <b>Payment Details: </b>
-            {paymentType} {paymentInfo ? `/${paymentInfo}` : ''}
-            {paymentType==="BOTH" && <span>₹{cashAmount}(cash) ₹{onlineAmount}(online) </span> }
+              <br />
+              <b>Payment Details: </b>
+              {paymentType} :-{" "}
+              {paymentType === "BOTH" && (
+                <span>
+                  ₹{cashAmount}(cash) ₹{onlineAmount}(online){" "}
+                </span>
+              )}
+              <br />
+              <b>Payment Info:- </b>
+              {paymentInfo ? `${paymentInfo}` : ""}
             </>
              }
         </div>
@@ -225,7 +232,11 @@ export const InvoiceSection = (props) => {
               </div>
             )}
             <div className={styles.discountValue}>
-              <b>&#x20B9;{cartResponse.totalPrice - roundOff}</b>
+              <b>
+                &#x20B9;
+                {(cartResponse?.totalPrice + selectedPamphlet?.length * 2 ??
+                  0) - roundOff}
+              </b>
             </div>
           </div>
         </div>

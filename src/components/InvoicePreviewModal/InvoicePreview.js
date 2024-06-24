@@ -198,26 +198,45 @@ export const InvoiceSection = (props) => {
             <br></br>
             {clientDetails?.phoneNumber}
             <br></br>
-            {cartResponse?.customerAddress &&
-            <>
-             <b>Billing Address </b><div style={{ whiteSpace: "pre-line", maxWidth:'300px', wordWrap:'break-word' }}>{cartResponse?.customerAddress} </div> 
-            <br></br>
-             </>
-             }
-             {cartResponse?.customerGst &&
-            <>
-            <b>GST: </b>
-            {cartResponse?.customerGst}
-            </>
-             }
-             {invoiceDetails?.paymentType &&
-            <>
-            <br/>
-            <b>Payment Details: </b>
-              {invoiceDetails?.paymentType} {invoiceDetails?.paymentInfo ? `/${invoiceDetails?.paymentInfo}` : ''}
-              {invoiceDetails?.paymentType==="BOTH" && <span>₹{invoiceDetails?.cashAmount}(cash) ₹{invoiceDetails?.onlineAmount}(online) </span> }
-            </>
-             }
+            {cartResponse?.customerAddress && (
+              <>
+                <b>Billing Address </b>
+                <div
+                  style={{
+                    whiteSpace: "pre-line",
+                    maxWidth: "300px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {cartResponse?.customerAddress}{" "}
+                </div>
+                <br></br>
+              </>
+            )}
+            {cartResponse?.customerGst && (
+              <>
+                <b>GST: </b>
+                {cartResponse?.customerGst}
+              </>
+            )}
+            {invoiceDetails?.paymentType && (
+              <>
+                <br />
+                <b>Payment Details: </b>
+                {invoiceDetails?.paymentType} :-{" "}
+                {invoiceDetails?.paymentType === "BOTH" && (
+                  <span>
+                    ₹{invoiceDetails?.cashAmount}(cash) ₹
+                    {invoiceDetails?.onlineAmount}(online){" "}
+                  </span>
+                )}
+                <br />
+                <b>Payment Info:- </b>
+                {invoiceDetails?.paymentInfo
+                  ? `${invoiceDetails?.paymentInfo}`
+                  : ""}
+              </>
+            )}
           </div>
         </div>
       </div>
