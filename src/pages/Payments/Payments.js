@@ -28,11 +28,15 @@ import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
 import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
+import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
 
 const Payments = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [newPaymenModal, setNewPaymentModal] = useState(false);
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
+  const [excelPage, setExcelPage] = useState(1);
+
   const [newPayment, setNewPayment] = useState({
     type: null,
   });
@@ -54,6 +58,7 @@ const Payments = () => {
 
   // requests
   const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
+  const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
 
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
@@ -73,6 +78,7 @@ const Payments = () => {
   const handleFilterChange = async (filterDates) => {
     setFilterDates(filterDates);
     await paymentsCountReq.refetch();
+    setNextExcelAvailable(true);
   };
 
   const formatPaymentsData = (data) => {
@@ -130,6 +136,24 @@ const Payments = () => {
     return formatted;
   };
 
+  const handleExcelDownload = async (filterDates) => {
+    const res = await downloadPaymentsExcel({
+      pageNumber: excelPage,
+      type: "NURSERY",
+      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+    });
+    const { isNext, response } = res.data;
+    setNextExcelAvailable(isNext === "true");
+    if (isNext === "true") {
+      setExcelPage((prev) => prev + 1);
+    }
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(response);
+    link.download = "billing.xlsx";
+    link.click();
+  };
+
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
       const res = await searchPayment(query);
@@ -145,6 +169,41 @@ const Payments = () => {
 
   const getUserCount = () => {
     setUsersCount(paymentsCountReq.data[0].count || 0);
+  };
+
+  const getRoundedDates = () => {
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
+
+    if (mm < 10) {
+      mm = `0${mm}`;
+    }
+
+    if (dd < 10) {
+      dd = `0${dd}`;
+    }
+    let formattedDate = `${yyyy}-${mm}-${dd}`;
+
+    let roundedDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    let roundedYYYY = roundedDate.getFullYear();
+    let roundedMM = roundedDate.getMonth() + 1;
+    let roundedDD = roundedDate.getDate();
+    if (roundedMM < 10) {
+      roundedMM = `0${roundedMM}`;
+    }
+
+    if (roundedDD < 10) {
+      roundedDD = `0${roundedDD}`;
+    }
+
+    let formattedRoundedDate = `${roundedYYYY}-${roundedMM}-${roundedDD}`;
+    return { start_date: formattedRoundedDate, end_date: formattedDate };
+  };
+
+  const handleFilterReset = () => {
+    setFilterDates(getRoundedDates());
   };
 
   useEffect(() => {
@@ -304,7 +363,17 @@ const Payments = () => {
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
 
-        <Filters onSubmit={handleFilterChange} />
+        <Filters
+          config={{
+            isNextExcelAvailable,
+            excelPage,
+          }}
+          resetExcelPage={() => setExcelPage(1)}
+          setNextExcelAvailable={setNextExcelAvailable}
+          onReset={handleFilterReset}
+          onExcelDownload={handleExcelDownload}
+          onSubmit={handleFilterChange}
+        />
 
         <div className={styles.wrapper}>
           {/* search */}

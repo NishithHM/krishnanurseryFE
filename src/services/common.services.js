@@ -63,6 +63,25 @@ export const commonApi = createApi({
           };
         },
       }),
+
+      downloadPaymentsExcel: builder.mutation({
+        query: ({ pageNumber, startDate, endDate, type }) => ({
+          url: `/excel/payments?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}&type=${type}`,
+          method: "GET",
+          responseHandler: async (response) => {
+            return await response.blob();
+          },
+        }),
+        transformResponse: (response, meta) => {
+          console.log(meta, ";metea"); // <----- Here should be date value
+          console.log(meta.response.headers.get("Count"));
+          return {
+            response,
+            count: meta.response.headers.get("Count"),
+            isNext: meta.response.headers.get("Isnext"),
+          };
+        },
+      }),
       downloadDamagesExcel: builder.mutation({
         query: ({ pageNumber, startDate, endDate }) => ({
           url: `/excel/waste-mgmt?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}`,
@@ -90,4 +109,5 @@ export const {
   useDownloadBillingExcelMutation,
   useDownloadDamagesExcelMutation,
   useDownloadOrderExcelMutation,
+  useDownloadPaymentsExcelMutation,
 } = commonApi;
