@@ -165,8 +165,9 @@ const Bills = ({type}) => {
 
       const data = [
         date,
-        { value: purchase.invoiceId },
+        { value: purchase?.invoiceId || "--" },
         { value: paymentThrough },
+        { value: purchase?.comment || "--" },
         { value: purchase.customerName },
         {
           value: new Intl.NumberFormat("ja-JP", {
@@ -222,11 +223,15 @@ const Bills = ({type}) => {
     },
 
     {
-      value: " Bill Number",
+      value: "Bill Number",
       isSortable: false,
     },
     {
       value: "Payment Through",
+      isSortable: false,
+    },
+    {
+      value: "Comment",
       isSortable: false,
     },
     {
@@ -264,7 +269,6 @@ const Bills = ({type}) => {
     }));
   };
   const formatInvoiceItems = (data) => {
-    console.log(data)
     return data.map((item) => ({
       procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
