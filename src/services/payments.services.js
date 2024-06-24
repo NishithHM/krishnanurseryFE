@@ -59,6 +59,7 @@ export const paymentsApi = createApi({
         keepUnusedDataFor: 0,
         providesTags: ["UserCount"],
       }),
+
       searchPayment: builder.mutation({
         query: (search = null) => ({
           url: "/getAll",
