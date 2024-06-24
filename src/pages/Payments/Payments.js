@@ -255,8 +255,9 @@ const Payments = () => {
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
       const resp = await mutate(res);
+      console.log(resp, "resp");
       if (resp["error"] !== undefined) {
-        return toast.error(resp.error.data.message);
+        return toast.error(resp.error.data.error);
       }
       setNewPaymentModal(false);
       setNewPayment({ type: null });
@@ -518,10 +519,10 @@ const Payments = () => {
                     <Dropdown
                       required
                       title="Payment Mode"
+                      id="paymentMode"
                       data={PAYMENT_MODES}
                       value={paymentMode?.type}
                       onChange={(e) => {
-                        console.log(e?.value, "e.value");
                         setPaymentMode((prev) => ({
                           ...prev,
                           type: e?.value,
