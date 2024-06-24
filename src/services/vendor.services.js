@@ -25,8 +25,11 @@ export const vendorApi = createApi({
         query: (type) => ({
           url: "/getAll",
           method: "GET",
-          params: {type}
+          params: { type },
         }),
+
+        keepUnusedDataFor: 0,
+
         invalidatesTags: [],
       }),
       searchVendor: builder.mutation({
@@ -41,7 +44,4 @@ export const vendorApi = createApi({
   },
 });
 
-export const {
- useGetVendorQuery,
- useSearchVendorMutation
-} = vendorApi;
+export const { useGetVendorQuery, useSearchVendorMutation } = vendorApi;
