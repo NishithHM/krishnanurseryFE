@@ -514,18 +514,21 @@ const Payments = () => {
                       }))
                     }
                   />
-                  <Dropdown
-                    required
-                    title="Payment Mode"
-                    data={PAYMENT_MODES}
-                    value={paymentMode?.type}
-                    onChange={(e) =>
-                      setPaymentMode((prev) => ({
-                        ...prev,
-                        type: e?.value,
-                      }))
-                    }
-                  />
+                  <div>
+                    <Dropdown
+                      required
+                      title="Payment Mode"
+                      data={PAYMENT_MODES}
+                      value={paymentMode?.type}
+                      onChange={(e) => {
+                        console.log(e?.value, "e.value");
+                        setPaymentMode((prev) => ({
+                          ...prev,
+                          type: e?.value,
+                        }));
+                      }}
+                    />
+                  </div>
                   <Input
                     required
                     title="Comment"
