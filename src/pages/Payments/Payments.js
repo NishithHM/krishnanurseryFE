@@ -76,6 +76,16 @@ const Payments = () => {
   const formatPaymentsData = (data) => {
     const formatted = data.map((item) => {
       const name = { value: item.name };
+      let paymentInfo = `Cash: ${item?.cashAmount ?? 0}, Online: ${
+        item?.onlineAmount ?? 0
+      }`;
+
+      let paymentThrough = {
+        value: paymentInfo,
+      };
+      let comment = {
+        value: item?.comment || "---",
+      };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
       const amount = {
         value: item.amount,
@@ -103,7 +113,15 @@ const Payments = () => {
           ),
       };
 
-      const data = [name, createdAt, amount, invoiceId, action];
+      const data = [
+        name,
+        createdAt,
+        paymentThrough,
+        comment,
+        amount,
+        invoiceId,
+        action,
+      ];
       return data;
     });
 
@@ -144,6 +162,14 @@ const Payments = () => {
 
     {
       value: "Created Date",
+      isSortable: false,
+    },
+    {
+      value: "Payment Through",
+      isSortable: false,
+    },
+    {
+      value: "Comment",
       isSortable: false,
     },
 
@@ -255,8 +281,9 @@ const Payments = () => {
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
       const resp = await mutate(res);
+      console.log(resp, "resp");
       if (resp["error"] !== undefined) {
-        return toast.error(resp.error.data.message);
+        return toast.error(resp.error.data.error);
       }
       setNewPaymentModal(false);
       setNewPayment({ type: null });
@@ -339,7 +366,7 @@ const Payments = () => {
           setNewPayment({ type: null });
           setPaymentMode({ type: null });
         }}
-        size={"lg"}
+        size={"700px"}
         title="Add New Payment"
       >
         <div
@@ -464,7 +491,7 @@ const Payments = () => {
                 />
               )}
               {newPayment.type.value === "OTHERS" && (
-                <>
+                <React.Fragment>
                   <Input
                     required
                     title="accountNumber"
@@ -514,18 +541,21 @@ const Payments = () => {
                       }))
                     }
                   />
-                  <Dropdown
-                    required
-                    title="Payment Mode"
-                    data={PAYMENT_MODES}
-                    value={paymentMode?.type}
-                    onChange={(e) =>
-                      setPaymentMode((prev) => ({
-                        ...prev,
-                        type: e?.value,
-                      }))
-                    }
-                  />
+                  <div>
+                    <Dropdown
+                      required
+                      title="Payment Mode"
+                      id="DropDownPaymentMode"
+                      data={PAYMENT_MODES}
+                      value={paymentMode?.type?.value}
+                      onChange={(e) => {
+                        setPaymentMode((prev) => ({
+                          ...prev,
+                          type: e?.value,
+                        }));
+                      }}
+                    />
+                  </div>
                   <Input
                     required
                     title="Comment"
@@ -556,7 +586,7 @@ const Payments = () => {
                       setNewPayment={setNewPayment}
                     />
                   )}
-                </>
+                </React.Fragment>
               )}
             </>
           ) : (

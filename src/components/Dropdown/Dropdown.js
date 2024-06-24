@@ -10,6 +10,7 @@ import get from "lodash/get";
 import styles from "./dropdown.module.css";
 import axios from "axios";
 import { StylesConfig } from "react-select";
+import { min } from "lodash";
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
 const Dropdown = ({
   data,
@@ -67,7 +68,6 @@ const Dropdown = ({
       config
     );
 
-    
     const optionsVal = res.data.map((opt) => ({
       label: get(opt, apiDataPath.label, opt),
       value: get(opt, apiDataPath.value, opt),
@@ -82,6 +82,7 @@ const Dropdown = ({
     control: (baseStyles, state) => ({
       ...baseStyles,
       border: "none",
+      minHeight: "none",
       borderBottom:
         error && !state.isFocused ? "1px solid red" : "1px solid gray",
       borderRadius: "0px",
@@ -93,7 +94,7 @@ const Dropdown = ({
     }),
     menu: (provided, state) => ({
       ...provided,
-      zIndex: 999
+      zIndex: 999,
     }),
     indicatorSeparator: (baseStyles, state) => ({
       display: "none",
@@ -110,7 +111,7 @@ const Dropdown = ({
         </div>
         <AsyncSelect
           cacheOptions
-          value={(selectedOption === undefined) ? "" : selectedOption}
+          value={selectedOption === undefined ? "" : selectedOption}
           defaultOptions={options}
           // onInputChange={handleChange}
 
@@ -195,7 +196,7 @@ const Dropdown = ({
         </div>
         <Select
           maxMenuHeight={150}
-          value={selectedOption ===  undefined ? "" : selectedOption}
+          value={selectedOption === undefined ? "" : selectedOption}
           onChange={handleChange}
           options={options}
           isClearable={isClearable}
@@ -203,7 +204,7 @@ const Dropdown = ({
           placeholder={placeholder}
           styles={DropdownStyles}
           isDisabled={disabled}
-          menuPosition={ title === "Payment Type" ? "absolute"  : "fixed"}
+          menuPosition={title === "Payment Type" ? "absolute" : "fixed"}
         />
         {error && (
           <div className={styles.errortext}>

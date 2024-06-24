@@ -255,7 +255,7 @@ const AddInvoiceModal = ({
               required
               title="Payment Mode"
               data={PAYMENT_MODES}
-              value={paymentMode.type}
+              value={paymentMode?.type?.value}
               onChange={(e) =>
                 setPaymentMode((prev) => ({
                   ...prev,
@@ -453,10 +453,16 @@ const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
   );
 };
 const PaymentModeBoth = ({ newPayment, setNewPayment, totalToPay }) => {
+  useEffect(() => {
+    setNewPayment((prev) => ({
+      ...prev,
+      amountPaidOnline: totalToPay - newPayment?.amountPaidCash || 0,
+    }));
+  }, [totalToPay, newPayment?.amountPaidCash]);
   return (
     <>
       <PaymentModeCash
-        totalAmountPaid={newPayment.totalAmountPaid}
+        totalAmountPaid={newPayment?.totalAmountPaid}
         value={newPayment.amountPaidCash}
         setNewPayment={setNewPayment}
       />
