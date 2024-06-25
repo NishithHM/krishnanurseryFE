@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/static/css/main.d8f1a0e4.css",
-    "main.js": "/static/js/main.5a67bc1a.js",
+    "main.css": "/static/css/main.291d354a.css",
+    "main.js": "/static/js/main.535254f8.js",
     "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/wasteManagementIcon.png": "/static/media/wasteManagementIcon.e6e5d0fdb7c9a775b773.png",
-    "static/media/agriprocurements.png": "/static/media/agriprocurements.af7ddc0180240b43eb65.png",
+    "static/media/vendor.png": "/static/media/vendor.edcf4ac22f76d08d3d4c.png",
     "static/media/agri_variants.jpeg": "/static/media/agri_variants.1bb2a440b9a554a8e6a2.jpeg",
     "static/media/access.png": "/static/media/access.482e0792f3566096f906.png",
     "static/media/access_management.png": "/static/media/access_management.8a4f8f749e86daf83a97.png",
@@ -19,12 +19,12 @@
     "static/media/maintenance.png": "/static/media/maintenance.143e3063613ac409f6f0.png",
     "static/media/billBook.png": "/static/media/billBook.942098d32268e4a23413.png",
     "index.html": "/index.html",
-    "main.d8f1a0e4.css.map": "/static/css/main.d8f1a0e4.css.map",
-    "main.5a67bc1a.js.map": "/static/js/main.5a67bc1a.js.map",
+    "main.291d354a.css.map": "/static/css/main.291d354a.css.map",
+    "main.535254f8.js.map": "/static/js/main.535254f8.js.map",
     "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d8f1a0e4.css",
-    "static/js/main.5a67bc1a.js"
+    "static/css/main.291d354a.css",
+    "static/js/main.535254f8.js"
   ]
 }
