@@ -237,16 +237,18 @@ export const InvoiceSection = (props) => {
               <>
                 <br />
                 <b>Payment Details: </b>
-                {invoiceDetails?.paymentType}{" "}
-                {invoiceDetails?.paymentInfo
-                  ? `/${invoiceDetails?.paymentInfo}`
-                  : ""}
+                {invoiceDetails?.paymentType} :-{" "}
                 {invoiceDetails?.paymentType === "BOTH" && (
                   <span>
                     ₹{invoiceDetails?.cashAmount}(cash) ₹
                     {invoiceDetails?.onlineAmount}(online){" "}
                   </span>
                 )}
+                <br />
+                <b>Payment Info:- </b>
+                {invoiceDetails?.paymentInfo
+                  ? `${invoiceDetails?.paymentInfo}`
+                  : ""}
               </>
             )}
           </div>

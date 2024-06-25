@@ -20,6 +20,7 @@ import get from "lodash/get";
 import { Modal as MantineModal } from "@mantine/core";
 import { AuthContext } from "../../context";
 import {
+  useDownloadPaymentsExcelMutation,
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsQuery,
 } from "../../services/payments.services";
@@ -39,6 +40,8 @@ const Payments = () => {
 
   const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
+  const [excelPage, setExcelPage] = useState(1);
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
 
   // requests
   const paymentsData = useGetAllPaymentsQuery(page);
@@ -49,7 +52,27 @@ const Payments = () => {
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
 
+  const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
+
   // console.log(dataFromPhoneNumber, "data phone");
+
+  const handleExcelDownload = async (filterDates) => {
+    const res = await downloadPaymentsExcel({
+      pageNumber: excelPage,
+      type: "AGRI",
+      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+    });
+    const { isNext, response } = res.data;
+    setNextExcelAvailable(isNext === "true");
+    if (isNext === "true") {
+      setExcelPage((prev) => prev + 1);
+    }
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(response);
+    link.download = "billing.xlsx";
+    link.click();
+  };
 
   const handleViewBill = (id) => {};
 
