@@ -231,6 +231,9 @@ export const InvoiceSection = (props) => {
                 <b>&#x20B9;{cartResponse.discount + parseInt(roundOff, 10)}</b>
               </div>
             )}
+            <div className={styles.discountValue}>
+              <b>&#x20B9;{cartResponse.totalPrice}</b>
+            </div>
           </div>
         </div>
       </div>
