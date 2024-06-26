@@ -69,9 +69,8 @@ export const paymentsApi = createApi({
       }),
       getInfo: builder.mutation({
         query: (number) => ({
-          url: "/get-info",
-          method: "GET",
-          params: { number },
+          url: `/get-info/${number}`,
+          method: "GET"
         }),
       })
     };

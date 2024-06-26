@@ -163,16 +163,26 @@ const Payments = () => {
       setData(payments);
     }
   }, 500);
-    const paymentInfo = async(num)=>{
+  
+  const onNumberChange = async(num)=>{
+    setNewPayment((prev) => ({
+      ...prev,
+      phone: num.target.value,
+    }))
+    if(num.target.value.length ===10){
+      const res = await paymentData(num.target.value)
+      const paymentInfo = res?.data;
       setNewPayment((prev) => ({
         ...prev,
-        phone: num.target.value,
+        name: paymentInfo?.name,
+        accountNumber: paymentInfo?.accountNumber,
+        ifscCode: paymentInfo?.ifscCode,
+        bankName: paymentInfo?.bankName,
+        amount: paymentInfo?.amount,
+        comment: paymentInfo?.comment
       }))
-      if(newPayment?.type==="phone"){
-        const res = await paymentData(num)
-        const phone = res?.data
-      }
     }
+  }
 
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
@@ -550,10 +560,7 @@ const Payments = () => {
                   type="number"
                   value={newPayment?.phone}
                   onChange={(e) =>
-                    setNewPayment((prev) => ({
-                      ...prev,
-                      phone: e.target.value,
-                    }))
+                    onNumberChange(e)
                   }
                 />
               )}
