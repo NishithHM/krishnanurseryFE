@@ -438,7 +438,11 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         checkoutSuccess: { isExist: true, msg: "Checkout is successful" },
         checkOutDone: true,
         isWholeSale: checkout.data.isWholeSale || false,
-        isApproved: checkout.data.isApproved
+        isApproved: checkout.data.isApproved,
+        paymentType: '',
+        paymentInfo: '',
+        cashAmount: null,
+        onlineAmount: null
       }));
       toast.success("Checkout is successful!");
     }
