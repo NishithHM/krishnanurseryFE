@@ -23,6 +23,7 @@ import { AuthContext } from "../../context";
 import {
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsQuery,
+  useGetInfoMutation
 } from "../../services/payments.services";
 import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
@@ -59,6 +60,7 @@ const Payments = () => {
   // requests
   const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
+  const [paymentData] = useGetInfoMutation();
 
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
@@ -161,6 +163,16 @@ const Payments = () => {
       setData(payments);
     }
   }, 500);
+    const paymentInfo = async(num)=>{
+      setNewPayment((prev) => ({
+        ...prev,
+        phone: num.target.value,
+      }))
+      if(newPayment?.type==="phone"){
+        const res = await paymentData(num)
+        const phone = res?.data
+      }
+    }
 
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);

@@ -67,6 +67,13 @@ export const paymentsApi = createApi({
           params: { search },
         }),
       }),
+      getInfo: builder.mutation({
+        query: (number) => ({
+          url: "/get-info",
+          method: "GET",
+          params: { number },
+        }),
+      })
     };
   },
 });
@@ -77,4 +84,5 @@ export const {
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsCountQuery,
   useSearchPaymentMutation,
+  useGetInfoMutation
 } = paymentsApi;
