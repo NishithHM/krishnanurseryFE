@@ -162,7 +162,8 @@
 
 @media (min-width: 100px) and (max-width: 400px) {
   html{
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
+
   }
   .filterContainer {
     max-width: 100% !important;
@@ -205,7 +206,7 @@
 
 }
 
-@media (min-width: 400px) and (max-width: 700px) {
+@media (min-width: 320px) and (max-width: 700px) {
   html{
     /* overflow-x: hidden; */
   }
@@ -242,7 +243,7 @@
 
   .boxContainer{
     width: 100%;
-    overflow: scroll ;
+    /* overflow: scroll ; */
   }
 
   .card {

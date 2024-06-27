@@ -23,6 +23,7 @@ import { AuthContext } from "../../context";
 import {
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsQuery,
+  useGetInfoMutation,
 } from "../../services/payments.services";
 import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
@@ -59,6 +60,7 @@ const Payments = () => {
   // requests
   const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
+  const [paymentData] = useGetInfoMutation();
 
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
@@ -161,6 +163,25 @@ const Payments = () => {
       setData(payments);
     }
   }, 500);
+
+  const onNumberChange = async (num) => {
+    setNewPayment((prev) => ({
+      ...prev,
+      phone: num.target.value,
+    }));
+    if (num.target.value.length === 10) {
+      const res = await paymentData(num.target.value);
+      const paymentInfo = res?.data;
+      setNewPayment((prev) => ({
+        ...prev,
+        name: paymentInfo?.name,
+        accountNumber: paymentInfo?.accountNumber,
+        ifscCode: paymentInfo?.ifscCode,
+        bankName: paymentInfo?.bankName,
+        amount: paymentInfo?.amount,
+      }))
+    }
+  };
 
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
@@ -531,18 +552,14 @@ const Payments = () => {
             </>
           ) : newPayment.type ? (
             <>
-              {newPayment.type.value === "OTHERS" && (
+              {(newPayment.type.value === "OTHERS" ||
+                newPayment.type.value === "SALARY") && (
                 <Input
                   required
                   title="Phone Number"
                   type="number"
                   value={newPayment?.phone}
-                  onChange={(e) =>
-                    setNewPayment((prev) => ({
-                      ...prev,
-                      phone: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => onNumberChange(e)}
                 />
               )}
               <Input
@@ -569,11 +586,12 @@ const Payments = () => {
                   }
                 />
               )}
-              {newPayment.type.value === "OTHERS" && (
+              {(newPayment.type.value === "OTHERS" ||
+                newPayment.type.value === "SALARY") && (
                 <React.Fragment>
                   <Input
                     required
-                    title="accountNumber"
+                    title="Account Number"
                     type="number"
                     value={newPayment?.accountNumber}
                     onChange={(e) =>
@@ -612,11 +630,11 @@ const Payments = () => {
                     required
                     title="Total Amount Paid"
                     type="number"
-                    value={newPayment?.amount}
+                    value={newPayment?.totalAmount}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
-                        amount: e.target.value,
+                        totalAmount: e.target.value,
                       }))
                     }
                   />

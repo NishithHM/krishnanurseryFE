@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.693bd8b7.css",
-    "main.js": "/static/js/main.0a4323d2.js",
+    "main.css": "/static/css/main.025e7b48.css",
+    "main.js": "/static/js/main.8c8cbdbd.js",
     "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/wasteManagementIcon.png": "/static/media/wasteManagementIcon.e6e5d0fdb7c9a775b773.png",
     "static/media/vendor.png": "/static/media/vendor.edcf4ac22f76d08d3d4c.png",
@@ -19,12 +19,12 @@
     "static/media/maintenance.png": "/static/media/maintenance.143e3063613ac409f6f0.png",
     "static/media/billBook.png": "/static/media/billBook.942098d32268e4a23413.png",
     "index.html": "/index.html",
-    "main.693bd8b7.css.map": "/static/css/main.693bd8b7.css.map",
-    "main.0a4323d2.js.map": "/static/js/main.0a4323d2.js.map",
+    "main.025e7b48.css.map": "/static/css/main.025e7b48.css.map",
+    "main.8c8cbdbd.js.map": "/static/js/main.8c8cbdbd.js.map",
     "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.693bd8b7.css",
-    "static/js/main.0a4323d2.js"
+    "static/css/main.025e7b48.css",
+    "static/js/main.8c8cbdbd.js"
   ]
 }

@@ -303,11 +303,11 @@ const Bills = ({ type }) => {
     if (isNext === "true") {
       setExcelPage((prev) => prev + 1);
     }
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(response);
-    link.download = "billing.xlsx";
-    link.click();
-  };
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(response)
+    link.download = 'billing.xlsx'
+    link.click()
+  }
 
   return (
     <div>

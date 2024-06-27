@@ -478,6 +478,10 @@ export default function AddBills() {
         checkOutDone: true,
         isWholeSale: checkout.data.isWholeSale || false,
         isApproved: checkout.data.isApproved,
+        paymentType: '',
+        paymentInfo: '',
+        cashAmount: null,
+        onlineAmount: null
       }));
       console.log("checkout.....", checkout.data);
       toast.success("Checkout is successful!");
