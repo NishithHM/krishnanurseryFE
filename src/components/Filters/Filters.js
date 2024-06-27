@@ -123,7 +123,7 @@ const Filters = ({
           </div>
 
           <div className={styles.buttonWrapper}>
-            <div className={styles.btnSubWrapper}>
+            {config.excelPage && <div className={styles.btnSubWrapper}>
               <Button
                 title={`Excel Download page ${config.excelPage}`}
                 onClick={handleExcelDownload}
@@ -132,7 +132,7 @@ const Filters = ({
                   !config.isNextExcelAvailable
                 }
               />
-            </div>
+            </div>}
           </div>
         </div>
       )}
