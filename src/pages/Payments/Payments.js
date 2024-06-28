@@ -360,8 +360,8 @@ const Payments = () => {
         ifscCode: data?.ifscCode,
         bankName: data?.bankName,
         comment: data?.comment,
-        cashAmount: data?.amountPaidCash,
-        onlineAmount: data?.amountPaidOnline,
+        cashAmount: paymentMode?.type ==="CASH" ? data?.amount : (data?.amountPaidCash || 0),
+        onlineAmount: paymentMode?.type ==="ONLINE" ? data?.amount : (data?.amountPaidOnline || 0)
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
@@ -571,7 +571,7 @@ const Payments = () => {
                 }
               />
 
-              {newPayment.type.value === "SALARY" && (
+              {/* {newPayment.type.value === "SALARY" && (
                 <Input
                   required
                   title="Amount Paid"
@@ -584,7 +584,7 @@ const Payments = () => {
                     }))
                   }
                 />
-              )}
+              )} */}
               {(newPayment.type.value === "OTHERS" ||
                 newPayment.type.value === "SALARY") && (
                 <React.Fragment>
@@ -625,7 +625,7 @@ const Payments = () => {
                       }))
                     }
                   />
-                  {/* <Input
+                  <Input
                     required
                     title="Total Amount Paid"
                     type="number"
@@ -633,10 +633,10 @@ const Payments = () => {
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
-                        totalAmount: e.target.value,
+                        amount: e.target.value,
                       }))
                     }
-                  /> */}
+                  />
                   <div>
                     <Dropdown
                       required
@@ -648,7 +648,13 @@ const Payments = () => {
                         setPaymentMode((prev) => ({
                           ...prev,
                           type: e?.value,
+                          
                         }));
+                        setNewPayment((prev) => ({
+                          ...prev,
+                          amountPaidOnline: 0,
+                          amountPaidCash:0
+                        }))
                       }}
                     />
                   </div>
@@ -664,18 +670,7 @@ const Payments = () => {
                       }))
                     }
                   />
-                  {paymentMode.type === "CASH" && (
-                    <PaymentModeCash
-                      value={newPayment?.amountPaidCash}
-                      setNewPayment={setNewPayment}
-                    />
-                  )}
-                  {paymentMode.type === "ONLINE" && (
-                    <PaymentModeOnline
-                      value={newPayment?.amountPaidOnline}
-                      setNewPayment={setNewPayment}
-                    />
-                  )}
+                  
                   {paymentMode.type === "BOTH" && (
                     <PaymentModeBoth
                       newPayment={newPayment}
