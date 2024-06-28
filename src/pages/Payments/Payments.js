@@ -572,7 +572,7 @@ const Payments = () => {
                 }
               />
 
-              {newPayment.type.value === "SALARY" && (
+              {/* {newPayment.type.value === "SALARY" && (
                 <Input
                   required
                   title="Amount Paid"
@@ -585,7 +585,7 @@ const Payments = () => {
                     }))
                   }
                 />
-              )}
+              )} */}
               {(newPayment.type.value === "OTHERS" ||
                 newPayment.type.value === "SALARY") && (
                 <React.Fragment>
