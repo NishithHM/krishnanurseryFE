@@ -178,7 +178,6 @@ const Payments = () => {
         accountNumber: paymentInfo?.accountNumber,
         ifscCode: paymentInfo?.ifscCode,
         bankName: paymentInfo?.bankName,
-        amount: paymentInfo?.amount,
       }))
     }
   };
