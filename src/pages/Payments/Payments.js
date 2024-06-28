@@ -571,7 +571,7 @@ const Payments = () => {
                 }
               />
 
-              {/* {newPayment.type.value === "SALARY" && (
+              {newPayment.type.value === "SALARY" && (
                 <Input
                   required
                   title="Amount Paid"
@@ -584,7 +584,7 @@ const Payments = () => {
                     }))
                   }
                 />
-              )} */}
+              )}
               {(newPayment.type.value === "OTHERS" ||
                 newPayment.type.value === "SALARY") && (
                 <React.Fragment>
@@ -625,7 +625,7 @@ const Payments = () => {
                       }))
                     }
                   />
-                  <Input
+                  {/* <Input
                     required
                     title="Total Amount Paid"
                     type="number"
@@ -636,7 +636,7 @@ const Payments = () => {
                         totalAmount: e.target.value,
                       }))
                     }
-                  />
+                  /> */}
                   <div>
                     <Dropdown
                       required
