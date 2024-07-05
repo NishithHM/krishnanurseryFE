@@ -47,18 +47,24 @@ const Payments = () => {
     end_date: null,
   });
 
+  const [type, setType] = useState();
+
   const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
 
   const dates = {};
 
+  const businessType = "NURSERY";
+
   if (filterDates.start_date && filterDates.end_date) {
     dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
     dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
+    dates.type = filterDates?.type?.value;
+    dates.vendorId = filterDates?.vendors[0]?.value;
   }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
   const [paymentData] = useGetInfoMutation();
 
@@ -69,6 +75,7 @@ const Payments = () => {
   const paymentsCountReq = useGetAllPaymentsCountQuery({
     search: searchInput,
     ...dates,
+    businessType,
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
@@ -78,6 +85,7 @@ const Payments = () => {
   const handleViewBill = (id) => {};
 
   const handleFilterChange = async (filterDates) => {
+    console.log(filterDates, "filterDates......");
     setFilterDates(filterDates);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
@@ -188,7 +196,7 @@ const Payments = () => {
   };
 
   const getUserCount = () => {
-    setUsersCount(paymentsCountReq.data[0].count || 0);
+    setUsersCount(paymentsCountReq?.data?.data[0]?.count || 0);
   };
 
   const getRoundedDates = () => {
@@ -393,6 +401,7 @@ const Payments = () => {
           config={{
             isNextExcelAvailable,
             excelPage,
+            vendorType: "NURSERY", // added this as vendor type because , api requires this as nursery or agri
           }}
           resetExcelPage={() => setExcelPage(1)}
           setNextExcelAvailable={setNextExcelAvailable}
