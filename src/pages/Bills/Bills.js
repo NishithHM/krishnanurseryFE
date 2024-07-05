@@ -389,7 +389,9 @@ const Bills = ({type}) => {
                 billedBy: invoiceDetail?.billedBy?.name,
                 soldBy: invoiceDetail?.soldBy?.name,
                 cashAmount: invoiceDetail?.cashAmount,
-                onlineAmount: invoiceDetail?.onlineAmount
+                onlineAmount: invoiceDetail?.onlineAmount,
+                paymentType: invoiceDetail?.paymentType,
+                paymentInfo: invoiceDetail?.paymentInfo,
               }}
               type={type}
             />
