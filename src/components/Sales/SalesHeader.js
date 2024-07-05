@@ -329,13 +329,8 @@ const SalesHeader = ({
     <>
       <div>
         <Box className={styles.boxContainer} sx={{ width: "100%" }}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            item
-            xs={12}
-            classes={{ container: styles.cardContainer }}
+          <div
+            className={styles.cardContainer}
           >
             {headerData.map((item, index) => (
               <Grid 
@@ -434,7 +429,7 @@ const SalesHeader = ({
                 </div>
               </Grid>
             ))}
-          </Grid>
+          </div>
         </Box>
       </div>
       <div
