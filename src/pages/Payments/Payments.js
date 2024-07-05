@@ -53,7 +53,7 @@ const Payments = () => {
   const [usersCount, setUsersCount] = useState(0);
 
   const dates = {};
-
+  const paymentMadeBy = ["SALARY", "OTHERS", "CAPITAL", "VENDOR"];
   const businessType = "NURSERY";
 
   if (filterDates.start_date && filterDates.end_date) {
@@ -286,6 +286,8 @@ const Payments = () => {
     { value: "BROKER", label: "Brokerage" },
     { value: "SALARY", label: "Salaries" },
     { value: "OTHERS", label: "Others" },
+    { value: "CAPITAL", label: "Capital" },
+    { value: "VENDOR", label: "Vendor" },
   ];
 
   const PAYMENT_MODES = [
@@ -566,8 +568,7 @@ const Payments = () => {
             </>
           ) : newPayment.type ? (
             <>
-              {(newPayment.type.value === "OTHERS" ||
-                newPayment.type.value === "SALARY") && (
+              {paymentMadeBy.includes(newPayment.type.value) && (
                 <Input
                   required
                   title="Phone Number"
@@ -600,8 +601,7 @@ const Payments = () => {
                   }
                 />
               )} */}
-              {(newPayment.type.value === "OTHERS" ||
-                newPayment.type.value === "SALARY") && (
+              {paymentMadeBy.includes(newPayment.type.value) && (
                 <React.Fragment>
                   <Input
                     required
