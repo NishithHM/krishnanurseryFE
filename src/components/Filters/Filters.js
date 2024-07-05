@@ -38,6 +38,8 @@ const Filters = ({
     { label: "capital", value: "CAPITAL" },
     { label: "vendor", value: "VENDOR" },
     { label: "salary", value: "SALARY" },
+    { label: "others", value: "OTHERS" },
+    { label: "brokerage", value: "BROKERAGE" },
   ];
 
   typeDropDownData = typeDropDownData.filter((item) => {
