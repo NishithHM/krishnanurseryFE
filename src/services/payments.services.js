@@ -32,7 +32,12 @@ export const paymentsApi = createApi({
         query: ({ page = 1, startDate, endDate }) => ({
           url: "/getAll",
           method: "GET",
-          params: { pageNumber: page, startDate, endDate },
+          params: {
+            pageNumber: page,
+            businessType: "NURSERY",
+            startDate,
+            endDate,
+          },
         }),
         providesTags: ["User"],
       }),
@@ -70,9 +75,9 @@ export const paymentsApi = createApi({
       getInfo: builder.mutation({
         query: (number) => ({
           url: `/get-info/${number}`,
-          method: "GET"
+          method: "GET",
         }),
-      })
+      }),
     };
   },
 });
@@ -83,5 +88,5 @@ export const {
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsCountQuery,
   useSearchPaymentMutation,
-  useGetInfoMutation
+  useGetInfoMutation,
 } = paymentsApi;

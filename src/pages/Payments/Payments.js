@@ -178,7 +178,7 @@ const Payments = () => {
         accountNumber: paymentInfo?.accountNumber,
         ifscCode: paymentInfo?.ifscCode,
         bankName: paymentInfo?.bankName,
-      }))
+      }));
     }
   };
 
@@ -233,7 +233,7 @@ const Payments = () => {
 
   useEffect(() => {
     if (paymentsData.status === "fulfilled") {
-      const payments = formatPaymentsData(paymentsData.data);
+      const payments = formatPaymentsData(paymentsData?.data?.data);
       setData(payments);
     }
   }, [paymentsData, searchInput]);
@@ -360,8 +360,14 @@ const Payments = () => {
         ifscCode: data?.ifscCode,
         bankName: data?.bankName,
         comment: data?.comment,
-        cashAmount: paymentMode?.type ==="CASH" ? data?.amount : (data?.amountPaidCash || 0),
-        onlineAmount: paymentMode?.type ==="ONLINE" ? data?.amount : (data?.amountPaidOnline || 0)
+        cashAmount:
+          paymentMode?.type === "CASH"
+            ? data?.amount
+            : data?.amountPaidCash || 0,
+        onlineAmount:
+          paymentMode?.type === "ONLINE"
+            ? data?.amount
+            : data?.amountPaidOnline || 0,
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
@@ -648,13 +654,12 @@ const Payments = () => {
                         setPaymentMode((prev) => ({
                           ...prev,
                           type: e?.value,
-                          
                         }));
                         setNewPayment((prev) => ({
                           ...prev,
                           amountPaidOnline: 0,
-                          amountPaidCash:0
-                        }))
+                          amountPaidCash: 0,
+                        }));
                       }}
                     />
                   </div>
@@ -670,7 +675,7 @@ const Payments = () => {
                       }))
                     }
                   />
-                  
+
                   {paymentMode.type === "BOTH" && (
                     <PaymentModeBoth
                       newPayment={newPayment}
