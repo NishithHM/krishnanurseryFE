@@ -36,6 +36,8 @@ const SalesHeader = ({
     {
       title: "Sales",
       price: cardData?.sales,
+      cashAmount: cardData?.cashAmount,
+      onlineAmount: cardData?.onlineAmount,
       percentage: cardData?.sales_perecntage,
       icon: (status) => <SalesIcon status={status} />,
     },
@@ -325,13 +327,8 @@ const SalesHeader = ({
     <>
       <div>
         <Box className={styles.boxContainer} sx={{ width: "100%" }}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            item
-            xs={12}
-            classes={{ container: styles.cardContainer }}
+          <div
+            className={styles.cardContainer}
           >
             {headerData.map((item, index) => (
               <Grid 
@@ -388,8 +385,22 @@ const SalesHeader = ({
                         ""
                       )}
                     </div>
+                    
                   </div>
-
+                  <div>
+                    {item?.cashAmount ? (
+                        <span className={`${styles.smallAmounts} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >Cash- {item.cashAmount}</span>
+                      ) : (
+                        ""
+                      )}
+                      </div>
+                      <div>
+                      {item?.onlineAmount ? (
+                        <span className={`${styles.smallAmounts} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >Online- {item.onlineAmount}</span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   <div className={styles.percent}>
                     <div className={styles.ratiopercent}>
                       {item.percentage &&
@@ -416,7 +427,7 @@ const SalesHeader = ({
                 </div>
               </Grid>
             ))}
-          </Grid>
+          </div>
         </Box>
       </div>
       <div

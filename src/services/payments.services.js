@@ -29,10 +29,24 @@ export const paymentsApi = createApi({
         invalidatesTags: ["User", "UserCount"],
       }),
       getAllPayments: builder.query({
-        query: ({ page = 1, startDate, endDate }) => ({
+        query: ({
+          page = 1,
+          startDate,
+          endDate,
+          type,
+          businessType,
+          vendorId,
+        }) => ({
           url: "/getAll",
           method: "GET",
-          params: { pageNumber: page, startDate, endDate },
+          params: {
+            pageNumber: page,
+            businessType,
+            startDate,
+            endDate,
+            vendorId,
+            type,
+          },
         }),
         providesTags: ["User"],
       }),
@@ -43,8 +57,9 @@ export const paymentsApi = createApi({
         }),
       }),
       getAllPaymentsCount: builder.query({
-        query: ({ search, startDate, endDate }) => {
+        query: ({ search, startDate, endDate, businessType }) => {
           const options = {};
+          options["businessType"] = businessType;
           if (search) options["search"] = search;
 
           if (startDate) options["startDate"] = startDate;
@@ -70,9 +85,9 @@ export const paymentsApi = createApi({
       getInfo: builder.mutation({
         query: (number) => ({
           url: `/get-info/${number}`,
-          method: "GET"
+          method: "GET",
         }),
-      })
+      }),
     };
   },
 });
@@ -83,5 +98,5 @@ export const {
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsCountQuery,
   useSearchPaymentMutation,
-  useGetInfoMutation
+  useGetInfoMutation,
 } = paymentsApi;

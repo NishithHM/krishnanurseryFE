@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaFilter, FaChevronDown } from "react-icons/fa";
 import "./Calendar.css";
 import "./DatePicker.css";
@@ -7,6 +7,7 @@ import Datefilter from "./Datefilter";
 import Button from "../Button";
 import Dropdown from "../Dropdown";
 import { cloneDeep } from "lodash";
+import { AuthContext } from "../../context";
 
 const Filters = ({
   onSubmit = () => {},
@@ -22,7 +23,7 @@ const Filters = ({
     start_date: null,
     end_date: null,
   });
-  const [filters, setFilters] = useState({ vendors: [], status: [] });
+  const [filters, setFilters] = useState({ vendors: [], status: [], type: "" });
   const handleSubmitFilter = () => {
     const updatedFilterDates = {
       start_date: filterDates.startDate,
@@ -30,6 +31,23 @@ const Filters = ({
     };
     onSubmit({ ...updatedFilterDates, ...filters });
   };
+
+  const [user] = useContext(AuthContext);
+
+  let typeDropDownData = [
+    { label: "capital", value: "CAPITAL" },
+    { label: "vendor", value: "VENDOR" },
+    { label: "salary", value: "SALARY" },
+    { label: "others", value: "OTHERS" },
+    { label: "brokerage", value: "BROKERAGE" },
+  ];
+
+  typeDropDownData = typeDropDownData.filter((item) => {
+    if (user?.role === "sales") {
+      if (item.value === "VENDOR") return false;
+    }
+    return true;
+  });
 
   const handleExcelDownload = () => {
     onExcelDownload({ ...filterDates });
@@ -82,20 +100,34 @@ const Filters = ({
             startDateInput={filterDates.start_date}
             endDateInput={filterDates.end_date}
           />
-          {config.isVendor && (
+
+          {true && (
             <div style={{ width: "200px" }}>
               <Dropdown
-                url={`/api/vendors/getAll?type=${config?.vendorType}`}
-                id="vendors"
-                apiDataPath={{ label: "name", value: "_id" }}
-                title="Vendor Name"
+                id="type"
+                title="Type"
                 onChange={dropDownChangeHandler}
-                value={filters.vendors}
-                isMultiEnabled
-                minInputToFireApi={3}
+                value={filters.type}
+                data={typeDropDownData}
               />
             </div>
           )}
+
+          {config.isVendor ||
+            (filters?.type?.value === "VENDOR" && (
+              <div style={{ width: "200px" }}>
+                <Dropdown
+                  url={`/api/vendors/getAll?type=${config?.vendorType}`}
+                  id="vendors"
+                  apiDataPath={{ label: "name", value: "_id" }}
+                  title="Vendor Name"
+                  onChange={dropDownChangeHandler}
+                  value={filters.vendors}
+                  isMultiEnabled
+                  minInputToFireApi={3}
+                />
+              </div>
+            ))}
           {config.orderStatus && (
             <Dropdown
               id="status"
@@ -123,16 +155,18 @@ const Filters = ({
           </div>
 
           <div className={styles.buttonWrapper}>
-            {config.excelPage && <div className={styles.btnSubWrapper}>
-              <Button
-                title={`Excel Download page ${config.excelPage}`}
-                onClick={handleExcelDownload}
-                disabled={
-                  !(filterDates.endDate && filterDates.startDate) ||
-                  !config.isNextExcelAvailable
-                }
-              />
-            </div>}
+            {config.excelPage && (
+              <div className={styles.btnSubWrapper}>
+                <Button
+                  title={`Excel Download page ${config.excelPage}`}
+                  onClick={handleExcelDownload}
+                  disabled={
+                    !(filterDates.endDate && filterDates.startDate) ||
+                    !config.isNextExcelAvailable
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

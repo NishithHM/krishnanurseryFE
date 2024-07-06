@@ -47,18 +47,24 @@ const Payments = () => {
     end_date: null,
   });
 
+  const [type, setType] = useState();
+
   const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
 
   const dates = {};
+  const paymentMadeBy = ["SALARY", "OTHERS", "CAPITAL", "VENDOR"];
+  const businessType = "NURSERY";
 
   if (filterDates.start_date && filterDates.end_date) {
     dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
     dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
+    dates.type = filterDates?.type?.value;
+    dates.vendorId = filterDates?.vendors[0]?.value;
   }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery({ page, ...dates });
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
   const [paymentData] = useGetInfoMutation();
 
@@ -69,6 +75,7 @@ const Payments = () => {
   const paymentsCountReq = useGetAllPaymentsCountQuery({
     search: searchInput,
     ...dates,
+    businessType,
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
@@ -78,6 +85,7 @@ const Payments = () => {
   const handleViewBill = (id) => {};
 
   const handleFilterChange = async (filterDates) => {
+    console.log(filterDates, "filterDates......");
     setFilterDates(filterDates);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
@@ -178,7 +186,7 @@ const Payments = () => {
         accountNumber: paymentInfo?.accountNumber,
         ifscCode: paymentInfo?.ifscCode,
         bankName: paymentInfo?.bankName,
-      }))
+      }));
     }
   };
 
@@ -188,7 +196,7 @@ const Payments = () => {
   };
 
   const getUserCount = () => {
-    setUsersCount(paymentsCountReq.data[0].count || 0);
+    setUsersCount(paymentsCountReq?.data?.data[0]?.count || 0);
   };
 
   const getRoundedDates = () => {
@@ -233,7 +241,7 @@ const Payments = () => {
 
   useEffect(() => {
     if (paymentsData.status === "fulfilled") {
-      const payments = formatPaymentsData(paymentsData.data);
+      const payments = formatPaymentsData(paymentsData?.data?.data);
       setData(payments);
     }
   }, [paymentsData, searchInput]);
@@ -278,6 +286,8 @@ const Payments = () => {
     { value: "BROKER", label: "Brokerage" },
     { value: "SALARY", label: "Salaries" },
     { value: "OTHERS", label: "Others" },
+    { value: "CAPITAL", label: "Capital" },
+    { value: "VENDOR", label: "Vendor" },
   ];
 
   const PAYMENT_MODES = [
@@ -360,8 +370,14 @@ const Payments = () => {
         ifscCode: data?.ifscCode,
         bankName: data?.bankName,
         comment: data?.comment,
-        cashAmount: paymentMode?.type ==="CASH" ? data?.amount : (data?.amountPaidCash || 0),
-        onlineAmount: paymentMode?.type ==="ONLINE" ? data?.amount : (data?.amountPaidOnline || 0)
+        cashAmount:
+          paymentMode?.type === "CASH"
+            ? data?.amount
+            : data?.amountPaidCash || 0,
+        onlineAmount:
+          paymentMode?.type === "ONLINE"
+            ? data?.amount
+            : data?.amountPaidOnline || 0,
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
@@ -387,6 +403,7 @@ const Payments = () => {
           config={{
             isNextExcelAvailable,
             excelPage,
+            vendorType: "NURSERY", // added this as vendor type because , api requires this as nursery or agri
           }}
           resetExcelPage={() => setExcelPage(1)}
           setNextExcelAvailable={setNextExcelAvailable}
@@ -551,8 +568,7 @@ const Payments = () => {
             </>
           ) : newPayment.type ? (
             <>
-              {(newPayment.type.value === "OTHERS" ||
-                newPayment.type.value === "SALARY") && (
+              {paymentMadeBy.includes(newPayment.type.value) && (
                 <Input
                   required
                   title="Phone Number"
@@ -585,8 +601,7 @@ const Payments = () => {
                   }
                 />
               )} */}
-              {(newPayment.type.value === "OTHERS" ||
-                newPayment.type.value === "SALARY") && (
+              {paymentMadeBy.includes(newPayment.type.value) && (
                 <React.Fragment>
                   <Input
                     required
@@ -648,13 +663,12 @@ const Payments = () => {
                         setPaymentMode((prev) => ({
                           ...prev,
                           type: e?.value,
-                          
                         }));
                         setNewPayment((prev) => ({
                           ...prev,
                           amountPaidOnline: 0,
-                          amountPaidCash:0
-                        }))
+                          amountPaidCash: 0,
+                        }));
                       }}
                     />
                   </div>
@@ -670,7 +684,7 @@ const Payments = () => {
                       }))
                     }
                   />
-                  
+
                   {paymentMode.type === "BOTH" && (
                     <PaymentModeBoth
                       newPayment={newPayment}

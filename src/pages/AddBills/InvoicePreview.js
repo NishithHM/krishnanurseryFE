@@ -194,14 +194,14 @@ export const InvoiceSection = (props) => {
             <>
               <br />
               <b>Payment Details: </b>
-              {paymentType} :-{" "}
+              {paymentType}{" "}
               {paymentType === "BOTH" && (
                 <span>
                   ₹{cashAmount}(cash) ₹{onlineAmount}(online){" "}
                 </span>
               )}
               <br />
-              <b>Payment Info:- </b>
+              <b>Payment Info </b>
               {paymentInfo ? `${paymentInfo}` : ""}
             </>
           )}

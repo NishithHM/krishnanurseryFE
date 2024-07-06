@@ -237,7 +237,7 @@ export const InvoiceSection = (props) => {
               <>
                 <br />
                 <b>Payment Details: </b>
-                {invoiceDetails?.paymentType} :-{" "}
+                {invoiceDetails?.paymentType}{" "}
                 {invoiceDetails?.paymentType === "BOTH" && (
                   <span>
                     ₹{invoiceDetails?.cashAmount}(cash) ₹
@@ -245,7 +245,7 @@ export const InvoiceSection = (props) => {
                   </span>
                 )}
                 <br />
-                <b>Payment Info:- </b>
+                <b>Payment Info </b>
                 {invoiceDetails?.paymentInfo
                   ? `${invoiceDetails?.paymentInfo}`
                   : ""}
