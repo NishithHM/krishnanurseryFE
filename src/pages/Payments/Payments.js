@@ -43,8 +43,7 @@ const Payments = () => {
   });
   const [paymentMode, setPaymentMode] = useState({ type: null });
   const [filterDates, setFilterDates] = useState({
-    start_date: null,
-    end_date: null,
+  
   });
 
   const [type, setType] = useState();
@@ -56,9 +55,11 @@ const Payments = () => {
   const paymentMadeBy = ["SALARY", "OTHERS", "CAPITAL", "VENDOR"];
   const businessType = "NURSERY";
 
-  if (filterDates.start_date && filterDates.end_date) {
-    dates.startDate = dayjs(filterDates.start_date).format("YYYY-MM-DD");
-    dates.endDate = dayjs(filterDates.end_date).format("YYYY-MM-DD");
+  if (Object.keys(filterDates)?.length) {
+    if (filterDates?.start_date && filterDates?.end_date) {
+      dates.startDate = dayjs(filterDates?.start_date).format("YYYY-MM-DD");
+      dates.endDate = dayjs(filterDates?.end_date).format("YYYY-MM-DD");
+    }
     dates.type = filterDates?.type?.value;
     dates.vendorId = filterDates?.vendors[0]?.value;
   }
@@ -381,7 +382,7 @@ const Payments = () => {
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
-      const resp = await mutate(res);
+      const resp = await mutate(res, businessType);
       console.log(resp, "resp");
       if (resp["error"] !== undefined) {
         return toast.error(resp.error.data.error);
