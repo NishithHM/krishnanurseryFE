@@ -418,7 +418,36 @@ const Payments = () => {
           onReset={handleFilterReset}
           onExcelDownload={handleExcelDownload}
           onSubmit={handleFilterChange}
-        />
+        >
+          {filterDates?.type?.value === "CAPITAL" && (
+            <>
+              <Filters.Column
+                columHeading="Total Investment"
+                value={paymentsData?.data?.sum}
+              />
+              <Filters.Column
+                columHeading="Remaining"
+                value={paymentsData?.data?.remainingCapital}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "OTHERS" && (
+            <>
+              <Filters.Column
+                columHeading="Total Amount"
+                value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "SALARY" && (
+            <>
+              <Filters.Column
+                columHeading="Salary Paid"
+                value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+        </Filters>
 
         <div className={styles.wrapper}>
           {/* search */}
