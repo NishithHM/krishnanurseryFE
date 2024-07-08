@@ -21,10 +21,13 @@ export const paymentsApi = createApi({
   endpoints: (builder) => {
     return {
       createPayment: builder.mutation({
-        query: (paymentData) => ({
-          url: "/addPayment",
+        query: (paymentData, businessType = "NURSERY") => ({
+          url: `/addPayment`,
           method: "POST",
-          body: paymentData,
+          body: {
+            ...paymentData,
+            businessType,
+          },
         }),
         invalidatesTags: ["User", "UserCount"],
       }),
