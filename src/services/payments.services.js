@@ -22,7 +22,7 @@ export const paymentsApi = createApi({
     return {
       createPayment: builder.mutation({
         query: (paymentData, businessType = "NURSERY") => ({
-          url: `/addPayment?businessType=NURSERY`,
+          url: `/addPayment`,
           method: "POST",
           body: {
             ...paymentData,
