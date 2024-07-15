@@ -75,7 +75,6 @@ const Payments = () => {
     search: searchInput,
     ...dates,
     businessType,
-    
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
@@ -85,7 +84,6 @@ const Payments = () => {
   const handleViewBill = (id) => {};
 
   const handleFilterChange = async (filterDates) => {
-    console.log(filterDates, "filterDates......");
     setFilterDates(filterDates);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
@@ -437,6 +435,14 @@ const Payments = () => {
               <Filters.Column
                 columHeading="Salary Paid"
                 value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "VENDOR" && (
+            <>
+              <Filters.Column
+                columHeading="Deviation"
+                value={paymentsData?.data?.vendorDeviation}
               />
             </>
           )}
