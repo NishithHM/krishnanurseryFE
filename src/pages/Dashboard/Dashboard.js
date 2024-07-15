@@ -152,8 +152,17 @@ const Dashboard = () => {
       isDisabled: false,
       tabType: "Agri",
     },
+    // {
+    //   id : 16,
+    //   title: "Vendor",
+    //   tile_img: vendorImg,
+    //   path: "vendors",
+    //   allowed: [USER_ROLES.admin, USER_ROLES.procurement],
+    //   isDisabled: false,
+    //   tabType: "Nursery",
+    // },
     {
-      id : 16,
+      id: 17,
       title: "Agri Payments",
       tile_img: paymentsIcon,
       path: "agri-payments",

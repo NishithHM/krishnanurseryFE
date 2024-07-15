@@ -60,10 +60,20 @@ export const paymentsApi = createApi({
         }),
       }),
       getAllPaymentsCount: builder.query({
-        query: ({ search, startDate, endDate, businessType }) => {
+        query: ({
+          search,
+          startDate,
+          endDate,
+          businessType,
+          type,
+          vendorId,
+        }) => {
           const options = {};
           options["businessType"] = businessType;
           if (search) options["search"] = search;
+
+          if (type) options["type"] = type;
+          if (vendorId) options["vendorId"] = vendorId;
 
           if (startDate) options["startDate"] = startDate;
           if (endDate) options["endDate"] = endDate;

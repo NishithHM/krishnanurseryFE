@@ -75,6 +75,7 @@ const Payments = () => {
     search: searchInput,
     ...dates,
     businessType,
+    
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
@@ -304,15 +305,7 @@ const Payments = () => {
     { value: "BOTH", label: "Both" },
   ];
 
-  let filtered_payment_types = [];
-
-  if (user_role === "admin") {
-    filtered_payment_types = PAYMENT_TYPES;
-  } else if (user_role === "sales") {
-    filtered_payment_types = [PAYMENT_TYPES[0], PAYMENT_TYPES[2]];
-  } else if (user_role === "procurement") {
-    filtered_payment_types = [PAYMENT_TYPES[1], PAYMENT_TYPES[2]];
-  }
+  let filtered_payment_types = PAYMENT_TYPES;
 
   const handleCreatePayment = async () => {
     const data = newPayment;
