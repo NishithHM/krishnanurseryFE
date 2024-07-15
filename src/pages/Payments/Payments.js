@@ -75,6 +75,7 @@ const Payments = () => {
     search: searchInput,
     ...dates,
     businessType,
+    
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
