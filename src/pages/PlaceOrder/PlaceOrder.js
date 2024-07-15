@@ -62,7 +62,7 @@ export const PlaceOrder = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
   const [getInvoice] = useGetInvoiceMutation();
-  const [isFromAccept,setIsFromAccept] = useState(false)
+  const [isFromAccept, setIsFromAccept] = useState(false);
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
   const [getOrderId] = useGetOrderIdMutation();
@@ -93,9 +93,8 @@ export const PlaceOrder = () => {
           value: location.state?.value,
           meta: { contact: location?.state?.vendorContact },
         },
-       
       }));
-      setIsFromAccept(true)
+      setIsFromAccept(true);
     }
   }, [location.state]);
 
@@ -192,9 +191,7 @@ export const PlaceOrder = () => {
             return {};
           }
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     }
   }, [state.addVendorName?.value]);
 
@@ -202,7 +199,6 @@ export const PlaceOrder = () => {
     toast.error(error);
   };
   const onSubmitHandler = async () => {
-
     const body = {
       nameInEnglish: state.addPlantName?.label,
       nameInKannada:
@@ -257,8 +253,7 @@ export const PlaceOrder = () => {
             addPlantName: plantData,
           }));
         })
-        .catch((err) => {
-        });
+        .catch((err) => {});
     }
   }, [procId]);
 
@@ -344,7 +339,9 @@ export const PlaceOrder = () => {
             onError={onError}
             validation={(text) => text.length > 0}
             errorMessage="Please Enter new Plant in Kannada"
-            disabled={state?.addPlantName?.meta?.names?.ka?.name && isFromAccept}
+            disabled={
+              state?.addPlantName?.meta?.names?.ka?.name && isFromAccept
+            }
           />
 
           <div>
@@ -453,37 +450,41 @@ export const PlaceOrder = () => {
             </div>
           </div>
           <div className={styles.inputWrapper}>
-            <div className={styles.inputdiv}>
-              <Input
-                value={state.currentPaidAmount}
-                id="currentPaidAmount"
-                type="number"
-                disabled={isInhouseOrder}
-                onChange={(e) => {
-                  if (e.target.value > state.totalPrice) {
-                    toast.error("Adavnce should not be more than total price");
-                  }
-                  const value = Math.max(
-                    0,
-                    Math.min(state.totalPrice, Number(e.target.value))
-                  );
-                  setState((prev) => ({
-                    ...prev,
-                    currentPaidAmount: parseInt(value, 10),
-                  }));
-                }}
-                title="Advance Paid"
-                max={state.totalPrice}
-                onBlur={(e) => {
-                  if (e.target.value < 0) {
-                    toast.error("Total Price shouldn't be negative number");
-                  }
-                }}
-                {...(isInhouseOrder
-                  ? { required: !isInhouseOrder }
-                  : { required: true })}
-              />
-            </div>
+            {false && (
+              <div className={styles.inputdiv}>
+                <Input
+                  value={state.currentPaidAmount}
+                  id="currentPaidAmount"
+                  type="number"
+                  disabled={isInhouseOrder}
+                  onChange={(e) => {
+                    if (e.target.value > state.totalPrice) {
+                      toast.error(
+                        "Adavnce should not be more than total price"
+                      );
+                    }
+                    const value = Math.max(
+                      0,
+                      Math.min(state.totalPrice, Number(e.target.value))
+                    );
+                    setState((prev) => ({
+                      ...prev,
+                      currentPaidAmount: parseInt(value, 10),
+                    }));
+                  }}
+                  title="Advance Paid"
+                  max={state.totalPrice}
+                  onBlur={(e) => {
+                    if (e.target.value < 0) {
+                      toast.error("Total Price shouldn't be negative number");
+                    }
+                  }}
+                  {...(isInhouseOrder
+                    ? { required: !isInhouseOrder }
+                    : { required: true })}
+                />
+              </div>
+            )}
             <div className={styles.secondinputdiv}>
               <Datepicker
                 label={"Expected Delivery Date"}
