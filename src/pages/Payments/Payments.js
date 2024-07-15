@@ -362,6 +362,7 @@ const Payments = () => {
       const res = {
         type: data?.type?.value,
         empName: data?.name,
+        vendorId: data?.vendor,
         amount: data?.amount,
         phoneNumber: data?.phone || "",
         transferType: paymentMode?.type || "CASH",
@@ -536,6 +537,25 @@ const Payments = () => {
             value={newPayment?.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
+
+          {newPayment?.type?.value === "VENDOR" ? (
+            <>
+              <Dropdown
+                url={`/api/vendors/getAll?type=${businessType}`}
+                id="vendors"
+                apiDataPath={{ label: "name", value: "_id" }}
+                title="Vendor Name"
+                onChange={(e) => {
+                  setNewPayment((prev) => ({
+                    ...prev,
+                    vendor: e[0]?.value,
+                  }));
+                }}
+                value={newPayment?.vendor?.value || ""}
+                minInputToFireApi={3}
+              />
+            </>
+          ) : null}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
