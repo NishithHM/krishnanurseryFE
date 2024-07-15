@@ -42,9 +42,7 @@ const Payments = () => {
     type: null,
   });
   const [paymentMode, setPaymentMode] = useState({ type: null });
-  const [filterDates, setFilterDates] = useState({
-  
-  });
+  const [filterDates, setFilterDates] = useState({});
 
   const [type, setType] = useState();
 
@@ -99,6 +97,10 @@ const Payments = () => {
         item?.onlineAmount ?? 0
       }`;
 
+      const type = {
+        value: item.type,
+      };
+
       let paymentThrough = {
         value: paymentInfo,
       };
@@ -137,6 +139,7 @@ const Payments = () => {
         createdAt,
         paymentThrough,
         comment,
+        type,
         amount,
         invoiceId,
         action,
@@ -266,6 +269,10 @@ const Payments = () => {
       value: "Comment",
       isSortable: false,
     },
+    {
+      value: "Type",
+      isSortable: false,
+    },
 
     {
       value: "Amount Paid",
@@ -385,7 +392,7 @@ const Payments = () => {
       const resp = await mutate(res, businessType);
       console.log(resp, "resp");
       if (resp["error"] !== undefined) {
-        return toast.error(resp.error.data.error);
+        return toast.error(resp?.error?.data?.error ?? "Something went wrong");
       }
       setNewPaymentModal(false);
       setNewPayment({ type: null });
@@ -411,7 +418,36 @@ const Payments = () => {
           onReset={handleFilterReset}
           onExcelDownload={handleExcelDownload}
           onSubmit={handleFilterChange}
-        />
+        >
+          {filterDates?.type?.value === "CAPITAL" && (
+            <>
+              <Filters.Column
+                columHeading="Total Investment"
+                value={paymentsData?.data?.sum}
+              />
+              <Filters.Column
+                columHeading="Remaining"
+                value={paymentsData?.data?.remainingCapital}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "OTHERS" && (
+            <>
+              <Filters.Column
+                columHeading="Total Amount"
+                value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "SALARY" && (
+            <>
+              <Filters.Column
+                columHeading="Salary Paid"
+                value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+        </Filters>
 
         <div className={styles.wrapper}>
           {/* search */}

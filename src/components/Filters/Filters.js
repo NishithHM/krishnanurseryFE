@@ -16,6 +16,7 @@ const Filters = ({
   onExcelDownload = () => {},
   resetExcelPage,
   setNextExcelAvailable,
+  children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isParentSet, setParentSet] = useState(false);
@@ -168,10 +169,29 @@ const Filters = ({
               </div>
             )}
           </div>
+          {children}
         </div>
       )}
     </div>
   );
 };
+
+const AnotherColumn = ({ columHeading, value }) => {
+  return (
+    <div className={styles.buttonWrapper}>
+      <div className={styles.btnSubWrapper}>
+        <p style={{
+          textAlign: "center",
+          fontWeight: "bold",
+        
+        }}>
+          {columHeading}: {value}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+Filters.Column = AnotherColumn;
 
 export default Filters;
