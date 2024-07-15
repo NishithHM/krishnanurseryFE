@@ -75,7 +75,6 @@ const Payments = () => {
     search: searchInput,
     ...dates,
     businessType,
-    
   });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
@@ -85,7 +84,6 @@ const Payments = () => {
   const handleViewBill = (id) => {};
 
   const handleFilterChange = async (filterDates) => {
-    console.log(filterDates, "filterDates......");
     setFilterDates(filterDates);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
@@ -364,6 +362,7 @@ const Payments = () => {
       const res = {
         type: data?.type?.value,
         empName: data?.name,
+        vendorId: data?.vendor,
         amount: data?.amount,
         phoneNumber: data?.phone || "",
         transferType: paymentMode?.type || "CASH",
@@ -437,6 +436,14 @@ const Payments = () => {
               <Filters.Column
                 columHeading="Salary Paid"
                 value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "VENDOR" && (
+            <>
+              <Filters.Column
+                columHeading="Deviation"
+                value={paymentsData?.data?.vendorDeviation}
               />
             </>
           )}
@@ -530,6 +537,25 @@ const Payments = () => {
             value={newPayment?.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
+
+          {newPayment?.type?.value === "VENDOR" ? (
+            <>
+              <Dropdown
+                url={`/api/vendors/getAll?type=${businessType}`}
+                id="vendors"
+                apiDataPath={{ label: "name", value: "_id" }}
+                title="Vendor Name"
+                onChange={(e) => {
+                  setNewPayment((prev) => ({
+                    ...prev,
+                    vendor: e[0]?.value,
+                  }));
+                }}
+                value={newPayment?.vendor?.value || ""}
+                minInputToFireApi={3}
+              />
+            </>
+          ) : null}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
