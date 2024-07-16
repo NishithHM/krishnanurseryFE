@@ -551,6 +551,7 @@ const Payments = () => {
                     vendor: e[0]?.value,
                   }));
                 }}
+                isMultiEnabled={true}
                 value={newPayment?.vendor?.value || ""}
                 minInputToFireApi={3}
               />
