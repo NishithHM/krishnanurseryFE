@@ -17,6 +17,7 @@ const Filters = ({
   resetExcelPage,
   setNextExcelAvailable,
   children,
+  typeFilterVisible = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isParentSet, setParentSet] = useState(false);
@@ -102,7 +103,7 @@ const Filters = ({
             endDateInput={filterDates.end_date}
           />
 
-          {true && (
+          {typeFilterVisible && (
             <div style={{ width: "200px" }}>
               <Dropdown
                 id="type"
@@ -180,11 +181,12 @@ const AnotherColumn = ({ columHeading, value }) => {
   return (
     <div className={styles.buttonWrapper}>
       <div className={styles.btnSubWrapper}>
-        <p style={{
-          textAlign: "center",
-          fontWeight: "bold",
-        
-        }}>
+        <p
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
           {columHeading}: {value}
         </p>
       </div>
