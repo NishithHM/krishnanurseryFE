@@ -17,7 +17,7 @@ const Filters = ({
   resetExcelPage,
   setNextExcelAvailable,
   children,
-  typeFilterVisible = true,
+  typeFilterVisible = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isParentSet, setParentSet] = useState(false);

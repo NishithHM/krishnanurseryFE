@@ -410,6 +410,7 @@ const Payments = () => {
           onReset={handleFilterReset}
           onExcelDownload={handleExcelDownload}
           onSubmit={handleFilterChange}
+          typeFilterVisible={true}
         >
           {filterDates?.type?.value === "CAPITAL" && (
             <>
