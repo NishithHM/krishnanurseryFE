@@ -49,7 +49,7 @@ const requiredDataHistory = [
   "quantity",
   "vendorName",
   "vendorContact",
-  "totalPrice",
+  "totalPriceWithoutGst",
   "images",
   "invoice",
 ];
@@ -84,7 +84,7 @@ export const getTableBody = (data, imagesHandler) => {
         return {
           value: dayjs(ele[data] || ele?.createdAt).format("DD/MM/YYYY"),
         };
-      } else if (data === "totalPrice") {
+      } else if (data === "totalPriceWithoutGst") {
         return { value: (ele[data] / ele.quantity).toFixed(2) };
       } else if (data === "invoice") {
         return {
