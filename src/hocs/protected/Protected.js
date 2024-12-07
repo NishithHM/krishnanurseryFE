@@ -31,6 +31,7 @@ import WasteList from "../../pages/WasteManagement/WasteManagementList";
 import SalesDashBoard from "../../pages/Sales";
 import Vendor from "../../pages/Vendor";
 import AgriPayments from "../../pages/Payments";
+import OnlineOrderPage from "../../pages/OnlineOrders/onlineOrder";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
@@ -158,6 +159,7 @@ const Protected = () => {
               element={<Vendor/>}
             />
             <Route path="/dashboard/sales" exact element={<Sales />} />
+            <Route path="/dashboard/online-orders" exact element={<OnlineOrderPage />} />
           </Routes>
         </div>
         <Footer />
