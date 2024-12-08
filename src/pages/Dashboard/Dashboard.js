@@ -170,6 +170,15 @@ const Dashboard = () => {
       isDisabled: false,
       tabType: "Agri",
     },
+    {
+      id : 18,
+      title: "Online Orders",
+      tile_img: salesImg,
+      path: "online-orders",
+      allowed: [USER_ROLES.admin, USER_ROLES.sales],
+      isDisabled: false,
+      tabType: "Nursery",
+    },
   ];
 
   const { state } = useLocation()
