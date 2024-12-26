@@ -50,6 +50,7 @@ const requiredDataHistory = [
   "vendorName",
   "vendorContact",
   "totalPriceWithoutGst",
+  "totalPrice",
   "images",
   "invoice",
 ];
@@ -80,12 +81,15 @@ const handleImageOpen = (data) => {
 export const getTableBody = (data, imagesHandler) => {
   const result = data?.map((ele) => {
     const data = requiredDataHistory.map((data) => {
+      console.log(data)
       if (data === "procuredOn") {
         return {
           value: dayjs(ele[data] || ele?.createdAt).format("DD/MM/YYYY"),
         };
       } else if (data === "totalPriceWithoutGst") {
-        return { value: (ele[data] / ele.quantity).toFixed(2) };
+        return { value: (ele[data] / ele.quantity).toFixed(3) };
+      } else if (data === "totalPrice") {
+        return { value: (ele[data] / ele.quantity).toFixed(3) };
       } else if (data === "invoice") {
         return {
           value: (

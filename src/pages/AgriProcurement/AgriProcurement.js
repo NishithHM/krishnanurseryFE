@@ -40,7 +40,8 @@ const billingHistoryHeader = [
   { value: "Total Quantity", width: "10%" },
   { value: "Vendor Name", width: "15%" },
   { value: "Vendor Contact", width: "15%" },
-  { value: "Price Per Product (wihout GST) ₹", width: "15%" },
+  { value: "Price Per Product (without GST) ₹", width: "15%" },
+  { value: "Price Per Product (with GST) ₹", width: "15%" },
   { value: "Images", width: "10%" },
   { value: "Invoice", width: "10%" },
 ];
