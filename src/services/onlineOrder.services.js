@@ -17,6 +17,7 @@ export const onlineOrdersApi = createApi({
         },
       }),
     }),
+    tagTypes: ["onlineOrders"],
 
   endpoints: (builder) => {
     return {
@@ -41,6 +42,7 @@ export const onlineOrdersApi = createApi({
             isCount
           },
         }),
+        providesTags: ["onlineOrders"],
       }),
       approveOnlineOrder: builder.mutation({
         query: ({uuid, extraFee}) => ({
@@ -50,6 +52,14 @@ export const onlineOrdersApi = createApi({
             extraFee
           }
         }),
+        invalidatesTags: ["onlineOrders"],
+      }),
+      rejecteOnlineOrder: builder.mutation({
+        query: ({uuid}) => ({
+          url: `/reject/${uuid}`,
+          method: "GET",
+        }),
+        invalidatesTags: ["onlineOrders"],
       }),
     };
   },
@@ -57,5 +67,6 @@ export const onlineOrdersApi = createApi({
 
 export const {
   useGetAllOnlineOrdersQuery,
-  useApproveOnlineOrderMutation
+  useApproveOnlineOrderMutation,
+  useRejecteOnlineOrderMutation
 } = onlineOrdersApi;

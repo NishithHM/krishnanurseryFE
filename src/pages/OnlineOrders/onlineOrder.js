@@ -1,8 +1,8 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../context';
-import { useApproveOnlineOrderMutation, useGetAllOnlineOrdersQuery } from '../../services/onlineOrder.services';
-import { BackButton, Spinner, Table, Toaster } from '../../components';
+import { useApproveOnlineOrderMutation, useGetAllOnlineOrdersQuery, useRejecteOnlineOrderMutation } from '../../services/onlineOrder.services';
+import { Alert, BackButton, Modal, Spinner, Table, Toaster } from '../../components';
 import styles from './onlineOrder.module.css'
 import { ImSearch } from 'react-icons/im';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -21,6 +21,7 @@ const OnlineOrderPage = () => {
     const [purchaseCount, setPurchaseCount] = useState(0);
     const [showInvoice, setShowInvoice] = useState({})
     const [extraFee, setExtraFee] = useState(0)
+    const [rejectModal, setRejectModal] = useState('')
     const printRef = useRef();
     const onlineOrdersData = useGetAllOnlineOrdersQuery({
         pageNumber: page,
@@ -33,7 +34,7 @@ const OnlineOrderPage = () => {
         setSearchInput(event.target.value);
     };
     const [approveOnlineOrder]  = useApproveOnlineOrderMutation()
-
+    const [rejecteOnlineOrder] = useRejecteOnlineOrderMutation()
 
     const purchaseCountReq = useGetAllOnlineOrdersQuery({
         search: searchInput,
@@ -110,6 +111,15 @@ const OnlineOrderPage = () => {
         }, 2000)
     }
 
+    const onReject=async(data)=>{
+        const res = await rejecteOnlineOrder({uuid: rejectModal });
+        setRejectModal('')
+    }
+
+    const onCancelHandler = async()=>{
+        setRejectModal('')
+    }
+
     const formatPurchasesData = (data) => {
         const formatted = data.map((purchase) => {
             const date = { value: dayjs(purchase.updatedAt).format("DD-MM-YYYY") };
@@ -128,6 +138,7 @@ const OnlineOrderPage = () => {
 
             const approve = {
                 value: (
+                    <span>
                     <span
                         style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
                         onClick={async () => {
@@ -136,6 +147,17 @@ const OnlineOrderPage = () => {
 
                     >
                         Approve
+                    </span>
+                    &nbsp; / &nbsp;
+                    <span
+                        style={{ color: "red", fontWeight: "600", cursor: "pointer" }}
+                        onClick={async () => {
+                            setRejectModal(purchase?.uuid)
+                        }}
+
+                    >
+                        Reject
+                    </span>
                     </span>
                 )
             };
@@ -253,6 +275,15 @@ const OnlineOrderPage = () => {
                 </div>
 
             )}
+        <Modal isOpen={Boolean(rejectModal)} contentLabel="Reject Order">
+          <Alert
+            message="Are you sure to reject this order request?"
+            handleCancel={onCancelHandler}
+            handleConfirm={onReject}
+            cancelBtnLabel='Cancel'
+            confirmBtnLabel='Reject'
+          />
+        </Modal>
         </div>
     );
 };
