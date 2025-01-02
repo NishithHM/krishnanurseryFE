@@ -309,7 +309,7 @@ export default function AgriAddBills() {
       customerDetails.data.billingHistory.forEach((history) => {
         history.items.forEach((item) => {
           let val = [];
-          if (item.procurementName?.ka?.name) {
+          if (history.type==="NURSERY") {
             val.push({
               value: `${item.procurementName.en.name} (${item.procurementName.ka.name})`,
               type: "Nursery",
@@ -779,6 +779,7 @@ export default function AgriAddBills() {
     }
   };
 
+ console.log(state.billingHistory, selectedTab)
   const today = new Date();
 
   const name =
