@@ -30,6 +30,7 @@ import { useCreatePaymentMutation } from "../../services/payments.services";
 import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
 import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
+import Datepicker from "../../components/Datepicker/Datepicker";
 
 const Payments = () => {
   const [page, setPage] = useState(1);
@@ -326,6 +327,7 @@ const Payments = () => {
         brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
         brokerId: data.broker.value || null,
+        date: dayjs(data.date).format('YYYY-MM-DD')
       };
 
       const resp = await mutate(res);
@@ -378,6 +380,7 @@ const Payments = () => {
           paymentMode?.type === "ONLINE"
             ? data?.amount
             : data?.amountPaidOnline || 0,
+        date: dayjs(data.date).format('YYYY-MM-DD')    
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
@@ -623,6 +626,17 @@ const Payments = () => {
                   }))
                 }
               />
+              
+              <Datepicker
+                label="Payment date"
+                isRequired
+                maxDate={new Date()}
+                value={newPayment.date}
+                onChange={e=> setNewPayment((prev)=>({
+                  ...prev,
+                  date: e
+                }))}
+              />
             </>
           ) : newPayment.type ? (
             <>
@@ -749,6 +763,13 @@ const Payments = () => {
                       setNewPayment={setNewPayment}
                     />
                   )}
+                  
+                  <Datepicker
+                    label="Payment date"
+                    isRequired
+                    maxDate={new Date()}
+                  />
+                  
                 </React.Fragment>
               )}
             </>
