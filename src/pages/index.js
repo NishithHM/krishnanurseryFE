@@ -22,6 +22,7 @@ import AgriRequesrOrder from "./AgriRequestOrder";
 import AgriOrderMgmt from "./AgriOrderManagement";
 import AgriAddBills from "./AgriAddBills/AgriAddBills";
 import Sales from "./Sales/Sales";
+import AgriPayments from "./AgriPayments/Payments";
 export {
   Login,
   Test,
@@ -47,4 +48,5 @@ export {
   AgriRequesrOrder,
   AgriAddBills,
   Sales,
+  AgriPayments 
 };
