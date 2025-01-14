@@ -20,16 +20,16 @@ import get from "lodash/get";
 import { Modal as MantineModal } from "@mantine/core";
 import { AuthContext } from "../../context";
 import {
-  useDownloadPaymentsExcelMutation,
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsQuery,
 } from "../../services/payments.services";
+import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
 import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
 import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
 
-const Payments = () => {
+const AgriPayments = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [newPaymenModal, setNewPaymentModal] = useState(false);
@@ -44,11 +44,11 @@ const Payments = () => {
   const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery(page);
+  const paymentsData = useGetAllPaymentsQuery({page, businessType:"AGRI"});
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
   // );
-  const paymentsCountReq = useGetAllPaymentsCountQuery({ search: searchInput });
+  const paymentsCountReq = useGetAllPaymentsCountQuery({ search: searchInput, businessType:"AGRI" });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
 
@@ -77,7 +77,7 @@ const Payments = () => {
   const handleViewBill = (id) => {};
 
   const formatPaymentsData = (data) => {
-    const formatted = data.map((item) => {
+    const formatted = data?.map((item) => {
       const name = { value: item.name };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
       const amount = {
@@ -115,8 +115,8 @@ const Payments = () => {
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
-      const res = await searchPayment(query);
-      const payments = formatPaymentsData(res.data);
+      const res = await searchPayment(query, "AGRI");
+      const payments = formatPaymentsData(res?.data || []);
       setData(payments);
     }
   }, 500);
@@ -128,12 +128,12 @@ const Payments = () => {
 
   useEffect(() => {
     if (paymentsCountReq.status !== "fulfilled") return;
-    setUsersCount(paymentsCountReq.data[0].count || 0);
+    setUsersCount(paymentsCountReq?.data[0]?.count || 0);
   }, [paymentsCountReq]);
 
   useEffect(() => {
     if (paymentsData.status === "fulfilled") {
-      const payments = formatPaymentsData(paymentsData.data);
+      const payments = formatPaymentsData(paymentsData?.data?.data);
       setData(payments);
     }
   }, [paymentsData, searchInput]);
@@ -211,7 +211,7 @@ const Payments = () => {
         brokerId: data.broker.value || null,
       };
 
-      const resp = await mutate(res);
+      const resp = await mutate(res, "AGRI");
       if (resp["error"] !== undefined) {
         return toast.error(resp.error.data.message);
       }
@@ -610,4 +610,4 @@ const PaymentModeBoth = ({ newPayment, setNewPayment }) => {
   );
 };
 
-export default Payments;
+export default AgriPayments;

@@ -89,10 +89,10 @@ export const paymentsApi = createApi({
       }),
 
       searchPayment: builder.mutation({
-        query: (search = null) => ({
+        query: (search = null, businessType="NURESERY") => ({
           url: "/getAll",
           method: "GET",
-          params: { search },
+          params: { search, businessType},
         }),
       }),
       getInfo: builder.mutation({

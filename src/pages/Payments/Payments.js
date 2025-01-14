@@ -108,6 +108,7 @@ const Payments = () => {
         value: item?.comment || "---",
       };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
+      const paymentDate = { value: item?.date ? dayjs(item.date).format("DD-MM-YYYY"):  dayjs(item.createdAt).format("DD-MM-YYYY") };
       const amount = {
         value: item.amount,
       };
@@ -137,6 +138,7 @@ const Payments = () => {
       const data = [
         name,
         createdAt,
+        paymentDate,
         paymentThrough,
         comment,
         type,
@@ -259,6 +261,10 @@ const Payments = () => {
 
     {
       value: "Created Date",
+      isSortable: false,
+    },
+    {
+      value: "Payment Date",
       isSortable: false,
     },
     {
@@ -550,12 +556,14 @@ const Payments = () => {
                 apiDataPath={{ label: "name", value: "_id" }}
                 title="Vendor Name"
                 onChange={(e) => {
+                  console.log(e)
                   setNewPayment((prev) => ({
                     ...prev,
-                    vendor: e[0]?.value,
+                    vendor: e?.value,
+                    phone: e?.meta?.contact,
+                    name: e?.meta?.name
                   }));
                 }}
-                isMultiEnabled={true}
                 value={newPayment?.vendor?.value || ""}
                 minInputToFireApi={3}
               />

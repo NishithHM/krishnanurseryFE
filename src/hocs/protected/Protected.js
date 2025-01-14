@@ -24,6 +24,7 @@ import {
   AgriOrderMgmt,
   AgriAddBills,
   Sales,
+  AgriPayments,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -32,6 +33,7 @@ import SalesDashBoard from "../../pages/Sales";
 import AgriPayments from "../../pages/Payments";
 import Vendor from "../../pages/Vendor";
 import OnlineOrderPage from "../../pages/OnlineOrders/onlineOrder";
+import Vendor from "../../pages/Vendor";
 
 const Protected = () => {
   const [context, setContext] = useContext(AuthContext);
