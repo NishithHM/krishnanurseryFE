@@ -150,7 +150,7 @@ const Protected = () => {
             <Route
               path="/dashboard/agri-payments"
               exact
-              element={<AgriPayments />}
+              element={<Payments businessType="AGRI"/>}
             />
              <Route
               path="/dashboard/vendors"
