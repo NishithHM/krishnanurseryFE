@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import debounce from "lodash/debounce";
+import dayjs from "dayjs";
 import styles from "./Payments.module.css";
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -13,6 +13,7 @@ import {
   BackButton,
   Input,
   Dropdown,
+  Filters,
 } from "../../components";
 
 import { ImSearch } from "react-icons/im";
@@ -22,64 +23,92 @@ import { AuthContext } from "../../context";
 import {
   useGetAllPaymentsByPhoneNumberQuery,
   useGetAllPaymentsQuery,
+  useGetInfoMutation,
 } from "../../services/payments.services";
-import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
 import { toast } from "react-toastify";
 import { useCreatePaymentMutation } from "../../services/payments.services";
 import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
+import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
+import Datepicker from "../../components/Datepicker/Datepicker";
 
 const AgriPayments = () => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [newPaymenModal, setNewPaymentModal] = useState(false);
+  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
+  const [excelPage, setExcelPage] = useState(1);
+
   const [newPayment, setNewPayment] = useState({
     type: null,
   });
   const [paymentMode, setPaymentMode] = useState({ type: null });
+  const [filterDates, setFilterDates] = useState({});
+
+  const [type, setType] = useState();
 
   const [searchInput, setSearchInput] = useState("");
   const [usersCount, setUsersCount] = useState(0);
-  const [excelPage, setExcelPage] = useState(1);
-  const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
+
+  const dates = {};
+  const paymentMadeBy = ["SALARY", "OTHERS", "CAPITAL", "VENDOR"];
+  const businessType = "AGRI";
+
+  if (Object.keys(filterDates)?.length) {
+    if (filterDates?.start_date && filterDates?.end_date) {
+      dates.startDate = dayjs(filterDates?.start_date).format("YYYY-MM-DD");
+      dates.endDate = dayjs(filterDates?.end_date).format("YYYY-MM-DD");
+    }
+    dates.type = filterDates?.type?.value;
+    dates.vendorId = filterDates?.vendors[0]?.value;
+  }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery({page, businessType:"AGRI"});
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType });
+  const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
+  const [paymentData] = useGetInfoMutation();
+
   // const dataFromPhoneNumber = useGetAllPaymentsByPhoneNumberQuery(
   //   newPayment?.phone
   // );
-  const paymentsCountReq = useGetAllPaymentsCountQuery({ search: searchInput, businessType:"AGRI" });
+
+  const paymentsCountReq = useGetAllPaymentsCountQuery({
+    search: searchInput,
+    ...dates,
+    businessType,
+  });
   const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
 
-  const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
-
   // console.log(dataFromPhoneNumber, "data phone");
-
-  const handleExcelDownload = async (filterDates) => {
-    const res = await downloadPaymentsExcel({
-      pageNumber: excelPage,
-      type: "AGRI",
-      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
-      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
-    });
-    const { isNext, response } = res.data;
-    setNextExcelAvailable(isNext === "true");
-    if (isNext === "true") {
-      setExcelPage((prev) => prev + 1);
-    }
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(response);
-    link.download = "billing.xlsx";
-    link.click();
-  };
 
   const handleViewBill = (id) => {};
 
+  const handleFilterChange = async (filterDates) => {
+    setFilterDates(filterDates);
+    await paymentsCountReq.refetch();
+    setNextExcelAvailable(true);
+  };
+
   const formatPaymentsData = (data) => {
-    const formatted = data?.map((item) => {
+    const formatted = data.map((item) => {
       const name = { value: item.name };
+      let paymentInfo = `Cash: ${item?.cashAmount ?? 0}, Online: ${
+        item?.onlineAmount ?? 0
+      }`;
+
+      const type = {
+        value: item.type,
+      };
+
+      let paymentThrough = {
+        value: paymentInfo,
+      };
+      let comment = {
+        value: item?.comment || "---",
+      };
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
+      const paymentDate = { value: item?.date ? dayjs(item.date).format("DD-MM-YYYY"):  dayjs(item.createdAt).format("DD-MM-YYYY") };
       const amount = {
         value: item.amount,
       };
@@ -106,11 +135,39 @@ const AgriPayments = () => {
           ),
       };
 
-      const data = [name, createdAt, amount, invoiceId, action];
+      const data = [
+        name,
+        createdAt,
+        paymentDate,
+        paymentThrough,
+        comment,
+        type,
+        amount,
+        invoiceId,
+        action,
+      ];
       return data;
     });
 
     return formatted;
+  };
+
+  const handleExcelDownload = async (filterDates) => {
+    const res = await downloadPaymentsExcel({
+      pageNumber: excelPage,
+      type: "NURSERY",
+      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+    });
+    const { isNext, response } = res.data;
+    setNextExcelAvailable(isNext === "true");
+    if (isNext === "true") {
+      setExcelPage((prev) => prev + 1);
+    }
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(response);
+    link.download = "billing.xlsx";
+    link.click();
   };
 
   const searchHandler = debounce(async (query) => {
@@ -121,14 +178,71 @@ const AgriPayments = () => {
     }
   }, 500);
 
+  const onNumberChange = async (num) => {
+    setNewPayment((prev) => ({
+      ...prev,
+      phone: num.target.value,
+    }));
+    if (num.target.value.length === 10) {
+      const res = await paymentData(num.target.value);
+      const paymentInfo = res?.data;
+      setNewPayment((prev) => ({
+        ...prev,
+        name: paymentInfo?.name,
+        accountNumber: paymentInfo?.accountNumber,
+        ifscCode: paymentInfo?.ifscCode,
+        bankName: paymentInfo?.bankName,
+      }));
+    }
+  };
+
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
     searchHandler(event.target.value);
   };
 
+  const getUserCount = () => {
+    setUsersCount(paymentsCountReq?.data?.data[0]?.count || 0);
+  };
+
+  const getRoundedDates = () => {
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
+
+    if (mm < 10) {
+      mm = `0${mm}`;
+    }
+
+    if (dd < 10) {
+      dd = `0${dd}`;
+    }
+    let formattedDate = `${yyyy}-${mm}-${dd}`;
+
+    let roundedDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    let roundedYYYY = roundedDate.getFullYear();
+    let roundedMM = roundedDate.getMonth() + 1;
+    let roundedDD = roundedDate.getDate();
+    if (roundedMM < 10) {
+      roundedMM = `0${roundedMM}`;
+    }
+
+    if (roundedDD < 10) {
+      roundedDD = `0${roundedDD}`;
+    }
+
+    let formattedRoundedDate = `${roundedYYYY}-${roundedMM}-${roundedDD}`;
+    return { start_date: formattedRoundedDate, end_date: formattedDate };
+  };
+
+  const handleFilterReset = () => {
+    setFilterDates(getRoundedDates());
+  };
+
   useEffect(() => {
     if (paymentsCountReq.status !== "fulfilled") return;
-    setUsersCount(paymentsCountReq?.data[0]?.count || 0);
+    getUserCount();
   }, [paymentsCountReq]);
 
   useEffect(() => {
@@ -147,6 +261,22 @@ const AgriPayments = () => {
 
     {
       value: "Created Date",
+      isSortable: false,
+    },
+    {
+      value: "Payment Date",
+      isSortable: false,
+    },
+    {
+      value: "Payment Through",
+      isSortable: false,
+    },
+    {
+      value: "Comment",
+      isSortable: false,
+    },
+    {
+      value: "Type",
       isSortable: false,
     },
 
@@ -170,6 +300,8 @@ const AgriPayments = () => {
     { value: "BROKER", label: "Brokerage" },
     { value: "SALARY", label: "Salaries" },
     { value: "OTHERS", label: "Others" },
+    { value: "CAPITAL", label: "Capital" },
+    { value: "VENDOR", label: "Vendor" },
   ];
 
   const PAYMENT_MODES = [
@@ -178,15 +310,7 @@ const AgriPayments = () => {
     { value: "BOTH", label: "Both" },
   ];
 
-  let filtered_payment_types = [];
-
-  if (user_role === "admin") {
-    filtered_payment_types = PAYMENT_TYPES;
-  } else if (user_role === "sales") {
-    filtered_payment_types = [PAYMENT_TYPES[0], PAYMENT_TYPES[2]];
-  } else if (user_role === "procurement") {
-    filtered_payment_types = [PAYMENT_TYPES[1], PAYMENT_TYPES[2]];
-  }
+  let filtered_payment_types = PAYMENT_TYPES;
 
   const handleCreatePayment = async () => {
     const data = newPayment;
@@ -209,6 +333,8 @@ const AgriPayments = () => {
         brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
         brokerId: data.broker.value || null,
+        date: dayjs(data.date).format('YYYY-MM-DD'),
+        businessType
       };
 
       const resp = await mutate(res, "AGRI");
@@ -226,9 +352,26 @@ const AgriPayments = () => {
         return toast.error("Amount Should not be empty or less than 0");
       // if (data.type.value === "OTHERS" && !data.invoiceId)
       //   return toast.error("Invalid Invoice Id");
+      if (paymentMode.type === "BOTH") {
+        if (
+          data.amountPaidCash &&
+          data.amountPaidOnline &&
+          Number(data.amount) !==
+            Number(data.amountPaidOnline) + Number(data.amountPaidCash)
+        )
+          return toast.error(
+            "Total amount should be equal to sum of cash and online amount",
+            {
+              position: "bottom-right",
+              autoClose: 5000,
+            }
+          );
+      }
+
       const res = {
         type: data?.type?.value,
         empName: data?.name,
+        vendorId: data?.vendor,
         amount: data?.amount,
         phoneNumber: data?.phone || "",
         transferType: paymentMode?.type || "CASH",
@@ -236,14 +379,23 @@ const AgriPayments = () => {
         ifscCode: data?.ifscCode,
         bankName: data?.bankName,
         comment: data?.comment,
-        cashAmount: data?.amountPaidCash,
-        onlineAmount: data?.amountPaidOnline,
+        cashAmount:
+          paymentMode?.type === "CASH"
+            ? data?.amount
+            : data?.amountPaidCash || 0,
+        onlineAmount:
+          paymentMode?.type === "ONLINE"
+            ? data?.amount
+            : data?.amountPaidOnline || 0,
+        date: dayjs(data.date).format('YYYY-MM-DD'),
+        businessType
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
-      const resp = await mutate(res);
+      const resp = await mutate(res, businessType);
+      console.log(resp, "resp");
       if (resp["error"] !== undefined) {
-        return toast.error(resp.error.data.message);
+        return toast.error(resp?.error?.data?.error ?? "Something went wrong");
       }
       setNewPaymentModal(false);
       setNewPayment({ type: null });
@@ -257,6 +409,58 @@ const AgriPayments = () => {
         <div>
           <BackButton navigateTo={"/authorised/dashboard"} />
         </div>
+
+        <Filters
+          config={{
+            isNextExcelAvailable,
+            excelPage,
+            vendorType: "NURSERY", // added this as vendor type because , api requires this as nursery or agri
+          }}
+          resetExcelPage={() => setExcelPage(1)}
+          setNextExcelAvailable={setNextExcelAvailable}
+          onReset={handleFilterReset}
+          onExcelDownload={handleExcelDownload}
+          onSubmit={handleFilterChange}
+          typeFilterVisible={true}
+        >
+          {filterDates?.type?.value === "CAPITAL" && (
+            <>
+              <Filters.Column
+                columHeading="Total Investment"
+                value={paymentsData?.data?.sum}
+              />
+              <Filters.Column
+                columHeading="Remaining"
+                value={paymentsData?.data?.remainingCapital}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "OTHERS" && (
+            <>
+              <Filters.Column
+                columHeading="Total Amount"
+                value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "SALARY" && (
+            <>
+              <Filters.Column
+                columHeading="Salary Paid"
+                value={paymentsData?.data?.sum}
+              />
+            </>
+          )}
+          {filterDates?.type?.value === "VENDOR" && (
+            <>
+              <Filters.Column
+                columHeading="Deviation"
+                value={paymentsData?.data?.vendorDeviation}
+              />
+            </>
+          )}
+        </Filters>
+
         <div className={styles.wrapper}>
           {/* search */}
           <div className={styles.searchContainer}>
@@ -279,7 +483,11 @@ const AgriPayments = () => {
             <div className={styles.paginationInner}>
               {/* count */}
               <span>{`${page === 1 ? "1" : (page - 1) * 10}-${
-                page * 10 > usersCount ? usersCount : page * 10
+                page * 10 > usersCount
+                  ? usersCount
+                  : data?.length > 10
+                  ? page * 10
+                  : data?.length
               } of ${usersCount}`}</span>
               {/* controls */}
               <button
@@ -323,7 +531,7 @@ const AgriPayments = () => {
           setNewPayment({ type: null });
           setPaymentMode({ type: null });
         }}
-        size={"lg"}
+        size={"700px"}
         title="Add New Payment"
       >
         <div
@@ -341,6 +549,28 @@ const AgriPayments = () => {
             value={newPayment?.type}
             onChange={(e) => setNewPayment((prev) => ({ ...prev, type: e }))}
           />
+
+          {newPayment?.type?.value === "VENDOR" ? (
+            <>
+              <Dropdown
+                url={`/api/vendors/getAll?type=${businessType}`}
+                id="vendors"
+                apiDataPath={{ label: "name", value: "_id" }}
+                title="Vendor Name"
+                onChange={(e) => {
+                  console.log(e)
+                  setNewPayment((prev) => ({
+                    ...prev,
+                    vendor: e?.value,
+                    phone: e?.meta?.contact,
+                    name: e?.meta?.name
+                  }));
+                }}
+                value={newPayment?.vendor?.value || ""}
+                minInputToFireApi={3}
+              />
+            </>
+          ) : null}
           {newPayment.type && newPayment.type.value === "BROKER" ? (
             <>
               <Dropdown
@@ -406,21 +636,27 @@ const AgriPayments = () => {
                   }))
                 }
               />
+              
+              <Datepicker
+                label="Payment date"
+                isRequired
+                maxDate={new Date()}
+                value={newPayment.date}
+                onChange={e=> setNewPayment((prev)=>({
+                  ...prev,
+                  date: e
+                }))}
+              />
             </>
           ) : newPayment.type ? (
             <>
-              {newPayment.type.value === "OTHERS" && (
+              {paymentMadeBy.includes(newPayment.type.value) && (
                 <Input
                   required
                   title="Phone Number"
                   type="number"
                   value={newPayment?.phone}
-                  onChange={(e) =>
-                    setNewPayment((prev) => ({
-                      ...prev,
-                      phone: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => onNumberChange(e)}
                 />
               )}
               <Input
@@ -433,7 +669,7 @@ const AgriPayments = () => {
                 }
               />
 
-              {newPayment.type.value === "SALARY" && (
+              {/* {newPayment.type.value === "SALARY" && (
                 <Input
                   required
                   title="Amount Paid"
@@ -446,12 +682,12 @@ const AgriPayments = () => {
                     }))
                   }
                 />
-              )}
-              {newPayment.type.value === "OTHERS" && (
-                <>
+              )} */}
+              {paymentMadeBy.includes(newPayment.type.value) && (
+                <React.Fragment>
                   <Input
                     required
-                    title="accountNumber"
+                    title="Account Number"
                     type="number"
                     value={newPayment?.accountNumber}
                     onChange={(e) =>
@@ -490,7 +726,7 @@ const AgriPayments = () => {
                     required
                     title="Total Amount Paid"
                     type="number"
-                    value={newPayment?.amount}
+                    value={newPayment?.totalAmount}
                     onChange={(e) =>
                       setNewPayment((prev) => ({
                         ...prev,
@@ -498,18 +734,26 @@ const AgriPayments = () => {
                       }))
                     }
                   />
-                  <Dropdown
-                    required
-                    title="Payment Mode"
-                    data={PAYMENT_MODES}
-                    value={paymentMode?.type}
-                    onChange={(e) =>
-                      setPaymentMode((prev) => ({
-                        ...prev,
-                        type: e?.value,
-                      }))
-                    }
-                  />
+                  <div>
+                    <Dropdown
+                      required
+                      title="Payment Mode"
+                      id="DropDownPaymentMode"
+                      data={PAYMENT_MODES}
+                      value={paymentMode?.type?.value}
+                      onChange={(e) => {
+                        setPaymentMode((prev) => ({
+                          ...prev,
+                          type: e?.value,
+                        }));
+                        setNewPayment((prev) => ({
+                          ...prev,
+                          amountPaidOnline: 0,
+                          amountPaidCash: 0,
+                        }));
+                      }}
+                    />
+                  </div>
                   <Input
                     required
                     title="Comment"
@@ -522,25 +766,21 @@ const AgriPayments = () => {
                       }))
                     }
                   />
-                  {paymentMode.type === "CASH" && (
-                    <PaymentModeCash
-                      value={newPayment?.amountPaidCash}
-                      setNewPayment={setNewPayment}
-                    />
-                  )}
-                  {paymentMode.type === "ONLINE" && (
-                    <PaymentModeOnline
-                      value={newPayment?.amountPaidOnline}
-                      setNewPayment={setNewPayment}
-                    />
-                  )}
+
                   {paymentMode.type === "BOTH" && (
                     <PaymentModeBoth
                       newPayment={newPayment}
                       setNewPayment={setNewPayment}
                     />
                   )}
-                </>
+                  
+                  <Datepicker
+                    label="Payment date"
+                    isRequired
+                    maxDate={new Date()}
+                  />
+                  
+                </React.Fragment>
               )}
             </>
           ) : (
@@ -562,12 +802,12 @@ const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
         type="number"
         title="Amount that is paid in cash"
         value={value}
-        onChange={(e) =>
+        onChange={(e) => {
           setNewPayment((prev) => ({
             ...prev,
             amountPaidCash: e.target.value,
-          }))
-        }
+          }));
+        }}
       />
     </>
   );
@@ -594,6 +834,12 @@ const PaymentModeOnline = ({ value, setNewPayment, disabled }) => {
   );
 };
 const PaymentModeBoth = ({ newPayment, setNewPayment }) => {
+  useEffect(() => {
+    setNewPayment((prev) => ({
+      ...prev,
+      amountPaidOnline: newPayment?.amount - newPayment?.amountPaidCash || 0,
+    }));
+  }, [newPayment?.amount, newPayment?.amountPaidCash]);
   return (
     <>
       <PaymentModeCash
