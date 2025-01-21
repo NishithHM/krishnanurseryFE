@@ -25,8 +25,8 @@ export const paymentsApi = createApi({
           url: `/addPayment`,
           method: "POST",
           body: {
-            ...paymentData,
             businessType,
+            ...paymentData,
           },
         }),
         invalidatesTags: ["User", "UserCount"],
