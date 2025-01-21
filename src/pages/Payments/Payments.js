@@ -32,7 +32,7 @@ import { useSearchPaymentMutation } from "../../services/payments.services";
 import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
 
-const Payments = () => {
+const Payments = ({businessType='NURSERY'}) => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [newPaymenModal, setNewPaymentModal] = useState(false);
@@ -52,7 +52,6 @@ const Payments = () => {
 
   const dates = {};
   const paymentMadeBy = ["SALARY", "OTHERS", "CAPITAL", "VENDOR"];
-  const businessType = "NURSERY";
 
   if (Object.keys(filterDates)?.length) {
     if (filterDates?.start_date && filterDates?.end_date) {
@@ -155,7 +154,7 @@ const Payments = () => {
   const handleExcelDownload = async (filterDates) => {
     const res = await downloadPaymentsExcel({
       pageNumber: excelPage,
-      type: "NURSERY",
+      type: businessType,
       startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
       endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
     });
@@ -172,8 +171,8 @@ const Payments = () => {
 
   const searchHandler = debounce(async (query) => {
     if (query.length >= 3) {
-      const res = await searchPayment(query);
-      const payments = formatPaymentsData(res.data);
+      const res = await searchPayment(query, "AGRI");
+      const payments = formatPaymentsData(res?.data || []);
       setData(payments);
     }
   }, 500);
@@ -333,7 +332,8 @@ const Payments = () => {
         brokerName: data.broker.label,
         brokerNumber: data.brokerPhone,
         brokerId: data.broker.value || null,
-        date: dayjs(data.date).format('YYYY-MM-DD')
+        date: dayjs(data.date).format('YYYY-MM-DD'),
+        businessType
       };
 
       const resp = await mutate(res);
@@ -386,7 +386,8 @@ const Payments = () => {
           paymentMode?.type === "ONLINE"
             ? data?.amount
             : data?.amountPaidOnline || 0,
-        date: dayjs(data.date).format('YYYY-MM-DD')    
+        date: dayjs(data.date).format('YYYY-MM-DD'),
+        businessType
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
 
@@ -412,7 +413,7 @@ const Payments = () => {
           config={{
             isNextExcelAvailable,
             excelPage,
-            vendorType: "NURSERY", // added this as vendor type because , api requires this as nursery or agri
+            vendorType: businessType, // added this as vendor type because , api requires this as nursery or agri
           }}
           resetExcelPage={() => setExcelPage(1)}
           setNextExcelAvailable={setNextExcelAvailable}
