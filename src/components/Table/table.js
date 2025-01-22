@@ -17,7 +17,6 @@ const Table = ({ data, onSortBy }) => {
     );
   }
 
-  console.log(data, "data...");
 
   return (
     <div>
