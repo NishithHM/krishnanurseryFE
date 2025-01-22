@@ -390,7 +390,6 @@ const Payments = ({businessType='NURSERY'}) => {
         businessType
       };
       if (data.type.value === "OTHERS") res.invoiceId = data.invoiceId;
-
       const resp = await mutate(res, businessType);
       console.log(resp, "resp");
       if (resp["error"] !== undefined) {
@@ -777,6 +776,11 @@ const Payments = ({businessType='NURSERY'}) => {
                     label="Payment date"
                     isRequired
                     maxDate={new Date()}
+                    value={newPayment.date}
+                    onChange={e=> setNewPayment((prev)=>({
+                      ...prev,
+                      date: e
+                }))}
                   />
                   
                 </React.Fragment>
