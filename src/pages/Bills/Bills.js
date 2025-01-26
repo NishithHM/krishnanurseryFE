@@ -297,6 +297,7 @@ const Bills = ({ type }) => {
       pageNumber: excelPage,
       startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
       endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+      type
     });
     const { isNext, response } = res.data;
     setNextExcelAvailable(isNext === "true");
