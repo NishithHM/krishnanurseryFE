@@ -283,7 +283,7 @@ const Bills = ({type}) => {
   };
 
   const handleExcelDownload = async (filterDates)=>{
-    const res= await downloadBillingExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD')})
+    const res= await downloadBillingExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD'), type})
     const {isNext, response} = res.data
     setNextExcelAvailable(isNext==='true')
     if(isNext==="true"){

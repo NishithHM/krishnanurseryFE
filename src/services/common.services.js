@@ -28,8 +28,8 @@ export const commonApi = createApi({
         }),
       }),
       downloadBillingExcel: builder.mutation({
-        query: ({ pageNumber, startDate, endDate }) => ({
-          url: `/excel/billing?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}`,
+        query: ({ pageNumber, startDate, endDate, type }) => ({
+          url: `/excel/billing?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}&type=${type}`,
           method: "GET",
           responseHandler: async (response) => {
             return await response.blob();
