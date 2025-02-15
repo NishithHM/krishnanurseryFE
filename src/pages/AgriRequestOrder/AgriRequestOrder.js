@@ -123,7 +123,7 @@ const AgriRequesrOrder = () => {
         type: item.type.label,
         name: item.name.label,
         variant: variant,
-        totalPrice: parseInt(item.totalQuantity) * parseInt(item.price),
+        totalPrice: parseFloat(item.totalQuantity) * parseFloat(item.price),
         id: location?.state?.data?.[index]?._id,
       };
     });
