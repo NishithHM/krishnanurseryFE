@@ -401,6 +401,26 @@ const Payments = ({businessType='NURSERY'}) => {
     }
   };
 
+
+  const onNameChange=async(name)=>{
+    setNewPayment((prev) => ({ ...prev, name }))
+    const res = await paymentData(name);
+    const paymentInfo = res?.data;
+    setNewPayment((prev) => ({
+      ...prev,
+      phone: paymentInfo?.phoneNumber,
+      accountNumber: paymentInfo?.accountNumber,
+      ifscCode: paymentInfo?.ifscCode,
+      bankName: paymentInfo?.bankName,
+    }));
+  }
+
+  const debouncedNameChange = debounce((e) => {
+    const name = e.target.value;
+    console.log(name)
+    onNameChange(name);
+  }, 700);
+
   return (
     <>
       <div>
@@ -662,9 +682,7 @@ const Payments = ({businessType='NURSERY'}) => {
                 title="Name"
                 type="text"
                 value={newPayment?.name}
-                onChange={(e) =>
-                  setNewPayment((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={debouncedNameChange}
               />
 
               {/* {newPayment.type.value === "SALARY" && (

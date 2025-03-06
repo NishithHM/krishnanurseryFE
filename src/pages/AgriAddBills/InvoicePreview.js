@@ -102,7 +102,10 @@ export const InvoiceSection = (props) => {
       let val = [];
       val.push({ value: index + 1 });
       if (type === "AGRI") {
-        val.push({ value: `${el.procurementName.en.name}` });
+        const [baseName, metaName] = `${el.procurementName.en.name}.`?.split('-')
+        const [companyName, otherNames] =`${metaName}.`.split('(')
+        const finalName = `${el.procurementName.en.name}.`?.replace(`-${companyName}`, '')
+        val.push({ value: `${finalName}` });
       } else val.push({ value: `${el.procurementLabel} ${el.variantLabel}` });
       val.push({ value: el.hsnCode });
       val.push({ value: el.mrp });
@@ -119,6 +122,7 @@ export const InvoiceSection = (props) => {
     });
     setCartList(newCartList);
   }, [JSON.stringify(cartData)]);
+
   return (
     <div className={styles.modalContent} id="modal-print-section">
       <div className="page-break" />
