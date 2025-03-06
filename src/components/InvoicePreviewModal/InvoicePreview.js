@@ -134,10 +134,18 @@ export const InvoiceSection = (props) => {
     }
 
     cartData.forEach((el, index) => {
+      console.log(el)
       let val = [];
       val.push({ value: index + 1 });
-      val.push({ value: el.procurementLabel });
-      if (type === "AGRI") {
+      if(type==='AGRI'){
+        const [baseName, metaName] = `${el.procurementLabel}.`?.split('-')
+        const [companyName, otherNames] =`${metaName}.`.split('(')
+        const finalName = `${el.procurementLabel}.`?.replace(`-${companyName}`, '')
+        val.push({ value: finalName });
+      }else{
+        val.push({ value: el.procurementLabel });
+      }
+      if(type==='AGRI'){
         val.push({ value: el.hsnCode });
       }
       if (showMRPTemp) {
