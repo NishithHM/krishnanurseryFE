@@ -96,6 +96,10 @@ const AddInvoiceModal = ({
     }));
   };
 
+  console.log(!isInvoice, !state.invoiceId, !orderInvoiceFile,!(state.totalToPay <= 0) )
+
+  console.log(!isInvoice || !state.invoiceId  || !orderInvoiceFile || !(state.totalToPay <= 0), 'test')
+
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
       <AlertMessage
@@ -104,14 +108,7 @@ const AddInvoiceModal = ({
         subMessage={""}
         cancelBtnLabel={"Close"}
         confirmBtnLabel={"Submit"}
-        confirmBtnEnable={
-          !orderInvoiceFile ||
-          !state.totalToPay ||
-          state.totalToPay <= 0 ||
-          !(state.invoiceId || !isInvoice)
-            ? true
-            : false
-        }
+        confirmBtnEnable={!isInvoice || !state.invoiceId  || !orderInvoiceFile || !(state.totalToPay <= 0)}
         successLoading={isAddInvoiceLoading}
         handleCancel={() => {
           setAddInvoice({ isActive: false, id: null });
