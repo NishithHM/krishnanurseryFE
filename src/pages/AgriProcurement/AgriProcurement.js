@@ -98,6 +98,7 @@ const AgriProcurement = () => {
   const [plantImages, setPlantImages] = useState([]);
   const [minimumPrice, setMinimumPrice] = useState(0);
   const [maximumPrice, setMaximumPrice] = useState(0);
+  const [gst, setGst] = useState(0);
 
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -156,6 +157,7 @@ const AgriProcurement = () => {
     setQuantity(procurementData?.minimumQuantity);
     setMinimumPrice(procurementData?.minPrice);
     setMaximumPrice(procurementData?.maxPrice);
+    setGst(procurementData?.gst?.[0]?.gst || 0);
     if (variants?.length > 0) {
       const mappedVariants = variants.map((ele) => {
         const row = [];
@@ -483,6 +485,16 @@ const AgriProcurement = () => {
                         value={minimumPrice}
                       />
                     </div>
+                    <div className={styles.inputField}>
+                      <Input
+                        id="quantity"
+                        type="number"
+                        disabled
+                        title="Min Price - gst"
+                        onChange={onMinimumPrice}
+                        value={minimumPrice* (1-gst/100)}
+                      />
+                    </div>
                     <div>
                       <Input
                         id="quantity"
@@ -490,6 +502,16 @@ const AgriProcurement = () => {
                         title="Max Price"
                         onChange={onMaximumPrice}
                         value={maximumPrice}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        id="quantity"
+                        type="number"
+                        title="Max Price - gst"
+                        onChange={onMaximumPrice}
+                        disabled
+                        value={maximumPrice * (1-gst/100)}
                       />
                     </div>
                     <div className={styles.submitQuantity}>
