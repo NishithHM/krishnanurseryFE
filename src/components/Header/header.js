@@ -6,7 +6,7 @@ import logout from "../../assets/images/logout.png";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context";
 import { useLocation } from "react-router-dom";
-
+const SKIP_HEADER =['/customer-onboarding', '/business-onboarding']
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,11 +28,11 @@ const Header = () => {
             <img className={styles.logoHeader} src={logo} alt="Logo" />
           </div>
         </div>
-        {location.pathname !== "/customer-onboarding" && (
+        {!SKIP_HEADER.includes(location.pathname) && (
           <div className={styles.logout}>
             <img onClick={onLogoutHandler} src={logout} alt="Logout" />
             <div>
-              <span className={styles.userId}>{`Hello ${user.name}`} </span>
+              <span className={styles.userId}>{`Hello ${user?.name}`} </span>
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithAuth } from "./helper";
 
 const include_headers = Boolean(process.env.REACT_APP_HEADER_AUTHORIZATION);
@@ -31,9 +31,44 @@ export const customerApi = createApi({
           method:'POST',
           body
         })
-      })
+      }),
+      createBusinessCustomerOnboarding:builder.mutation({
+        query:(body)=>({
+          url: `${process.env.REACT_APP_BASE_URL}/api/customer/business/create`,
+          method:'POST',
+          body
+        })
+      }),
+      getCustomersList: builder.query({
+        query: ({pageNumber, search, isCount, type}) => {
+          const params={}
+          if (search) {
+            params.search = search;
+          }
+          // if (sortBy) {
+          //   params.sortBy = sortBy;
+          // }
+          // if (sortType) {
+          //   params.sortType = sortType;
+          // }
+          if (isCount) {
+            params.isCount = isCount;
+          }
+          if(type){
+            params.type = type
+          }
+          if (pageNumber) {
+            params.pageNumber = isCount;
+          }
+          return{
+          url: `/list`,
+          method: "GET",
+          params: params,
+          }
+        },
+      }),
     };
   },
 });
 
-export const { useLazyGetCustomerByPhoneQuery, useGetCustomerOnboardingMutation } = customerApi;
+export const { useLazyGetCustomerByPhoneQuery, useGetCustomerOnboardingMutation, useCreateBusinessCustomerOnboardingMutation, useGetCustomersListQuery } = customerApi;

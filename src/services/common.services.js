@@ -100,6 +100,12 @@ export const commonApi = createApi({
           };
         },
       }),
+      getPincodeDetails: builder.mutation({
+        query: ({ id }) => ({
+          url: `/pincode/${id}`,
+          method: "GET",
+        }),
+      }),
     };
   },
 });
@@ -110,4 +116,5 @@ export const {
   useDownloadDamagesExcelMutation,
   useDownloadOrderExcelMutation,
   useDownloadPaymentsExcelMutation,
+  useGetPincodeDetailsMutation
 } = commonApi;
