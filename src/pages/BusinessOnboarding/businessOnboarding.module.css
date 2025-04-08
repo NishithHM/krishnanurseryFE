@@ -1,0 +1,55 @@
+.wrapper {
+    margin: auto;
+  }
+  
+  .innerWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #e2e2e2;
+    padding: 20px;
+    margin: 10px auto;
+    border-radius: 10px;
+    max-width: 520px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+  
+  .formButton {
+    width: 100%;
+    margin-top: 16px;
+  }
+  .categoryText {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: "2px";
+    font-family: Montserrat, sans-serif;
+  }
+  
+  .selectPill {
+    display: flex;
+    justify-content: left;
+  }
+  
+  
+  @media only screen and (min-width: 320px) and (max-device-width: 425px) {
+    .wrapper {
+      margin: auto;
+    }
+  
+    .categoryText {
+      font-size: 16px;
+      margin-bottom: "2px";
+      font-family: Montserrat, sans-serif;
+    }
+  
+    .formButton {
+      width: 100%;
+    }
+  }
+  
+  @media only screen and (min-width: 750px) {
+    .wrapper {
+      width: 60vw;
+    }
+  }
+  

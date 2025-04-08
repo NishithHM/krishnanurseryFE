@@ -25,6 +25,7 @@ import {
   AgriAddBills,
   Sales,
   AgriPayments,
+  CustomerList,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
@@ -158,6 +159,7 @@ const Protected = () => {
               element={<Vendor/>}
             />
             <Route path="/dashboard/sales" exact element={<Sales />} />
+            <Route path="/dashboard/customer-list" exact element={<CustomerList />} />
           </Routes>
         </div>
         <Footer />

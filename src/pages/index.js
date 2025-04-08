@@ -23,6 +23,8 @@ import AgriOrderMgmt from "./AgriOrderManagement";
 import AgriAddBills from "./AgriAddBills/AgriAddBills";
 import Sales from "./Sales/Sales";
 import AgriPayments from "./AgriPayments/Payments";
+import BusinessOnboarding from "./BusinessOnboarding";
+import CustomerList from "./CustomerList";
 export {
   Login,
   Test,
@@ -48,5 +50,7 @@ export {
   AgriRequesrOrder,
   AgriAddBills,
   Sales,
-  AgriPayments 
+  AgriPayments ,
+  BusinessOnboarding,
+  CustomerList
 };

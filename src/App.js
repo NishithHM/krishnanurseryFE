@@ -1,7 +1,7 @@
 import Dropdown from "./components/Dropdown/Dropdown";
 import "./App.css";
 
-import { CustomerOnboarding, Login } from "./pages";
+import { BusinessOnboarding, CustomerOnboarding, Login } from "./pages";
 import { Route, Routes } from "react-router-dom";
 import { AuthContext } from "./context";
 import Protected from "./hocs/protected/Protected";
@@ -40,6 +40,11 @@ function App() {
               exact
               element={<CustomerOnboarding />}
             />
+          <Route
+            path="/business-onboarding"
+            exact
+            element={<BusinessOnboarding />}
+          />
             <Route
               path="/nfc-test/:id"
               exact
