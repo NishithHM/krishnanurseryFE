@@ -24,6 +24,9 @@ const tableHeader = [
             value: "Type",
         },
         {
+            value: "Phone Number"
+        },
+        {
             value: "Address"
         },
         {
@@ -55,6 +58,10 @@ const getCustomerListBody = (data) => {
                     value = val?.type?.toLowerCase() || 'regular'
                 }
 
+                if (header.value === "Phone Number") {
+                    value = val?.phoneNumber
+                }
+
                 if (header.value === "Address") {
                     value = <span dangerouslySetInnerHTML={{ __html: val.address?.replaceAll(',', '<br/>') }}></span>
                 }
@@ -80,6 +87,7 @@ const CustomerList = () => {
     const getCategoryCount = useGetCustomersListQuery({
         isCount: true,
         search: searchInput,
+        type: type.value
     });
     const count = get(getCategoryCount, "data[0].count", 0);
 
