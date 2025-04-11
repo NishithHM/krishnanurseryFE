@@ -40,11 +40,7 @@ function App() {
               exact
               element={<CustomerOnboarding />}
             />
-          <Route
-            path="/business-onboarding"
-            exact
-            element={<BusinessOnboarding />}
-          />
+          
             <Route
               path="/nfc-test/:id"
               exact

@@ -59,10 +59,8 @@ const BusinessOnboarding = () => {
     !formState.errorFields.length &&
     formState.businessName.length &&
     formState.customerAddressLine1.length &&
-    formState.customerAddressLine2.length &&
     formState.customerAddressPinCode.length &&
     formState.shippingAddressLine1.length &&
-    formState.shippingAddressLine2.length &&
     formState.shippingAddressPinCode.length
 
   const dateChangeHandler = (event) => {
@@ -199,7 +197,6 @@ const BusinessOnboarding = () => {
   return (
    
     <>
-    <Header />
     <div className={styles.wrapper}>
       <Toaster />
       <form className={styles.innerWrapper} onSubmit={formSubmitHandler}>
@@ -271,10 +268,7 @@ const BusinessOnboarding = () => {
         <Input
           title="Customer Address Line 2"
           id="customerAddressLine2"
-          required={true}
           value={formState.customerAddressLine2}
-          errorMessage="field cannot be empty"
-          validation={(name) => name.length > 0}
           type="text"
           onChange={inputChangeHanlder}
           onError={inputErrorHandler}
@@ -328,17 +322,14 @@ const BusinessOnboarding = () => {
         <Input
           title="Shipping Address Line 2"
           id="shippingAddressLine2"
-          required={true}
           value={formState.shippingAddressLine2}
-          errorMessage="field cannot be empty"
-          validation={(name) => name.length > 0}
           type="text"
           onChange={inputChangeHanlder}
           onError={inputErrorHandler}
         />
 
         <Input
-          title="Pincode"
+          title="Shipping Pincode"
           id="shippingAddressPinCode"
           required={true}
           value={formState.shippingAddressPinCode}
