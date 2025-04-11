@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from "react";
 import styles from './customerList.module.css'
-import { BackButton, Dropdown, Search, Spinner, Table } from '../../components'
+import { BackButton, Button, Dropdown, Search, Spinner, Table } from '../../components'
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useGetCustomersListQuery } from "../../services/customer.service";
 import { debounce, get, isEmpty } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 
 const tableHeader = [
     [
         {
             id: new Date().toISOString(),
-            isSortable: true,
             value: "Customer Name",
             sortBy: "name",
         },
@@ -83,7 +83,9 @@ const CustomerList = () => {
     const [type, setType] = useState({})
     const [page, setPage] = useState(1);
     const [sort, setSort] = useState({ sortBy: "", sortType: -1, type });
-    const { data } = useGetCustomersListQuery({ pageNumber: 1, search: searchInput, type: type.value })
+    const { data } = useGetCustomersListQuery({ pageNumber: page, search: searchInput, type: type.value })
+    const navigate = useNavigate();
+    
     const getCategoryCount = useGetCustomersListQuery({
         isCount: true,
         search: searchInput,
@@ -152,7 +154,10 @@ const CustomerList = () => {
                                 value={type}
                                 data={[{ label: 'Business', value: 'BUSINESS' }, { label: 'Regular', value: 'REGULAR' }, {label:'Both', value:''}]}
                             />
-                        </div>    
+                        </div>  
+                        <div style={{width:'300px', height: '50px', margin:'10px 10px 10px auto', padding:'0 10px'}}>
+                        <Button title="Add new Business Customer" onClick={()=>navigate('/authorised/dashboard/business-onboarding')}/>  
+                        </div>
                     </div>
                     <div className={styles.customerPaginationContainer}>
                         <div className={styles.customerPaginationInner}>

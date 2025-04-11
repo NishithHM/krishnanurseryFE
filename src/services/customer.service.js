@@ -58,7 +58,7 @@ export const customerApi = createApi({
             params.type = type
           }
           if (pageNumber) {
-            params.pageNumber = isCount;
+            params.pageNumber = pageNumber;
           }
           return{
           url: `/list`,

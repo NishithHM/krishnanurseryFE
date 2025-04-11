@@ -4,6 +4,7 @@ import styles from "./dashboard.module.css";
 import access_managementImg from "../../assets/images/dashboard/access_management.png";
 import produrementImg from "../../assets/images/dashboard/procurement.png";
 import maintenanceImg from "../../assets/images/dashboard/maintenance.png";
+import customerList from "../../assets/images/dashboard/customerList.png";
 import billBook from "../../assets/images/dashboard/billBook.png";
 import categoriesImg from "../../assets/images/dashboard/categories.png";
 import billsImg from "../../assets/images/dashboard/bills.png";
@@ -169,6 +170,23 @@ const Dashboard = () => {
       allowed: [USER_ROLES.admin, USER_ROLES.procurement, USER_ROLES.sales],
       isDisabled: false,
       tabType: "Agri",
+    },
+    {
+      id : 18,
+      title: "Online Orders",
+      tile_img: salesImg,
+      path: "online-orders",
+      allowed: [USER_ROLES.admin, USER_ROLES.sales],
+      isDisabled: false,
+      tabType: "Nursery",
+    },
+    {
+      id : 19,
+      title: "Customer List",
+      tile_img: customerList,
+      path: "customer-list",
+      allowed: [USER_ROLES.admin],
+      tabType: "Nursery",
     },
   ];
 
