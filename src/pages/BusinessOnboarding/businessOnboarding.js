@@ -9,6 +9,7 @@ import { Toaster } from "../../components";
 import { toast } from "react-toastify";
 import {MediaQuery, createStyles} from "@mantine/core"
 import { useGetPincodeDetailsMutation } from "../../services/common.services";
+import { useNavigate } from "react-router-dom";
 
 const BusinessOnboarding = () => {
   const defaultFormValues = {
@@ -51,6 +52,7 @@ const BusinessOnboarding = () => {
   const categoryOptions = data?.map((ele) => ele?.names?.en?.name);
   const [createBusinessCustomerOnboarding] = useCreateBusinessCustomerOnboardingMutation();
   const [getPincodeDetails] = useGetPincodeDetailsMutation()
+  const navigate = useNavigate()
 
   const validForm =
     formState.name &&
@@ -59,9 +61,7 @@ const BusinessOnboarding = () => {
     !formState.errorFields.length &&
     formState.businessName.length &&
     formState.customerAddressLine1.length &&
-    formState.customerAddressPinCode.length &&
-    formState.shippingAddressLine1.length &&
-    formState.shippingAddressPinCode.length
+    formState.customerAddressPinCode.length
 
   const dateChangeHandler = (event) => {
     setFormState((prev) => {
@@ -170,7 +170,9 @@ const BusinessOnboarding = () => {
       
       )
       setTimeout(()=>{
-        window.location.reload()
+        navigate('/authorised/dashboard/customer-list', {
+          
+        })
       }, 1000)
     }
   };
@@ -298,10 +300,9 @@ const BusinessOnboarding = () => {
         <Input
           title="GST Number"
           id="gstNumber"
-          required={true}
           value={formState.gstNumber}
           errorMessage="invalid gst number"
-          validation={(name) => /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d{1}[Z]{1}[A-Z\d]{1}$/.test(name)}
+          validation={(name) => name ? /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d{1}[Z]{1}[A-Z\d]{1}$/.test(name): true}
           type="text"
           onChange={inputChangeHanlder}
           onError={inputErrorHandler}
@@ -310,10 +311,8 @@ const BusinessOnboarding = () => {
         <Input
           title="Shipping Address Line 1"
           id="shippingAddressLine1"
-          required={true}
           value={formState.shippingAddressLine1}
           errorMessage="field cannot be empty"
-          validation={(name) => name.length > 0}
           type="text"
           onChange={inputChangeHanlder}
           onError={inputErrorHandler}
@@ -331,10 +330,9 @@ const BusinessOnboarding = () => {
         <Input
           title="Shipping Pincode"
           id="shippingAddressPinCode"
-          required={true}
           value={formState.shippingAddressPinCode}
           errorMessage="invalid pin code"
-          validation={(name) => name.length === 6}
+          validation={(name) => name.length === 6 || !!name}
           type="number"
           onChange={inputChangeHanlder}
           onError={inputErrorHandler}
@@ -343,7 +341,6 @@ const BusinessOnboarding = () => {
         <Input
           title="Area"
           id="shippingAddressPinCodeDetails"
-          required={true}
           value={formState.shippingAddressPinCodeDetails}
           type="text"
           disabled
@@ -395,7 +392,6 @@ const BusinessOnboarding = () => {
         </div>
       </form>
     </div>
-    <Footer />
     </>
   );
 };
