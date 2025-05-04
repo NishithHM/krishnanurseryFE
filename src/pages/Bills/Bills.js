@@ -20,12 +20,14 @@ import {
   useGetAllPurchasesCountQuery,
   useGetAllPurchasesQuery,
   useSearchPurchaseMutation,
-  useGetApproveMutation
+  useGetApproveMutation,
+  useReturnEditorMutation
 } from "../../services/bills.service";
 import {
   InvoicePreview,
   InvoiceSection,
 } from "../../components/InvoicePreviewModal/InvoicePreview";
+import ReturnModal from "../../components/returnModal/returnModal"; // Import the ReturnModal component
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
@@ -81,8 +83,10 @@ const Bills = ({type}) => {
   const printRef = useRef();
   // billing modal
   const [showPreview, setShowPreview] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false); // State for return modal
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
+  
   useEffect(() => {
   }, [filterDates]);
 
@@ -116,13 +120,37 @@ const Bills = ({type}) => {
   });
 
   const [searchPurchase] = useSearchPurchaseMutation();
-  const [approveButton] = useGetApproveMutation()
+  const [approveButton] = useGetApproveMutation();
+  const [returnEditor] = useReturnEditorMutation();
 
-  const [downloadBillingExcel] = useDownloadBillingExcelMutation()
-  // const approve = useGetApproveQuery
-  // ({
-  //   customerId:purchaseData?._id
-  // });
+  const [downloadBillingExcel] = useDownloadBillingExcelMutation();
+
+  // Handle make return function - updated to prevent event bubbling
+  const handleMakeReturn = (purchase, event) => {
+    if (event) {
+      event.stopPropagation(); // Prevent event bubbling
+    }
+    setInvoiceDetail(purchase);
+    setShowReturnModal(true);
+  };
+
+  // Handle submitting the return
+  const handleSubmitReturn = async (returnData) => {
+    try {
+      console.log(purchaseData);
+      const response = await returnEditor(returnData);
+      
+      if (response.data) {
+        toast.success("Return processed successfully");
+        setShowReturnModal(false);
+        purchaseData.refetch();
+      } else {
+        toast.error("Error processing return");
+      }
+    } catch (error) {
+      toast.error("Error: " + (error.message || "Unknown error"));
+    }
+  };
 
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
@@ -132,7 +160,7 @@ const Bills = ({type}) => {
         value: (
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
-            onClick={() => {
+            onClick={(e) => {
               setShowPreview(true);
               setInvoiceDetail(purchase);
             }}
@@ -142,21 +170,17 @@ const Bills = ({type}) => {
         ),
       };
 
-      const approve = {
-        value:  purchase.isApproved === false && purchase.status ==='CART' && user.role==='admin'  ? (
+      const makeReturn = {
+        value: (
           <span
-            style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
-            onClick={async()=>{
-              const res =  await approveButton({
-                billId: purchase?._id
-              });
-              toast.success("Bill Successfully Approved");
+            style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
+            onClick={(e) => {
+              handleMakeReturn(purchase, e);
             }}
-            
           >
-            Approve
+            Return
           </span>
-        ): <></>,
+        ),
       };
 
       let paymentThrough = `Cash: ${purchase?.cashAmount ?? 0}, Online: ${
@@ -176,7 +200,7 @@ const Bills = ({type}) => {
           }).format(purchase.totalPrice),
         },
         openModal,
-        approve
+        makeReturn
       ];
       return data;
     });
@@ -215,13 +239,13 @@ const Bills = ({type}) => {
     setData(purchases);
   }, [purchaseData, searchInput]);
 
+  // Updated TABLE_HEADER to match the data array length
   const TABLE_HEADER = [
     {
       value: "Date",
       isSortable: true,
       sortBy: "billedDate",
     },
-
     {
       value: "Bill Number",
       isSortable: false,
@@ -244,9 +268,13 @@ const Bills = ({type}) => {
       sortBy: "totalPrice",
     },
     {
-      value: "",
+      value: "Details", // Changed from empty string for clarity
       isSortable: false,
     },
+    {
+      value: "Return", // Changed from empty string for clarity
+      isSortable: false,
+    }
   ];
 
   const handleFilterChange = (filterDates) => {
@@ -268,8 +296,10 @@ const Bills = ({type}) => {
       sortType: prev.sortType === "asc" ? "desc" : "asc",
     }));
   };
+  
   const formatInvoiceItems = (data) => {
     return data.map((item) => ({
+      procurementId: item.procurementId || item._id, // Ensure procurement ID is included
       procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
       price: item.rate,
       quantity: item.quantity,
@@ -279,7 +309,6 @@ const Bills = ({type}) => {
       gst: item.gst,
       hsnCode: item.hsnCode
     }));
-    // return data;
   };
 
   const handleExcelDownload = async (filterDates)=>{
@@ -294,6 +323,12 @@ const Bills = ({type}) => {
     link.download = 'billing.xlsx'
     link.click()
   }
+
+  // Add console logs for debugging
+  useEffect(() => {
+    console.log("Return Modal State:", showReturnModal);
+    console.log("Invoice Detail State:", invoiceDetail);
+  }, [showReturnModal, invoiceDetail]);
 
   return (
     <div>
@@ -365,7 +400,7 @@ const Bills = ({type}) => {
         <p className={styles.errorMessage}>Unable to load Users Data</p>
       )}
 
-     
+      {/* Invoice Preview Modal */}
       {showPreview && invoiceDetail && (
         <div style={{ display: "none" }}>
           <div ref={printRef}>
@@ -398,6 +433,7 @@ const Bills = ({type}) => {
           </div>
         </div>
       )}
+      
       {showPreview && invoiceDetail && (
         <InvoicePreview
           showPreview={showPreview}
@@ -427,6 +463,32 @@ const Bills = ({type}) => {
           invoiceNumber={invoiceDetail.invoiceId}
           setInvoiceNumber={() => {}}
           handlePrintClick={handlePrint}
+          type={type}
+        />
+      )}
+      
+      {showReturnModal && invoiceDetail && (
+        <ReturnModal
+          showModal={showReturnModal}
+          onClose={() => setShowReturnModal(false)}
+          clientDetails={{
+            name: invoiceDetail.customerName,
+            phoneNumber: invoiceDetail.customerNumber,
+          }}
+          invoiceDetails={{
+            invoiceDate: invoiceDetail?.billedDate,
+            billedBy: invoiceDetail?.billedBy?.name,
+            soldBy: invoiceDetail?.soldBy?.name,
+          }}
+          cartData={formatInvoiceItems(invoiceDetail.items)}
+          cartResponse={{
+            discount: invoiceDetail.discount,
+            roundOff: invoiceDetail.roundOff,
+            totalPrice: invoiceDetail.totalPrice,
+          }}
+          invoiceId={invoiceDetail._id}
+          invoiceNumber={invoiceDetail.invoiceId}
+          handleSubmitReturn={handleSubmitReturn}
           type={type}
         />
       )}

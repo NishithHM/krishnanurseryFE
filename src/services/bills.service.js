@@ -95,6 +95,17 @@ export const billsApi = createApi({
         }),
         invalidatesTags: ["billHistory"],
       }),
+      returnEditor: builder.mutation({
+        query: (returnData) => ({
+          url: "/return-plant",
+          method: "POST",
+          body: {
+            invoiceId: returnData.invoiceId,
+            procurementId: returnData.items.procurementId,
+            quantity: returnData.items.quantity
+          }
+        })
+      })
     };
   },
 });
@@ -108,4 +119,5 @@ export const {
   useGetAllPurchasesCountQuery,
   useSearchPurchaseMutation,
   useGetApproveMutation,
+  useReturnEditorMutation
 } = billsApi;
