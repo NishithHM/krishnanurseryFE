@@ -101,8 +101,7 @@ export const billsApi = createApi({
           method: "POST",
           body: {
             invoiceId: returnData.invoiceId,
-            procurementId: returnData.items.procurementId,
-            quantity: returnData.items.quantity
+            items: returnData.items,
           }
         })
       })
