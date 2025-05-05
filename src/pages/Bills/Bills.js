@@ -134,7 +134,6 @@ const Bills = ({type}) => {
     setShowReturnModal(true);
   };
 
-  // Handle submitting the return
   const handleSubmitReturn = async (returnData) => {
     try {
       console.log(purchaseData);
