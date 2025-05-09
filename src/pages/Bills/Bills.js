@@ -136,7 +136,7 @@ const Bills = ({type}) => {
 
   const handleSubmitReturn = async (returnData) => {
     try {
-      console.log(purchaseData);
+      console.log(returnData);
       const response = await returnEditor(returnData);
       
       if (response.data) {
