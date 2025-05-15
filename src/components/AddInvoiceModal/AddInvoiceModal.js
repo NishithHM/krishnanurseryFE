@@ -103,7 +103,7 @@ const AddInvoiceModal = ({
 
   const getBtnEnableState = () => {
     console.log("recheck state:", state);
-    const ret = !(!isInvoice && !!orderInvoiceFile && (state.totalToPay > 0));
+    const ret = !(!isInvoice && !!orderInvoiceFile && (state.amountPaidOnline > 0 || state.amountPaidCash > 0));
     return ret;
   }
 
