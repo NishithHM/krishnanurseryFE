@@ -61,7 +61,7 @@ const AddInvoiceModal = ({
         advanceAmount: invoiceRes?.data?.advanceAmount,
       }));
     }
-
+    console.log("invoice data test: ", state);
     get(addInvoice.data.vendorId);
     // get();
   }, []);
@@ -96,9 +96,16 @@ const AddInvoiceModal = ({
     }));
   };
 
-  console.log(!isInvoice, !state.invoiceId, !orderInvoiceFile,!(state.totalToPay <= 0) )
+  // console.log(!isInvoice, !state.invoiceId, !orderInvoiceFile,!(state.totalToPay <= 0) )
+  // console.log(isInvoice && !!state.invoiceId  && !!orderInvoiceFile && (state.totalToPay > 0), 'check bate2');
 
-  console.log(!isInvoice || !state.invoiceId  || !orderInvoiceFile || !(state.totalToPay <= 0), 'test')
+  // console.log(!isInvoice || !state.invoiceId  || !orderInvoiceFile || !(state.totalToPay <= 0), 'test')
+
+  const getBtnEnableState = () => {
+    console.log("recheck state:", state);
+    const ret = !(!isInvoice && !!orderInvoiceFile && (state.totalToPay > 0));
+    return ret;
+  }
 
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
@@ -108,7 +115,7 @@ const AddInvoiceModal = ({
         subMessage={""}
         cancelBtnLabel={"Close"}
         confirmBtnLabel={"Submit"}
-        confirmBtnEnable={!isInvoice || !state.invoiceId  || !orderInvoiceFile || !(state.totalToPay <= 0)}
+        confirmBtnEnable={getBtnEnableState()}
         successLoading={isAddInvoiceLoading}
         handleCancel={() => {
           setAddInvoice({ isActive: false, id: null });
