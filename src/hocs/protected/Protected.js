@@ -161,11 +161,7 @@ const Protected = () => {
             />
             <Route path="/dashboard/sales" exact element={<Sales />} />
             <Route path="/dashboard/customer-list" exact element={<CustomerList />} />
-            <Route
-            path="/dashboard/business-onboarding"
-            exact
-            element={<BusinessOnboarding />}
-          />
+            
           </Routes>
         </div>
         <Footer />
