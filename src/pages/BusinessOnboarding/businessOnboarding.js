@@ -170,7 +170,7 @@ const BusinessOnboarding = () => {
       
       )
       setTimeout(()=>{
-        navigate('/authorised/dashboard/customer-list', {
+        navigate('/dashboard/business-onboarding', {
           
         })
       }, 1000)

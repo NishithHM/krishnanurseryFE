@@ -47,6 +47,11 @@ function App() {
               element={<NFC />}
             />
           <Route path="/authorised/*" element={<Protected />} />
+          <Route
+            path="/dashboard/business-onboarding"
+            exact
+            element={<BusinessOnboarding />}
+          />
         </Routes>
       </AuthContext.Provider>
     </div>

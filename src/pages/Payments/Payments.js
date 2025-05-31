@@ -84,6 +84,7 @@ const Payments = ({businessType='NURSERY'}) => {
   const handleViewBill = (id) => {};
 
   const handleFilterChange = async (filterDates) => {
+    console.log(filterDates, "filterDates");
     setFilterDates(filterDates);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
@@ -182,17 +183,7 @@ const Payments = ({businessType='NURSERY'}) => {
       ...prev,
       phone: num.target.value,
     }));
-    if (num.target.value.length === 10) {
-      const res = await paymentData(num.target.value);
-      const paymentInfo = res?.data;
-      setNewPayment((prev) => ({
-        ...prev,
-        name: paymentInfo?.name,
-        accountNumber: paymentInfo?.accountNumber,
-        ifscCode: paymentInfo?.ifscCode,
-        bankName: paymentInfo?.bankName,
-      }));
-    }
+    
   };
 
   const handleSearchInputChange = (event) => {
@@ -369,7 +360,7 @@ const Payments = ({businessType='NURSERY'}) => {
 
       const res = {
         type: data?.type?.value,
-        empName: data?.name,
+        empName: data?.name.label,
         vendorId: data?.vendor,
         amount: data?.amount,
         phoneNumber: data?.phone || "",
@@ -401,27 +392,6 @@ const Payments = ({businessType='NURSERY'}) => {
     }
   };
 
-
-  const onNameChange=async(name)=>{
-    const res = await paymentData(name);
-    const paymentInfo = res?.data;
-    setNewPayment((prev) => ({
-      ...prev,
-      phone: paymentInfo?.phoneNumber,
-      accountNumber: paymentInfo?.accountNumber,
-      ifscCode: paymentInfo?.ifscCode,
-      bankName: paymentInfo?.bankName,
-    }));
-  }
- const changeName = (e)=>{
-  const name = e.target.value;
-  setNewPayment((prev) => ({ ...prev, name }))
-  debouncedNameChange(name)
- }
-  const debouncedNameChange = debounce((name) => {
-    console.log(name)
-    onNameChange(name);
-  }, 700);
 
   return (
     <>
@@ -670,6 +640,26 @@ const Payments = ({businessType='NURSERY'}) => {
             </>
           ) : newPayment.type ? (
             <>
+            {newPayment?.type?.value !== "VENDOR" && (<Dropdown
+                url={`/api/payments/get-info`}
+                id="name"
+                apiDataPath={{ label: "name", value: "_id" }}
+                title="Name"
+                canCreate
+                onChange={(e) => {
+                  console.log(e)
+                  setNewPayment((prev) => ({
+                    ...prev,
+                    phone: e?.meta?.phoneNumber,
+                    name: e,
+                    accountNumber: e?.meta?.accountNumber,
+                    ifscCode: e?.meta?.ifscCode,
+                    bankName: e?.meta?.bankName,
+                  }));
+                }}
+                value={newPayment?.name || ""}
+                minInputToFireApi={1}
+              />)}
               {paymentMadeBy.includes(newPayment.type.value) && (
                 <Input
                   required
@@ -679,30 +669,39 @@ const Payments = ({businessType='NURSERY'}) => {
                   onChange={(e) => onNumberChange(e)}
                 />
               )}
-              <Input
-                required
-                title="Name"
-                type="text"
-                value={newPayment?.name}
-                onChange={changeName}
-              />
+              
 
-              {/* {newPayment.type.value === "SALARY" && (
-                <Input
-                  required
-                  title="Amount Paid"
-                  type="number"
-                  value={newPayment?.amount}
-                  onChange={(e) =>
-                    setNewPayment((prev) => ({
-                      ...prev,
-                      amount: e.target.value,
-                    }))
-                  }
-                />
-              )} */}
+              
               {paymentMadeBy.includes(newPayment.type.value) && (
                 <React.Fragment>
+                  <div>
+                    <Dropdown
+                      required
+                      title="Payment Mode"
+                      id="DropDownPaymentMode"
+                      data={PAYMENT_MODES}
+                      value={paymentMode?.type?.value}
+                      
+                      onChange={(e) => {
+                        setPaymentMode((prev) => ({
+                          ...prev,
+                          type: e?.value,
+                        }));
+                        setNewPayment((prev) => ({
+                          ...prev,
+                          amountPaidOnline: 0,
+                          amountPaidCash: 0,
+                        }));
+                      }}
+                    />
+                  </div>
+                  {paymentMode?.type?.toLowerCase() !== "cash" && (
+                    <>
+                    <PaymentModeCash
+                      value={newPayment?.amountPaidCash}
+                      setNewPayment={setNewPayment}
+                      totalAmountPaid={newPayment?.amount}
+                    />
                   <Input
                     required
                     title="Account Number"
@@ -740,6 +739,9 @@ const Payments = ({businessType='NURSERY'}) => {
                       }))
                     }
                   />
+                  </>
+                  )}
+
                   <Input
                     required
                     title="Total Amount Paid"
@@ -752,26 +754,7 @@ const Payments = ({businessType='NURSERY'}) => {
                       }))
                     }
                   />
-                  <div>
-                    <Dropdown
-                      required
-                      title="Payment Mode"
-                      id="DropDownPaymentMode"
-                      data={PAYMENT_MODES}
-                      value={paymentMode?.type?.value}
-                      onChange={(e) => {
-                        setPaymentMode((prev) => ({
-                          ...prev,
-                          type: e?.value,
-                        }));
-                        setNewPayment((prev) => ({
-                          ...prev,
-                          amountPaidOnline: 0,
-                          amountPaidCash: 0,
-                        }));
-                      }}
-                    />
-                  </div>
+                  
                   <Input
                     required
                     title="Comment"

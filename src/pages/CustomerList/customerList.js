@@ -156,7 +156,7 @@ const CustomerList = () => {
                             />
                         </div>  
                         <div style={{width:'300px', height: '50px', margin:'10px 10px 10px auto', padding:'0 10px'}}>
-                        <Button title="Add new Business Customer" onClick={()=>navigate('/authorised/dashboard/business-onboarding')}/>  
+                        <Button title="Add new Business Customer" onClick={()=>navigate('/dashboard/business-onboarding')}/>  
                         </div>
                     </div>
                     <div className={styles.customerPaginationContainer}>
