@@ -360,7 +360,7 @@ const Payments = ({businessType='NURSERY'}) => {
 
       const res = {
         type: data?.type?.value,
-        empName: data?.name.label,
+        empName:  newPayment?.type?.value === "VENDOR" ? data.name : data?.name.label,
         vendorId: data?.vendor,
         amount: data?.amount,
         phoneNumber: data?.phone || "",
@@ -391,6 +391,20 @@ const Payments = ({businessType='NURSERY'}) => {
       toast.success(resp.data.message);
     }
   };
+
+  const getAccountDetails = async (phone) => {
+    if (!phone || phone.length < 10) return;
+    const res = await paymentData(phone);
+    if (res?.data) {
+      const data = res.data;
+      setNewPayment((prev) => ({
+        ...prev,
+        accountNumber: data.accountNumber,
+        ifscCode: data.ifscCode,
+        bankName: data.bankName,
+      }));
+    }
+  }
 
 
   return (
@@ -547,7 +561,7 @@ const Payments = ({businessType='NURSERY'}) => {
                 id="vendors"
                 apiDataPath={{ label: "name", value: "_id" }}
                 title="Vendor Name"
-                onChange={(e) => {
+                onChange={async(e) => {
                   console.log(e)
                   setNewPayment((prev) => ({
                     ...prev,
@@ -555,6 +569,7 @@ const Payments = ({businessType='NURSERY'}) => {
                     phone: e?.meta?.contact,
                     name: e?.meta?.name
                   }));
+                 await getAccountDetails(e?.meta?.contact);
                 }}
                 value={newPayment?.vendor?.value || ""}
                 minInputToFireApi={3}
