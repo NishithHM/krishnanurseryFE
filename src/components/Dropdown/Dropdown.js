@@ -121,7 +121,7 @@ const Dropdown = ({
           isMulti={isMultiEnabled}
           isLoading={loading}
           styles={DropdownStyles}
-          menuPosition="fixed"
+          menuPosition="absolute"
         />
         {error && (
           <div className={styles.errortext}>

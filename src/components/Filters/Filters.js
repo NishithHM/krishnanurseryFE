@@ -22,10 +22,11 @@ const Filters = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isParentSet, setParentSet] = useState(false);
   const [filterDates, setFilterDates] = useState({
-    start_date: null,
-    end_date: null,
+    startDate: null,
+    endDate: null,
   });
   const [filters, setFilters] = useState({ vendors: [], status: [], type: "" });
+  console.log("Filters config", filterDates);
   const handleSubmitFilter = () => {
     const updatedFilterDates = {
       start_date: filterDates.startDate,
@@ -57,8 +58,8 @@ const Filters = ({
 
   const handleClearFilters = async () => {
     setFilterDates(() => ({
-      start_date: null,
-      end_date: null,
+      startDate: null,
+      endDate: null,
     }));
     setFilters(() => ({
       vendors: [],
@@ -99,8 +100,8 @@ const Filters = ({
             }}
             setParentSet={setParentSet}
             isParentSet={isParentSet}
-            startDateInput={filterDates.start_date}
-            endDateInput={filterDates.end_date}
+            startDateInput={filterDates.startDate}
+            endDateInput={filterDates.endDate}
           />
 
           {typeFilterVisible && (
