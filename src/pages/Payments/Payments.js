@@ -712,11 +712,6 @@ const Payments = ({businessType='NURSERY'}) => {
                   </div>
                   {paymentMode?.type?.toLowerCase() !== "cash" && (
                     <>
-                    <PaymentModeCash
-                      value={newPayment?.amountPaidCash}
-                      setNewPayment={setNewPayment}
-                      totalAmountPaid={newPayment?.amount}
-                    />
                   <Input
                     required
                     title="Account Number"
