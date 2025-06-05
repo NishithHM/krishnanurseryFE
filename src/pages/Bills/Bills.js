@@ -21,7 +21,8 @@ import {
   useGetAllPurchasesQuery,
   useSearchPurchaseMutation,
   useGetApproveMutation,
-  useReturnEditorMutation
+  useReturnEditorMutation,
+  useLazyGetReturnQuery
 } from "../../services/bills.service";
 import {
   InvoicePreview,
@@ -32,6 +33,7 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
 import { useDownloadBillingExcelMutation } from "../../services/common.services";
+import { use } from "react";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -86,6 +88,8 @@ const Bills = ({type}) => {
   const [showReturnModal, setShowReturnModal] = useState(false); // State for return modal
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
+  const [getReturnData] = useLazyGetReturnQuery();
+  const [returnData, setReturnData] = useState([]);
   
   useEffect(() => {
   }, [filterDates]);
@@ -131,6 +135,10 @@ const Bills = ({type}) => {
       event.stopPropagation(); // Prevent event bubbling
     }
     setInvoiceDetail(purchase);
+    
+    getReturnData({ invoiceId: purchase._id }).then((resp) => {
+      setReturnData(resp.data.data || []);
+    });
     setShowReturnModal(true);
   };
 
@@ -489,6 +497,7 @@ const Bills = ({type}) => {
           invoiceNumber={invoiceDetail.invoiceId}
           handleSubmitReturn={handleSubmitReturn}
           type={type}
+          previousReturns={returnData}
         />
       )}
     </div>

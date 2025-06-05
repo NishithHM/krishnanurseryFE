@@ -104,7 +104,14 @@ export const billsApi = createApi({
             items: returnData.items
           }
         })
-      })
+      }),
+      getReturn: builder.query({
+      query: ({ invoiceId }) => ({
+        url: `/fetch-returns/${invoiceId}`,
+        method: "GET",
+      }),
+      providesTags: ["billHistory"],
+    })
     };
   },
 });
@@ -118,5 +125,6 @@ export const {
   useGetAllPurchasesCountQuery,
   useSearchPurchaseMutation,
   useGetApproveMutation,
-  useReturnEditorMutation
+  useReturnEditorMutation,
+  useLazyGetReturnQuery,
 } = billsApi;

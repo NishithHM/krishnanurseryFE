@@ -5,6 +5,103 @@ import ScrollTable from "../Table/ScrollTable";
 import Button from "../Button";
 import dayjs from "dayjs";
 
+const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type }) => {
+  const invoiceHeaderWithMRP = [
+    { value: "S. No.", width: "10%" },
+    { value: "Item", width: "30%" },
+    { value: "Rate", width: "10%" },
+    { value: "Return Qty", width: "15%" },
+    { value: "Return Amount", width: "15%" },
+  ];
+
+  const invoiceHeaderWithOutMRP = [
+    { value: "S. No.", width: "10%" },
+    { value: "Item", width: "30%" },
+    { value: "Rate", width: "10%" },
+    { value: "Return Qty", width: "15%" },
+    { value: "Return Amount", width: "15%" },
+  ];
+
+  if(type === 'AGRI'){
+    invoiceHeaderWithOutMRP.splice(2, 0, { value: "HSN Code", width: "10%" });
+    invoiceHeaderWithOutMRP.splice(6, 0, { value: "GST", width: "10%" });
+    invoiceHeaderWithMRP.splice(3, 0, { value: "HSN Code", width: "10%" });
+    invoiceHeaderWithMRP.splice(8, 0, { value: "GST", width: "10%" });
+  }
+
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    const buildTableData = () => {
+      let data = [];
+      previousReturns.forEach((item, index) => {
+        let row = [];
+
+        row.push({ value: index + 1 }); // S. No.
+        row.push({ value: item.procurementName.en.name + " (" + (item.procurementName.ka.name || "") + ")" });
+        row.push({ value: item.mrp });
+
+        row.push({ value: item.quantity });
+        // row.push({ value: item.returnQuantity });
+
+        const returnAmount = item.quantity * item.mrp;
+
+        row.push({ value: returnAmount.toFixed(2) });
+
+        data.push(row);
+      });
+      setTableData(data);
+    };
+
+    buildTableData();
+  }, [previousReturns]);
+
+  const calculateTotalReturnAmount = () => {
+    return previousReturns.reduce((total, item) => {
+      const amount = item.quantity * item.mrp;
+      return total + amount;
+    }, 0);
+  };
+
+  const handlePrint = () => {
+    window.print(); // Triggers browser print dialog
+  };
+
+  if (!showModal) return null;
+
+  return (
+    <Modal
+      opened={showModal}
+      onClose={onClose}
+      centered
+      size="auto"
+      closeOnClickOutside={false}
+      closeOnEscape={true}
+      style={{ overflow: 'scroll' }}
+    >
+      <div className={styles.modalContent}>
+        <div className={styles.headerWrapperModal}>
+          <h1 className={styles.headerModal}>Return History - Invoice #{invoiceNumber}</h1>
+        </div>
+
+        <ScrollTable thead={invoiceHeaderWithMRP.some(h => h.value === "MRP") ? invoiceHeaderWithMRP : invoiceHeaderWithOutMRP} tbody={tableData} />
+
+        <div className={styles.returnSummary}>
+          <div className={styles.lableValueDetails}>
+            <div className={styles.label}>Total Returned:</div>
+            <div className={styles.value}>₹ {calculateTotalReturnAmount().toFixed(2)}</div>
+          </div>
+        </div>
+
+        <div className={styles.modalAction}>
+          <Button type="primary" title="Print" onClick={handlePrint} />
+          <Button type="secondary" title="Close" onClick={onClose} />
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 const ReturnModal = ({
   showModal,
   onClose,
@@ -14,7 +111,8 @@ const ReturnModal = ({
   invoiceId,
   invoiceNumber,
   handleSubmitReturn,
-  type
+  type,
+  previousReturns
 }) => {
   const [returnItems, setReturnItems] = useState(
     cartData.map(item => ({
@@ -73,117 +171,114 @@ const ReturnModal = ({
 
   const updateTableData = () => {
     let newTableData = [];
-    
     const showMRP = invoiceHeader === invoiceHeaderWithMRP;
 
     returnItems.forEach((item, index) => {
       let row = [];
-      
-      // S. No.
       row.push({ value: index + 1 });
-      
-      // Item
+
       if(type === 'AGRI'){
         const [baseName, metaName] = `${item.procurementLabel}.`?.split('-');
-        const [companyName, otherNames] = `${metaName}.`.split('(');
+        const [companyName, otherNames] = `${metaName}.`?.split('(');
         const finalName = `${item.procurementLabel}.`?.replace(`-${companyName}`, '');
         row.push({ value: finalName });
       } else {
         row.push({ value: item.procurementLabel });
       }
-      
-      // HSN Code for AGRI
+
       if(type === 'AGRI'){
         row.push({ value: item.hsnCode });
       }
-      
-      // MRP (if showing)
+
       if (showMRP) {
         row.push({ value: item.mrp });
       }
-      
-      // Rate
+
       row.push({ value: item.price });
-      
-      // Original Qty
       row.push({ value: item.quantity });
-      
-      // Return Qty (editable)
-      row.push({ 
-        value: 
-          <input 
-            type="number" 
-            min="0" 
-            max={item.quantity} 
-            value={item.returnQuantity} 
+
+      row.push({
+        value: (
+          <input
+            type="number"
+            min="0"
+            max={item.quantity}
+            value={item.returnQuantity}
             onChange={(e) => handleQuantityChange(index, e.target.value)}
             className={styles.quantityInput}
           />
+        )
       });
-      
-      // GST for AGRI
+
       if(type === 'AGRI'){
         row.push({ value: `${item.gstAmount} (${item.gst}%)` });
       }
-      
-      // Return Amount
-      const returnAmount = type === 'AGRI' 
-        ? (item.price * item.returnQuantity) + (item.gstAmount / item.quantity * item.returnQuantity)
+
+      const returnAmount = type === 'AGRI'
+        ? (item.price * item.returnQuantity) + ((item.gstAmount / item.quantity) * item.returnQuantity)
         : (item.price * item.returnQuantity);
-        
+
       row.push({ value: returnAmount.toFixed(2) });
-      
+
       newTableData.push(row);
     });
-    
+
     setTableData(newTableData);
   };
 
   const handleQuantityChange = (index, value) => {
     const newValue = parseInt(value) || 0;
     const updatedItems = [...returnItems];
-    
-    // Don't allow return quantity to exceed original quantity
-    if (newValue > updatedItems[index].quantity) {
-      return;
-    }
-    
+
+    if (newValue > updatedItems[index].quantity) return;
+
     updatedItems[index].returnQuantity = newValue;
     setReturnItems(updatedItems);
   };
 
   const calculateReturnTotal = () => {
     return returnItems.reduce((total, item) => {
-      if (type === 'AGRI') {
-        // Include GST in calculation for AGRI
-        const gstPerItem = item.gstAmount / item.quantity;
-        return total + ((item.price + gstPerItem) * item.returnQuantity);
-      } else {
-        return total + (item.price * item.returnQuantity);
-      }
+      const amount = type === 'AGRI'
+        ? (item.price * item.returnQuantity) + ((item.gstAmount / item.quantity) * item.returnQuantity)
+        : (item.price * item.returnQuantity);
+      return total + amount;
     }, 0);
   };
 
   const handleReturn = () => {
-    // Filter items with return quantity > 0
     const itemsToReturn = returnItems
       .filter(item => item.returnQuantity > 0)
       .map(item => ({
         procurementId: item.procurementId,
-        quantity: item.returnQuantity
+        quantity: item.returnQuantity,
+        _id: item._id
       }));
-    
+
     if (itemsToReturn.length === 0) {
       alert("Please select at least one item to return");
       return;
     }
-    // console.log(itemsToReturn);
+
     handleSubmitReturn({
       invoiceId: invoiceId,
       items: itemsToReturn
     });
   };
 
+  // If there are previous returns, show non-editable history
+  if (previousReturns.length > 0 && showModal) {
+    return (
+      <ReturnHistoryModal
+        showModal={showModal}
+        onClose={onClose}
+        invoiceNumber={invoiceNumber}
+        previousReturns={previousReturns}
+        type={type}
+      />
+    );
+  }
+
+  // Else show the editable return modal
   if (!showModal) return null;
 
   return (
@@ -227,11 +322,7 @@ const ReturnModal = ({
           </div>
         </div>
 
-        <div>
-          {invoiceHeader && invoiceHeader.length > 0 && (
-            <ScrollTable thead={invoiceHeader} tbody={tableData} />
-          )}
-        </div>
+        <ScrollTable thead={invoiceHeader} tbody={tableData} />
 
         <div className={styles.returnSummary}>
           <div className={styles.lableValueDetails}>
