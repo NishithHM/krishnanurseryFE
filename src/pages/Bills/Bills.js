@@ -144,7 +144,6 @@ const Bills = ({type}) => {
 
   const handleSubmitReturn = async (returnData) => {
     try {
-      console.log(returnData);
       const response = await returnEditor(returnData);
       
       if (response.data) {
@@ -318,6 +317,21 @@ const Bills = ({type}) => {
     }));
   };
 
+  const formatReturnInvoiceItems = (data) => {
+    return data.map((item) => ({
+      procurementId: item.procurementId || item._id, // Ensure procurement ID is included
+      procurementLabel: type === 'NURSERY' ? `${item.procurementName.en.name}(${item?.procurementName?.ka?.name}) ${item?.variant?.en?.name} (${item?.variant?.ka?.name})` : `${item.procurementName.en.name}`,
+      price: item.rate,
+      quantity: item.quantity,
+      mrp: item.mrp,
+      rateWithGst: item.rateWithGst,
+      gstAmount: item.gstAmount,
+      gst: item.gst,
+      hsnCode: item.hsnCode,
+      _id: item._id
+    }));
+  };
+
   const handleExcelDownload = async (filterDates)=>{
     const res= await downloadBillingExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD'), type})
     const {isNext, response} = res.data
@@ -487,7 +501,7 @@ const Bills = ({type}) => {
             billedBy: invoiceDetail?.billedBy?.name,
             soldBy: invoiceDetail?.soldBy?.name,
           }}
-          cartData={formatInvoiceItems(invoiceDetail.items)}
+          cartData={formatReturnInvoiceItems(invoiceDetail.items)}
           cartResponse={{
             discount: invoiceDetail.discount,
             roundOff: invoiceDetail.roundOff,
