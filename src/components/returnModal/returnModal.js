@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Modal } from "@mantine/core";
 import styles from "./returnModal.module.css";
 import ScrollTable from "../Table/ScrollTable";
+import ReturnPrintModal from "./returnPrintModal.js";
 import Button from "../Button";
 import dayjs from "dayjs";
+import { useReactToPrint } from "react-to-print";
 
-const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type }) => {
+const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type, clientDetails, invoiceDetails }) => {
   const invoiceHeaderWithMRP = [
     { value: "S. No.", width: "10%" },
     { value: "Item", width: "30%" },
@@ -30,6 +32,7 @@ const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns
   }
 
   const [tableData, setTableData] = useState([]);
+  const printRef = useRef();
 
   useEffect(() => {
     const buildTableData = () => {
@@ -63,9 +66,16 @@ const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns
     }, 0);
   };
 
-  const handlePrint = () => {
-    window.print(); // Triggers browser print dialog
-  };
+  // const handlePrint = () => {
+  //   window.print();
+    
+  // };
+  const handlePrint = useReactToPrint({
+
+    content: () => (
+      printRef.current
+    ),
+  });
 
   if (!showModal) return null;
 
@@ -96,6 +106,18 @@ const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns
         <div className={styles.modalAction}>
           <Button type="primary" title="Print" onClick={handlePrint} />
           <Button type="secondary" title="Close" onClick={onClose} />
+        </div>
+      </div>
+
+      {/* Hidden component for printing */}
+      <div style={{ display: 'none' }}>
+        <div ref={printRef}>
+          <ReturnPrintModal
+            invoiceNumber={invoiceNumber}
+            previousReturns={previousReturns}
+            clientDetails={clientDetails}
+            invoiceDetails={invoiceDetails}
+          />
         </div>
       </div>
     </Modal>
@@ -274,6 +296,8 @@ const ReturnModal = ({
         invoiceNumber={invoiceNumber}
         previousReturns={previousReturns}
         type={type}
+        clientDetails={clientDetails}
+        invoiceDetails={invoiceDetails}
       />
     );
   }

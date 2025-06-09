@@ -111,7 +111,13 @@ export const billsApi = createApi({
         method: "GET",
       }),
       providesTags: ["billHistory"],
-    })
+    }),
+    //   getReturnId: builder.query({
+    //     query: ({ invoiceId }) => ({
+    //       url: `/get-return-id/${invoiceId}`,
+    //       method: "GET",
+    //     }),
+    // })
     };
   },
 });
@@ -127,4 +133,5 @@ export const {
   useGetApproveMutation,
   useReturnEditorMutation,
   useLazyGetReturnQuery,
+  useLazyGetReturnIdQuery
 } = billsApi;

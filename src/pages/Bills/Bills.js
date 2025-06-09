@@ -206,8 +206,12 @@ const Bills = ({type}) => {
           }).format(purchase.totalPrice),
         },
         openModal,
-        makeReturn
+        // makeReturn
       ];
+      if (type !== 'AGRI'){
+        data.push(makeReturn);
+      }
+
       return data;
     });
 
@@ -276,12 +280,17 @@ const Bills = ({type}) => {
     {
       value: "Details", // Changed from empty string for clarity
       isSortable: false,
-    },
-    {
-      value: "Return", // Changed from empty string for clarity
-      isSortable: false,
     }
   ];
+
+  if (type !== 'AGRI'){
+    TABLE_HEADER.push(
+      {
+        value: "Return", // Changed from empty string for clarity
+        isSortable: false,
+      } 
+    )
+  }
 
   const handleFilterChange = (filterDates) => {
     setFilterDates(filterDates);
