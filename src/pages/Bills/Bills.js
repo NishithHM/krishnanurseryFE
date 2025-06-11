@@ -34,6 +34,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
 import { useDownloadBillingExcelMutation } from "../../services/common.services";
 import { use } from "react";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -218,15 +219,50 @@ const Bills = ({type}) => {
     return formatted;
   };
 
+  const extractDigit = (str) => {
+    let digstr = '';
+    for (let chr of str){
+      if ('0123456789'.indexOf(chr) >= 0)
+        digstr += chr;
+    }
+    return digstr? parseInt(digstr) : 0;
+  }
+
   const searchHandler = debounce(async (query) => {
+    const origQuery = query;
+    let retbool = false;
+
     if (query?.length >= 3) {
+      if (query.toLowerCase().substring(0,3) === 'ret'){
+        query = 'nur';
+        retbool = true;
+      }
       const res = await searchPurchase({
         search: query,
         type,
         ...dates,
       });
+
       setSearchQuery(query);
-      const purchases = formatPurchasesData(res.data);
+      let allData = res.data;
+
+      if(retbool){
+        const key = extractDigit(origQuery);
+        allData = allData.filter((obj) => {
+          
+          if(obj.returnItems?.length > 0)
+          {
+            for (const item of obj.returnItems){
+            if (item.returnId && item.returnId === key){
+              return obj;
+            }
+          }
+          }
+          return null;
+        })
+      }
+
+      const purchases = formatPurchasesData(allData);
       setData(purchases);
     } else {
       setSearchQuery(null);
@@ -380,15 +416,18 @@ const Bills = ({type}) => {
       />
       <div className={styles.wrapper}>
         {/* search */}
-        <div className={styles.searchContainer}>
-          <input
-            value={searchInput}
-            onChange={handleSearchInputChange}
-            placeholder="Search for an customer..."
-            className={styles.searchInput}
-          />
-          <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
-        </div>
+        <div
+            className={styles.searchContainer}
+            onMouseEnter={() => toast.info("Start search with 'ret' to search for returns")}
+          >
+            <input
+              value={searchInput}
+              onChange={handleSearchInputChange}
+              placeholder="Search for an customer..."
+              className={styles.searchInput}
+            />
+            <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
+          </div>
         {/* pagination */}
         <div className={styles.paginationContainer}>
           <div className={styles.paginationInner}>
