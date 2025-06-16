@@ -229,14 +229,14 @@ const Bills = ({type}) => {
   }
 
   const searchHandler = debounce(async (query) => {
-    const origQuery = query;
-    let retbool = false;
+    // const origQuery = query;
+    // let retbool = false;
 
     if (query?.length >= 3) {
-      if (query.toLowerCase().substring(0,3) === 'ret'){
-        query = 'nur';
-        retbool = true;
-      }
+      // if (query.toLowerCase().substring(0,3) === 'ret'){
+      //   query = 'nur';
+      //   retbool = true;
+      // }
       const res = await searchPurchase({
         search: query,
         type,
@@ -246,21 +246,21 @@ const Bills = ({type}) => {
       setSearchQuery(query);
       let allData = res.data;
 
-      if(retbool){
-        const key = extractDigit(origQuery);
-        allData = allData.filter((obj) => {
+      // if(retbool){
+      //   const key = extractDigit(origQuery);
+      //   allData = allData.filter((obj) => {
           
-          if(obj.returnItems?.length > 0)
-          {
-            for (const item of obj.returnItems){
-            if (item.returnId && item.returnId === key){
-              return obj;
-            }
-          }
-          }
-          return null;
-        })
-      }
+      //     if(obj.returnItems?.length > 0)
+      //     {
+      //       for (const item of obj.returnItems){
+      //       if (item.returnId && item.returnId === key){
+      //         return obj;
+      //       }
+      //     }
+      //     }
+      //     return null;
+      //   })
+      // }
 
       const purchases = formatPurchasesData(allData);
       setData(purchases);
@@ -418,7 +418,7 @@ const Bills = ({type}) => {
         {/* search */}
         <div
             className={styles.searchContainer}
-            onMouseEnter={() => toast.info("Start search with 'ret' to search for returns")}
+            // onMouseEnter={() => toast.info("Start search with 'ret' to search for returns")}
           >
             <input
               value={searchInput}

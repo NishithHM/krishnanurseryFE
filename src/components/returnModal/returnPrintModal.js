@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
+import ScrollTable from "../Table/ScrollTable";
 
 const ReturnPrintModal = ({
     invoiceNumber,
@@ -18,6 +19,31 @@ const ReturnPrintModal = ({
             returnId = `RET_NUR_${retId}`
         }
     }
+
+    // const [returnList, setReturnList] = useState([]);
+
+    const returnHeader = [
+        { value: "S. No.", width: "10%" },
+        { value: "Item Returned", width: "40%" },
+        { value: "Rate", width: "15%" },
+        { value: "Quantity", width: "15%" },
+        { value: "Sub Total", width: "20%" },
+    ];
+    const returnList = [];
+    
+    let val = [];
+    previousReturns.forEach((item, idx) => {
+        
+        val.push({value: idx + 1});
+        let label = String(item.procurementName?.en?.name || item.procurementLabel) + ` (${item.procurementName?.ka?.name || ""})`;
+        val.push({value: label});
+        val.push({value: item.mrp});
+        val.push({value: item.quantity});
+        let returnAmount = item.quantity * item.mrp;
+        val.push({value: returnAmount});
+    });
+    // setReturnList()
+    returnList.push(val);
 
     const calculateTotalReturnAmount = () => {
         return previousReturns.reduce((total, item) => {
@@ -193,7 +219,7 @@ const ReturnPrintModal = ({
                 </div>
             </div>
 
-            <table style={printStyles.table}>
+            {/* <table style={printStyles.table}>
                 <thead>
                     <tr>
                         <th style={printStyles.tableHeader}>S. No.</th>
@@ -220,7 +246,12 @@ const ReturnPrintModal = ({
                         );
                     })}
                 </tbody>
-            </table>
+            </table> */}
+
+            <ScrollTable
+                thead={returnHeader}
+                tbody={returnList}
+            />
 
             <div style={printStyles.totalSection}>
                 <span style={printStyles.totalLabel}>Total Price:</span>
