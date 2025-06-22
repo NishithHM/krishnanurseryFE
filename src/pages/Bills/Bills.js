@@ -560,6 +560,7 @@ const Bills = ({type}) => {
           handleSubmitReturn={handleSubmitReturn}
           type={type}
           previousReturns={returnData}
+          returnId={invoiceDetail.returnId || null}
         />
       )}
     </div>

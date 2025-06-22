@@ -7,18 +7,20 @@ const ReturnPrintModal = ({
     previousReturns,
     clientDetails,
     invoiceDetails,
+    retId
 }) => {
-    console.log(previousReturns);
-    let returnId = ""
-    if (previousReturns){
-        let retId = previousReturns[0].returnId;
-        if (retId && retId < 10){
-            returnId = `RET_NUR_00${retId}`
-        }
-        else if (retId){
-            returnId = `RET_NUR_${retId}`
-        }
-    }
+    console.log('previous returns: ',previousReturns);
+    console.log('return id: ', retId)
+    const returnId = retId;
+    // if (previousReturns){
+    //     let retId = previousReturns[0].returnId;
+    //     if (retId && parseInt(retId) < 10){
+    //         returnId = `RET_NUR_00${retId}`
+    //     }
+    //     else if (retId){
+    //         returnId = `RET_NUR_${retId}`
+    //     }
+    // }
 
     // const [returnList, setReturnList] = useState([]);
 
