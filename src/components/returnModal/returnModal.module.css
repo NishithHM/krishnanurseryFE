@@ -1,0 +1,66 @@
+.returnModal {
+  width: 80%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.clientSection {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.clientInfo, .invoiceInfo {
+  flex: 1;
+}
+
+.itemsContainer {
+  margin-bottom: 20px;
+}
+
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.itemsTable th, .itemsTable td {
+  border: 1px solid #e0e0e0;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.itemsTable th {
+  background-color: #f5f5f5;
+}
+
+.quantityInput {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.totalSection {
+  text-align: right;
+  margin: 15px 0;
+  font-size: 1.1rem;
+}
+
+.buttonSection {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.clientDetails {
+  display: flex;
+  flex-direction: column;
+}

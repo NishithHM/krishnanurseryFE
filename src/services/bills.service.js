@@ -95,6 +95,23 @@ export const billsApi = createApi({
         }),
         invalidatesTags: ["billHistory"],
       }),
+      returnEditor: builder.mutation({
+        query: (returnData) => ({
+          url: "/return-plant",
+          method: "POST",
+          body: {
+            invoiceId: returnData.invoiceId,
+            items: returnData.items
+          }
+        })
+      }),
+      getReturn: builder.query({
+      query: ({ invoiceId }) => ({
+        url: `/fetch-returns/${invoiceId}`,
+        method: "GET",
+      }),
+      providesTags: ["billHistory"],
+    }),
     };
   },
 });
@@ -108,4 +125,6 @@ export const {
   useGetAllPurchasesCountQuery,
   useSearchPurchaseMutation,
   useGetApproveMutation,
+  useReturnEditorMutation,
+  useLazyGetReturnQuery
 } = billsApi;
