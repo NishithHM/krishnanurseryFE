@@ -523,7 +523,7 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const handleRoundOffValue = (e) => {
     handleRoundOff(e);
-    setState((prev) => ({ ...prev, roundOff: e.target.value }));
+    setState((prev) => ({ ...prev, roundOff: e.target.value, cashAmount:0, onlineAmount:0, paymentType: '', paymentInfo: '' }));
   };
 
   const isRowValid = (row) => {
