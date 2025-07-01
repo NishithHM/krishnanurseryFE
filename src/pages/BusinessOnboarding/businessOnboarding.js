@@ -157,8 +157,9 @@ const BusinessOnboarding = () => {
       latitude: formState.latitude,
       longitude: formState.longitude
     });
+    console.log(res);
     if (res.error) {
-      toast.error(res?.error?.data.error);
+      toast.error(res?.error?.data?.error || res?.error?.data || "Something went wrong, try again later");
     } else {
       toast.success("Thank You For Registering!!!");
       setFormState((prev)=>{
