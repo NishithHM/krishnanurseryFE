@@ -3,11 +3,13 @@ import { Modal } from "@mantine/core";
 import styles from "./returnModal.module.css";
 import ScrollTable from "../Table/ScrollTable";
 import ReturnPrintModal from "./returnPrintModal.js";
+import PaymentRoundOffSection from "./returnPaymentRoundOffSection.js"; // Import the new component
 import Button from "../Button";
 import dayjs from "dayjs";
 import { useReactToPrint } from "react-to-print";
 
-const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type, clientDetails, invoiceDetails, returnId }) => {
+const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type, clientDetails, invoiceDetails, returnId, returnDate }) => {
+  console.log('invoice details: ', invoiceDetails);
   const invoiceHeaderWithMRP = [
     { value: "S. No.", width: "10%" },
     { value: "Item", width: "30%" },
@@ -66,12 +68,7 @@ const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns
     }, 0);
   };
 
-  // const handlePrint = () => {
-  //   window.print();
-    
-  // };
   const handlePrint = useReactToPrint({
-
     content: () => (
       printRef.current
     ),
@@ -118,6 +115,7 @@ const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns
             clientDetails={clientDetails}
             invoiceDetails={invoiceDetails}
             retId={returnId}
+            returnDate={returnDate}
           />
         </div>
       </div>
@@ -136,7 +134,8 @@ const ReturnModal = ({
   handleSubmitReturn,
   type,
   previousReturns,
-  returnId
+  returnId,
+  returnDate
 }) => {
   const [returnItems, setReturnItems] = useState(
     cartData.map(item => ({
@@ -147,6 +146,13 @@ const ReturnModal = ({
 
   const [tableData, setTableData] = useState([]);
   const [invoiceHeader, setInvoiceHeader] = useState([]);
+  const [paymentDetails, setPaymentDetails] = useState({
+    paymentType: 'BOTH',
+    cashAmount: 0,
+    onlineAmount: 0,
+    finalTotal: 0
+  });
+  const [roundOff, setRoundOff] = useState(0);
 
   const invoiceHeaderWithMRP = [
     { value: "S. No.", width: "10%" },
@@ -269,6 +275,14 @@ const ReturnModal = ({
     }, 0);
   };
 
+  const handlePaymentChange = (payment) => {
+    setPaymentDetails(payment);
+  };
+
+  const handleRoundOffChange = (value) => {
+    setRoundOff(value);
+  };
+
   const handleReturn = () => {
     const itemsToReturn = returnItems
       .filter(item => item.returnQuantity > 0)
@@ -283,9 +297,13 @@ const ReturnModal = ({
       return;
     }
 
+    // Include payment details and round off in the return data
     handleSubmitReturn({
       invoiceId: invoiceId,
-      items: itemsToReturn
+      items: itemsToReturn,
+      paymentDetails: paymentDetails,
+      roundOff: roundOff,
+      finalTotal: paymentDetails.finalTotal
     });
   };
 
@@ -301,6 +319,7 @@ const ReturnModal = ({
         clientDetails={clientDetails}
         invoiceDetails={invoiceDetails}
         returnId={returnId}
+        returnDate={returnDate ? returnDate : new Date()}
       />
     );
   }
@@ -351,12 +370,13 @@ const ReturnModal = ({
 
         <ScrollTable thead={invoiceHeader} tbody={tableData} />
 
-        <div className={styles.returnSummary}>
-          <div className={styles.lableValueDetails}>
-            <div className={styles.label}>Return Total:</div>
-            <div className={styles.value}>₹{calculateReturnTotal().toFixed(2)}</div>
-          </div>
-        </div>
+        {/* Use the new PaymentRoundOffSection component */}
+        <PaymentRoundOffSection
+          returnTotal={calculateReturnTotal()}
+          onPaymentChange={handlePaymentChange}
+          onRoundOffChange={handleRoundOffChange}
+          disabled={calculateReturnTotal() <= 0}
+        />
 
         <div className={styles.modalAction}>
           <Button
