@@ -92,6 +92,8 @@ const Bills = ({ type }) => {
   const [getReturnData] = useLazyGetReturnQuery();
   const [returnData, setReturnData] = useState([]);
   
+  const [returnDate, setReturnDate] = useState(null);
+
 
   const [searchParams] = useSearchParams();
   useEffect(() => {
