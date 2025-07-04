@@ -2,7 +2,6 @@
   width: 80%;
   max-width: 800px;
   max-height: 90vh;
-  overflow-y: auto;
 }
 
 .modalHeader {
@@ -63,4 +62,11 @@
 .clientDetails {
   display: flex;
   flex-direction: column;
+}
+
+.modalAction {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* justify-content: space-between; */
 }

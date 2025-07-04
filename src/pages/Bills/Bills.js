@@ -137,6 +137,7 @@ const Bills = ({ type }) => {
     
     getReturnData({ invoiceId: purchase._id }).then((resp) => {
       setReturnData(resp.data.data || []);
+      setReturnDate(resp.data.returnDate || null);
     });
     setShowReturnModal(true);
   };
@@ -594,6 +595,7 @@ const Bills = ({ type }) => {
           type={type}
           previousReturns={returnData}
           returnId={invoiceDetail.returnId || null}
+          returnDate={returnDate || null}
         />
       )}
     </div>

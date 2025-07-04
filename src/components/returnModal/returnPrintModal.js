@@ -7,22 +7,12 @@ const ReturnPrintModal = ({
     previousReturns,
     clientDetails,
     invoiceDetails,
-    retId
+    retId,
+    returnDate
 }) => {
-    console.log('previous returns: ',previousReturns);
-    console.log('return id: ', retId)
+    // console.log('previous returns: ',previousReturns);
+    // console.log('return id: ', retId)
     const returnId = retId;
-    // if (previousReturns){
-    //     let retId = previousReturns[0].returnId;
-    //     if (retId && parseInt(retId) < 10){
-    //         returnId = `RET_NUR_00${retId}`
-    //     }
-    //     else if (retId){
-    //         returnId = `RET_NUR_${retId}`
-    //     }
-    // }
-
-    // const [returnList, setReturnList] = useState([]);
 
     const returnHeader = [
         { value: "S. No.", width: "10%" },
@@ -31,21 +21,24 @@ const ReturnPrintModal = ({
         { value: "Quantity", width: "15%" },
         { value: "Sub Total", width: "20%" },
     ];
+    
+    // Fix: Create separate row for each item
     const returnList = [];
     
-    let val = [];
     previousReturns.forEach((item, idx) => {
+        const row = []; // Create a new row for each item
         
-        val.push({value: idx + 1});
+        row.push({value: idx + 1});
         let label = String(item.procurementName?.en?.name || item.procurementLabel) + ` (${item.procurementName?.ka?.name || ""})`;
-        val.push({value: label});
-        val.push({value: item.mrp});
-        val.push({value: item.quantity});
+        row.push({value: label});
+        row.push({value: item.mrp});
+        row.push({value: item.quantity});
         let returnAmount = item.quantity * item.mrp;
-        val.push({value: returnAmount});
+        row.push({value: returnAmount});
+        
+        // Push each row separately to returnList
+        returnList.push(row);
     });
-    // setReturnList()
-    returnList.push(val);
 
     const calculateTotalReturnAmount = () => {
         return previousReturns.reduce((total, item) => {
@@ -187,7 +180,7 @@ const ReturnPrintModal = ({
                     <div style={printStyles.detailRow}>
                         <span style={printStyles.label}>Return Date:</span>
                         <span style={printStyles.value}>
-                            {dayjs().format('DD/MM/YYYY HH:mm:ss A')}
+                            {dayjs(returnDate).format('DD/MM/YYYY HH:mm:ss A')}
                         </span>
                     </div>
                     <div style={printStyles.detailRow}>
@@ -220,35 +213,6 @@ const ReturnPrintModal = ({
                     </div>
                 </div>
             </div>
-
-            {/* <table style={printStyles.table}>
-                <thead>
-                    <tr>
-                        <th style={printStyles.tableHeader}>S. No.</th>
-                        <th style={printStyles.tableHeader}>Item Returned</th>
-                        <th style={printStyles.tableHeader}>Rate</th>
-                        <th style={printStyles.tableHeader}>Quantity</th>
-                        <th style={printStyles.tableHeader}>Sub Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {previousReturns.map((item, index) => {
-                        const returnAmount = item.quantity * item.mrp;
-                        return (
-                            <tr key={index}>
-                                <td style={printStyles.tableCell}>{index + 1}</td>
-                                <td style={{...printStyles.tableCell, ...printStyles.itemCell}}>
-                                    {item.procurementName?.en?.name || item.procurementLabel} 
-                                    {item.procurementName?.ka?.name && ` (${item.procurementName.ka.name})`}
-                                </td>
-                                <td style={printStyles.tableCell}>{item.mrp}</td>
-                                <td style={printStyles.tableCell}>{item.quantity}</td>
-                                <td style={printStyles.tableCell}>{returnAmount}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table> */}
 
             <ScrollTable
                 thead={returnHeader}
