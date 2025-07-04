@@ -382,7 +382,7 @@ const SalesHeader = ({
                     </div>
                     <div>
                       {item?.price ? (
-                        <span className={`${styles.salespr} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >{item.price}</span>
+                        <span className={`${styles.salespr} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >{Number(item.price).toLocaleString("en-IN")}</span>
                       ) : (
                         ""
                       )}
