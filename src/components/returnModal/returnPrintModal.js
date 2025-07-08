@@ -8,7 +8,8 @@ const ReturnPrintModal = ({
     clientDetails,
     invoiceDetails,
     retId,
-    returnDate
+    returnDate,
+    paymentDetails
 }) => {
     // console.log('previous returns: ',previousReturns);
     // console.log('return id: ', retId)
@@ -50,7 +51,7 @@ const ReturnPrintModal = ({
     const printStyles = {
         container: {
             fontFamily: 'Arial, sans-serif',
-            padding: '20px',
+            padding: '20px 1px 20px 100px',
             backgroundColor: 'white',
             color: 'black',
             maxWidth: '800px',
@@ -140,6 +141,11 @@ const ReturnPrintModal = ({
         },
         footerText: {
             fontSize: '12px'
+        },
+        paymentRow: {
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '10px',
         }
     };
 
@@ -205,11 +211,42 @@ const ReturnPrintModal = ({
                     <div style={{ marginTop: '15px' }}>
                         <div style={printStyles.detailRow}>
                             <span style={printStyles.label}>Payment Details:</span>
-                            <span style={printStyles.value}>CASH</span>
+                            <span style={printStyles.value}>{paymentDetails?.paymentType || "CASH"}</span>
                         </div>
                         <div style={printStyles.detailRow}>
                             <span style={printStyles.value}>Payment Info</span>
+                            <span style={printStyles.value}>{paymentDetails?.paymentInfo || ""}</span>
                         </div>
+                        {paymentDetails?.paymentType === "CASH" && (
+                            <>
+                                <div style={printStyles.paymentRow}>
+                                    <span style={printStyles.value}>CASH</span>
+                                    <span style={printStyles.value}>₹{paymentDetails?.cashAmount || 0}</span>
+                                </div>
+                            </>
+                        )}
+                        {paymentDetails?.paymentType === "ONLINE" && (
+                            <>
+                                <div style={printStyles.paymentRow}>
+                                    <span style={printStyles.value}>ONLINE</span>
+                                    <span style={printStyles.value}>₹{paymentDetails?.onlineAmount || 0}</span>
+                                </div>
+                            </>
+                        )}
+                        {paymentDetails?.paymentType === "BOTH" && (
+                            <>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }}>
+                                    <div style={printStyles.paymentRow}>
+                                        <span style={printStyles.value}>CASH</span>
+                                        <span style={printStyles.value}>₹{paymentDetails?.cashAmount || 0}</span>
+                                    </div>
+                                    <div style={printStyles.paymentRow}>
+                                        <span style={printStyles.value}>ONLINE</span>
+                                        <span style={printStyles.value}>₹{paymentDetails?.onlineAmount || 0}</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
