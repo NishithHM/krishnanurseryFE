@@ -8,7 +8,7 @@ import Button from "../Button";
 import dayjs from "dayjs";
 import { useReactToPrint } from "react-to-print";
 
-const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type, clientDetails, invoiceDetails, returnId, returnDate }) => {
+const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns, type, clientDetails, invoiceDetails, returnId, returnDate, paymentDetails }) => {
   console.log('invoice details: ', invoiceDetails);
   const invoiceHeaderWithMRP = [
     { value: "S. No.", width: "10%" },
@@ -116,6 +116,7 @@ const ReturnHistoryModal = ({ showModal, onClose, invoiceNumber, previousReturns
             invoiceDetails={invoiceDetails}
             retId={returnId}
             returnDate={returnDate}
+            paymentDetails={paymentDetails}
           />
         </div>
       </div>
@@ -135,7 +136,8 @@ const ReturnModal = ({
   type,
   previousReturns,
   returnId,
-  returnDate
+  returnDate,
+  paymentDetailsHistory
 }) => {
   const [returnItems, setReturnItems] = useState(
     cartData.map(item => ({
@@ -289,6 +291,7 @@ const ReturnModal = ({
       .map(item => ({
         procurementId: item.procurementId,
         quantity: item.returnQuantity,
+        // historyPaymentDetails: paymentDetails,
         _id: item._id
       }));
 
@@ -320,6 +323,7 @@ const ReturnModal = ({
         invoiceDetails={invoiceDetails}
         returnId={returnId}
         returnDate={returnDate ? returnDate : new Date()}
+        paymentDetails={paymentDetailsHistory}
       />
     );
   }

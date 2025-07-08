@@ -92,6 +92,7 @@ const Bills = ({type}) => {
   const [getReturnData] = useLazyGetReturnQuery();
   const [returnData, setReturnData] = useState([]);
   const [returnDate, setReturnDate] = useState(null);
+  const [paymentDetails, setPaymentDetails] = useState(null);
 
   useEffect(() => {
   }, [filterDates]);
@@ -133,6 +134,7 @@ const Bills = ({type}) => {
 
   // Handle make return function - updated to prevent event bubbling
   const handleMakeReturn = (purchase, event) => {
+    // console.log("purchase data+++> ", purchaseData);
     if (event) {
       event.stopPropagation(); // Prevent event bubbling
     }
@@ -141,11 +143,13 @@ const Bills = ({type}) => {
     getReturnData({ invoiceId: purchase._id }).then((resp) => {
       setReturnData(resp.data.data || []);
       setReturnDate(resp.data.returnDate || null);
+      setPaymentDetails(resp.data.paymentDetails || null);
     });
     setShowReturnModal(true);
   };
 
   const handleSubmitReturn = async (returnData) => {
+    // console.log("Return Data: ======>", returnData);
     try {
       const response = await returnEditor(returnData);
       
@@ -162,6 +166,7 @@ const Bills = ({type}) => {
   };
 
   const formatPurchasesData = (data) => {
+    // console.log("purchase data formatted: ====> ", data)
     const formatted = data.map((purchase) => {
       const date = { value: dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY") };
 
@@ -181,14 +186,25 @@ const Bills = ({type}) => {
 
       const makeReturn = {
         value: (
-          <span
-            style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
-            onClick={(e) => {
-              handleMakeReturn(purchase, e);
-            }}
-          >
-            Return
-          </span>
+          (purchase?.returnId || purchase?.returnDate) ? (
+        <span
+          style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
+          onClick={(e) => {
+            handleMakeReturn(purchase, e);
+          }}
+        >
+          View Return
+        </span>
+          ) : (
+        <span
+          style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
+          onClick={(e) => {
+            handleMakeReturn(purchase, e);
+          }}
+        >
+          Return
+        </span>
+          )
         ),
       };
 
@@ -221,24 +237,9 @@ const Bills = ({type}) => {
     return formatted;
   };
 
-  const extractDigit = (str) => {
-    let digstr = '';
-    for (let chr of str){
-      if ('0123456789'.indexOf(chr) >= 0)
-        digstr += chr;
-    }
-    return digstr? parseInt(digstr) : 0;
-  }
-
   const searchHandler = debounce(async (query) => {
-    // const origQuery = query;
-    // let retbool = false;
 
     if (query?.length >= 3) {
-      // if (query.toLowerCase().substring(0,3) === 'ret'){
-      //   query = 'nur';
-      //   retbool = true;
-      // }
       const res = await searchPurchase({
         search: query,
         type,
@@ -247,23 +248,6 @@ const Bills = ({type}) => {
 
       setSearchQuery(query);
       let allData = res.data;
-
-      // if(retbool){
-      //   const key = extractDigit(origQuery);
-      //   allData = allData.filter((obj) => {
-          
-      //     if(obj.returnItems?.length > 0)
-      //     {
-      //       for (const item of obj.returnItems){
-      //       if (item.returnId && item.returnId === key){
-      //         return obj;
-      //       }
-      //     }
-      //     }
-      //     return null;
-      //   })
-      // }
-
       const purchases = formatPurchasesData(allData);
       setData(purchases);
     } else {
@@ -397,6 +381,8 @@ const Bills = ({type}) => {
     console.log("Return Modal State:", showReturnModal);
     console.log("Invoice Detail State:", invoiceDetail);
   }, [showReturnModal, invoiceDetail]);
+
+  // console.log('Purchase data: ==>', purchaseData)
 
   return (
     <div>
@@ -564,6 +550,7 @@ const Bills = ({type}) => {
           previousReturns={returnData}
           returnId={invoiceDetail.returnId || null}
           returnDate={returnDate || null}
+          paymentDetailsHistory={paymentDetails || null}
         />
       )}
     </div>

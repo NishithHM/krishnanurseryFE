@@ -101,7 +101,13 @@ export const billsApi = createApi({
           method: "POST",
           body: {
             invoiceId: returnData.invoiceId,
-            items: returnData.items
+            items: returnData.items,
+            paymentDetails: {
+              paymentType: returnData.paymentDetails.paymentType ? returnData.paymentDetails.paymentType : "CASH",
+              cashAmount: returnData.paymentDetails.cashAmount || 0,
+              onlineAmount: returnData.paymentDetails.onlineAmount || 0,
+              // roundOff: returnData.roundOff || 0,
+            }
           }
         })
       }),
