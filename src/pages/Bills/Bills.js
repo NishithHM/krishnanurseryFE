@@ -166,7 +166,7 @@ const Bills = ({type}) => {
   };
 
   const formatPurchasesData = (data) => {
-    // console.log("purchase data formatted: ====> ", data)
+    console.log("purchase data formatted: ====> ", data)
     const formatted = data.map((purchase) => {
       const date = { value: dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY") };
 
@@ -196,21 +196,30 @@ const Bills = ({type}) => {
           View Return
         </span>
           ) : (
-        <span
-          style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
-          onClick={(e) => {
-            handleMakeReturn(purchase, e);
-          }}
-        >
-          Return
-        </span>
+        user?.role?.toLowerCase() === "admin" ? (
+          <span
+            style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
+            onClick={(e) => {
+          handleMakeReturn(purchase, e);
+            }}
+          >
+            ----
+          </span>
+        ) : (
+          <span
+            style={{ color: "blue", fontWeight: "600", cursor: "pointer" }}
+            onClick={(e) => {
+          handleMakeReturn(purchase, e);
+            }}
+          >
+            Return
+          </span>
+        )
           )
         ),
       };
 
-      let paymentThrough = `Cash: ${purchase?.cashAmount ?? 0}, Online: ${
-        purchase?.onlineAmount ?? 0
-      }`;
+      let paymentThrough = `Cash: ${purchase?.cashAmount ?? 0}, Online: ${purchase?.onlineAmount ?? 0}`;
 
       const data = [
         date,
