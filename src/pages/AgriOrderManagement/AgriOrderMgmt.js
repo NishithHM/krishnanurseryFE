@@ -27,7 +27,7 @@ import {
   formatOrdersData,
   ROLE_TABLE_HEADER,
 } from "./helper";
-import { get, cloneDeep } from "lodash";
+import { get, cloneDeep, set } from "lodash";
 import { Textarea } from "@mantine/core";
 import { toast } from "react-toastify";
 import { MIME_TYPES } from "@mantine/dropzone";
@@ -172,6 +172,7 @@ const AgriOrderMgmt = () => {
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
     searchHandler(event.target.value);
+    setPage(1);
   };
 
   const onSortClickHandler = (val) => {
@@ -185,7 +186,7 @@ const AgriOrderMgmt = () => {
 
   const handleFilterChange = async (filters) => {
     const formattedFilter = formatFilter(filters);
-    setPage(() => 1)
+    setPage(1);
 
     setFilters(filters);
     setNextExcelAvailable(true)

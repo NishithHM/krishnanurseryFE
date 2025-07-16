@@ -80,6 +80,8 @@ const Filters = ({
     setFilters(newFilter);
   };
 
+  console.log("Filters config", config, filters);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.innerWrapper}>
@@ -116,21 +118,21 @@ const Filters = ({
             </div>
           )}
 
-          {config.isVendor ||
-            (filters?.type?.value === "VENDOR" && (
-              <div style={{ width: "200px" }}>
+          {(config.isVendor ||
+            filters?.type?.value === "VENDOR") && (
+              <div style={{ width: "300px" }}>
                 <Dropdown
                   url={`/api/vendors/getAll?type=${config?.vendorType}`}
                   id="vendors"
                   apiDataPath={{ label: "name", value: "_id" }}
                   title="Vendor Name"
-                  onChange={dropDownChangeHandler}
+                  onChange={e => dropDownChangeHandler([e], "vendors")}
                   value={filters.vendors}
-                  isMultiEnabled
+                  // isMultiEnabled
                   minInputToFireApi={3}
                 />
               </div>
-            ))}
+            )}
           {config.orderStatus && (
             <Dropdown
               id="status"
