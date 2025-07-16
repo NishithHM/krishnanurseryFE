@@ -87,6 +87,8 @@ const Payments = ({businessType='NURSERY'}) => {
     console.log(filterDates, "filterDates");
     setFilterDates(filterDates);
     setPage(1);
+    setSearchInput('');
+    searchHandler('', false);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
   };
@@ -171,12 +173,12 @@ const Payments = ({businessType='NURSERY'}) => {
     link.click();
   };
 
-  const searchHandler = debounce(async (query) => {
+  const searchHandler = debounce(async (query, triggerSearch) => {
     if (query.length >= 3) {
       const res = await searchPayment({search: query, businessType, ...dates });
       const payments = formatPaymentsData(res?.data?.data || []);
       setData([...payments]);
-    }else if (query.length === 0) {
+    }else if (query.length === 0 && triggerSearch) {
       const payments = formatPaymentsData(paymentsData?.data?.data || []);
       setData([...payments]);
     }
@@ -193,7 +195,7 @@ const Payments = ({businessType='NURSERY'}) => {
 
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
-    searchHandler(event.target.value);
+    searchHandler(event.target.value, true);
   };
 
   const getUserCount = () => {
@@ -245,7 +247,7 @@ const Payments = ({businessType='NURSERY'}) => {
       const payments = formatPaymentsData(paymentsData?.data?.data);
       setData([...payments]);
     }
-  }, [paymentsData]);
+  }, [JSON.stringify(paymentsData)]);
 
   const TABLE_HEADER = [
     {
