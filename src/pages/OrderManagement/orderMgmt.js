@@ -168,6 +168,7 @@ const OrderMgmt = () => {
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
     searchHandler(event.target.value);
+    setPage(1);
   };
 
   const onSortClickHandler = (val) => {
