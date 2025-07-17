@@ -21,7 +21,7 @@ import AgriProcurement from "./AgriProcurement";
 import AgriRequesrOrder from "./AgriRequestOrder";
 import AgriOrderMgmt from "./AgriOrderManagement";
 import AgriAddBills from "./AgriAddBills/AgriAddBills";
-import Sales from "./Sales/Sales";
+import PlantDashboard from "./PlantDashboard";
 import BusinessOnboarding from "./BusinessOnboarding";
 import CustomerList from "./CustomerList";
 export {
@@ -48,7 +48,7 @@ export {
   AgriOrderMgmt,
   AgriRequesrOrder,
   AgriAddBills,
-  Sales,
   BusinessOnboarding,
-  CustomerList
+  CustomerList,
+  PlantDashboard
 };

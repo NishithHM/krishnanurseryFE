@@ -107,6 +107,33 @@ const AddInvoiceModal = ({
     return ret;
   }
 
+  const updatePaymentMode = (e) =>{
+    setPaymentMode((prev) => ({
+      ...prev,
+      type: e?.value,
+    }))
+    if (e?.value === "ONLINE") {
+      setState((prev) => ({
+        ...prev,
+        amountPaidOnline: state.totalToPay,
+        amountPaidCash: 0,
+      }));
+    }else if (e?.value === "CASH") {
+      setState((prev) => ({
+        ...prev,
+        amountPaidCash: state.totalToPay,
+        amountPaidOnline: 0,
+      }));
+    }else {
+      setState((prev) => ({
+        ...prev,
+        amountPaidOnline: 0,
+        amountPaidCash: 0,
+      }));
+    }
+  }
+
+
   return (
     <Modal isOpen={addInvoice.isActive} contentLabel="Add invoice">
       <AlertMessage
@@ -248,6 +275,8 @@ const AddInvoiceModal = ({
                   setState((prev) => ({
                     ...prev,
                     totalToPay: parseInt(e.target.value),
+                    amountPaidCash: paymentMode ?.type === "CASH" ? parseInt(e.target.value) : state.amountPaidCash,
+                    amountPaidOnline: paymentMode ?.type === "ONLINE" ? parseInt(e.target.value) : state.amountPaidOnline,
                   }))
                 }
                 title="Amount paid to vendor"
@@ -260,12 +289,8 @@ const AddInvoiceModal = ({
               title="Payment Mode"
               data={PAYMENT_MODES}
               value={paymentMode?.type?.value}
-              onChange={(e) =>
-                setPaymentMode((prev) => ({
-                  ...prev,
-                  type: e?.value,
-                }))
-              }
+              onChange={updatePaymentMode}
+              placeholder="Select Payment Mode"
             />
             <br />
 
@@ -287,12 +312,15 @@ const AddInvoiceModal = ({
             {paymentMode.type === "CASH" && (
               <PaymentModeCash
                 value={state?.amountPaidCash}
+                disabled={paymentMode.type === "CASH"}
                 setNewPayment={setState}
+                
               />
             )}
             {paymentMode.type === "ONLINE" && (
               <PaymentModeOnline
                 value={state?.amountPaidOnline}
+                disabled={paymentMode.type === "ONLINE"}
                 setNewPayment={setState}
               />
             )}
@@ -301,6 +329,7 @@ const AddInvoiceModal = ({
                 newPayment={state}
                 totalToPay={state.totalToPay}
                 setNewPayment={setState}
+                max={state.totalToPay}
               />
             )}
 
@@ -418,7 +447,7 @@ const AddInvoiceModal = ({
   );
 };
 
-const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
+const PaymentModeCash = ({ value, setNewPayment, disabled=false, max }) => {
   return (
     <>
       <Input
@@ -426,6 +455,10 @@ const PaymentModeCash = ({ value, setNewPayment, totalAmountPaid }) => {
         required
         title="Amount that is paid in cash"
         value={value}
+        disabled={disabled}
+        max={max}
+        id="amountPaidCash"
+        type="number"
         onChange={(e) =>
           setNewPayment((prev) => ({
             ...prev,
@@ -475,6 +508,9 @@ const PaymentModeBoth = ({ newPayment, setNewPayment, totalToPay }) => {
         value={totalToPay - newPayment?.amountPaidCash || 0}
         setNewPayment={setNewPayment}
       />
+      {newPayment?.amountPaidOnline < 0 && (
+        <span style={{ color: "red" }}> Online Amount cannot be less than zero</span>
+      )}
     </>
   );
 };
