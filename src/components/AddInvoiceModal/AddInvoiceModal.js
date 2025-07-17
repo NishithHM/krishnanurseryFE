@@ -116,12 +116,19 @@ const AddInvoiceModal = ({
       setState((prev) => ({
         ...prev,
         amountPaidOnline: state.totalToPay,
+        amountPaidCash: 0,
       }));
-    }
-    if (e?.value === "CASH") {
+    }else if (e?.value === "CASH") {
       setState((prev) => ({
         ...prev,
         amountPaidCash: state.totalToPay,
+        amountPaidOnline: 0,
+      }));
+    }else {
+      setState((prev) => ({
+        ...prev,
+        amountPaidOnline: 0,
+        amountPaidCash: 0,
       }));
     }
   }
