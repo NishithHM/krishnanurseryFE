@@ -268,6 +268,8 @@ const AddInvoiceModal = ({
                   setState((prev) => ({
                     ...prev,
                     totalToPay: parseInt(e.target.value),
+                    amountPaidCash: paymentMode ?.type === "CASH" ? parseInt(e.target.value) : state.amountPaidCash,
+                    amountPaidOnline: paymentMode ?.type === "ONLINE" ? parseInt(e.target.value) : state.amountPaidOnline,
                   }))
                 }
                 title="Amount paid to vendor"
