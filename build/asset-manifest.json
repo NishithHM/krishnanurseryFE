@@ -1,10 +1,12 @@
 {
   "files": {
     "main.css": "/static/css/main.996057d0.css",
-    "main.js": "/static/js/main.3da956f1.js",
+    "main.js": "/static/js/main.eec1543e.js",
     "static/js/787.7d9e708f.chunk.js": "/static/js/787.7d9e708f.chunk.js",
     "static/media/customerList.png": "/static/media/customerList.1f5c683ce74f4b945d22.png",
     "static/media/wasteManagementIcon.png": "/static/media/wasteManagementIcon.e6e5d0fdb7c9a775b773.png",
+    "static/media/plants.jpg": "/static/media/plants.d060f870a588d24525d0.jpg",
+    "static/media/payments.jpg": "/static/media/payments.cfc9aaea6617643cb967.jpg",
     "static/media/vendor.png": "/static/media/vendor.edcf4ac22f76d08d3d4c.png",
     "static/media/agri_variants.jpeg": "/static/media/agri_variants.1bb2a440b9a554a8e6a2.jpeg",
     "static/media/access.png": "/static/media/access.482e0792f3566096f906.png",
@@ -12,7 +14,6 @@
     "static/media/categories.png": "/static/media/categories.f0b95b989cf408382455.png",
     "static/media/logo.png": "/static/media/logo.2e80816afa07ac944da2.png",
     "static/media/logo2.png": "/static/media/logo2.91f7bf4f9c449a35dc78.png",
-    "static/media/sales.png": "/static/media/sales.43b7c0fd010cdf7a15ae.png",
     "static/media/payments.png": "/static/media/payments.b236b60e743bc85d9208.png",
     "static/media/procurement.png": "/static/media/procurement.f3f5ef6369f20bafe3cd.png",
     "static/media/SignWhiteBG.png": "/static/media/SignWhiteBG.9fc6f78074e16678e990.png",
@@ -21,11 +22,11 @@
     "static/media/billBook.png": "/static/media/billBook.942098d32268e4a23413.png",
     "index.html": "/index.html",
     "main.996057d0.css.map": "/static/css/main.996057d0.css.map",
-    "main.3da956f1.js.map": "/static/js/main.3da956f1.js.map",
+    "main.eec1543e.js.map": "/static/js/main.eec1543e.js.map",
     "787.7d9e708f.chunk.js.map": "/static/js/787.7d9e708f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.996057d0.css",
-    "static/js/main.3da956f1.js"
+    "static/js/main.eec1543e.js"
   ]
 }

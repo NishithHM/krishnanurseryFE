@@ -11,8 +11,14 @@ import {
 import Datefilter from "../../components/Filters/Datefilter";
 import styles from "../../components/Sales/Sales.module.css";
 import { BackButton } from "../../components";
+import InvestmentIcon from "../../icons/InvestmentIcon";
+import SalesIcon from "../../icons/SalesIcon";
+import WastageIcon from "../../icons/WastageIcon";
+import PaymentsIcon from "../../icons/PaymentsIcon";
+import InventoryIcon from "../../icons/InventoryIcon";
+import ProfitIons from "../../icons/ProfitIons";
 
-const Sales = () => {
+const PlantDashboard = ({ type = "plants" }) => {
   const [metaData, { data }] = useMetaDataMutation();
   const [graphData] = useGraphDataMutation();
   const [cardData, setCardData] = useState(null);
@@ -52,6 +58,7 @@ const Sales = () => {
             ...dateRange,
             plants: selectedPlants.map((plant) => plant.value),
             categories: selectedCategory.map((category) => category.value),
+            mode: type
           },
         });
         const res1 = await graphData({
@@ -59,6 +66,7 @@ const Sales = () => {
             ...dateRange,
             plants: selectedPlants.map((plant) => plant.value),
             categories: selectedCategory.map((category) => category.value),
+            mode: type
           },
         });
         if (res1) {
@@ -95,28 +103,137 @@ const Sales = () => {
       console.error("Invalid selectedDate object:", selectedDate);
     }
   }, []);
+ 
+  const getHeaderData = () => {
+    let headerData = [];
+    if (type === "plants") {
+      headerData = [
+        {
+          title: "Investment",
+          graphKey: "investment",
+          subtext: "Plants",
+          price: cardData?.investment,
+          percentage: cardData?.investment_perecntage,
+          icon: (status) => <InvestmentIcon status={status} />,
+        },
+        {
+          title: "Sales",
+          graphKey: "sales",
+          price: cardData?.sales,
+          cashAmount: cardData?.cashAmount,
+          onlineAmount: cardData?.onlineAmount,
+          percentage: cardData?.sales_perecntage,
+          icon: (status) => <SalesIcon status={status} />,
+        },
+        {
+          title: "Wastages",
+          graphKey: "wastages",
+          price: cardData?.damages,
+          percentage: cardData?.wastages_perecntage,
+          icon: (status) => <WastageIcon status={status} />,
+        },
+        {
+          title: "Profit",
+          graphKey: "profit",
+          subtext: "plant investment vs sales",
+          price: cardData?.profit,
+          percentage: cardData?.profit_perecntage,
+          icon: (status) => <ProfitIons status={status} />,
+        },
+        {
+          title: "Inventory",
+          graphKey: "inventory",
+          price: cardData?.inventory,
+          // percentage: 10,
+          icon: (status) => <InventoryIcon status={status} />,
+        },
+      ];
+    }else if (type === "payments") {
+      headerData = [
+        {
+          title: "Vendor Payments",
+          graphKey: "vendorAmount",
+          price: cardData?.VENDOR?.payments,
+          cashAmount: cardData?.VENDOR?.cashAmount,
+          onlineAmount: cardData?.VENDOR?.onlineAmount,
+          percentage: cardData?.vendorAmount_perecntage,
+          icon: (status) => <PaymentsIcon status={status} />,
+        },
+        {
+          title: "Salary Payments",
+          graphKey: "salaryAmount",
+          price: cardData?.SALARY?.payments,
+          cashAmount: cardData?.SALARY?.cashAmount,
+          onlineAmount: cardData?.SALARY?.onlineAmount,
+          percentage: cardData?.salaryAmount_perecntage,
+          icon: (status) => <PaymentsIcon status={status} />,
+        },
+        {
+          title: "Other Payments",
+          graphKey: "othersAmount",
+          price: cardData?.OTHERS?.payments,
+          cashAmount: cardData?.OTHERS?.cashAmount,
+          onlineAmount: cardData?.OTHERS?.onlineAmount,
+          percentage: cardData?.othersAmount_perecntage,
+          icon: (status) => <PaymentsIcon status={status} />,
+        },
+        {
+          title: "Payments Total",
+          graphKey: "payments",
+          price: cardData?.TOTAL?.payments,
+          cashAmount: cardData?.TOTAL?.cashAmount,
+          onlineAmount: cardData?.TOTAL?.onlineAmount,
+          percentage: cardData?.payments_perecntage,
+          icon: (status) => <PaymentsIcon status={status} />,
+        },
+        {
+          title: "Sales",
+          graphKey: "sales",
+          price: cardData?.sales,
+          cashAmount: cardData?.cashAmount,
+          onlineAmount: cardData?.onlineAmount,
+          percentage: cardData?.sales_perecntage,
+          icon: (status) => <SalesIcon status={status} />,
+        },
+        {
+          title: "Profit",
+          graphKey: "profit",
+          price: cardData?.profit,
+          percentage: cardData?.profit_perecntage,
+          icon: (status) => <SalesIcon status={status} />,
+        },
+        {
+          title: "Vendor Deviations",
+          price: cardData?.vendorDeviation,
+          icon: (status) => <PaymentsIcon status={status} />,
+        },
+        
+      ];
+    }
+    return headerData;
+  };
 
   return (
     <div>
-       <div className={styles.admindash}>
-       <div>
-          <BackButton navigateTo={"/authorised/dashboard"} className=" backbtn "/>
+      <div className={styles.admindash}>
+        <div>
+          <BackButton navigateTo={"/authorised/dashboard"} className=" backbtn " />
         </div>
         <div className={styles.backnavgia}>
-          <h1 className={styles.dash + " poppins "}>Admin Dashboard</h1>
+          <h1 style={{ textTransform: "capitalize" }} className={styles.dash + " poppins "}>{type} Dashboard</h1>
         </div>
-       </div>
-      <Container maxWidth="xl" className=" containermax " style={{maxWidth:'unset'}}>
+      </div>
+      <Container maxWidth="xl" className=" containermax " style={{ maxWidth: 'unset' }}>
         <div>
           <div>
             <Grid
-             classes={{container: styles.filterContainer}}
+              classes={{ container: styles.filterContainer }}
               container
-               spacing={2}
-                item 
-                xs={12}
-                >
-              <Grid classes={{item: styles.plants}} item xs={4} className="plants">
+              spacing={2}
+              item
+              xs={12}
+            >
+              {type === "plants" && <Grid classes={{ item: styles.plants }} item xs={4} className="plants">
                 <Dropdown
                   url="/api/procurements/getAll?isList=true&isAll=true"
                   id="addPlantName"
@@ -129,10 +246,10 @@ const Sales = () => {
                   isDisabled={selectedCategory.length > 0}
                   minInputToFireApi={3}
                 />
-              </Grid>
+              </Grid>}
               <Grid
-             classes={{item: styles.dateFilters}}
-             item xs={4} className="datefilters">
+                classes={{ item: styles.dateFilters }}
+                item xs={4} className="datefilters">
                 <Datefilter
                   onChange={handleDateChange}
                   startDateInput={dateRange.startDate}
@@ -141,9 +258,9 @@ const Sales = () => {
                   defaultEndDate={defaultEndDate}
                 />
               </Grid>
-              <Grid 
-             classes={{item: styles.plants}}
-               item xs={4} className="plants">
+              {type === "plants" && <Grid
+                classes={{ item: styles.plants }}
+                item xs={4} className="plants">
                 <Dropdown
                   url="/api/category/getAll"
                   id="addCategory"
@@ -156,7 +273,7 @@ const Sales = () => {
                   minInputToFireApi={3}
                   isDisabled={selectedPlants.length > 0}
                 />
-              </Grid>
+              </Grid>}
             </Grid>
           </div>
           <div style={{ "margin-top": "50px" }}>
@@ -165,6 +282,7 @@ const Sales = () => {
               selectedPlants={selectedPlants}
               graphsData={graphsData}
               selectedCategory={selectedCategory}
+              headerData={getHeaderData()}
             />
           </div>
         </div>
@@ -173,4 +291,4 @@ const Sales = () => {
   );
 };
 
-export default Sales;
+export default PlantDashboard;

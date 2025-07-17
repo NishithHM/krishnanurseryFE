@@ -8,7 +8,8 @@ import customerList from "../../assets/images/dashboard/customerList.png";
 import billBook from "../../assets/images/dashboard/billBook.png";
 import categoriesImg from "../../assets/images/dashboard/categories.png";
 import billsImg from "../../assets/images/dashboard/bills.png";
-import salesImg from "../../assets/images/dashboard/sales.png";
+import salesImg from "../../assets/images/dashboard/payments.jpg";
+import plants from "../../assets/images/dashboard/plants.jpg";
 import agriVariantsImg from "../../assets/images/dashboard/agri_variants.jpeg";
 import vendorImg from "../../assets/images/dashboard/vendor.png";
 import orders from "../../assets/images/dashboard/orders.png";
@@ -104,9 +105,18 @@ const Dashboard = () => {
     },
     {
       id : 10,
-      title: "Sales",
+      title: "Plant Dashboard",
+      tile_img: plants,
+      path: "plant-dashboard",
+      allowed: [USER_ROLES.admin],
+      isDisabled: false,
+      tabType: "Nursery",
+    },
+    {
+      id : 10.1,
+      title: "Payment Dashboard",
       tile_img: salesImg,
-      path: "sales",
+      path: "payments-dashboard",
       allowed: [USER_ROLES.admin],
       isDisabled: false,
       tabType: "Nursery",

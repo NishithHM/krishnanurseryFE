@@ -9,71 +9,27 @@ import Chart from "chart.js/auto";
 import ProfitIcon from "../../icons/ProfitIcon";
 import LossIcon from "../../icons/LossIcon";
 import RupeeIcon from "../../icons/RupeeIcon";
-import InvestmentIcon from "../../icons/InvestmentIcon";
-import SalesIcon from "../../icons/SalesIcon";
-import WastageIcon from "../../icons/WastageIcon";
-import PaymentsIcon from "../../icons/PaymentsIcon";
-import InventoryIcon from "../../icons/InventoryIcon";
-import ProfitIons from "../../icons/ProfitIons";
 import PlantIcon from "../../icons/PlantIcon";
 const SalesHeader = ({
   cardData,
   selectedPlants,
   graphsData,
   selectedCategory,
+  headerData=[]
 }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
-  const headerData = [
-    {
-      title: "Investment",
-      price: cardData?.investment,
-      percentage: cardData?.investment_perecntage,
-      icon: (status) => <InvestmentIcon status={status} />,
-    },
-    {
-      title: "Sales",
-      price: cardData?.sales,
-      cashAmount: cardData?.cashAmount,
-      onlineAmount: cardData?.onlineAmount,
-      percentage: cardData?.sales_perecntage,
-      icon: (status) => <SalesIcon status={status} />,
-    },
-    {
-      title: "Wastages",
-      price: cardData?.damages,
-      percentage: cardData?.wastages_perecntage,
-      icon: (status) => <WastageIcon status={status} />, 
-    },
-    {
-      title: "Profit",
-      price: cardData?.profit,
-      percentage: cardData?.profit_perecntage,
-      icon: (status) => <ProfitIons status={status} />,
-    },
-    {
-      title: "Payments",
-      price: cardData?.payments,
-      percentage: cardData?.payments_perecntage,
-      icon: (status) => <PaymentsIcon status={status} />,
-    },
-    {
-      title: "Inventory",
-      price: cardData?.inventory,
-      // percentage: 10,
-      icon: (status) => <InventoryIcon status={status} />,
-    },
-  ];
+  
 
   const handleCardClick = (index, item) => {
     setSelectedCard(item);
     setSelectedCardIndex(index);
-    setSelectedTitle(item?.title.toLowerCase());
+    setSelectedTitle(item?.graphKey);
     if (graphsData.length > 0) {
       const clickedData = graphsData.data.filter(
-        (item) => item?.title.toLowerCase() in item
+        (item) => item?.graphKey in item
       );
       setFilteredData(clickedData);
       console.log(clickedData, graphsData, item, "check")
@@ -277,7 +233,7 @@ const SalesHeader = ({
       if (selectedTitle) {
         selectedData = graphsData?.data?.map((item) => item[selectedTitle]);
       }
-      console.log(graphsData, selectedTitle)
+      console.log(selectedData, selectedTitle, 'here', graphsData)
       chartRef.current = new Chart(ctx, {
         type: "line",
         data: {
@@ -358,6 +314,12 @@ const SalesHeader = ({
                       >
                         {item.title}
                       </span>
+                      {item.subtext && (
+                        <span style={{fontSize:'14px'}} className={styles.subtext}>
+                          <br />
+                          {item.subtext}
+                        </span>
+                      )}
                     </div>
                     <div className={styles.iconShape}>
                       <span>
