@@ -3,7 +3,6 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context";
 import {
   AccessManagement,
-  AddProcurement,
   Categories,
   Dashboard,
   Employee,
@@ -23,15 +22,12 @@ import {
   AgriRequesrOrder,
   AgriOrderMgmt,
   AgriAddBills,
-  Sales,
-  AgriPayments,
+  PlantDashboard,
   CustomerList,
-  BusinessOnboarding,
 } from "../../pages";
 import { isEmpty } from "lodash";
 import { Footer, Header } from "../../components";
 import WasteList from "../../pages/WasteManagement/WasteManagementList";
-import SalesDashBoard from "../../pages/Sales";
 import Vendor from "../../pages/Vendor";
 
 const Protected = () => {
@@ -159,7 +155,8 @@ const Protected = () => {
               exact
               element={<Vendor/>}
             />
-            <Route path="/dashboard/sales" exact element={<Sales />} />
+            <Route path="/dashboard/payments-dashboard" exact element={<PlantDashboard type="payments" />} />
+            <Route path="/dashboard/plant-dashboard" exact element={<PlantDashboard type="plants" />} />
             <Route path="/dashboard/customer-list" exact element={<CustomerList />} />
             
           </Routes>
