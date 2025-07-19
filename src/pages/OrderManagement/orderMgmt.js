@@ -123,12 +123,14 @@ const OrderMgmt = () => {
       isCount: true,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
+      search,
       ...formatFilter(filters),
     };
     const listBody = {
       pageNumber: page,
       sortBy: sortData.sortBy,
       sortType: sortData.sortType,
+      search,
       ...formatFilter(filters),
     };
     if (page === 1) {
@@ -151,8 +153,8 @@ const OrderMgmt = () => {
   const searchHandler = debounce(async (query) => {
     setSearch(query);
     if (query.length >= 3) {
-      const res = await getOrders({ body: { search: query } });
-      const counts = await getOrders({});
+      const res = await getOrders({ body: { search: query, pageNumber: page, sortBy:sort.sortBy, sortType: sort.sortType } });
+      const counts = await getOrders({ body: { search: query, pageNumber: page, sortBy:sort.sortBy, sortType: sort.sortType, isCount: true } });
       setOrdersCount(get(counts, "data[0].count", 0));
       const list = formatOrdersData({
         data: res.data,

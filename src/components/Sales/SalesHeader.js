@@ -109,7 +109,7 @@ const SalesHeader = ({
           </div>
         ),
       },
-      { value: item?.saleAmount },
+      { value: `₹ ${Number(item?.saleAmount).toLocaleString('en-IN')}` },
     ]);
   }
   let plantsData = [];
