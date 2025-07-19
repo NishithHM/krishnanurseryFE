@@ -24,6 +24,7 @@ import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import dayjs from "dayjs";
 import { useGetInvoiceMutation } from "../../services/procurement.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
+import { use } from "react";
 
 /* /api/procurements/vendor-orders/:id GET --> [1235353, 345345455, 34534354]  ---> [{label:1235353, value: 1235353}]
  */
@@ -262,6 +263,13 @@ export const PlaceOrder = () => {
       return { ...prev, totalQuantity: requestedQuantity || 0 };
     });
   }, [requestedQuantity]);
+
+
+  useEffect(() => {
+    // wheneverv addVendorName changes, reset the orderId
+    setState((prev) => ({ ...prev, orderId: {}, orderDetails: {}}));
+
+  }, [state.addVendorName]);
 
   const isInhouseOrder =
     state.addVendorContact && state.addVendorContact === "9999999999";

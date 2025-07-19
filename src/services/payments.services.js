@@ -39,18 +39,25 @@ export const paymentsApi = createApi({
           type,
           businessType,
           vendorId,
-        }) => ({
-          url: "/getAll",
-          method: "GET",
-          params: {
-            pageNumber: page,
-            businessType,
-            startDate,
-            endDate,
-            vendorId,
-            type,
-          },
-        }),
+          search='',
+        }) => {
+          const options = {};
+          options["businessType"] = businessType; 
+          if (search && search.length > 2) options["search"] = search;
+          if (type) options["type"] = type;
+          if (vendorId) options["vendorId"] = vendorId;
+          if (startDate) options["startDate"] = startDate;
+          if (endDate) options["endDate"] = endDate;
+          if (page) options["pageNumber"] = page;
+
+          return {
+            url: "/getAll",
+            method: "GET",
+            params: {
+              ...options
+            },
+          };
+        },
         providesTags: ["User"],
       }),
       getAllPaymentsByPhoneNumber: builder.query({
@@ -96,10 +103,11 @@ export const paymentsApi = createApi({
           endDate,
           type,
           vendorId,
+          pageNumber = 1,
         }) => ({
           url: "/getAll",
           method: "GET",
-          params: { search, startDate, endDate, type, vendorId, businessType },
+          params: { search, startDate, endDate, type, vendorId, businessType, pageNumber },
         }),
       }),
       getInfo: builder.mutation({
