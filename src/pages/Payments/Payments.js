@@ -63,7 +63,7 @@ const Payments = ({businessType='NURSERY'}) => {
   }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType });
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType, search: searchInput });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
   const [paymentData] = useGetInfoMutation();
 
@@ -76,7 +76,6 @@ const Payments = ({businessType='NURSERY'}) => {
     ...dates,
     businessType,
   });
-  const [searchPayment] = useSearchPaymentMutation();
   const [mutate] = useCreatePaymentMutation();
 
   // console.log(dataFromPhoneNumber, "data phone");
@@ -88,7 +87,6 @@ const Payments = ({businessType='NURSERY'}) => {
     setFilterDates(filterDates);
     setPage(1);
     setSearchInput('');
-    searchHandler('', false);
     await paymentsCountReq.refetch();
     setNextExcelAvailable(true);
   };
@@ -96,9 +94,7 @@ const Payments = ({businessType='NURSERY'}) => {
   const formatPaymentsData = (data) => {
     const formatted = data.map((item) => {
       const name = { value: item.name };
-      let paymentInfo = `Cash: ${item?.cashAmount ?? 0}, Online: ${
-        item?.onlineAmount ?? 0
-      }`;
+      let paymentInfo = `Cash:  ₹ ${Number(item?.cashAmount ?? 0).toLocaleString("en-IN")}, Online: ₹ ${Number(item?.onlineAmount ?? 0).toLocaleString("en-IN")}`;
 
       const type = {
         value: item.type,
@@ -113,7 +109,7 @@ const Payments = ({businessType='NURSERY'}) => {
       const createdAt = { value: dayjs(item.createdAt).format("DD-MM-YYYY") };
       const paymentDate = { value: item?.date ? dayjs(item.date).format("DD-MM-YYYY"):  dayjs(item.createdAt).format("DD-MM-YYYY") };
       const amount = {
-        value: Number(item.amount).toLocaleString("en-IN"),
+        value: `₹ ${Number(item.amount).toLocaleString("en-IN")}`,
       };
       const invoiceId = {
         value: item.invoiceId || "---",
@@ -137,6 +133,9 @@ const Payments = ({businessType='NURSERY'}) => {
             <span>--</span>
           ),
       };
+      const createdBy = {
+        value: item.createdBy?.name || "---",
+      };
 
       const data = [
         name,
@@ -148,6 +147,7 @@ const Payments = ({businessType='NURSERY'}) => {
         amount,
         invoiceId,
         action,
+        createdBy
       ];
       return data;
     });
@@ -169,21 +169,10 @@ const Payments = ({businessType='NURSERY'}) => {
     }
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(response);
-    link.download = "billing.xlsx";
+    link.download = "payments.xlsx";
     link.click();
   };
 
-  const searchHandler = debounce(async (query, triggerSearch) => {
-    if (query.length >= 3) {
-      const res = await searchPayment({search: query, businessType, ...dates });
-      const payments = formatPaymentsData(res?.data?.data || []);
-      setData([...payments]);
-    }else if (query.length === 0 && triggerSearch) {
-      const payments = formatPaymentsData(paymentsData?.data?.data || []);
-      setData([...payments]);
-    }
-    setPage(1);
-  }, 500);
 
   const onNumberChange = async (num) => {
     setNewPayment((prev) => ({
@@ -195,7 +184,6 @@ const Payments = ({businessType='NURSERY'}) => {
 
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
-    searchHandler(event.target.value, true);
   };
 
   const getUserCount = () => {
@@ -287,6 +275,10 @@ const Payments = ({businessType='NURSERY'}) => {
     },
     {
       value: "Action",
+      isSortable: false,
+    },
+    {
+      value: "Created By",
       isSortable: false,
     },
   ];
@@ -439,11 +431,11 @@ const Payments = ({businessType='NURSERY'}) => {
             <>
               <Filters.Column
                 columHeading="Total Investment"
-                value={Number(paymentsCountReq?.data?.sum).toLocaleString("en-IN")}
+                value={`₹ ${Number(paymentsCountReq?.data?.sum || 0).toLocaleString("en-IN")}`}
               />
               <Filters.Column
                 columHeading="Remaining"
-                value={Number(paymentsCountReq?.data?.remainingCapital).toLocaleString("en-IN")}
+                value={`₹ ${Number(paymentsCountReq?.data?.remainingCapital || 0).toLocaleString("en-IN")}`}
               />
             </>
           )}
@@ -451,7 +443,7 @@ const Payments = ({businessType='NURSERY'}) => {
             <>
               <Filters.Column
                 columHeading="Total Amount"
-                value={Number(paymentsCountReq?.data?.sum).toLocaleString("en-IN")}
+                value={`₹ ${Number(paymentsCountReq?.data?.sum || 0).toLocaleString("en-IN")}`}
               />
             </>
           )}
@@ -459,7 +451,7 @@ const Payments = ({businessType='NURSERY'}) => {
             <>
               <Filters.Column
                 columHeading="Salary Paid"
-                value={Number(paymentsCountReq?.data?.sum).toLocaleString("en-IN")}
+                value={`₹ ${Number(paymentsCountReq?.data?.sum || 0).toLocaleString("en-IN")}`}
               />
             </>
           )}
@@ -467,11 +459,11 @@ const Payments = ({businessType='NURSERY'}) => {
             <>
               <Filters.Column
                 columHeading="Deviation"
-                value={paymentsCountReq?.data?.vendorDeviation ? Number(paymentsCountReq?.data?.vendorDeviation).toLocaleString("en-IN") : 0}
+                value={`₹ ${paymentsCountReq?.data?.vendorDeviation ? Number(paymentsCountReq?.data?.vendorDeviation).toLocaleString("en-IN") : 0}`}
               />
               <Filters.Column
                 columHeading="Total Amount Paid"
-                value={Number(paymentsCountReq?.data?.sum).toLocaleString("en-IN")}
+                value={`₹ ${Number(paymentsCountReq?.data?.sum || 0).toLocaleString("en-IN")}`}
               />
             </>
           )}
