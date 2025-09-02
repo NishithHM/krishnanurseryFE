@@ -41,6 +41,7 @@ import ScrollTable from "../../components/Table/ScrollTable";
 import { GrClose } from "react-icons/gr";
 import DropZone from "../../components/Dropzone/Dropzone";
 import { MIME_TYPES } from "@mantine/dropzone";
+import { useDownloadPlantsExcelMutation } from "../../services/common.services";
 
 const billingHistoryHeader = [
   { value: "Procured On", width: "15%" },
@@ -76,6 +77,8 @@ const ProcurementList = () => {
   const [uploadPdfData] = useUploadPhampletMutation();
   const [GetPdfData] = useGetPdfDataMutation();
   const [filename, setFileName] = useState();
+  const [isExcelLoading, setIsExcelLoading] = useState(false);
+  
   const tableHeader = [
     [
       {
@@ -112,6 +115,8 @@ const ProcurementList = () => {
   const [plantImages, setPlantImages] = useState([]);
   const [pdfsdata, setPdfsData] = useState([]);
   const [imageLoader,setImageLoader] = useState(false)
+  const [downloadPlantsExcel] = useDownloadPlantsExcelMutation();
+
 const [spinner,setSpinner] = useState(false)
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -417,6 +422,21 @@ const [spinner,setSpinner] = useState(false)
   const openPdfsImage = () => {
     fetchAndDisplayImages([filename]);
   };
+  const onExcelDownload = async () => {
+    setIsExcelLoading(true);
+    const res = await downloadPlantsExcel();
+    if (res) {
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "plants.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setIsExcelLoading(false);
+    }
+  }
+
 const setBtns = ()=>{
   setSpinner(true);
 }
@@ -444,6 +464,14 @@ const setBtns = ()=>{
                 />
               </div>
             )}
+              <div className={styles.immediateButton}>
+                <Button
+                  onClick={onExcelDownload}
+                  title="Download Plants"
+                  type={"primary" }
+                  loading={isExcelLoading}
+                />
+              </div>
           </div>
           <div className={styles.paginationContainer}>
             <div className={styles.paginationInner}>

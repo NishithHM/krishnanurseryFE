@@ -283,6 +283,7 @@ const PlantDashboard = ({ type = "plants" }) => {
               graphsData={graphsData}
               selectedCategory={selectedCategory}
               headerData={getHeaderData()}
+              type={type}
             />
           </div>
         </div>

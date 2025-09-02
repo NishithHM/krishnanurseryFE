@@ -15,7 +15,8 @@ const SalesHeader = ({
   selectedPlants,
   graphsData,
   selectedCategory,
-  headerData=[]
+  headerData=[],
+  type
 }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -351,14 +352,14 @@ const SalesHeader = ({
                   </div>
                   <div>
                     {item?.cashAmount ? (
-                        <span className={`${styles.smallAmounts} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >Cash- {item.cashAmount}</span>
+                        <span className={`${styles.smallAmounts} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >Cash- {Number(item.cashAmount).toLocaleString("en-IN")}</span>
                       ) : (
                         ""
                       )}
                       </div>
                       <div>
                       {item?.onlineAmount ? (
-                        <span className={`${styles.smallAmounts} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >Online- {item.onlineAmount}</span>
+                        <span className={`${styles.smallAmounts} ${selectedCard?.title === item?.title ? styles.pricecolors : styles.pricecolorsed }`} >Online- {Number(item.onlineAmount).toLocaleString("en-IN")}</span>
                       ) : (
                         ""
                       )}
@@ -462,7 +463,7 @@ const SalesHeader = ({
             </Grid>
           ) :null}
         </Grid>
-        <Grid
+       {type==="plants" && <Grid
           container
           spacing={2}
           item
@@ -480,7 +481,7 @@ const SalesHeader = ({
               <Table data={[TABLE_HEADER1, ...plantsData]} />
             </Card>
           </Grid>
-        </Grid>
+        </Grid>}
       </div>
     </>
   );
