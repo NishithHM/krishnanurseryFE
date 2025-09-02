@@ -36,6 +36,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ScrollTable from "../../components/Table/ScrollTable";
 import { GrClose } from "react-icons/gr";
+import { useDownloadPlantsExcelMutation } from "../../services/common.services";
 
 const billingHistoryHeader = [
   { value: "Procured On", width: "15%" },
@@ -64,6 +65,7 @@ const ProcurementList = () => {
   const [loaders, setLoaders] = useState(false);
   const [quanityLoaders, setQuantityLoaders] = useState(false);
   const [isMinimumSelected, setMinimumMode] = useState(false);
+  const [isExcelLoading, setIsExcelLoading] = useState(false);
   
   const tableHeader = [
     [
@@ -100,6 +102,8 @@ const ProcurementList = () => {
 
   const [plantImages, setPlantImages] = useState([]);
   const [imageLoader,setImageLoader] = useState(false)
+  const [downloadPlantsExcel] = useDownloadPlantsExcelMutation();
+
 const [spinner,setSpinner] = useState(false)
   const [values] = useContext(AuthContext);
   const role = values.role;
@@ -368,6 +372,22 @@ const [spinner,setSpinner] = useState(false)
   const onMinimumClick = () => {
     setMinimumMode(!isMinimumSelected);
   };
+
+  const onExcelDownload = async () => {
+    setIsExcelLoading(true);
+    const res = await downloadPlantsExcel();
+    if (res) {
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "plants.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setIsExcelLoading(false);
+    }
+  }
+
 const setBtns = ()=>{
   setSpinner(true);
 }
@@ -395,6 +415,14 @@ const setBtns = ()=>{
                 />
               </div>
             )}
+              <div className={styles.immediateButton}>
+                <Button
+                  onClick={onExcelDownload}
+                  title="Download Plants"
+                  type={"primary" }
+                  loading={isExcelLoading}
+                />
+              </div>
           </div>
           <div className={styles.paginationContainer}>
             <div className={styles.paginationInner}>

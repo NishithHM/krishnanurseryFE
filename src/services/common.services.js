@@ -106,6 +106,13 @@ export const commonApi = createApi({
           method: "GET",
         }),
       }),
+      downloadPlantsExcel: builder.mutation({
+        query: () => ({
+          url: `/excel/plants`,
+          method: "GET",
+          responseHandler: (response) => response.blob(), // To handle file download
+        }),
+      }),
     };
   },
 });
@@ -116,5 +123,6 @@ export const {
   useDownloadDamagesExcelMutation,
   useDownloadOrderExcelMutation,
   useDownloadPaymentsExcelMutation,
-  useGetPincodeDetailsMutation
+  useGetPincodeDetailsMutation,
+  useDownloadPlantsExcelMutation
 } = commonApi;
