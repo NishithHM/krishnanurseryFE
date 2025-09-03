@@ -53,6 +53,10 @@
   flex: 4;
 }
 
+.btnWidth {
+  width: 200px;
+}
+
 .historyheader {
   font-size: 20px;
   color: #038819 ;
