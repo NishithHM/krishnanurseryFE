@@ -21,9 +21,7 @@ import dayjs from "dayjs";
 import { useGetInvoiceMutation } from "../../services/procurement.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
 
-/* =============================================
-   UPDATED PlaceOrder for multi-plant support
-   ============================================= */
+//  UPDATED PlaceOrder for multi-plant support
 
 export const PlaceOrder = () => {
   // ---------------------------
@@ -80,9 +78,8 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // ---------------------------
   // TASK 2: Add handler to update specific plant row
-  // ---------------------------
+
   const handlePlantChange = (index, field, value) => {
     const updatedPlants = [...state.plants];
     updatedPlants[index][field] = value;
@@ -100,9 +97,8 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // ---------------------------
-  // TASK 3: Add handler to add new plant row
-  // ---------------------------
+  // TASK 3: Add handler to add new plant row .
+
   const addNewPlant = () => {
     setState((prev) => ({
       ...prev,
@@ -119,9 +115,9 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // ---------------------------
-  // TASK 4: Build payload with plants array
-  // ---------------------------
+  
+  // Build payload with plants array
+
   const onSubmitHandler = async () => {
     const plantsPayload = state.plants.map((p) => {
       return {
