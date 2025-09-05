@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Dropdown,
@@ -12,47 +12,35 @@ import {
   useGetProcurementMutation,
   usePlaceOrderMutation,
   useGetOrderIdMutation,
+  useGetInvoiceMutation,
 } from "../../services/procurement.services";
 import { isEmpty } from "lodash";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import dayjs from "dayjs";
-import { useGetInvoiceMutation } from "../../services/procurement.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
 
-//  UPDATED PlaceOrder for multi-plant support
-
 export const PlaceOrder = () => {
-  // ---------------------------
-  // TASK 1: Update initial state
-  // ---------------------------
   const initialState = {
     plants: [
       {
-        addPlantName: {},
-        addPlantKannada: "",
-        addPlantCategory: [],
-        totalQuantity: 0,
-        price: 0, // renamed from totalPrice
+        nameInEnglish: "test",
+	      totalQuantity: 100,
+	      nameInKannada: "test",
+	      categories: [],
+	      procurementId: 123, // not mandatory
+	      totalPrice: 123,
       },
     ],
-    totalPrice: 0, // NEW: aggregate total price across plants
-    description: "",
-    addVendorName: {},
-    addVendorContact: "",
-    vendorDeviation: "",
-    expectedDeliveryDate: "",
+    vendorName: {},
+    vendorContact: "",
+    vendorId: 123,
+    id: 123, // optional comes from sales request
     currentPaidAmount: 0,
-    disabledVendorContact: false,
-    errorFields: [],
-    isNameInKannada: false,
-    addProcurementError: [],
-    submitDisabled: false,
+    description: "",
+    expectedDeliveryDate: Date,
     orderId: {},
-    orderDropdownValues: [],
-    orderDetails: {},
-    disableExpectedDate: false,
   };
 
   const navigate = useNavigate();
@@ -60,45 +48,59 @@ export const PlaceOrder = () => {
   const [search] = useSearchParams();
   const procId = search.get("id");
   const requestedQuantity = search.get("requestedQuantity");
-  const [getProcurement] = useGetProcurementMutation();
+
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
-  const [getInvoice] = useGetInvoiceMutation();
-  const [isFromAccept, setIsFromAccept] = useState(false);
 
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
+  const [getProcurement] = useGetProcurementMutation();
   const [getOrderId] = useGetOrderIdMutation();
+  const [getInvoice] = useGetInvoiceMutation();
   const [PlaceOrder, { isLoading: isOrderLoading }] = usePlaceOrderMutation();
 
-  const formatCategoryData = (data) => {
-    return data.map((item) => ({
+
+   const isInhouseOrder =
+    state.vendorContact && state.vendorContact === "9999999999";
+
+  // Format categories
+  const formatCategoryData = (data) =>
+    data.map((item) => ({
       value: item._id,
       label: item.names.en.name,
     }));
-  };
 
-  // TASK 2: Add handler to update specific plant row
+  // Load categories
+  useEffect(() => {
+    if (categories.status === "fulfilled" && firstLoad) {
+      setFirstLoad(false);
+      setCategoryList(formatCategoryData(categories.data));
+    }
+  }, [categories]);
 
+  // Handle plant changes
   const handlePlantChange = (index, field, value) => {
     const updatedPlants = [...state.plants];
     updatedPlants[index][field] = value;
 
-    // Update aggregate total price
+    const totalQuantity = updatedPlants.reduce(
+      (sum, plant) => sum + Number(plant.totalQuantity || 0),
+      0
+    );
     const totalPrice = updatedPlants.reduce(
-      (sum, plant) => sum + Number(plant.price || 0),
+      (sum, plant) => sum + Number(plant.totalPrice || 0),
       0
     );
 
     setState((prev) => ({
       ...prev,
       plants: updatedPlants,
+      totalQuantity,
       totalPrice,
     }));
   };
 
-  // TASK 3: Add handler to add new plant row .
-
+  // Add new plant row
   const addNewPlant = () => {
     setState((prev) => ({
       ...prev,
@@ -115,42 +117,61 @@ export const PlaceOrder = () => {
     }));
   };
 
-  
-  // Build payload with plants array
+  const inputChangeHandlerNumber = (event, id) => {
+  setState((prev) => {
+    return {
+      ...prev,
+      [id]: parseInt(event.target.value, 10),
+    };
+  });
+};
 
+  // Handle dropdowns
+  const dropDownChangeHandler = (event, id) => {
+    setState((prev) => ({
+      ...prev,
+      [id]: event,
+    }));
+  };
+
+  // Handle dates
+  const dateChangeHandler = (event) => {
+    setState((prev) => ({
+      ...prev,
+      expectedDeliveryDate: event,
+    }));
+  };
+
+  // Submit handler
   const onSubmitHandler = async () => {
-    const plantsPayload = state.plants.map((p) => {
-      return {
-        nameInEnglish: p.addPlantName?.label,
-        nameInKannada:
-          p.addPlantName?.meta?.names?.ka?.name || p.addPlantKannada,
-        categories: p.addPlantCategory.map((c) => ({
-          name: c.label,
-          _id: c.value,
-        })),
-        totalQuantity: p.totalQuantity,
-        totalPrice: p.price,
-        ...(p.addPlantName?.__isNew__ ? {} : { procurementId: p.addPlantName.value }),
-      };
-    });
+    const plantsPayload = state.plants.map((p) => ({
+      nameInEnglish: p.addPlantName?.label,
+      nameInKannada:
+        p.addPlantName?.meta?.names?.ka?.name || p.addPlantKannada,
+      categories: p.addPlantCategory.map((c) => ({
+        name: c.label,
+        _id: c.value,
+      })),
+      totalQuantity: Number(p.totalQuantity),
+      totalPrice: Number(p.price),
+      ...(p.addPlantName?.__isNew__
+        ? {}
+        : { procurementId: p.addPlantName.value }),
+    }));
 
     const body = {
       plants: plantsPayload,
-      vendorName: state.addVendorName.label,
-      vendorContact: state.addVendorContact,
+      vendorName: state.vendorName.label,
+      vendorContact: state.vendorContact,
       description: state.description,
       expectedDeliveryDate: state.expectedDeliveryDate,
       currentPaidAmount: state.currentPaidAmount,
       orderId: state.orderId?.value,
-      totalPrice: state.totalPrice, // aggregate
+      totalPrice: state.totalPrice,
     };
 
-    if (search.get("orderId")) {
-      body.id = search.get("orderId");
-    }
-    if (!state?.addVendorName?.__isNew__) {
-      body.vendorId = state.addVendorName.value;
-    }
+    if (search.get("orderId")) body.id = search.get("orderId");
+    if (!state?.vendorName?.__isNew__) body.vendorId = state.vendorName.value;
 
     const response = await PlaceOrder({ body });
     if (response["error"] !== undefined) {
@@ -162,9 +183,7 @@ export const PlaceOrder = () => {
     }, 1000);
   };
 
-  // ---------------------------
-  // TASK 5: Render dynamic plants UI
-  // ---------------------------
+  // Render
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -175,11 +194,17 @@ export const PlaceOrder = () => {
       <div className={styles.outerWrapper}>
         {/* Add Plant Button */}
         <div className={styles.btnWidth}>
-          <Button type="primary" title="Add New Plant"  small={true}  onClick={addNewPlant}/>
+          <Button
+            type="primary"
+            title="Add New Plant"
+            small={true}
+            onClick={addNewPlant}
+          />
         </div>
         <br />
+
         <div className={styles.innerWrapper}>
-          {/* Loop over plants array */}
+          {/* Plants */}
           {state.plants.map((plant, index) => (
             <div key={index} className={styles.plantBlock}>
               <Dropdown
@@ -187,11 +212,12 @@ export const PlaceOrder = () => {
                 id={`addPlantName-${index}`}
                 apiDataPath={{ label: "names.en.name", value: "_id" }}
                 title="Plant Name"
-                onChange={(val) => handlePlantChange(index, "addPlantName", val)}
+                onChange={(val) =>
+                  handlePlantChange(index, "addPlantName", val)
+                }
                 value={plant.addPlantName}
                 canCreate={true}
                 required
-                disabled={isFromAccept}
               />
               <Input
                 value={
@@ -217,61 +243,89 @@ export const PlaceOrder = () => {
                   handlePlantChange(index, "addPlantCategory", val)
                 }
               />
-              <Input
-                value={plant.totalQuantity}
-                id={`totalQuantity-${index}`}
-                type="number"
-                onChange={(e) =>
-                  handlePlantChange(index, "totalQuantity", Number(e.target.value))
-                }
-                title="Total Quantity"
-                required
-              />
-              <Input
-                value={plant.price}
-                id={`price-${index}`}
-                type="number"
-                onChange={(e) =>
-                  handlePlantChange(index, "price", Number(e.target.value))
-                }
-                title="Price"
-                required
-              />
+              <div className={styles.inputWrapper}>
+                <div className={styles.inputdiv}>
+                  <Input
+                    value={plant.totalQuantity}
+                    id="Total Quantity"
+                    type="number"
+                    onChange={inputChangeHandlerNumber}
+                    title="Total Quantity"
+                    required
+                  />
+                </div>
+                <div className={styles.secondinputdiv}>
+                  <Input
+                    value={plant.price}
+                    id="totalPrice"
+                    onChange={inputChangeHandlerNumber}
+                    type="number"
+                    title="Price"
+                    onBlur={(e) => {
+                       if (e.target.value < 0) {
+                          toast.error("Total Price shouldn't be negative number");
+                  }
+                }}
+                disabled={isInhouseOrder}
+                {...(isInhouseOrder
+                  ? { required: !isInhouseOrder }
+                  : { required: true })}
+                    required
+                  />
+                </div>
+              </div>
             </div>
           ))}
-          {/* Vendor Details */}
+
+          {/* Vendor */}
           <Dropdown
             url="/api/vendors/getAll?type=NURSERY"
-            id="addVendorName"
+            id="vendorName"
             apiDataPath={{ label: "name", value: "_id" }}
             title="Vendor Name"
-            onChange={(val) => setState((prev) => ({ ...prev, addVendorName: val }))}
-            value={state.addVendorName}
+            onChange={(val) => dropDownChangeHandler(val, "vendorName")}
+            value={state.vendorName}
             canCreate
             required
           />
           <Input
-            value={state.addVendorContact}
-            id="addVendorContact"
+            value={state.vendorContact}
+            id="vendorContact"
             type="number"
             onChange={(e) =>
-              setState((prev) => ({ ...prev, addVendorContact: e.target.value }))
+              setState((prev) => ({ ...prev, vendorContact: e.target.value }))
             }
             title="Contact Number"
             required
           />
 
+          {/* Order Dropdown */}
+          <Dropdown
+            id="orderId"
+            data={state.orderDropdownValues}
+            title="Select Order Id"
+            onChange={(val) => dropDownChangeHandler(val, "orderId")}
+            value={state.orderId}
+            required
+          />
           <Datepicker
             label={"Expected Delivery Date"}
             value={state.expectedDeliveryDate}
-            onChange={(val) =>
-              setState((prev) => ({ ...prev, expectedDeliveryDate: val }))
-            }
+            onChange={dateChangeHandler}
             minDate={new Date()}
             clearable={true}
             isRequired
           />
-
+          {/* Show Total Order Price separately */}
+          <div className={styles.totalPriceBlock}>
+            <Input
+              value={state.totalPrice}
+              id="orderTotalPrice"
+              type="number"
+              title="Total Order Price"
+              
+            />
+          </div>
           <TextArea
             value={state.description}
             id="description"
@@ -283,10 +337,7 @@ export const PlaceOrder = () => {
             name="description"
             required
           />
-            {/* Aggregate Total Price */}
-          <div className={styles.totalPrice}>
-            <b>Total Order Price:</b> {state.totalPrice}
-          </div>
+
           <div className={styles.formbtn}>
             <Button
               onClick={onSubmitHandler}
