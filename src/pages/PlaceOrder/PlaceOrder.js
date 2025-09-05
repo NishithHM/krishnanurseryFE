@@ -14,40 +14,37 @@ import {
   useGetOrderIdMutation,
   useGetInvoiceMutation,
 } from "../../services/procurement.services";
-import { isEmpty } from "lodash";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
-import dayjs from "dayjs";
 import Datepicker from "../../components/Datepicker/Datepicker";
 
 export const PlaceOrder = () => {
   const initialState = {
     plants: [
       {
-        nameInEnglish: "test",
-	      totalQuantity: 100,
-	      nameInKannada: "test",
-	      categories: [],
-	      procurementId: 123, // not mandatory
-	      totalPrice: 123,
+        addPlantName: {},
+        addPlantKannada: "",
+        addPlantCategory: [],
+        totalQuantity: 0,
+        price: 0,
       },
     ],
     vendorName: {},
     vendorContact: "",
-    vendorId: 123,
-    id: 123, // optional comes from sales request
+    vendorId: null,
+    id: null,
     currentPaidAmount: 0,
     description: "",
-    expectedDeliveryDate: Date,
+    expectedDeliveryDate: null,
     orderId: {},
+    totalQuantity: 0,
+    totalPrice: 0,
   };
 
   const navigate = useNavigate();
   const location = useLocation();
   const [search] = useSearchParams();
-  const procId = search.get("id");
-  const requestedQuantity = search.get("requestedQuantity");
 
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
@@ -59,8 +56,7 @@ export const PlaceOrder = () => {
   const [getInvoice] = useGetInvoiceMutation();
   const [PlaceOrder, { isLoading: isOrderLoading }] = usePlaceOrderMutation();
 
-
-   const isInhouseOrder =
+  const isInhouseOrder =
     state.vendorContact && state.vendorContact === "9999999999";
 
   // Format categories
@@ -78,23 +74,34 @@ export const PlaceOrder = () => {
     }
   }, [categories]);
 
-  // Handle plant changes
+  // ✅ Handle plant changes for text/dropdown
   const handlePlantChange = (index, field, value) => {
     const updatedPlants = [...state.plants];
     updatedPlants[index][field] = value;
+    updateTotals(updatedPlants);
+  };
 
-    const totalQuantity = updatedPlants.reduce(
-      (sum, plant) => sum + Number(plant.totalQuantity || 0),
+  // ✅ Handle numeric inputs (quantity & price)
+  const handlePlantNumberChange = (index, field, value) => {
+    const updatedPlants = [...state.plants];
+    updatedPlants[index][field] = Number(value) || 0;
+    updateTotals(updatedPlants);
+  };
+
+  // ✅ Recalculate totals
+  const updateTotals = (plants) => {
+    const totalQuantity = plants.reduce(
+      (sum, plant) => sum + (Number(plant.totalQuantity) || 0),
       0
     );
-    const totalPrice = updatedPlants.reduce(
-      (sum, plant) => sum + Number(plant.totalPrice || 0),
+    const totalPrice = plants.reduce(
+      (sum, plant) => sum + (Number(plant.price) || 0),
       0
     );
 
     setState((prev) => ({
       ...prev,
-      plants: updatedPlants,
+      plants,
       totalQuantity,
       totalPrice,
     }));
@@ -116,15 +123,6 @@ export const PlaceOrder = () => {
       ],
     }));
   };
-
-  const inputChangeHandlerNumber = (event, id) => {
-  setState((prev) => {
-    return {
-      ...prev,
-      [id]: parseInt(event.target.value, 10),
-    };
-  });
-};
 
   // Handle dropdowns
   const dropDownChangeHandler = (event, id) => {
@@ -168,6 +166,7 @@ export const PlaceOrder = () => {
       currentPaidAmount: state.currentPaidAmount,
       orderId: state.orderId?.value,
       totalPrice: state.totalPrice,
+      totalQuantity: state.totalQuantity,
     };
 
     if (search.get("orderId")) body.id = search.get("orderId");
@@ -222,7 +221,8 @@ export const PlaceOrder = () => {
               <Input
                 value={
                   plant?.addPlantName?.meta?.names?.ka?.name ||
-                  plant.addPlantKannada
+                  plant.addPlantKannada ||
+                  ""
                 }
                 id={`addPlantKannada-${index}`}
                 type="text"
@@ -246,31 +246,38 @@ export const PlaceOrder = () => {
               <div className={styles.inputWrapper}>
                 <div className={styles.inputdiv}>
                   <Input
-                    value={plant.totalQuantity}
-                    id="Total Quantity"
+                    value={plant.totalQuantity ?? ""}
+                    id={`totalQuantity-${index}`}
                     type="number"
-                    onChange={inputChangeHandlerNumber}
+                    onChange={(e) =>
+                      handlePlantNumberChange(
+                        index,
+                        "totalQuantity",
+                        e.target.value
+                      )
+                    }
                     title="Total Quantity"
                     required
                   />
                 </div>
                 <div className={styles.secondinputdiv}>
                   <Input
-                    value={plant.price}
-                    id="totalPrice"
-                    onChange={inputChangeHandlerNumber}
+                    value={plant.price ?? ""}
+                    id={`price-${index}`}
                     type="number"
+                    onChange={(e) =>
+                      handlePlantNumberChange(index, "price", e.target.value)
+                    }
                     title="Price"
                     onBlur={(e) => {
-                       if (e.target.value < 0) {
-                          toast.error("Total Price shouldn't be negative number");
-                  }
-                }}
-                disabled={isInhouseOrder}
-                {...(isInhouseOrder
-                  ? { required: !isInhouseOrder }
-                  : { required: true })}
-                    required
+                      if (e.target.value < 0) {
+                        toast.error("Price shouldn't be negative number");
+                      }
+                    }}
+                    disabled={isInhouseOrder}
+                    {...(isInhouseOrder
+                      ? { required: !isInhouseOrder }
+                      : { required: true })}
                   />
                 </div>
               </div>
@@ -289,7 +296,7 @@ export const PlaceOrder = () => {
             required
           />
           <Input
-            value={state.vendorContact}
+            value={state.vendorContact ?? ""}
             id="vendorContact"
             type="number"
             onChange={(e) =>
@@ -316,18 +323,15 @@ export const PlaceOrder = () => {
             clearable={true}
             isRequired
           />
-          {/* Show Total Order Price separately */}
-          <div className={styles.totalPriceBlock}>
-            <Input
-              value={state.totalPrice}
+          <Input
+              value={state.totalPrice || 0}
               id="orderTotalPrice"
               type="number"
               title="Total Order Price"
-              
+              disabled
             />
-          </div>
           <TextArea
-            value={state.description}
+            value={state.description ?? ""}
             id="description"
             onChange={(e) =>
               setState((prev) => ({ ...prev, description: e.target.value }))
