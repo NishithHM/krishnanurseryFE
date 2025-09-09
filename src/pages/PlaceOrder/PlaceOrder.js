@@ -32,12 +32,12 @@ export const PlaceOrder = () => {
     ],
     vendorName: "",
     vendorContact: "",
-    vendorId: null,
-    id: null,
+    vendorId: 123,
+    id: 123,
     currentPaidAmount: 0,
     description: "",
     expectedDeliveryDate: null,
-    orderId: {},
+    orderId: 123,
     totalQuantity: 0,
     totalPrice: 0,
   };
@@ -114,7 +114,7 @@ export const PlaceOrder = () => {
       plants: [
         ...prev.plants,
         {
-          addPlantName: "",
+          addPlantName: {},
           addPlantKannada: "",
           addPlantCategory: [],
           totalQuantity: 0,
@@ -159,7 +159,7 @@ export const PlaceOrder = () => {
 
     const body = {
       plants: plantsPayload,
-      vendorName: state.vendorName,
+      vendorName: state.vendorName.label,
       vendorContact: state.vendorContact,
       description: state.description,
       expectedDeliveryDate: state.expectedDeliveryDate,
