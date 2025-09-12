@@ -6,6 +6,7 @@ import {
   Toaster,
   BackButton,
 } from "../../components";
+import { isEmpty } from "lodash";
 import TextArea from "../../components/TextArea";
 import styles from "./AddProcurement.module.css";
 import {
@@ -18,6 +19,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
+import dayjs from "dayjs";
 
 export const PlaceOrder = () => {
   const initialState = {
@@ -25,6 +27,7 @@ export const PlaceOrder = () => {
       {
         addPlantName: "",
         addPlantKannada: "",
+        procurementId: 123, // not mandatory
         addPlantCategory: [],
         totalQuantity: 0,
         price: 0,
@@ -32,24 +35,33 @@ export const PlaceOrder = () => {
     ],
     vendorName: "",
     vendorContact: "",
-    vendorId: 123,
-    id: 123,
+    vendorDeviation: "",
+    vendorId: null,
+    id: null,
     currentPaidAmount: 0,
     description: "",
     expectedDeliveryDate: null,
-    orderId: 123,
-    totalQuantity: 0,
-    totalPrice: 0,
+    orderId: "",
+    orderDropdownValues: [],
+    disabledVendorContact: false,
+    disableExpectedDate: false,
+    errorFields: [],
+    isNameInKannada: false,
+    addProcurementError: [],
+    submitDisabled: false,
   };
 
   const navigate = useNavigate();
   const location = useLocation();
   const [search] = useSearchParams();
-
+  const procId = search.get("id");
+  const requestedQuantity = search.get("requestedQuantity");
   const [state, setState] = useState(initialState);
   const [categoryList, setCategoryList] = useState([]);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [isFromAccept, setIsFromAccept] = useState(false);
 
+  // API hooks
   const categories = useGetAllCategoriesQuery({ sortType: 1 });
   const [getProcurement] = useGetProcurementMutation();
   const [getOrderId] = useGetOrderIdMutation();
@@ -59,7 +71,6 @@ export const PlaceOrder = () => {
   const isInhouseOrder =
     state.vendorContact && state.vendorContact === "9999999999";
 
-  // Format categories
   const formatCategoryData = (data) =>
     data.map((item) => ({
       value: item._id,
@@ -74,21 +85,45 @@ export const PlaceOrder = () => {
     }
   }, [categories]);
 
-  // ✅ Handle plant changes for text/dropdown
+  // Vendor set from location state (edit mode)
+  useEffect(() => {
+    if (location.state) {
+      setState((prev) => ({
+        ...prev,
+        vendorName: {
+          label: location.state?.label,
+          value: location.state?.value,
+          meta: { contact: location?.state?.vendorContact },
+        },
+      }));
+      setIsFromAccept(true);
+    }
+  }, [location.state]);
+
+  const inputChangeHandler = (event, id) => {
+    setState((prev) => ({ ...prev, [id]: event.target.value }));
+  };
+
+  const inputChangeHandlerNumber = (event, id) => {
+    setState((prev) => ({
+      ...prev,
+      [id]: parseInt(event.target.value, 10),
+    }));
+  };
+
+  // Handle plant changes
   const handlePlantChange = (index, field, value) => {
     const updatedPlants = [...state.plants];
     updatedPlants[index][field] = value;
     updateTotals(updatedPlants);
   };
 
-  // ✅ Handle numeric inputs (quantity & price)
   const handlePlantNumberChange = (index, field, value) => {
     const updatedPlants = [...state.plants];
     updatedPlants[index][field] = Number(value) || 0;
     updateTotals(updatedPlants);
   };
 
-  // ✅ Recalculate totals
   const updateTotals = (plants) => {
     const totalQuantity = plants.reduce(
       (sum, plant) => sum + (Number(plant.totalQuantity) || 0),
@@ -107,14 +142,13 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // Add new plant row
   const addNewPlant = () => {
     setState((prev) => ({
       ...prev,
       plants: [
         ...prev.plants,
         {
-          addPlantName: {},
+          addPlantName: "",
           addPlantKannada: "",
           addPlantCategory: [],
           totalQuantity: 0,
@@ -124,7 +158,6 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // Handle dropdowns
   const dropDownChangeHandler = (event, id) => {
     setState((prev) => ({
       ...prev,
@@ -132,7 +165,6 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // Handle dates
   const dateChangeHandler = (event) => {
     setState((prev) => ({
       ...prev,
@@ -140,7 +172,8 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // Submit handler
+  const onError = (error) => toast.error(error);
+
   const onSubmitHandler = async () => {
     const plantsPayload = state.plants.map((p) => ({
       nameInEnglish: p.addPlantName?.label,
@@ -165,24 +198,132 @@ export const PlaceOrder = () => {
       expectedDeliveryDate: state.expectedDeliveryDate,
       currentPaidAmount: state.currentPaidAmount,
       orderId: state.orderId?.value,
-      totalPrice: state.totalPrice,
-      totalQuantity: state.totalQuantity,
     };
 
     if (search.get("orderId")) body.id = search.get("orderId");
     if (!state?.vendorName?.__isNew__) body.vendorId = state.vendorName.value;
+    // if (!state?.addPlantName?.__isNew__) {
+    //   body.procurementId = state.addPlantName.value;
+    // }
 
     const response = await PlaceOrder({ body });
     if (response["error"] !== undefined) {
       return toast.error(response.error.data.error);
     }
+
     toast.success(response.data.message);
     setTimeout(() => {
       navigate("../dashboard/orders");
     }, 1000);
   };
 
-  // Render
+  // --- effects for procurement, requested quantity, order fetching ---
+  useEffect(() => {
+    if (procId) {
+      getProcurement({ id: procId })
+        .then((res) => {
+          const data = res.data;
+          const plantData = {
+            label: data?.names?.en?.name,
+            value: data?._id,
+            meta: { ...data },
+          };
+          setState((prev) => ({
+            ...prev,
+            addPlantName: plantData,
+          }));
+        })
+        .catch(() => {});
+    }
+  }, [procId]);
+
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      totalQuantity: requestedQuantity || 0,
+    }));
+  }, [requestedQuantity]);
+
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      vendorContact: state.vendorName?.meta?.contact,
+      vendorDeviation:
+        state.vendorName?.meta?.deviation === undefined
+          ? ""
+          : state.vendorName?.meta?.deviation &&
+            state.vendorName?.meta?.deviation < 0
+          ? `${state.vendorName.label || ""} owes you ${Math.abs(
+              state.vendorName?.meta?.deviation
+            )}`
+          : `You owe ${state.vendorName.label || ""} ${Math.abs(
+              state.vendorName?.meta?.deviation
+            )} `,
+      disabledVendorContact: state.vendorName?.__isNew__ ? false : true,
+    }));
+
+    if (state.vendorName?.value) {
+      getOrderId({ id: state.vendorName?.value })
+        .then((res) => {
+          if (state.vendorName?.value) {
+            const data = res?.data;
+            const orderMap = data.map((ele, index) => {
+              const isLast = index === data.length - 1 ? "(new)" : "";
+              return {
+                label: `${ele} ${isLast}`,
+                value: ele,
+              };
+            });
+            setState((prev) => ({
+              ...prev,
+              orderDropdownValues: orderMap,
+            }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [state.vendorName?.value]);
+
+  useEffect(() => {
+    if (isInhouseOrder) {
+      setState((prev) => ({
+        ...prev,
+        expectedDeliveryDate: dayjs().format("DD-MM-YYYY"),
+      }));
+    }
+  }, [isInhouseOrder]);
+
+  useEffect(() => {
+    const getOrderDetails = async () => {
+      if (state.orderId?.value) {
+        const { data } = await getInvoice({
+          id: state.orderId?.value,
+          page: "placeOrder",
+        });
+        setState((prev) => ({
+          ...prev,
+          orderDetails: data,
+          expectedDeliveryDate: dayjs(data?.expectedDeliveryDate).toDate(),
+          disableExpectedDate: data?.expectedDeliveryDate ? true : false,
+        }));
+      }
+    };
+    getOrderDetails();
+  }, [state.orderId?.value]);
+
+  const isSubmitDisabled =
+    isEmpty(state.plants) ||
+    isEmpty(state.vendorName) ||
+    isEmpty(state.totalPrice.toString()) ||
+    isEmpty(state.description) ||
+    isEmpty(state.expectedDeliveryDate?.toString());
+
+  const isSubmitDisabledWithInHouse =
+    isEmpty(state.plants) ||
+    isEmpty(state.vendorName) ||
+    isEmpty(state.description);
+
+  // --- Render ---
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -203,7 +344,7 @@ export const PlaceOrder = () => {
         <br />
 
         <div className={styles.innerWrapper}>
-          {/* Plants */}
+          {/* Only Plant Fields inside loop */}
           {state.plants.map((plant, index) => (
             <div key={index} className={styles.plantBlock}>
               <Dropdown
@@ -217,6 +358,7 @@ export const PlaceOrder = () => {
                 value={plant.addPlantName}
                 canCreate={true}
                 required
+                disabled={isFromAccept}
               />
               <Input
                 value={
@@ -231,6 +373,12 @@ export const PlaceOrder = () => {
                 }
                 title="Plant Name in Kannada"
                 required
+                onError={onError}
+                validation={(text) => text.length > 0}
+                errorMessage="Please Enter new Plant in Kannada"
+                disabled={
+                  state?.addPlantName?.meta?.names?.ka?.name && isFromAccept
+                }
               />
               <Dropdown
                 id={`addPlantCategory-${index}`}
@@ -246,8 +394,8 @@ export const PlaceOrder = () => {
               <div className={styles.inputWrapper}>
                 <div className={styles.inputdiv}>
                   <Input
-                    value={plant.totalQuantity ?? ""}
-                    id={`totalQuantity-${index}`}
+                    value={plant.totalQuantity}
+                    id="totalQuantity"
                     type="number"
                     onChange={(e) =>
                       handlePlantNumberChange(
@@ -258,12 +406,13 @@ export const PlaceOrder = () => {
                     }
                     title="Total Quantity"
                     required
+                    min={0}
                   />
                 </div>
                 <div className={styles.secondinputdiv}>
                   <Input
-                    value={plant.price ?? ""}
-                    id={`price-${index}`}
+                    value={plant.price}
+                    id="price"
                     type="number"
                     onChange={(e) =>
                       handlePlantNumberChange(index, "price", e.target.value)
@@ -284,14 +433,15 @@ export const PlaceOrder = () => {
             </div>
           ))}
 
-          {/* Vendor */}
+          {/* ✅ Vendor + Order fields OUTSIDE loop */}
           <Dropdown
             url="/api/vendors/getAll?type=NURSERY"
             id="vendorName"
             apiDataPath={{ label: "name", value: "_id" }}
             title="Vendor Name"
-            onChange={(val) => dropDownChangeHandler(val, "vendorName")}
+            onChange={dropDownChangeHandler}
             value={state.vendorName}
+            disabled={isInhouseOrder}
             canCreate
             required
           />
@@ -299,22 +449,34 @@ export const PlaceOrder = () => {
             value={state.vendorContact ?? ""}
             id="vendorContact"
             type="number"
-            onChange={(e) =>
-              setState((prev) => ({ ...prev, vendorContact: e.target.value }))
-            }
+            onChange={inputChangeHandler}
             title="Contact Number"
             required
+            disabled={state.disabledVendorContact}
+            validation={(number) => number.length === 10}
+            onError={onError}
+            errorMessage="Please Enter a Valid Number"
           />
-
-          {/* Order Dropdown */}
+          {state.vendorDeviation !== "" && (
+            <Input
+              value={state.vendorDeviation || ""}
+              id="vendorDeviation"
+              onChange={() => {}}
+              title="Vendor Deviation Amount"
+              required
+              disabled
+            />
+          )}
           <Dropdown
             id="orderId"
             data={state.orderDropdownValues}
             title="Select Order Id"
-            onChange={(val) => dropDownChangeHandler(val, "orderId")}
+            onChange={dropDownChangeHandler}
             value={state.orderId}
             required
           />
+
+          {/* Other Details */}
           <Datepicker
             label={"Expected Delivery Date"}
             value={state.expectedDeliveryDate}
@@ -324,12 +486,12 @@ export const PlaceOrder = () => {
             isRequired
           />
           <Input
-              value={state.totalPrice || 0}
-              id="orderTotalPrice"
-              type="number"
-              title="Total Order Price"
-              disabled
-            />
+            value={state.totalPrice || 0}
+            id="orderTotalPrice"
+            type="number"
+            title="Total Order Price"
+            disabled
+          />
           <TextArea
             value={state.description ?? ""}
             id="description"
@@ -346,6 +508,9 @@ export const PlaceOrder = () => {
             <Button
               onClick={onSubmitHandler}
               loading={isOrderLoading}
+              disabled={
+                isInhouseOrder ? isSubmitDisabledWithInHouse : isSubmitDisabled
+              }
               type="primary"
               title="Save"
             />
