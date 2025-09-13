@@ -155,6 +155,14 @@ export const PlaceOrder = () => {
           price: 0,
         },
       ],
+      submitDisabled: true, 
+    }));
+  };
+
+  const removePlant = (index) => {
+    setState((prev) => ({
+      ...prev,
+      plants: prev.plants.filter((_, i) => i !== index),
     }));
   };
 
@@ -217,7 +225,7 @@ export const PlaceOrder = () => {
     }, 1000);
   };
 
-  // --- effects for procurement, requested quantity, order fetching ---
+  // effects for procurement, requested quantity, order fetching ---
   useEffect(() => {
     if (procId) {
       getProcurement({ id: procId })
@@ -311,6 +319,15 @@ export const PlaceOrder = () => {
     getOrderDetails();
   }, [state.orderId?.value]);
 
+
+  // New: validate all plants
+  const arePlantsValid = state.plants.every(
+    (p) =>
+      (p.addPlantName && (p.addPlantName.label || p.addPlantKannada)) &&
+      p.totalQuantity > 0 &&
+      p.price >= 0
+  );
+
   const isSubmitDisabled =
     isEmpty(state.plants) ||
     isEmpty(state.vendorName) ||
@@ -318,12 +335,11 @@ export const PlaceOrder = () => {
     isEmpty(state.description) ||
     isEmpty(state.expectedDeliveryDate?.toString());
 
+  
   const isSubmitDisabledWithInHouse =
-    isEmpty(state.plants) ||
-    isEmpty(state.vendorName) ||
-    isEmpty(state.description);
+      !arePlantsValid || isEmpty(state.vendorName) || isEmpty(state.description);
+  
 
-  // --- Render ---
   return (
     <div className={styles.addProcurementPage}>
       <Toaster />
@@ -342,7 +358,6 @@ export const PlaceOrder = () => {
           />
         </div>
         <br />
-
         <div className={styles.innerWrapper}>
           {/* Only Plant Fields inside loop */}
           {state.plants.map((plant, index) => (
@@ -429,11 +444,19 @@ export const PlaceOrder = () => {
                       : { required: true })}
                   />
                 </div>
+                <div className={styles.crossWidth}>
+                  {state.plants.length > 1 && (
+                    <Button
+                      title="X"
+                      type="secondary"
+                      onClick={() => removePlant(index)}
+                      small={true}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           ))}
-
-          {/* ✅ Vendor + Order fields OUTSIDE loop */}
           <Dropdown
             url="/api/vendors/getAll?type=NURSERY"
             id="vendorName"
