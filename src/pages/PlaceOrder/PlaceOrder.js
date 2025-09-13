@@ -27,7 +27,7 @@ export const PlaceOrder = () => {
       {
         addPlantName: "",
         addPlantKannada: "",
-        procurementId: 123, // not mandatory
+        procurementId: 123, 
         addPlantCategory: [],
         totalQuantity: 0,
         price: 0,
@@ -85,7 +85,7 @@ export const PlaceOrder = () => {
     }
   }, [categories]);
 
-  // Vendor set from location state (edit mode)
+  
   useEffect(() => {
     if (location.state) {
       setState((prev) => ({
@@ -142,22 +142,46 @@ export const PlaceOrder = () => {
     }));
   };
 
+  // Validation function.
+
+   const validateForm = (plants, state) => {
+      const arePlantsValid = plants.every(
+        (p) =>
+          (p.addPlantName?.label || p.addPlantKannada) &&
+          Number(p.totalQuantity) > 0 &&
+          Number(p.price) >= 0
+      );
+  
+      return {
+        arePlantsValid,
+        isFormValid:
+          arePlantsValid &&
+          !isEmpty(plants) &&
+          !isEmpty(state.vendorName) &&
+          !isEmpty(state.description) &&
+          !isEmpty(state.expectedDeliveryDate?.toString()),
+      };
+    };
+
   const addNewPlant = () => {
-    setState((prev) => ({
-      ...prev,
-      plants: [
-        ...prev.plants,
-        {
-          addPlantName: "",
-          addPlantKannada: "",
-          addPlantCategory: [],
-          totalQuantity: 0,
-          price: 0,
-        },
-      ],
-      submitDisabled: true, 
-    }));
-  };
+  const newPlants = [
+    ...state.plants,
+    {
+      addPlantName: "",
+      addPlantKannada: "",
+      addPlantCategory: [],
+      totalQuantity: 0,
+      price: 0,
+    },
+  ];
+
+  setState((prev) => ({
+    ...prev,
+    plants: newPlants,
+    submitDisabled: true, // disable Save on new row
+  }));
+};
+
 
   const removePlant = (index) => {
     setState((prev) => ({
@@ -320,25 +344,16 @@ export const PlaceOrder = () => {
   }, [state.orderId?.value]);
 
 
-  // New: validate all plants
-  const arePlantsValid = state.plants.every(
-    (p) =>
-      (p.addPlantName && (p.addPlantName.label || p.addPlantKannada)) &&
-      p.totalQuantity > 0 &&
-      p.price >= 0
-  );
+  // Re-run validation whenever state changes
+  useEffect(() => {
+    const { isFormValid } = validateForm(state.plants, state);
+    if (isFormValid) {
+      setState((prev) => ({ ...prev, submitDisabled: false }));
+    }
+  }, [state.plants]);
 
-  const isSubmitDisabled =
-    isEmpty(state.plants) ||
-    isEmpty(state.vendorName) ||
-    isEmpty(state.totalPrice.toString()) ||
-    isEmpty(state.description) ||
-    isEmpty(state.expectedDeliveryDate?.toString());
-
-  
-  const isSubmitDisabledWithInHouse =
-      !arePlantsValid || isEmpty(state.vendorName) || isEmpty(state.description);
-  
+  const isSubmitDisabled = state.submitDisabled;
+  const isSubmitDisabledWithInHouse = state.submitDisabled;
 
   return (
     <div className={styles.addProcurementPage}>
