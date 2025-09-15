@@ -63,9 +63,11 @@
 }
 
 .crossBtn {
+  width: 10px;
+  height: 30px;
   position: absolute;
-  bottom: 2rem;   
-  right: 0.6rem;
+  bottom: 2.8rem;   
+  right: 1.5rem;
 }
 
 .historyheader {
