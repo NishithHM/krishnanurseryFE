@@ -53,6 +53,23 @@
   flex: 4;
 }
 
+.btnWidth {
+  width: 200px;
+}
+
+.plantBtnWrapper {
+  position: relative; 
+  width: 100%;
+}
+
+.crossBtn {
+  width: 10px;
+  height: 30px;
+  position: absolute;
+  bottom: 2.8rem;   
+  right: 1.5rem;
+}
+
 .historyheader {
   font-size: 20px;
   color: #038819 ;
