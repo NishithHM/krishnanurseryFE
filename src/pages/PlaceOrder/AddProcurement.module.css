@@ -57,13 +57,16 @@
   width: 200px;
 }
 
-.crossWidth {
-  width: 40px;
-  height: 30px;
-  padding: 10px;
+.plantBtnWrapper {
+  position: relative; 
+  width: 100%;
 }
 
-
+.crossBtn {
+  position: absolute;
+  bottom: 2rem;   
+  right: 0.6rem;
+}
 
 .historyheader {
   font-size: 20px;

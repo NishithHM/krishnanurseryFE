@@ -27,7 +27,7 @@ export const PlaceOrder = () => {
       {
         addPlantName: "",
         addPlantKannada: "",
-        procurementId: 123, 
+        procurementId: 123,
         addPlantCategory: [],
         totalQuantity: 0,
         price: 0,
@@ -48,7 +48,7 @@ export const PlaceOrder = () => {
     errorFields: [],
     isNameInKannada: false,
     addProcurementError: [],
-    submitDisabled: false,
+    submitDisabled: true,
   };
 
   const navigate = useNavigate();
@@ -85,7 +85,7 @@ export const PlaceOrder = () => {
     }
   }, [categories]);
 
-  
+  // Vendor set from location state (edit mode)
   useEffect(() => {
     if (location.state) {
       setState((prev) => ({
@@ -142,51 +142,50 @@ export const PlaceOrder = () => {
     }));
   };
 
-  // Validation function.
+  // Validation function
+  const validateForm = (plants, state) => {
+    const arePlantsValid = plants.every(
+      (p) =>
+        (p.addPlantName?.label || p.addPlantKannada) &&
+        Number(p.totalQuantity) > 0 &&
+        Number(p.price) >= 0
+    );
 
-   const validateForm = (plants, state) => {
-      const arePlantsValid = plants.every(
-        (p) =>
-          (p.addPlantName?.label || p.addPlantKannada) &&
-          Number(p.totalQuantity) > 0 &&
-          Number(p.price) >= 0
-      );
-  
-      return {
-        arePlantsValid,
-        isFormValid:
-          arePlantsValid &&
-          !isEmpty(plants) &&
-          !isEmpty(state.vendorName) &&
-          !isEmpty(state.description) &&
-          !isEmpty(state.expectedDeliveryDate?.toString()),
-      };
+    return {
+      arePlantsValid,
+      isFormValid:
+        arePlantsValid &&
+        !isEmpty(plants) &&
+        !isEmpty(state.vendorName) &&
+        !isEmpty(state.description) &&
+        !isEmpty(state.expectedDeliveryDate?.toString()),
     };
+  };
 
   const addNewPlant = () => {
-  const newPlants = [
-    ...state.plants,
-    {
-      addPlantName: "",
-      addPlantKannada: "",
-      addPlantCategory: [],
-      totalQuantity: 0,
-      price: 0,
-    },
-  ];
+    const newPlants = [
+      ...state.plants,
+      {
+        addPlantName: "",
+        addPlantKannada: "",
+        addPlantCategory: [],
+        totalQuantity: 0,
+        price: 0,
+      },
+    ];
 
-  setState((prev) => ({
-    ...prev,
-    plants: newPlants,
-    submitDisabled: true, // disable Save on new row
-  }));
-};
-
-
-  const removePlant = (index) => {
     setState((prev) => ({
       ...prev,
-      plants: prev.plants.filter((_, i) => i !== index),
+      plants: newPlants,
+      submitDisabled: true, // disable Save until validated again
+    }));
+  };
+
+  const removePlant = (index) => {
+    const newPlants = state.plants.filter((_, i) => i !== index);
+    setState((prev) => ({
+      ...prev,
+      plants: newPlants,
     }));
   };
 
@@ -208,7 +207,8 @@ export const PlaceOrder = () => {
 
   const onSubmitHandler = async () => {
     const plantsPayload = state.plants.map((p) => ({
-      nameInEnglish:  p.addPlantName?.meta?.names?.en?.name || p.addPlantKannada,
+      nameInEnglish:
+        p.addPlantName?.meta?.names?.en?.name || p.addPlantKannada,
       nameInKannada:
         p.addPlantName?.meta?.names?.ka?.name || p.addPlantKannada,
       categories: p.addPlantCategory.map((c) => ({
@@ -234,9 +234,6 @@ export const PlaceOrder = () => {
 
     if (search.get("orderId")) body.id = search.get("orderId");
     if (!state?.vendorName?.__isNew__) body.vendorId = state.vendorName.value;
-    // if (!state?.addPlantName?.__isNew__) {
-    //   body.procurementId = state.addPlantName.value;
-    // }
 
     const response = await PlaceOrder({ body });
     if (response["error"] !== undefined) {
@@ -249,7 +246,7 @@ export const PlaceOrder = () => {
     }, 1000);
   };
 
-  // effects for procurement, requested quantity, order fetching ---
+  // --- Effects
   useEffect(() => {
     if (procId) {
       getProcurement({ id: procId })
@@ -343,14 +340,18 @@ export const PlaceOrder = () => {
     getOrderDetails();
   }, [state.orderId?.value]);
 
-
   // Re-run validation whenever state changes
   useEffect(() => {
     const { isFormValid } = validateForm(state.plants, state);
     if (isFormValid) {
       setState((prev) => ({ ...prev, submitDisabled: false }));
     }
-  }, [state.plants]);
+  }, [
+    state.plants,
+    state.vendorName,
+    state.description,
+    state.expectedDeliveryDate,
+  ]);
 
   const isSubmitDisabled = state.submitDisabled;
   const isSubmitDisabledWithInHouse = state.submitDisabled;
@@ -363,7 +364,6 @@ export const PlaceOrder = () => {
       </div>
 
       <div className={styles.outerWrapper}>
-        {/* Add Plant Button */}
         <div className={styles.btnWidth}>
           <Button
             type="primary"
@@ -374,9 +374,9 @@ export const PlaceOrder = () => {
         </div>
         <br />
         <div className={styles.innerWrapper}>
-          {/* Only Plant Fields inside loop */}
           {state.plants.map((plant, index) => (
-            <div key={index} className={styles.plantBlock}>
+            <div key={index}>
+              <div className={styles.plantBtnWrapper}>
               <Dropdown
                 url="/api/procurements/getAll?isList=true&isAll=true"
                 id={`addPlantName-${index}`}
@@ -390,6 +390,17 @@ export const PlaceOrder = () => {
                 required
                 disabled={isFromAccept}
               />
+              <div className={styles.crossBtn}>
+                {state.plants.length > 1 && (
+                  <Button
+                    title="X"
+                    type="secondary"
+                    onClick={() => removePlant(index)}
+                    small={true}
+                  />
+                )}
+              </div>
+              </div>
               <Input
                 value={
                   plant?.addPlantName?.meta?.names?.ka?.name ||
@@ -459,19 +470,10 @@ export const PlaceOrder = () => {
                       : { required: true })}
                   />
                 </div>
-                <div className={styles.crossWidth}>
-                  {state.plants.length > 1 && (
-                    <Button
-                      title="X"
-                      type="secondary"
-                      onClick={() => removePlant(index)}
-                      small={true}
-                    />
-                  )}
-                </div>
               </div>
             </div>
           ))}
+
           <Dropdown
             url="/api/vendors/getAll?type=NURSERY"
             id="vendorName"
@@ -514,7 +516,6 @@ export const PlaceOrder = () => {
             required
           />
 
-          {/* Other Details */}
           <Datepicker
             label={"Expected Delivery Date"}
             value={state.expectedDeliveryDate}
