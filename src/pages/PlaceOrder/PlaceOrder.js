@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 import { useGetAllCategoriesQuery } from "../../services/categories.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
 import dayjs from "dayjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export const PlaceOrder = () => {
   const initialState = {
@@ -392,12 +394,7 @@ export const PlaceOrder = () => {
               />
               <div className={styles.crossBtn}>
                 {state.plants.length > 1 && (
-                  <Button
-                    title="X"
-                    type="secondary"
-                    onClick={() => removePlant(index)}
-                    small={true}
-                  />
+                  <FontAwesomeIcon style={{ cursor: "pointer" }} color="red" icon={faTrash} onClick={() => removePlant(index)} />
                 )}
               </div>
               </div>
