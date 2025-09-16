@@ -121,7 +121,18 @@ export const PlaceOrder = () => {
   const handlePlantChange = (index, field, value) => {
     const updatedPlants = [...state.plants];
     updatedPlants[index][field] = value;
-    updateTotals(updatedPlants);
+
+      // Auto-fill categories when plant is selected
+      if (field === "addPlantName" && value?.meta?.categories) {
+         updatedPlants[index].addPlantCategory = value.meta.categories.map(
+           (c) => ({
+              label: c.name,   
+              value: c._id,   
+           })
+         );
+       }
+
+     updateTotals(updatedPlants);
   };
 
   const handlePlantNumberChange = (index, field, value) => {
