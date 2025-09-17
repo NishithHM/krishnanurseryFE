@@ -260,32 +260,44 @@ export const PlaceOrder = () => {
   };
 
   // --- Effects
+
+  // Autofill plant details from procurementId + requestedQuantity
   useEffect(() => {
-    if (procId) {
-      getProcurement({ id: procId })
-        .then((res) => {
-          const data = res.data;
-          const plantData = {
-            label: data?.names?.en?.name,
-            value: data?._id,
-            meta: { ...data },
-          };
-          setState((prev) => ({
-            ...prev,
+    if (!procId) return;
+
+    getProcurement({ id: procId })
+      .then((res) => {
+        const data = res.data;
+        const plantData = {
+          label: data?.names?.en?.name,
+          value: data?._id,
+          meta: { ...data },
+        };
+
+        setState((prev) => {
+          const updatedPlants = [...prev.plants];
+          updatedPlants[0] = {
+            ...updatedPlants[0],
             addPlantName: plantData,
-          }));
-        })
-        .catch(() => {});
-    }
-  }, [procId]);
+            addPlantKannada: data?.names?.ka?.name || updatedPlants[0].addPlantKannada,
+            addPlantCategory: (data?.categories || []).map((c) => ({
+              label: c.name,
+              value: c._id,
+            })),
+            totalQuantity: Number(requestedQuantity) || updatedPlants[0].totalQuantity,
+          };
 
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      totalQuantity: requestedQuantity || 0,
-    }));
-  }, [requestedQuantity]);
+          return {
+            ...prev,
+            plants: updatedPlants,
+          };
+        });
 
+        setIsFromAccept(true);
+      })
+      .catch(() => {});
+  }, [procId, requestedQuantity]);
+  
   useEffect(() => {
     setState((prev) => ({
       ...prev,
@@ -401,7 +413,7 @@ export const PlaceOrder = () => {
                 value={plant.addPlantName}
                 canCreate={true}
                 required
-                disabled={isFromAccept}
+                // disabled={isFromAccept}
               />
               <div className={styles.crossBtn}>
                 {state.plants.length > 1 && (
