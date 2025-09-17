@@ -45,6 +45,37 @@
     display: flex;
   }
 
+
+  .plantWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plantBtnWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.crossBtn {
+  width: 10px;
+  height: 30px;
+  position: absolute;
+  bottom: 2.8rem;
+  right: 1.5rem;
+}
+
+.btnStyles {
+  width: 200px;
+  height: 50px;
+}
+
+.headerWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+
   .tableWrapper{
     margin: 10px;
     max-width: 50%;
