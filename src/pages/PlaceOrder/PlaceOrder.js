@@ -265,6 +265,7 @@ export const PlaceOrder = () => {
 
   // --- Effects
 
+
   // Autofill plant details from procurementId + requestedQuantity
   useEffect(() => {
     if (!procId) return;
@@ -297,6 +298,10 @@ export const PlaceOrder = () => {
           };
         });
 
+        setIsFromAccept(true);
+      })
+      .catch(() => {});
+  }, [procId, requestedQuantity]);
 
   useEffect(() => {
     // wheneverv addVendorName changes, reset the orderId
@@ -304,10 +309,6 @@ export const PlaceOrder = () => {
 
   }, [state.vendorName]);
 
-        setIsFromAccept(true);
-      })
-      .catch(() => {});
-  }, [procId, requestedQuantity]);
   
   useEffect(() => {
     setState((prev) => ({
