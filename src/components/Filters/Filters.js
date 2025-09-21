@@ -14,6 +14,7 @@ const Filters = ({
   onReset = () => {},
   config = {},
   onExcelDownload = () => {},
+  onXmlDownload = () => {},
   resetExcelPage,
   setNextExcelAvailable,
   children,
@@ -55,6 +56,10 @@ const Filters = ({
   const handleExcelDownload = () => {
     onExcelDownload({ ...filterDates });
   };
+
+  const handleXmlDownload = () => {
+    onXmlDownload({ ...filterDates });
+  }
 
   const handleClearFilters = async () => {
     setFilterDates(() => ({
@@ -169,6 +174,16 @@ const Filters = ({
                     !(filterDates.endDate && filterDates.startDate) ||
                     !config.isNextExcelAvailable
                   }
+                />
+              </div>
+            )}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {config.onXmlDownload && (
+              <div className={styles.btnSubWrapper}>
+                <Button
+                  title={`XML Download`}
+                  onClick={handleXmlDownload}
+                  disabled={!(filterDates.endDate && filterDates.startDate)}
                 />
               </div>
             )}

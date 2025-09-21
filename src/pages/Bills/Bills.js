@@ -29,7 +29,7 @@ import {
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
-import { useDownloadBillingExcelMutation } from "../../services/common.services";
+import { useDownloadBillingExcelMutation, useDownloadBillingXmlMutation } from "../../services/common.services";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -118,7 +118,8 @@ const Bills = ({type}) => {
   const [searchPurchase] = useSearchPurchaseMutation();
   const [approveButton] = useGetApproveMutation()
 
-  const [downloadBillingExcel] = useDownloadBillingExcelMutation()
+  const [downloadBillingExcel] = useDownloadBillingExcelMutation();
+  const [downloadBillingXml] = useDownloadBillingXmlMutation();
   // const approve = useGetApproveQuery
   // ({
   //   customerId:purchaseData?._id
@@ -295,6 +296,27 @@ const Bills = ({type}) => {
     link.click()
   }
 
+  const handleXmlDownload = async (filterDates) => {
+    const res = await downloadBillingXml({
+      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+      type,
+    });
+
+    // if (!res?.data?.response) {
+    //   console.error("XML download failed:", res);
+    //   return;
+    // }
+
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(res?.data?.response);
+    link.download = "billing_ledger_xml.zip";
+    link.click();
+};
+
+
+
   return (
     <div>
       <div>
@@ -304,6 +326,7 @@ const Bills = ({type}) => {
       <Filters
         config={{
           excelDownload: user.role === "admin" || "sales",
+          onXmlDownload: user.role === "admin" || "sales",
           isNextExcelAvailable,
           excelPage,
         }}
@@ -312,6 +335,7 @@ const Bills = ({type}) => {
         onSubmit={handleFilterChange}
         onReset={handleFilterReset}
         onExcelDownload={handleExcelDownload}
+        onXmlDownload={handleXmlDownload} 
       />
       <div className={styles.wrapper}>
         {/* search */}
