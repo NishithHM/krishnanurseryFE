@@ -304,7 +304,7 @@ export const PlaceOrder = () => {
   }, [procId, requestedQuantity]);
 
   useEffect(() => {
-    // wheneverv addVendorName changes, reset the orderId
+    // whenever vendorName changes, reset the orderId
     setState((prev) => ({ ...prev, orderId: {}, orderDetails: {}}));
 
   }, [state.vendorName]);

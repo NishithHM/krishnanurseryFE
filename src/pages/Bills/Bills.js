@@ -32,9 +32,7 @@ import ReturnModal from "../../components/returnModal/returnModal"; // Import th
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context";
-import { useDownloadBillingExcelMutation } from "../../services/common.services";
-import { use } from "react";
-import { AiOutlineConsoleSql } from "react-icons/ai";
+import { useDownloadBillingExcelMutation, useDownloadBillingXmlMutation } from "../../services/common.services";
 
 const getRoundedDates = () => {
   let today = new Date();
@@ -163,6 +161,11 @@ const Bills = ({ type }) => {
       toast.error("Error: " + (error.message || "Unknown error"));
     }
   };
+  const [downloadBillingXml] = useDownloadBillingXmlMutation();
+  // const approve = useGetApproveQuery
+  // ({
+  //   customerId:purchaseData?._id
+  // });
 
   const formatPurchasesData = (data) => {
     // console.log("purchase data formatted: ====> ", data)
@@ -412,6 +415,20 @@ const Bills = ({ type }) => {
   }, [showReturnModal, invoiceDetail]);
 
   // console.log('Purchase data: ==>', purchaseData)
+  const handleXmlDownload = async (filterDates) => {
+    const res = await downloadBillingXml({
+      startDate: dayjs(filterDates.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(filterDates.endDate).format("YYYY-MM-DD"),
+      type,
+    });
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(res?.data?.response);
+    link.download = "billing_ledger_xml.zip";
+    link.click();
+};
+
+
 
   return (
     <div>
@@ -425,6 +442,7 @@ const Bills = ({ type }) => {
       <Filters
         config={{
           excelDownload: user.role === "admin" || "sales",
+          onXmlDownload: user.role === "admin" || "sales",
           isNextExcelAvailable,
           excelPage,
         }}
@@ -433,6 +451,7 @@ const Bills = ({ type }) => {
         onSubmit={handleFilterChange}
         onReset={handleFilterReset}
         onExcelDownload={handleExcelDownload}
+        onXmlDownload={handleXmlDownload} 
       />
       <div className={styles.wrapper}>
         {/* search */}
