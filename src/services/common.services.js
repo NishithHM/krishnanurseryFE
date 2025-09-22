@@ -45,6 +45,22 @@ export const commonApi = createApi({
           };
         },
       }),
+      downloadBillingXml: builder.mutation({
+        query: ({ startDate, endDate, type }) => ({
+          url: `/xml/billing?startDate=${startDate}&endDate=${endDate}&type=${type}`,
+          method: "GET",
+          responseHandler: async (response) => response.blob(), // backend sends ZIP as blob
+        }),
+        transformResponse: (response, meta) => {
+        // response here is already a Blob
+          return {
+            response, // Blob
+            count: meta?.response?.headers?.get("count"), // optional, may be null
+          };
+       },
+}),
+
+
       downloadOrderExcel: builder.mutation({
         query: ({ pageNumber, startDate, endDate }) => ({
           url: `/excel/order-mgmt?pageNumber=${pageNumber}&startDate=${startDate}&endDate=${endDate}`,
@@ -120,6 +136,7 @@ export const commonApi = createApi({
 export const {
   useGetVendorMutation,
   useDownloadBillingExcelMutation,
+  useDownloadBillingXmlMutation,
   useDownloadDamagesExcelMutation,
   useDownloadOrderExcelMutation,
   useDownloadPaymentsExcelMutation,
