@@ -303,12 +303,6 @@ const Bills = ({type}) => {
       type,
     });
 
-    // if (!res?.data?.response) {
-    //   console.error("XML download failed:", res);
-    //   return;
-    // }
-
-
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(res?.data?.response);
     link.download = "billing_ledger_xml.zip";
