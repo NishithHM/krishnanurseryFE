@@ -29,6 +29,7 @@ import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
 import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
+import ToggleSwitch from "../../components/CheckboxToggle/toggle-switch";
 
 const Payments = ({businessType='NURSERY'}) => {
   const [page, setPage] = useState(1);
@@ -187,8 +188,8 @@ const Payments = ({businessType='NURSERY'}) => {
     setSearchInput(event.target.value);
   };
 
-  const handleExactSearchChange = (e) => {
-    setIsExactSearch(e.target.checked);
+  const handleExactSearchChange = (checked) => {
+    setIsExactSearch(checked);
     setPage(1);
   }
 
@@ -487,16 +488,11 @@ const Payments = ({businessType='NURSERY'}) => {
             <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
             <br />
             <br />
-            {/* 🔹 Exact Search Checkbox */}
-            <label className={styles.toggleSwitch}>
-              <input
-                type="checkbox"
-                checked={isExactSearch}
-                onChange={handleExactSearchChange}
-              />
-              <span className={styles.slider}></span>
-              <span className={styles.labelText}>Exact Search</span>
-            </label>
+            <ToggleSwitch
+              label="Exact Search"
+              checked={isExactSearch}
+              onChange={handleExactSearchChange}
+            />
 
           </div>
           {/* pagination */}
