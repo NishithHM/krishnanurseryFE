@@ -6,9 +6,7 @@ import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
   Button,
-  Modal,
   Table,
-  Alert,
   Spinner,
   BackButton,
   Input,
@@ -38,6 +36,8 @@ const Payments = ({businessType='NURSERY'}) => {
   const [newPaymenModal, setNewPaymentModal] = useState(false);
   const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
   const [excelPage, setExcelPage] = useState(1);
+  const [isExactSearch, setIsExactSearch] = useState(false); 
+
 
   const [newPayment, setNewPayment] = useState({
     type: null,
@@ -63,7 +63,7 @@ const Payments = ({businessType='NURSERY'}) => {
   }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType, search: searchInput });
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType, search: searchInput, exactSearch: isExactSearch });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
   const [paymentData] = useGetInfoMutation();
 
@@ -75,6 +75,7 @@ const Payments = ({businessType='NURSERY'}) => {
     search: searchInput,
     ...dates,
     businessType,
+    exactSearch: isExactSearch 
   });
   const [mutate] = useCreatePaymentMutation();
 
@@ -185,6 +186,11 @@ const Payments = ({businessType='NURSERY'}) => {
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
   };
+
+  const handleExactSearchChange = (e) => {
+    setIsExactSearch(e.target.checked);
+    setPage(1);
+  }
 
   const getUserCount = () => {
     setUsersCount(paymentsCountReq?.data?.data[0]?.count || 0);
@@ -479,6 +485,19 @@ const Payments = ({businessType='NURSERY'}) => {
               className={styles.searchInput}
             />
             <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
+            <br />
+            <br />
+            {/* 🔹 Exact Search Checkbox */}
+            <label className={styles.toggleSwitch}>
+              <input
+                type="checkbox"
+                checked={isExactSearch}
+                onChange={handleExactSearchChange}
+              />
+              <span className={styles.slider}></span>
+              <span className={styles.labelText}>Exact Search</span>
+            </label>
+
           </div>
           {/* pagination */}
           <div className={styles.paginationContainer}>
@@ -521,15 +540,18 @@ const Payments = ({businessType='NURSERY'}) => {
 
         {paymentsData.isLoading ? (
           <Spinner />
-        ) : (
-          paymentsData.status === "fulfilled" && (
-            <Table data={[TABLE_HEADER, ...data]} />
-          )
-        )}
+          ) : paymentsData.status === "fulfilled" ? (
+            data.length > 0 ? (
+              <Table data={[TABLE_HEADER, ...data]} />
+            ) : (
+              <p className={styles.noResultsMessage}>
+                  No payments found {isExactSearch ? "(Exact Match)" : ""}
+              </p>
+            )
+          )  : paymentsData.isError ? (
+             <p className={styles.errorMessage}>Unable to load Payments Data</p>
+          ) : null}
 
-        {paymentsData.isError && (
-          <p className={styles.errorMessage}>Unable to load Users Data</p>
-        )}
       </div>
 
       <MantineModal
