@@ -221,7 +221,7 @@ export const PlaceOrder = () => {
   const onSubmitHandler = async () => {
     const plantsPayload = state.plants.map((p) => ({
       nameInEnglish:
-        p.addPlantName?.meta?.names?.en?.name || p.addPlantKannada,
+        p.addPlantName?.meta?.names?.en?.name || p.addPlantName.label || "",
       nameInKannada:
         p.addPlantName?.meta?.names?.ka?.name || p.addPlantKannada,
       categories: p.addPlantCategory.map((c) => ({
