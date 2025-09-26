@@ -6,9 +6,7 @@ import { Link } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
   Button,
-  Modal,
   Table,
-  Alert,
   Spinner,
   BackButton,
   Input,
@@ -31,6 +29,7 @@ import { useGetAllPaymentsCountQuery } from "../../services/payments.services";
 import { useSearchPaymentMutation } from "../../services/payments.services";
 import { useDownloadPaymentsExcelMutation } from "../../services/common.services";
 import Datepicker from "../../components/Datepicker/Datepicker";
+import ToggleSwitch from "../../components/CheckboxToggle/toggle-switch";
 
 const Payments = ({businessType='NURSERY'}) => {
   const [page, setPage] = useState(1);
@@ -38,6 +37,8 @@ const Payments = ({businessType='NURSERY'}) => {
   const [newPaymenModal, setNewPaymentModal] = useState(false);
   const [isNextExcelAvailable, setNextExcelAvailable] = useState(true);
   const [excelPage, setExcelPage] = useState(1);
+  const [isExactSearch, setIsExactSearch] = useState(false); 
+
 
   const [newPayment, setNewPayment] = useState({
     type: null,
@@ -63,7 +64,7 @@ const Payments = ({businessType='NURSERY'}) => {
   }
 
   // requests
-  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType, search: searchInput });
+  const paymentsData = useGetAllPaymentsQuery({ page, ...dates, businessType, search: searchInput, exactSearch: isExactSearch });
   const [downloadPaymentsExcel] = useDownloadPaymentsExcelMutation();
   const [paymentData] = useGetInfoMutation();
 
@@ -75,6 +76,7 @@ const Payments = ({businessType='NURSERY'}) => {
     search: searchInput,
     ...dates,
     businessType,
+    exactSearch: isExactSearch 
   });
   const [mutate] = useCreatePaymentMutation();
 
@@ -185,6 +187,11 @@ const Payments = ({businessType='NURSERY'}) => {
   const handleSearchInputChange = (event) => {
     setSearchInput(event.target.value);
   };
+
+  const handleExactSearchChange = (checked) => {
+    setIsExactSearch(checked);
+    setPage(1);
+  }
 
   const getUserCount = () => {
     setUsersCount(paymentsCountReq?.data?.data[0]?.count || 0);
@@ -479,6 +486,14 @@ const Payments = ({businessType='NURSERY'}) => {
               className={styles.searchInput}
             />
             <ImSearch size={22} color="#4f4e4e" className={styles.searchIcon} />
+            <br />
+            <br />
+            <ToggleSwitch
+              label="Exact Search"
+              checked={isExactSearch}
+              onChange={handleExactSearchChange}
+            />
+
           </div>
           {/* pagination */}
           <div className={styles.paginationContainer}>
@@ -521,15 +536,18 @@ const Payments = ({businessType='NURSERY'}) => {
 
         {paymentsData.isLoading ? (
           <Spinner />
-        ) : (
-          paymentsData.status === "fulfilled" && (
-            <Table data={[TABLE_HEADER, ...data]} />
-          )
-        )}
+          ) : paymentsData.status === "fulfilled" ? (
+            data.length > 0 ? (
+              <Table data={[TABLE_HEADER, ...data]} />
+            ) : (
+              <p className={styles.noResultsMessage}>
+                  No payments found {isExactSearch ? "(Exact Match)" : ""}
+              </p>
+            )
+          )  : paymentsData.isError ? (
+             <p className={styles.errorMessage}>Unable to load Payments Data</p>
+          ) : null}
 
-        {paymentsData.isError && (
-          <p className={styles.errorMessage}>Unable to load Users Data</p>
-        )}
       </div>
 
       <MantineModal
