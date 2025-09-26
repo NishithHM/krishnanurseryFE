@@ -40,6 +40,7 @@ export const paymentsApi = createApi({
           businessType,
           vendorId,
           search='',
+          exactSearch = false   
         }) => {
           const options = {};
           options["businessType"] = businessType; 
@@ -49,6 +50,8 @@ export const paymentsApi = createApi({
           if (startDate) options["startDate"] = startDate;
           if (endDate) options["endDate"] = endDate;
           if (page) options["pageNumber"] = page;
+          options["exactSearch"] = exactSearch ?? false;
+
 
           return {
             url: "/getAll",
@@ -74,6 +77,7 @@ export const paymentsApi = createApi({
           businessType,
           type,
           vendorId,
+          exactSearch = false  
         }) => {
           const options = {};
           options["businessType"] = businessType;
@@ -84,6 +88,8 @@ export const paymentsApi = createApi({
 
           if (startDate) options["startDate"] = startDate;
           if (endDate) options["endDate"] = endDate;
+
+          options["exactSearch"] = exactSearch ?? false;
 
           return {
             url: "/getAll",
@@ -104,10 +110,11 @@ export const paymentsApi = createApi({
           type,
           vendorId,
           pageNumber = 1,
+          exactSearch = false 
         }) => ({
           url: "/getAll",
           method: "GET",
-          params: { search, startDate, endDate, type, vendorId, businessType, pageNumber },
+          params: { search, startDate, endDate, type, vendorId, businessType, pageNumber, exactSearch },
         }),
       }),
       getInfo: builder.mutation({

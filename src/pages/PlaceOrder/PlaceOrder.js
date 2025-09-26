@@ -297,7 +297,7 @@ export const PlaceOrder = () => {
             plants: updatedPlants,
           };
         });
-
+        
         setIsFromAccept(true);
       })
       .catch(() => {});
@@ -307,8 +307,8 @@ export const PlaceOrder = () => {
     // whenever vendorName changes, reset the orderId
     setState((prev) => ({ ...prev, orderId: {}, orderDetails: {}}));
 
-  }, [state.vendorName]);
-
+  }, [state.vendorName?.value]);
+ 
   
   useEffect(() => {
     setState((prev) => ({
