@@ -93,6 +93,15 @@ const Bills = ({type}) => {
     searchHandler(value);
   }, []);
 
+
+  // reset excel page and next availability on search change
+
+  useEffect(() => {
+  setExcelPage(1);
+  setNextExcelAvailable(true);
+}, [searchQuery]);
+
+
   const dates = {};
 
   if (filterDates.start_date && filterDates.end_date) {
@@ -284,7 +293,13 @@ const Bills = ({type}) => {
   };
 
   const handleExcelDownload = async (filterDates)=>{
-    const res= await downloadBillingExcel({pageNumber:excelPage, startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD'), type})
+    const res= await downloadBillingExcel({
+      pageNumber:excelPage, 
+      startDate: dayjs(filterDates.startDate).format('YYYY-MM-DD'), 
+      endDate:dayjs(filterDates.endDate).format('YYYY-MM-DD'),
+      type,
+      search: searchQuery
+    })
     const {isNext, response} = res.data
     setNextExcelAvailable(isNext==='true')
     if(isNext==="true"){
