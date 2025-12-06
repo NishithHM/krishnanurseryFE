@@ -35,5 +35,7 @@
   .gridContainer {
     display: grid;
     grid-template-columns: repeat(1, minmax(200px, 1fr));
+    margin-bottom: 100px;
+
   }
 }
