@@ -590,7 +590,7 @@ export default function AddBills({edit=false}) {
     }else {
       paymentValidation = Boolean(state.paymentType)
     }
-    if (state.checkOutDone && !state.submitError.isExist && paymentValidation) {
+    if (state.checkOutDone &&  paymentValidation) {
       return shouldCheckoutDisable();
     }
     return true;
@@ -784,7 +784,7 @@ const formatedBillHistory = (prev) => {
                   justifyContent : "center",
                   alignItems : "center",
                 }}
-                disabled={!isTableValid() || edit}
+                disabled={!isTableValid()}
                 onClick={handleAddItem}
               >
                 <FontAwesomeIcon icon={faPlus} style={{marginLeft : "0.8px"}} />

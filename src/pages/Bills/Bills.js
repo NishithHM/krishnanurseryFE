@@ -145,7 +145,7 @@ const Bills = ({type}) => {
       };
 
       const approve = {
-        value:  purchase.isApproved === false && purchase.status ==='CART' && user.role==='admin'  ? (
+        value:  purchase.isApproved === false &&  ['CART', 'RE_CART'].includes(purchase.status) && user.role==='admin'  ? (
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={async()=>{
@@ -162,7 +162,7 @@ const Bills = ({type}) => {
       };
 
       const edit = {
-        value: type === "NURSERY" ? (
+        value: type === "NURSERY" && user.role === "sales" ? (
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
@@ -178,9 +178,18 @@ const Bills = ({type}) => {
         purchase?.onlineAmount ?? 0
       }`;
 
+      let recartStyle = {}
+
+      if(purchase.status === "RE_CART"){
+        recartStyle = {
+          color: "red",
+          fontWeight: "600"
+        }
+      }
+
       const data = [
         date,
-        { value: purchase?.invoiceId || "--" },
+        { value: <span style={recartStyle}>{purchase?.invoiceId}</span> || "--" },
         { value: paymentThrough },
         { value: purchase?.comment || "--" },
         { value: purchase.customerName },
