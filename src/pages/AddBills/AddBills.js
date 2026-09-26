@@ -11,6 +11,7 @@ import {
   useSubmitCartMutation,
   useUpdateCartMutation,
   useLazyGetCustomerCartQuery,
+  useGetCartByBillIdQuery,
 } from "../../services/bills.service";
 import { DatePicker } from "@mantine/dates";
 import { toast } from "react-toastify";
@@ -18,8 +19,7 @@ import ScrollTable from "../../components/Table/ScrollTable";
 import { InvoicePreview, InvoiceSection } from "./InvoicePreview";
 import { useReactToPrint } from "react-to-print";
 import { AuthContext } from "../../context";
-import Datepicker from "../../components/Datepicker/Datepicker";
-export default function AddBills() {
+export default function AddBills({edit=false}) {
   const [userCtx, setContext] = useContext(AuthContext);
   const approveRef = useRef()
 
@@ -93,8 +93,28 @@ export default function AddBills() {
   const [getCustomerCart] = useLazyGetCustomerCartQuery();
 
   const [auth] = useContext(AuthContext);
-const [loading,setLoading] = useState(false);
-const [isButtonDisabled, setButtonDisabled] = useState(false); 
+  const [loading,setLoading] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(false); 
+
+  const billId = edit ? new URLSearchParams(window.location.search).get("id") : null;
+
+  const { data: editBillData, isLoading: billLoading } = useGetCartByBillIdQuery(billId, {
+    skip: !billId,
+  });
+
+  console.log("editBillData", editBillData);
+
+  useEffect(() => {
+    if (editBillData) {
+      const customerNumber = editBillData.customerNumber?.toString();
+      setState((prev) => ({
+        ...prev,
+        customerNumber,
+      }));
+    }
+
+  }, [editBillData]);
+
   const handleAddItem = () => {
     setTableRowData([...tableRowData, tableRowBlank]);
     setState((prev) => ({
@@ -179,7 +199,10 @@ const [isButtonDisabled, setButtonDisabled] = useState(false);
         });
       });
 
-      const customerCart = await getCustomerCart(customerDetails.data._id);
+      const customerCart = await getCustomerCart({
+        customerId: customerDetails.data._id,
+        billId,
+      });
 
       if (customerCart.data) {
         let cartRows = [];
@@ -761,7 +784,7 @@ const formatedBillHistory = (prev) => {
                   justifyContent : "center",
                   alignItems : "center",
                 }}
-                disabled={!isTableValid()}
+                disabled={!isTableValid() || edit}
                 onClick={handleAddItem}
               >
                 <FontAwesomeIcon icon={faPlus} style={{marginLeft : "0.8px"}} />

@@ -343,7 +343,9 @@ export default function AgriAddBills() {
         billingHistory: [...billingData],
       }));
 
-      const customerCart = await getCustomerCart(customerDetails.data._id);
+      const customerCart = await getCustomerCart({
+        customerId: customerDetails.data._id,
+      });
 
       if (customerCart.data) {
         if (customerCart.data.items.length > 0) {

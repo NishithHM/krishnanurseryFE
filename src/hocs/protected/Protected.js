@@ -84,6 +84,7 @@ const Protected = () => {
               element={<Bills type="AGRI" />}
             />
             <Route path="/dashboard/add-bills" exact element={<AddBills />} />
+            <Route path="/dashboard/edit-bills" exact element={<AddBills edit={true} />} />
             <Route
               path="/dashboard/categories"
               exact

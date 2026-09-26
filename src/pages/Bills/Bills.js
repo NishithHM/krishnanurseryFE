@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
 import styles from "./Bills.module.css";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
   Button,
@@ -68,6 +68,7 @@ const Bills = ({type}) => {
   const [isNextExcelAvailable, setNextExcelAvailable] = useState(true)
   const [data, setData] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
   const [user] = useContext(AuthContext);
   const [filterDates, setFilterDates] = useState({
     start_date: null,
@@ -160,6 +161,19 @@ const Bills = ({type}) => {
         ): <></>,
       };
 
+      const edit = {
+        value: type === "NURSERY" ? (
+          <span
+            style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
+            onClick={() => {
+              navigate("/authorised/dashboard/edit-bills?id="+purchase?._id);
+            }}
+          >
+            Edit
+          </span>
+        ): <></>,
+      };
+
       let paymentThrough = `Cash: ${purchase?.cashAmount ?? 0}, Online: ${
         purchase?.onlineAmount ?? 0
       }`;
@@ -177,7 +191,8 @@ const Bills = ({type}) => {
           }).format(purchase.totalPrice),
         },
         openModal,
-        approve
+        approve,
+        edit
       ];
       return data;
     });

@@ -21,8 +21,17 @@ export const billsApi = createApi({
   endpoints: (builder) => {
     return {
       getCustomerCart: builder.query({
-        query: (customerId) => ({
-          url: `get-cart/${customerId}`, // id ??
+        query: ({ customerId, billId }) => {
+          const url = billId ? `get-cart/${customerId}?billId=${billId}` : `get-cart/${customerId}`;
+          return {
+            url,
+            method: "GET",
+          };
+        },
+      }),
+       getCartByBillId: builder.query({
+        query: (billId) => ({
+          url: `/get-bill/${billId}`,
           method: "GET",
         }),
       }),
@@ -108,4 +117,5 @@ export const {
   useGetAllPurchasesCountQuery,
   useSearchPurchaseMutation,
   useGetApproveMutation,
+  useGetCartByBillIdQuery,
 } = billsApi;
