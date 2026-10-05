@@ -131,7 +131,7 @@ const Bills = ({type}) => {
       const date = { value: dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY") };
 
       const openModal = {
-        value: (
+        value: ["CART", "BILLED"].includes(purchase.status) ? (
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
@@ -141,7 +141,7 @@ const Bills = ({type}) => {
           >
             View Details
           </span>
-        ),
+        ): null,
       };
 
       const approve = {
