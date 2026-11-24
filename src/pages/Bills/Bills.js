@@ -128,8 +128,11 @@ const Bills = ({type}) => {
 
   const formatPurchasesData = (data) => {
     const formatted = data.map((purchase) => {
-      const date = { value: dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY") };
-
+      const formattedDate = dayjs(purchase.billedDate || purchase.updatedAt).format("DD-MM-YYYY");
+      const date = { value: formattedDate };
+      const lastEditableDateDayjs = dayjs().startOf('month').subtract(1, 'month').add(14, 'days');
+      console.log("lastEditableDate", lastEditableDateDayjs, purchase.billedDate || purchase.updatedAt, dayjs(purchase.billedDate || purchase.updatedAt, "DD-MM-YYYY").isAfter(lastEditableDateDayjs), purchase.status, user.role);
+      const isEditable = dayjs(purchase.billedDate || purchase.updatedAt).isAfter(lastEditableDateDayjs) && (purchase.status === "BILLED" || purchase.status === "RE_CART") && user.role === "sales";
       const openModal = {
         value: ["CART", "BILLED"].includes(purchase.status) ? (
           <span
@@ -162,7 +165,7 @@ const Bills = ({type}) => {
       };
 
       const edit = {
-        value: type === "NURSERY" && user.role === "sales" ? (
+        value: type === "NURSERY" && user.role === "sales" && isEditable ? (
           <span
             style={{ color: "green", fontWeight: "600", cursor: "pointer" }}
             onClick={() => {
